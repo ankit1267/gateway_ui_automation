@@ -8,3 +8,4 @@ node_modules/
 /playwright/.auth/
 auth.json
 notes.md
+.env

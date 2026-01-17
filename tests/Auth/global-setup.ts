@@ -2,21 +2,25 @@ import { chromium } from '@playwright/test';
 
 async function globalSetup() {
   const context = await chromium.launchPersistentContext(
-    'C:/Users/Tilakraj/chrome-playwright-profile', // ✅ NEW PROFILE
+    process.env.PLAYWRIGHT_USER_DATA_DIR!, // ⬅️ user-specific → env
     {
-      channel: 'chrome',
-      headless: false,
-      args: ['--disable-blink-features=AutomationControlled']
+      channel: process.env.PLAYWRIGHT_BROWSER_CHANNEL || 'chrome',
+      headless: process.env.PLAYWRIGHT_HEADLESS === 'true',
+      args: ['--disable-blink-features=AutomationControlled'],
     }
   );
 
   const page = await context.newPage();
-  await page.goto('https://app.gtwy.ai/login');
 
-  // 🔐 LOGIN MANUALLY WITH GOOGLE
-  await page.waitForURL('**/org');
+  await page.goto(process.env.PLAYWRIGHT_LOGIN_URL!);
 
-  await context.storageState({ path: 'auth.json' });
+  // 🔐 LOGIN MANUALLY WITH GOOGLE (unchanged logic)
+  await page.waitForURL(process.env.PLAYWRIGHT_SUCCESS_URL || '**/org');
+
+  await context.storageState({
+    path: process.env.PLAYWRIGHT_AUTH_STATE || 'auth.json',
+  });
+
   await context.close();
 }
 
