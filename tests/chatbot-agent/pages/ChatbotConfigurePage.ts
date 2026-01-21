@@ -29,7 +29,7 @@ export class ChatbotConfigurePage {
         const modelDropdown = this.page.getByRole('button', { name: /model/i });
         await modelDropdown.click();
 
-        const modelOption = this.page.getByRole('option', { name: 'gemini-2.5-pro' });
+        const modelOption = this.page.getByRole('option', { name: 'gemini-2.5-flash' });
         await modelOption.waitFor({ state: 'visible' });
         await modelOption.click();
     }
