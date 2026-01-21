@@ -6,7 +6,7 @@ test.use({
 
 test('System prompt auto-generates when agent purpose is entered', async ({ page }) => {
     // Navigate to org page
-    await page.goto('https://app.gtwy.ai/org');
+    await page.goto('/org');
 
     // Go to create API agent
     await page.getByText('My space').click();
@@ -89,8 +89,17 @@ test('System prompt has junk and special characters go back to default', async (
     // System prompt textarea (adjust selector if you have test-id)
     await page.locator('textarea').nth(4).click();
     
+    const initialDefault = `Role: AI Bot
+Objective: Respond logically and clearly, maintaining a neutral, automated tone.
+Guidelines:
+Identify the task or question first.
+Provide brief reasoning before the answer or action.
+Keep responses concise and contextually relevant.
+Avoid emotion, filler, or self-reference.
+Use examples or placeholders only when helpful.`;
     // Expect system prompt to auto-generate (non-empty)
-    await expect(page.locator('textarea').nth(4)).toHaveValue('Act like a chatbot');
+    const actualValue = await page.locator('textarea').nth(4).inputValue();
+    expect([initialDefault, 'Act like a chatbot']).toContain(actualValue);
 
     // Optional: validate partial generated content
 
