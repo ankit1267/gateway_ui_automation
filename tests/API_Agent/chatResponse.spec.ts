@@ -6,7 +6,7 @@ test.use({
 
 test('Regression: Agent publish and chat completion flow', async ({ page }) => {
   // 1. Open org
-  await page.goto('https://app.gtwy.ai/org');
+  await page.goto('/org');
 
   // 2. Select workspace
   await page.getByText('Tilakraj').click();

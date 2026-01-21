@@ -1,5 +1,5 @@
 import { defineConfig } from '@playwright/test';
-
+import 'dotenv/config';
 export default defineConfig({
   globalSetup: './tests/auth/global-setup.ts',
 
@@ -10,7 +10,7 @@ export default defineConfig({
   reporter: [['html', { open: 'on-failure' }]],
 
   use: {
-    baseURL: 'https://app.gtwy.ai',
+    baseURL: 'https://dev.gtwy.ai',
     storageState: 'auth.json',
 
     // 🐞 Debug helpers
