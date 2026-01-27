@@ -2,7 +2,7 @@ import { Page, expect, Locator } from '@playwright/test';
 import { ChatbotAgentCreateSelectors as S } from '../selectors/chatbotAgent.selectors';
 
 export class ChatbotAgentPage {
-  constructor(private page: Page) {}
+  constructor(private page: Page) { }
 
   // -------------------------
   // OPEN CREATE CHATBOT AGENT
