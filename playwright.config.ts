@@ -1,7 +1,7 @@
 import { defineConfig } from '@playwright/test';
-
+import 'dotenv/config';
 export default defineConfig({
-  globalSetup: './tests/auth/global-setup.ts',
+  globalSetup: './auth/global-setup.ts',
 
   // 🔥 Smoke tests must be stable
   workers: 1,
@@ -17,6 +17,9 @@ export default defineConfig({
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',
+    launchOptions:{
+      slowMo:1000
+    },
 
     // Optional but good
     headless: true
