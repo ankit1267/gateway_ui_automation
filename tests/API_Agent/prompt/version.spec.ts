@@ -1,17 +1,15 @@
 import { test, expect } from '@playwright/test';
-import { time, timeEnd } from 'node:console';
-import { watchFile } from 'node:fs';
+import { ApiAgentCreatePage } from '../../../pages/api_agent/apiAgentCreatePage';
 
 test.use({ storageState: 'auth.json' });
 
-const setup = async (page: any) => {
+const setup = async (page: any) => { 
   await page.goto('/org');
-  await page.getByText('My space').click();
-  await page.getByRole('button', { name: '+ Create New API Agent' }).click();
-  await page
-    .locator('#default-agent-sidebar')
-    .getByRole('button', { name: 'Create Agent' })
-    .click();
+ const createPage = new ApiAgentCreatePage(page);
+ 
+  await createPage.openCreateAgent();
+  await createPage.createAgentWithPurpose();
+  
   await page.getByRole('button', { name: 'New', exact: true }).click();
   const dialog = page.getByRole('dialog', { name: 'Create New Version' });
   const desc = page.locator('input[type="text"]').first();
