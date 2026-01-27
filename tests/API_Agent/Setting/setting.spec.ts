@@ -135,4 +135,43 @@ test(
     }
 )
 
+test(
+    'TC-SET-07:Agent Settings – Guardrail Configuration.',
+      async ({ page }) => {
+
+        const apiRadio = page.getByRole('radio', { name: 'API' });
+        if (!await apiRadio.isChecked()) {
+            await page.locator('#viasocket-embed-close-button').click();
+            await apiRadio.click();
+        }
+        const guardrailToggle = page.locator('#guardrails-toggle');
+        await guardrailToggle.check();
+
+        const addGuardrailBtn = page.getByRole('button', { name: 'Add Guardrail Types' });
+        await expect(addGuardrailBtn).toBeEnabled();
+        await addGuardrailBtn.click();
+
+        const promptInjection = page.locator('#guardrail-checkbox-prompt_injection');
+        const bias = page.locator('#guardrail-checkbox-bias');
+
+        await expect(promptInjection).toBeVisible();
+        await expect(bias).toBeVisible();
+
+        await promptInjection.check();
+        await bias.check();
+
+        await expect(promptInjection).toBeChecked();
+        await expect(bias).toBeChecked();
+
+        await promptInjection.uncheck();
+        await bias.uncheck();
+
+        
+
+        //Disable guardrails toggle again
+        await guardrailToggle.uncheck();
+        await expect(guardrailToggle).not.toBeChecked();
+    }
+)
+
 
