@@ -4,12 +4,14 @@ test.use({
   storageState: 'auth.json',
 });
 
+const WORKSPACE = process.env.WORKSPACE_NAME;
+
 test('Regression: Agent publish and chat completion flow', async ({ page }) => {
   // 1. Open org
-  await page.goto('https://app.gtwy.ai/org');
+  await page.goto('/org');
 
   // 2. Select workspace
-  await page.getByText('Tilakraj').click();
+  await page.getByText(`${WORKSPACE}`).click();
 
   //3 Create new API agent
   await page.getByRole('button', { name: '+ Create New API Agent' }).click();
@@ -28,7 +30,10 @@ test('Regression: Agent publish and chat completion flow', async ({ page }) => {
 
   // 5. Model selection
   await page.getByRole('tab', { name: 'Model' }).click();
-  await page.getByRole('button', { name: 'Openai' }).click();
+  await page.waitForTimeout(300); // let animations finish
+  await page
+         .locator('#service-dropdown-trigger')
+        .getByRole('button', { name: 'Openai' }).click();
   await page.getByRole('listbox').getByRole('option', { name: 'Mistral' }).click();
 
   await page.getByRole('button', { name: 'Select API key' }).click();
@@ -72,20 +77,6 @@ test('Regression: Agent publish and chat completion flow', async ({ page }) => {
   const input = page.getByRole('textbox', { name: 'Type here' });
   await input.fill('hello');
   await page.keyboard.press('Enter');
-  // 9. Assertion: assistant response appears
-  // await expect(page.locator(
-  //   '.chat-bubble.break-all.gap-0.justify-start.relative.w-full.mr-8'
-  // )).toBeVisible({ timeout: 30000 });
-
-  // const assistantLabel = page.getByText(/^assistant/i);
-
-  // await expect(assistantLabel).toBeVisible({ timeout: 30000 });
-
-  // Input should clear after sending
-  //await expect(input).toHaveValue('');
-
-// And a response should appear
-  //await expect(page.locator('text=/./')).toBeVisible({ timeout: 30000 });
   const after = await messages.count();
   expect(after).toBeGreaterThan(before);
 });
