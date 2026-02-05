@@ -34,13 +34,17 @@ test('Create Knowledge Base using Playwright Docs URL', async ({ page }) => {
     // Assert KB created
     const kbRow = page.getByRole('row', { name: /Playwright/ });
     await expect(kbRow).toBeVisible();
+    //await page.pause();
+    //delete 
+    await page.locator('.lucide.lucide-trash2').first().click();
+    await page.getByRole('button', { name: 'Delete' }).click();
 
 });
 
 test('Upload File option shows file upload input',async({page})=>{
    await page.getByRole('radio', { name: 'Upload File' }).check();
 
-  // ✅ Assert file upload input is visible
+  //Assert file upload input is visible
   await expect(
     page.locator('#knowledgebase-file-upload')
   ).toBeVisible();
