@@ -7,7 +7,7 @@ test.use({
 
 test('Viasocket Embed visible when opening alert', async ({ page }) => {
   await page.goto(`org/${ORG_ID}/alerts`);
-  await expect(page.locator('#viasocket-embed-iframe-component')).toBeVisible();
+  await expect(page.locator('#alert-embed-parent')).toBeVisible();
 });
 
 test('Viasocket Embed shows 3 alert', async ({ page }) => {

@@ -1,7 +1,7 @@
 import { defineConfig } from '@playwright/test';
 import 'dotenv/config';
 export default defineConfig({
-  globalSetup: './auth/global-setup.ts',
+  globalSetup: './Auth/global-setup.ts',
 
   // 🔥 Smoke tests must be stable
   workers: 1,
