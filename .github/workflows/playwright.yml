@@ -8,6 +8,16 @@ jobs:
   test:
     timeout-minutes: 60
     runs-on: ubuntu-latest
+    env:
+      PLAYWRIGHT_USER_DATA_DIR: ${{ secrets.PLAYWRIGHT_USER_DATA_DIR }}
+      PLAYWRIGHT_LOGIN_URL: ${{ secrets.PLAYWRIGHT_LOGIN_URL }}
+      PLAYWRIGHT_SUCCESS_URL: ${{ secrets.PLAYWRIGHT_SUCCESS_URL }}
+      PLAYWRIGHT_BROWSER_CHANNEL: ${{ secrets.PLAYWRIGHT_BROWSER_CHANNEL }}
+      PLAYWRIGHT_HEADLESS: ${{ secrets.PLAYWRIGHT_HEADLESS }}
+      PLAYWRIGHT_AUTH_STATE: ${{ secrets.PLAYWRIGHT_AUTH_STATE }}
+      WORKSPACE_NAME: ${{ secrets.WORKSPACE_NAME }}
+      AGENT_NAME: ${{ secrets.AGENT_NAME }}
+      ORG_ID: ${{ secrets.ORG_ID }}
     steps:
     - uses: actions/checkout@v4
     - uses: actions/setup-node@v4
