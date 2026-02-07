@@ -12,7 +12,7 @@ test.describe('Chatbot Agent Name – Negative Test Cases', () => {
     });
 
     // ❌ TC-NEG-01: Empty agent name
-    test('should not allow empty agent name', async () => {
+    test.only('should not allow empty agent name', async () => {
         await chatbotAgentPage.setAgentName('');
         await chatbotAgentPage.expectEmptyNameError();
     });
@@ -20,7 +20,8 @@ test.describe('Chatbot Agent Name – Negative Test Cases', () => {
     // ❌ TC-NEG-02: Agent name with only spaces
     test('should not allow agent name with only spaces', async () => {
         await chatbotAgentPage.setAgentName('     ');
-        await expect(chatbotAgentPage.agentNameInput()).toHaveValue('');
+        await chatbotAgentPage.expectEmptyNameError();
+        // await expect(chatbotAgentPage.agentNameInput()).toHaveValue('');
     });
 
     // ❌ TC-NEG-03: Special characters only

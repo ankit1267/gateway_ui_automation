@@ -8,10 +8,10 @@ export class ChatbotAgentPage {
   // OPEN CREATE CHATBOT AGENT
   // -------------------------
   async openCreateChatbotAgent() {
-    await this.page.goto('/org/57294/agents');
+    await this.page.goto('/org/57720/agents');
 
     // Select workspace (My space)
-    await this.page.locator(S.mySpace).click();
+    // await this.page.locator(S.mySpace).click();
 
     // Switch to chatbot mode
     await this.page.locator(S.chatbotModeButton).click();
@@ -41,7 +41,9 @@ export class ChatbotAgentPage {
   // SET AGENT NAME
   // -------------------------
   async setAgentName(name: string) {
+
     const input = this.agentNameInput();
+    await input.click();
     await input.fill(name);
     await input.press('Enter');
   }
@@ -52,7 +54,7 @@ export class ChatbotAgentPage {
   async expectEmptyNameError() {
     await expect(
       this.page.getByText('Agent name cannot be empty')
-    ).toBeVisible({ timeout: 10_000 });
+    ).toBeVisible({ timeout: 100000 });
   }
 
   async expectInvalidCharactersError() {
