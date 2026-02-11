@@ -3,14 +3,14 @@ import { ModelPage, ServiceProvider } from '../../pages/modelPage';
 
 test.use({ storageState: 'auth.json' });
 
-test.describe('Model Configuration – Service Provider & Model List', () => {
+test.describe('Model Configuration - Service Provider & Model List', () => {
     let modelPage: ModelPage;
 
     test.beforeEach(async ({ page }) => {
         modelPage = new ModelPage(page);
 
         // open agent + model tab
-        await modelPage.openChatbotAgent('untitled_agent_1');
+        await modelPage.openChatbotAgent(process.env.CHATBOT_AGENT!);
     });
 
     test('TC-MODEL-01: Select Mistral as Service Provider', async () => {

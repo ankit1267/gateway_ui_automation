@@ -9,6 +9,8 @@ export type ServiceProvider =
     | 'Ai ml'
     | 'Grok';
 
+const ORG_NAME = process.env.WORKSPACE_NAME;
+
 export class ModelPage {
     constructor(private page: Page) { }
 
@@ -19,12 +21,11 @@ export class ModelPage {
     async openChatbotAgent(agentName: string) {
         // Go to org landing
         await this.page.goto('/org');
-
         // Open workspace
-        await this.page.getByText('Ansh Pandit', { exact: true }).click();
+        await this.page.getByText(`${ORG_NAME}`).click()
 
         // Navigate to chatbot agents
-        await this.page.goto('/org/57720/agents?type=chatbot');
+        await this.page.getByRole('button', { name: 'Chatbot', exact: true }).click();
 
         // Wait for hydration
         // await this.page.waitForLoadState('networkidle');

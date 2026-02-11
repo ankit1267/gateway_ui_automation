@@ -2,12 +2,12 @@ import { test, expect, Page } from '@playwright/test';
 
 test.use({ storageState: 'auth.json' });
 
-const ORG_NAME = process.env.ORG_NAME!;
+const ORG_NAME = process.env.WORKSPACE_NAME!;
 const ORG_ID = process.env.ORG_ID!;
 
 const setupChatbotVersionModal = async (page: Page) => {
     await page.goto('/org');
-    await page.getByText(`${ORG_NAME}`).click();
+    await page.getByText(`${ORG_NAME}`).click();
 
     await page.getByRole('button', { name: '+ Create New Chatbot Agent' }).click();
     await page
@@ -17,7 +17,7 @@ const setupChatbotVersionModal = async (page: Page) => {
 
     await page.getByRole('button', { name: 'New', exact: true }).click();
 
-    // ✅ Scope modal to "Create New Version" only
+    // Scope modal to "Create New Version" only
     const modal = page
         .locator('div.modal-box')
         .filter({
@@ -27,13 +27,13 @@ const setupChatbotVersionModal = async (page: Page) => {
     const descriptionInput = modal.getByRole('textbox');
     const createButton = modal.locator('button.btn-primary.ml-2');
 
-    // ✅ strict-mode safe
+    // strict-mode safe
     await expect(modal).toBeVisible();
 
     return { modal, descriptionInput, createButton };
 };
 
-test('❌ Version cannot be created with empty description (chatbot)', async ({ page }) => {
+test('Version cannot be created with empty description (chatbot)', async ({ page }) => {
     const { modal, descriptionInput, createButton } =
         await setupChatbotVersionModal(page);
 
@@ -49,7 +49,7 @@ test('❌ Version cannot be created with empty description (chatbot)', async ({ 
     await expect(modal).toBeVisible();
 });
 
-test('✅ Version can be created with valid description (chatbot)', async ({ page }) => {
+test('Version can be created with valid description (chatbot)', async ({ page }) => {
     const { modal, descriptionInput, createButton } =
         await setupChatbotVersionModal(page);
 

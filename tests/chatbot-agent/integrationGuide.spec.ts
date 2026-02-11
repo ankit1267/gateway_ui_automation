@@ -2,15 +2,16 @@ import { test, expect } from '@playwright/test';
 
 test.use({ storageState: 'auth.json' });
 
-const ORG_NAME = process.env.ORG_NAME!;
-const ORG_ID = process.env.ORG_ID!;
+const ORG_NAME = process.env.WORKSPACE_NAME!;
+const CHATBOT_AGENT = process.env.CHATBOT_AGENT!;
 
-test('Integration Guide – validate copy & access key actions', async ({ page }) => {
+test('Integration Guide - validate copy & access key actions', async ({ page }) => {
     await page.goto('/org');
-    await page.getByText(`${ORG_NAME}`).click();
+    await page.getByText(`${ORG_NAME}`).click();
+    await page.getByRole('button', { name: 'Chatbot', exact: true }).click();
 
     // Open chatbot
-    await page.getByRole('main').getByText(/untitled_agent_34/i).click();
+    await page.getByText(`${CHATBOT_AGENT}`, { exact: true }).click();
 
     // Open Integration Guide tab
     await page.getByRole('tab', { name: 'Integration Guide' }).click();
@@ -18,7 +19,7 @@ test('Integration Guide – validate copy & access key actions', async ({ page }
     // --- Slugname field ---
     const slugInput = page.getByRole('textbox', { name: /Enter Slugname/i });
     await expect(slugInput).toBeVisible();
-    await expect(slugInput).toHaveValue(/untitled_agent_34/i);
+    await expect(slugInput).toHaveValue(`${CHATBOT_AGENT}`);
 
     // --- Step 1: JWT copy ---
     const jwtContainer = page.locator('#first-step-container');
@@ -27,7 +28,7 @@ test('Integration Guide – validate copy & access key actions', async ({ page }
     await expect(copyContainer).toBeVisible();
     await copyContainer.click();
 
-    // ✅ Assert meaningful content exists (proves copy source is valid)
+    //  Assert meaningful content exists (proves copy source is valid)
     await expect(jwtContainer).toContainText('org_id');
     await expect(jwtContainer).toContainText('chatbot_id');
 

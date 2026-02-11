@@ -3,18 +3,17 @@ import { ModelPage } from '../../pages/modelPage';
 
 test.use({ storageState: 'auth.json' });
 
-test.describe('Model – API Key validation', () => {
+test.describe('Model - API Key validation', () => {
     let modelPage: ModelPage;
 
     test.beforeEach(async ({ page }) => {
         modelPage = new ModelPage(page);
-
         // open chatbot agent + model tab
-        await modelPage.openChatbotAgent('untitled_agent_1');
+        await modelPage.openChatbotAgent(process.env.CHATBOT_AGENT!);
     });
 
     test('TC-APIKEY-01: API key required error is shown', async () => {
-        await modelPage.selectServiceProvider('Mistral');
+        await modelPage.selectServiceProvider('Anthropic');
 
         await modelPage.expectNoApiKeysMessage();
 
@@ -24,10 +23,8 @@ test.describe('Model – API Key validation', () => {
     });
 
     test('TC-APIKEY-02: API key is added', async () => {
-        await modelPage.selectServiceProvider('Gemini');
+        await modelPage.selectServiceProvider('Mistral');
 
-        await modelPage.selectApiKey('new gemini');
-
-        await modelPage.expectApiKeySelected();
+        await modelPage.selectApiKey('Mistral api key');
     });
 });

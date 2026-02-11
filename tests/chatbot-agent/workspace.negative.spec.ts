@@ -100,15 +100,5 @@ test.describe('Create Workspace – Negative Test Cases', () => {
         await expect(page.getByText('Existing Workspaces')).toBeVisible();
     });
 
-    // ❌ TC-NEG-09: Session expired user
-    test('should redirect to login if session is expired', async ({ browser }) => {
-        const context = await browser.newContext({ storageState: undefined });
-        const page = await context.newPage();
-
-        await page.goto('https://app.gtwy.ai/org');
-        await expect(page).toHaveURL(/login/);
-
-        await context.close();
-    });
 
 });

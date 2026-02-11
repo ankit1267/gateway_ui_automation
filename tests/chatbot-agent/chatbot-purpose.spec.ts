@@ -4,13 +4,14 @@ test.use({
   storageState: 'auth.json',
 });
 
-const ORG_NAME = process.env.ORG_NAME!;
+const ORG_NAME = process.env.WORKSPACE_NAME!;
 const ORG_ID = process.env.ORG_ID!;
 
 test('Create chatbot with purpose and verify generated prompt', async ({ page }) => {
   // Open agents page
   await page.goto('/org');
   await page.getByText(`${ORG_NAME}`).click();
+  await page.getByRole('button', { name: 'Chatbot', exact: true }).click();
 
   // Create new chatbot
   await page.getByRole('button', { name: '+ Create New Chatbot Agent' }).click();
@@ -26,25 +27,11 @@ test('Create chatbot with purpose and verify generated prompt', async ({ page })
   // Create agent
   await sidebar.getByRole('button', { name: 'Create Agent' }).click();
 
-  await page.goto(
-    'https://app.gtwy.ai/org/57294/agents/configure/696e198eeee863e59dd64cef?version=696e198eeee863e59dd64cf1&type=chatbot'
-  );
-
-
   // Ensure Prompt tab is active
   await page.getByRole('tab', { name: 'Prompt' }).click();
 
-  // Scope to System Prompt container
-  const systemPromptContainer = page
-    .getByText('System Prompt', { exact: true })
-    .locator('..');
-
-  // Target the actual prompt editor (role=textbox)
-  const systemPrompt = systemPromptContainer.getByRole('textbox');
-
-  // Wait until visible
-  await expect(systemPrompt).toBeVisible({ timeout: 20000 });
-
+  await expect(page.getByTestId('prompt-header-default')).toBeVisible();
+  const systemPrompt = page.getByTestId('prompt-textarea')
   // Wait until content is generated
   await expect
     .poll(async () => {
@@ -60,6 +47,25 @@ test('Create chatbot with purpose and verify generated prompt', async ({ page })
   await expect(promptText).toContain('support');
   await expect(promptText).toContain('agent');
 
+  const agentName = await page.getByTestId('navbar-agent-name-display').innerText();
 
+  await page.locator('#main-slider-toggle-button').click();
+  await page.getByRole('button', { name: 'Chatbot', exact: true }).click();
 
+  const agentRow = page.getByRole('row').filter({ hasText: agentName });
+  await agentRow.getByRole('button').last().click();
+  await page
+    .locator('div[role="button"] svg.rotate-90')
+    .first()
+    .locator('..')
+    .click();
+
+  // Delete flow
+  await page
+    .getByRole('button', { name: 'Delete Agent' })
+    .click();
+
+  await page
+    .getByRole('button', { name: 'Delete' })
+    .click();
 });

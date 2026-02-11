@@ -1,8 +1,10 @@
 name: Playwright Tests
 on:
   schedule:
-    - cron: '15 15 * * *' 
+    - cron: '0 6 * * *' 
   workflow_dispatch:
+permissions:
+  contents: write   # REQUIRED for GitHub Pages push
 jobs:
   test:
     timeout-minutes: 60
@@ -18,6 +20,7 @@ jobs:
       AGENT_NAME: ${{ secrets.AGENT_NAME }}
       ORG_ID: ${{ secrets.ORG_ID }}
       BASE_URL: ${{ secrets.BASE_URL }}
+      CHATBOT_AGENT: ${{ secrets.CHATBOT_AGENT }}
     steps:
     - uses: actions/checkout@v4
     - uses: actions/setup-node@v4
@@ -35,3 +38,9 @@ jobs:
         name: playwright-report
         path: playwright-report/
         retention-days: 30
+    - name: Deploy Playwright Report to GitHub Pages
+      if: always()
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./playwright-report

@@ -12,7 +12,7 @@ const ORG_ID = process.env.ORG_ID!;
 test('TC-CON-01: Verify Connectors flow for a chatbot agent', async ({ page }) => {
     // Step 1: Open chatbot agents page
     await page.goto('/org');
-    await page.getByText(`${ORG_NAME}`).click();
+    await page.getByText(`${ORG_NAME}`).click();
 
     await page.waitForLoadState('networkidle');
 
