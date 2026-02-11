@@ -14,7 +14,7 @@ export default defineConfig({
   reporter: [['html', { open: 'on-failure' }]],
 
   use: {
-    baseURL: 'https://dev.gtwy.ai',
+    baseURL: process.env.BASE_URL!,
     storageState: 'auth.json',
 
     // 🐞 Debug helpers

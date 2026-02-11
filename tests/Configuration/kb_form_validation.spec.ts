@@ -18,7 +18,7 @@ test.beforeEach(async ({ page }) => {
 
 })
 
-test('Create Knowledge Base using Playwright Docs URL', async ({ page }) => {
+test.only('Create Knowledge Base using Playwright Docs URL', async ({ page }) => {
     // Create KB
     await page.getByRole('textbox', { name: 'Knowledge Base name' })
         .fill('Playwright');
@@ -36,7 +36,7 @@ test('Create Knowledge Base using Playwright Docs URL', async ({ page }) => {
     await expect(kbRow).toBeVisible();
     //await page.pause();
     //delete 
-    await page.locator('.lucide.lucide-trash2').first().click();
+    await page.locator('.lucide.lucide-trash2').last().click();
     await page.getByRole('button', { name: 'Delete' }).click();
 
 });

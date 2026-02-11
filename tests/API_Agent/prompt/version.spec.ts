@@ -5,7 +5,7 @@ test.use({ storageState: 'auth.json' });
 
 const setup = async (page: any) => { 
   await page.goto('/org');
- const createPage = new ApiAgentCreatePage(page);
+  const createPage = new ApiAgentCreatePage(page);
  
   await createPage.openCreateAgent();
   await createPage.createAgentWithPurpose();
@@ -18,16 +18,20 @@ const setup = async (page: any) => {
 };
 
 test('Version cannot be created with empty description', async ({ page }) => {
+  const createPage = new ApiAgentCreatePage(page);
   const { dialog, desc, createBtn } = await setup(page);
   await createBtn.click();
   await expect(desc).toHaveValue('');
+  await createPage.deleteAgent();
 });
 
 test('Version can be created with valid description', async ({ page }) => {
+  const createPage = new ApiAgentCreatePage(page);
   const { dialog, desc, createBtn } = await setup(page);
   await desc.fill('version 1');
   await createBtn.click();
   await expect(dialog).not.toBeVisible();
+  await createPage.deleteAgent();
 });
 
 
