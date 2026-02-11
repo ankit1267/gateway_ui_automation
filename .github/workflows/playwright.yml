@@ -5,7 +5,7 @@ on:
   pull_request:
     branches: [ main, master ]
   schedule:
-    - cron: '30 0 * * *'  # Runs daily at 6:00 AM IST (00:30 UTC)
+    - cron: '49 8 * * *'  # Runs daily at 6:00 AM IST (00:30 UTC)
 jobs:
   test:
     timeout-minutes: 60
@@ -31,7 +31,7 @@ jobs:
     - name: Install Playwright Browsers
       run: npx playwright install --with-deps
     - name: Run Playwright tests
-      run: npx playwright test tests/API_Agent
+      run: npx playwright test 
     - uses: actions/upload-artifact@v4
       if: ${{ !cancelled() }}
       with:
