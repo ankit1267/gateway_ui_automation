@@ -24,9 +24,9 @@ test.describe('Model – API Key validation', () => {
     });
 
     test('TC-APIKEY-02: API key is added', async () => {
-        await modelPage.selectServiceProvider('Mistral');
+        await modelPage.selectServiceProvider('Gemini');
 
-        await modelPage.selectApiKey('Mistral');
+        await modelPage.selectApiKey('new gemini');
 
         await modelPage.expectApiKeySelected();
     });

@@ -40,16 +40,6 @@ test.describe('Create Workspace – Negative Test Cases', () => {
         await expect(page.getByRole('dialog')).toBeVisible();
     });
 
-    // ❌ TC-NEG-03: Missing timezone selection
-    // test('should not allow workspace creation without timezone', async ({ page }) => {
-    //     await openCreateWorkspaceModal(page);
-    //     await page.getByRole('textbox', { name: 'Workspace Name' }).fill('No Timezone Workspace');
-    //     await clickCreateInModal(page);
-
-    //     await expect(
-    //         page.getByText(/timezone is required/i)
-    //     ).toBeVisible();
-    // });
 
     // ❌ TC-NEG-04: Duplicate workspace name
     test('should not allow duplicate workspace name', async ({ browser }) => {
@@ -99,24 +89,6 @@ test.describe('Create Workspace – Negative Test Cases', () => {
         const value = await input.inputValue();
         expect(value.length).toBe(40);
     });
-
-
-    // ❌ TC-NEG-07: Multiple rapid submissions
-    // test('should prevent multiple submissions on Create button', async ({ page }) => {
-    //     await openCreateWorkspaceModal(page);
-    //     await page.getByRole('textbox', { name: 'Workspace Name' }).fill('Rapid Click Workspace');
-
-    //     const modal = page.getByRole('dialog');
-    //     const createBtn = modal.getByRole('button', { name: 'Create', exact: true });
-
-    //     await createBtn.click();
-    //     await createBtn.click();
-    //     await createBtn.click();
-
-    //     await expect(
-    //         page.getByText(/creating|please wait|processing/i)
-    //     ).toBeVisible();
-    // });
 
     // ❌ TC-NEG-08: Close modal without submitting
     test('should not create workspace when modal is closed', async ({ page }) => {
