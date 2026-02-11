@@ -2,8 +2,12 @@ import { test, expect } from '@playwright/test';
 
 test.use({ storageState: 'auth.json' });
 
+const ORG_NAME = process.env.ORG_NAME!;
+const ORG_ID = process.env.ORG_ID!;
+
 test('Auth Key – validation, create, copy and delete', async ({ page }) => {
-  await page.goto('https://dev.gtwy.ai/org/57720/agents?type=chatbot');
+  await page.goto('/org');
+  await page.getByText(`${ORG_NAME}`).click();
 
   // -----------------------------
   // Open Auth Key section

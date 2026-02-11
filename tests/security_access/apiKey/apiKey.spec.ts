@@ -2,8 +2,12 @@ import { test, expect } from '@playwright/test';
 
 test.use({ storageState: 'auth.json' });
 
+const ORG_NAME = process.env.ORG_NAME!;
+const ORG_ID = process.env.ORG_ID!;
+
 test('API Key modal – name, apikey fields and cancel', async ({ page }) => {
-    await page.goto('https://dev.gtwy.ai/org/57720/agents?type=chatbot');
+    await page.goto('/org');
+    await page.getByText(`${ORG_NAME}`).click();
 
     // Open API Keys
     await page.getByRole('button', { name: 'API Keys' }).click();

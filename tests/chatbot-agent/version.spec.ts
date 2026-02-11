@@ -2,8 +2,12 @@ import { test, expect, Page } from '@playwright/test';
 
 test.use({ storageState: 'auth.json' });
 
+const ORG_NAME = process.env.ORG_NAME!;
+const ORG_ID = process.env.ORG_ID!;
+
 const setupChatbotVersionModal = async (page: Page) => {
-    await page.goto('/org/57294/agents?type=chatbot');
+    await page.goto('/org');
+    await page.getByText(`${ORG_NAME}`).click();
 
     await page.getByRole('button', { name: '+ Create New Chatbot Agent' }).click();
     await page

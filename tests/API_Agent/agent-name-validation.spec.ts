@@ -1,9 +1,11 @@
 import { test, expect, Page } from '@playwright/test';
 import { ApiAgentCreatePage } from '../../pages/api_agent/apiAgentCreatePage';
 
-test.use({ storageState: 'auth.json' });
-
+const ORG_NAME = process.env.ORG_NAME!;
 const ORG_ID = process.env.ORG_ID!;
+
+
+test.use({ storageState: 'auth.json' });
 
 test.describe('@regression Agent name validation', () => {
 
@@ -15,7 +17,8 @@ test.describe('@regression Agent name validation', () => {
   test.beforeEach(async ({ page }) => {
     api = new ApiAgentCreatePage(page);
 
-    await page.goto(`/org/${ORG_ID}/agents`);
+    await page.goto('/org');
+    await page.getByText(`${ORG_NAME}`).click();
 
     await page.getByRole('button', { name: '+ Create New API Agent' }).click();
 

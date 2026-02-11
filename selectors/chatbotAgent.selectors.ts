@@ -11,4 +11,5 @@ export const ChatbotAgentCreateSelectors = {
     deleteAgentButton: 'role=button[name="Delete Agent"]',
     deleteConfirmButton: 'role=button[name="Delete"]',
     systemPromptTextarea: 'textarea[data-testid="system-prompt"]',
+    apiToggleButton: '#main-slider-toggle-button',
 };

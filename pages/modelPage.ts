@@ -27,7 +27,7 @@ export class ModelPage {
         await this.page.goto('/org/57720/agents?type=chatbot');
 
         // Wait for hydration
-        await this.page.waitForLoadState('networkidle');
+        // await this.page.waitForLoadState('networkidle');
 
         // Open agent dynamically (no hardcoded agent)
         await this.page

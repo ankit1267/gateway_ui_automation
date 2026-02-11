@@ -4,9 +4,16 @@ test.use({
     storageState: 'auth.json',
 });
 
+const ORG_NAME = process.env.ORG_NAME!;
+const ORG_ID = process.env.ORG_ID!;
+
+
+
 test('TC-CON-01: Verify Connectors flow for a chatbot agent', async ({ page }) => {
     // Step 1: Open chatbot agents page
-    await page.goto('https://dev.gtwy.ai/org/57720/agents?type=chatbot');
+    await page.goto('/org');
+    await page.getByText(`${ORG_NAME}`).click();
+
     await page.waitForLoadState('networkidle');
 
     // Step 2: Create new chatbot agent

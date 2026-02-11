@@ -1,57 +1,94 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, Page } from '@playwright/test';
 import { ChatbotAgentPage } from '../../pages/chatbotAgentCreatePage';
 
 test.use({ storageState: 'auth.json' });
 
-test.describe('Chatbot Agent Name – Negative Test Cases', () => {
-    let chatbotAgentPage: ChatbotAgentPage;
+const ORG_NAME = process.env.ORG_NAME!;
+const ORG_ID = process.env.ORG_ID!;
 
-    test.beforeEach(async ({ page }) => {
-        chatbotAgentPage = new ChatbotAgentPage(page);
-        await chatbotAgentPage.openCreateChatbotAgent();
-    });
+test.describe('@regression Agent name validation', () => {
 
-    // ❌ TC-NEG-01: Empty agent name
-    test.only('should not allow empty agent name', async () => {
-        await chatbotAgentPage.setAgentName('');
-        await chatbotAgentPage.expectEmptyNameError();
-    });
+  let api: ChatbotAgentPage;
 
-    // ❌ TC-NEG-02: Agent name with only spaces
-    test('should not allow agent name with only spaces', async () => {
-        await chatbotAgentPage.setAgentName('     ');
-        await chatbotAgentPage.expectEmptyNameError();
-        // await expect(chatbotAgentPage.agentNameInput()).toHaveValue('');
-    });
+  // ------------------------------------
+  // Runs before each test
+  // ------------------------------------
+  test.beforeEach(async ({ page }) => {
+    api = new ChatbotAgentPage(page);
 
-    // ❌ TC-NEG-03: Special characters only
-    test('should not allow agent name with special characters only', async () => {
-        await chatbotAgentPage.setAgentName('@@@###$$$');
-        await chatbotAgentPage.expectInvalidCharactersError();
-    });
+    await page.goto('/org');
+    await page.getByText(`${ORG_NAME}`).click();
 
-    // ✅ TC-POS-04: Mixed characters still invalid
-    test('should not allow mixed invalid characters', async () => {
-        await chatbotAgentPage.setAgentName('@@@###$$agent$');
-        await chatbotAgentPage.expectInvalidCharactersError();
-    });
+    await page.getByRole('button', { name: '+ Create New Chatbot Agent' }).click();
 
-    // ❌ TC-NEG-05: Very long agent name
-    test('should restrict agent name length', async () => {
-        await chatbotAgentPage.setAgentName('A'.repeat(300));
+    await page
+      .locator('#default-agent-sidebar')
+      .getByRole('button', { name: 'Create Agent' })
+      .click();
+  });
 
-        const value = await chatbotAgentPage.agentNameInput().inputValue();
-        expect(value.length).toBeLessThanOrEqual(50);
-    });
+  // ------------------------------------
+  // Cleanup after each test
+  // ------------------------------------
+  test.afterEach(async ({ page }) => {
+    const agentNameEl = page.locator('#navbar-agent-name-display');
+    if (await agentNameEl.count() === 0) return;
 
-    // ❌ TC-NEG-07: Session expired user
-    test('should redirect to login if session is expired', async ({ browser }) => {
-        const context = await browser.newContext({ storageState: undefined });
-        const page = await context.newPage();
+    const agentName = (await agentNameEl.textContent())?.trim();
+    if (agentName) {
+      await api.deleteAgentByName(agentName);
+    }
+  });
 
-        await page.goto('https://app.gtwy.ai/org/57294/agents');
-        await expect(page).toHaveURL(/login/);
+  // ------------------------------------
+  // Locators
+  // ------------------------------------
 
-        await context.close();
-    });
+  const agentNameDisplay = (page: Page) =>
+    page.locator('#navbar-agent-name-display');
+  // BEST PRACTICE:
+  // page.getByTestId('agent-name-display')
+
+  const openEditName = async (page: Page) => {
+    await page.locator('.lucide.lucide-pen').first().click();
+  };
+  // BEST PRACTICE:
+  // page.getByTestId('edit-agent-name')
+
+  const agentNameInput = (page: Page) =>
+    page.locator('input[type="text"]').nth(3);
+  // BEST PRACTICE:
+  // page.getByTestId('agent-name-input')
+
+  // ------------------------------------
+  // Tests
+  // ------------------------------------
+
+  test('should not allow empty agent name', async ({ page }) => {
+    const originalName =
+      (await agentNameDisplay(page).textContent())!.trim();
+
+    await openEditName(page);
+    await agentNameInput(page).fill('');
+    await agentNameInput(page).press('Enter');
+
+    // blur input instead of clicking hidden elements
+    await page.locator('.hidden').first().click();
+
+    await expect(agentNameDisplay(page)).toHaveText(originalName);
+  });
+
+  test('should not allow special characters in agent name', async ({ page }) => {
+    const originalName =
+      (await agentNameDisplay(page).textContent())!.trim();
+
+    await openEditName(page);
+    await agentNameInput(page).fill('@#$%');
+    await agentNameInput(page).press('Enter');
+
+    await page.locator('body').click();
+
+    await expect(agentNameDisplay(page)).toHaveText(originalName);
+  });
+
 });

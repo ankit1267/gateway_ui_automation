@@ -1,12 +1,16 @@
 import { test, expect } from '@playwright/test';
-import { ORG_ID, WORKSPACE_NAME } from '../../utils/env';
 
 test.use({
   storageState: 'auth.json'
 });
 
+const ORG_NAME = process.env.ORG_NAME!;
+const ORG_ID = process.env.ORG_ID!;
+const WORKSPACE_NAME = process.env.WORKSPACE_NAME!;
+
 test('Viasocket Embed visible when opening alert', async ({ page }) => {
-  await page.goto(`org/${ORG_ID}/alerts`);
+ await page.goto('/org');
+    await page.getByText(`${ORG_NAME}`).click();
   await expect(page.locator('#alert-embed-parent')).toBeVisible();
 });
 

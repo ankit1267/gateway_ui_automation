@@ -2,9 +2,13 @@ import { test, expect } from '@playwright/test';
 
 test.use({ storageState: 'auth.json' });
 
-test('Chatbot settings + memory history validation', async ({ page }) => {
-    await page.goto('https://dev.gtwy.ai/org/57720/agents?type=chatbot');
+const ORG_NAME = process.env.ORG_NAME!;
+const ORG_ID = process.env.ORG_ID!;
 
+test('Chatbot settings + memory history validation', async ({ page }) => {
+    await page.goto('/org');
+    await page.getByText(`${ORG_NAME}`).click();
+    
     // Open chatbot
     await page.getByRole('main').getByText(/untitled_agent/i).first().click();
 
@@ -32,13 +36,12 @@ test('Chatbot settings + memory history validation', async ({ page }) => {
         page.locator('#iframe-component-interfaceEmbed')
     ).toBeHidden({ timeout: 10_000 });
 
-    // Scope to History panel to avoid background "More..." buttons
-    const historyPanel = page.getByRole('complementary', { name: /history/i });
+    // Wait until at least one More button exists
+    const moreButton = page.locator('#thread-item-user-more-button').first();
 
-    await historyPanel
-        .getByRole('button', { name: 'More...' })
-        .first()
-        .click();
+    await expect(moreButton).toBeVisible();
+    await moreButton.click();
+
 
     // Assert memory content
     await expect(
