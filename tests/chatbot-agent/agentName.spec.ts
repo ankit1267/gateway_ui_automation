@@ -12,7 +12,7 @@ test.describe('Chatbot Agent Name – Negative Test Cases', () => {
     });
 
     // ❌ TC-NEG-01: Empty agent name
-    test.only('should not allow empty agent name', async () => {
+    test('should not allow empty agent name', async () => {
         await chatbotAgentPage.setAgentName('');
         await chatbotAgentPage.expectEmptyNameError();
     });

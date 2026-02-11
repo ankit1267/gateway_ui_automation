@@ -4,7 +4,7 @@ import { ApiAgentCreatePage } from '../../../pages/api_agent/apiAgentCreatePage'
 test.use({ storageState: 'auth.json' });
 
 const ORG_ID = process.env.ORG_ID!;
-
+const ORG_NAME = process.env.WORKSPACE_NAME;
 test.describe('@regression Agent name validation', () => {
 
   let api: ApiAgentCreatePage;
@@ -15,13 +15,12 @@ test.describe('@regression Agent name validation', () => {
   test.beforeEach(async ({ page }) => {
     api = new ApiAgentCreatePage(page);
 
-    await page.goto(`/org/${ORG_ID}/agents`);
-
-    await page.getByRole('button', { name: '+ Create New API Agent' }).click();
-
+    await page.goto('/org');
+    await page.getByText(`${ORG_NAME}`).click();
+    await page.getByTestId('create-new-agent-button').click();
     await page
       .locator('#default-agent-sidebar')
-      .getByRole('button', { name: 'Create Agent' })
+      .getByTestId('create-new-bridge-submit-button')
       .click();
   });
 
