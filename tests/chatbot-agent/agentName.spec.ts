@@ -17,7 +17,7 @@ test.describe('@regression Agent name validation', () => {
     api = new ChatbotAgentPage(page);
 
     await page.goto('/org');
-    await page.getByText(`${ORG_NAME}`).click();
+    await page.getByText(`${ORG_NAME}`).click();
 
     await page.getByRole('button', { name: '+ Create New Chatbot Agent' }).click();
 

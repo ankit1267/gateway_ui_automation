@@ -4,14 +4,16 @@ test.use({
     storageState: 'auth.json'
 });
 
-const ORG_ID = process.env.ORG_ID;
+const ORG_NAME = process.env.WORKSPACE_NAME;
 const AGENT_NAME = process.env.AGENT_NAME;
 
 test.beforeEach(async ({ page }) => {
-    await page.goto(`org/${ORG_ID}/agents`);
+    await page.goto('/org');
+    await page.getByText(`${ORG_NAME}`).click();
     await page.getByText(`${AGENT_NAME}`, { exact: true }).click();
     await page.getByRole('tab', { name: 'Settings' }).click();
 })
+
 test(
     'TC-SET-01: Switching to Triggers shows ViaSocket embed in Settings',
     async ({ page }) => {

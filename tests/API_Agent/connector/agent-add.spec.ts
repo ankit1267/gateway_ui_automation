@@ -3,14 +3,18 @@ import { ConnectorPage } from '../../../pages/api_agent/connectorPage';
 
 test.use({ storageState: 'auth.json' });
 
-const ORG_ID = process.env.ORG_ID!;
-const AGENT_NAME = process.env.AGENT_NAME!;
-const A2A_AGENT = 'chatbotagent';
+const ORG_NAME = process.env.WORKSPACE_NAME;
+const AGENT_NAME = 'Testing Agent';
+const A2A_AGENT = process.env.AGENT_NAME!;
+
+test.beforeEach(async ({ page }) => {
+    await page.goto('/org');
+    await page.getByText(`${ORG_NAME}`).click();
+})
 
 test(
   'Agent renders inside embed container after selection',
   async ({ page }) => {
-    await page.goto(`/org/${ORG_ID}/agents`);
 
     const connectorPage = new ConnectorPage(page);
 
