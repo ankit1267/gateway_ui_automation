@@ -3,9 +3,9 @@ export const ConnectorSelectors = {
   connectorsTab: 'role=tab[name="Connectors"]',
 
   // add tool / agent
-  addFirstToolButton: '#embed-list-add-first-tool-button',
-  addFirstAgentButton: '#connected-agent-list-add-first-agent-button',
-  addFirstKnowledgeBase: '#knowledgebase-add-first-button',
+  addFirstToolButton: '#embed-list-add-tool-button',
+  addFirstAgentButton: '#connected-agent-list-add-agent-button',
+  addFirstKnowledgeBase: '#knowledgebase-add-button',
 
   addNewToolsText: 'text=Add new Tools',
   suggestionDropdown: '#embed-suggestion-dropdown-menu',

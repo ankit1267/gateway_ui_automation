@@ -16,7 +16,6 @@ test.beforeEach(async ({ page }) => {
     //Create Knowledge Base
     await page.getByRole('button', { name: '+ Create Knowledge Base' }).click();
 
-
 })
 
 test('Chunk size resets to 4000 when value exceeds maximum', async ({ page }) => {

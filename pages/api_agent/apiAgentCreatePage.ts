@@ -41,7 +41,7 @@ export class ApiAgentCreatePage {
   }
 
   // -------------------------
-  // DELETE AGENT  ✅ NEW
+  // DELETE AGENT NEW
   // -------------------------
   async deleteAgent() {
     // switch to API mode (required before delete)

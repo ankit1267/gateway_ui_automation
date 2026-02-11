@@ -35,7 +35,6 @@ export class ConnectorPage {
     ConnectorSelectors.addNewToolsText
   );
 
-  await addNewTools.waitFor({ state: 'visible', timeout: 15000 });
   await addNewTools.click();
   }
 

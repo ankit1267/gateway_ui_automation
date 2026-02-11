@@ -28,7 +28,7 @@ jobs:
     - name: Install Playwright Browsers
       run: npx playwright install --with-deps
     - name: Run Playwright tests
-      run: npx playwright test tests/API_Agent/agent-name-validation.spec.ts
+      run: npx playwright test tests/API_Agent
     - uses: actions/upload-artifact@v4
       if: ${{ !cancelled() }}
       with:
