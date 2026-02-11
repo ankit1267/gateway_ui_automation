@@ -18,7 +18,7 @@ test.beforeEach(async ({ page }) => {
 
 })
 
-test.only('Create Knowledge Base using Playwright Docs URL', async ({ page }) => {
+test('Create Knowledge Base using Playwright Docs URL', async ({ page }) => {
     // Create KB
     await page.getByRole('textbox', { name: 'Knowledge Base name' })
         .fill('Playwright');
