@@ -4,7 +4,7 @@ test.use({
     storageState: 'auth.json',
 });
 
-const ORG_NAME = process.env.WORKSPACE_NAME!;
+const WORKSPACE_NAME = process.env.WORKSPACE_NAME!;
 const ORG_ID = process.env.ORG_ID!;
 
 
@@ -12,9 +12,10 @@ const ORG_ID = process.env.ORG_ID!;
 test('TC-CON-01: Verify Connectors flow for a chatbot agent', async ({ page }) => {
     // Step 1: Open chatbot agents page
     await page.goto('/org');
-    await page.getByText(`${ORG_NAME}`).click();
+    await page.getByText(`${WORKSPACE_NAME}`).click();
+    await page.getByRole('button', { name: 'Chatbot', exact: true }).click();
 
-    await page.waitForLoadState('networkidle');
+    // await page.waitForLoadState('networkidle');
 
     // Step 2: Create new chatbot agent
     const createAgentBtn = page.getByRole('button', {
@@ -39,14 +40,14 @@ test('TC-CON-01: Verify Connectors flow for a chatbot agent', async ({ page }) =
     // ─────────────────────────────────────────
 
     // Step 4: Add first tool
-    const addToolBtn = page.locator('#embed-list-add-first-tool-button');
+    const addToolBtn = page.getByTestId('embed-list-add-tool-button-empty');
     await expect(addToolBtn).toBeVisible();
     await addToolBtn.click();
 
     await page.getByText('Add new Tools', { exact: true }).click();
 
     // Step 5: Close tools modal
-    const closeToolModal = page.locator('#viasocket-embed-close-button');
+    const closeToolModal = page.getByTestId('connected-agent-list-add-agent-button-empty');
     await expect(closeToolModal).toBeVisible();
     await closeToolModal.click();
 
@@ -55,7 +56,7 @@ test('TC-CON-01: Verify Connectors flow for a chatbot agent', async ({ page }) =
     // ─────────────────────────────────────────
 
     // Step 6: Add connected agent
-    const addAgentBtn = page.locator('#connected-agent-list-add-first-agent-button');
+    const addAgentBtn = page.getByTestId('connected-agent-list-add-agent-button-empty');
     await expect(addAgentBtn).toBeVisible();
     await addAgentBtn.click();
 
@@ -69,7 +70,7 @@ test('TC-CON-01: Verify Connectors flow for a chatbot agent', async ({ page }) =
     // ─────────────────────────────────────────
 
     // Step 7: Add Knowledge Base
-    const addKbBtn = page.locator('#knowledgebase-add-first-button');
+    const addKbBtn = page.getByTestId('knowledgebase-add-button');
     await expect(addKbBtn).toBeVisible();
     await addKbBtn.click();
 
