@@ -5,10 +5,10 @@ export const ConnectorSelectors = {
   // add tool / agent
   addFirstToolButton: '#embed-list-add-tool-button',
   addFirstAgentButton: '#connected-agent-list-add-agent-button',
-  addFirstKnowledgeBase: '#knowledgebase-add-button',
+  addFirstKnowledgeBase: 'knowledgebase-add-button',
 
   addNewToolsText: 'text=Add new Tools',
-  suggestionDropdown: '#embed-suggestion-dropdown-menu',
+  suggestionDropdown: 'embed-suggestion-dropdown-menu',
   suggestionDropdownAgent:'#connect-agent-suggestion-dropdown',
   suggestionDropdownKB:'#knowledgebase-dropdown',
 

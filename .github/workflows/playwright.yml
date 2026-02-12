@@ -22,7 +22,8 @@ jobs:
       BASE_URL: ${{ secrets.BASE_URL }}
       CHATBOT_AGENT: ${{ secrets.CHATBOT_AGENT }}
       TESTDINO_API_KEY: ${{ secrets.TESTDINO_API_KEY }}
-      
+      TESTING_AGENT: ${{ secrets.TESTING_AGENT }}
+
     steps:
     - uses: actions/checkout@v4
     - uses: actions/setup-node@v4

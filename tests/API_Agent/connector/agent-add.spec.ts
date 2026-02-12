@@ -4,7 +4,7 @@ import { ConnectorPage } from '../../../pages/api_agent/connectorPage';
 test.use({ storageState: 'auth.json' });
 
 const ORG_NAME = process.env.WORKSPACE_NAME;
-const AGENT_NAME = 'Testing Agent';
+const TESTING_AGENT =  process.env.TESTING_AGENT!;
 const A2A_AGENT = process.env.AGENT_NAME!;
 
 test.beforeEach(async ({ page }) => {
@@ -18,7 +18,7 @@ test(
 
     const connectorPage = new ConnectorPage(page);
 
-    await connectorPage.openAgent(AGENT_NAME);
+    await connectorPage.openAgent(TESTING_AGENT);
     await connectorPage.openConnectorsTab();
 
     await connectorPage.addConnectedAgent();

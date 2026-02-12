@@ -43,7 +43,22 @@ test(
       page.locator('#tools-section-container')
     ).toContainText('Wikipedia');
 
-    // Cleanup (recommended for CI stability)
+   
     await connectorPage.removeKB();
+
   }
 );
+
+test.afterEach(async ({ page }) => {
+  await page.goto('/org');
+
+  await page.getByText(ORG_NAME).click();
+   await page.getByRole('button', { name: 'Knowledge base' }).click();
+
+  const kbRow = page
+    .getByRole('row')
+    .filter({ hasText: 'Wikipedia' });
+  
+  await kbRow.getByRole('cell', { name: 'Test Knowledgebase delete' }).click();
+  await page.getByTestId('delete-modal-confirm-button').click();
+});
