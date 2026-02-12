@@ -21,6 +21,8 @@ jobs:
       ORG_ID: ${{ secrets.ORG_ID }}
       BASE_URL: ${{ secrets.BASE_URL }}
       CHATBOT_AGENT: ${{ secrets.CHATBOT_AGENT }}
+      TESTDINO_API_KEY: ${{ secrets.TESTDINO_API_KEY }}
+      
     steps:
     - uses: actions/checkout@v4
     - uses: actions/setup-node@v4
@@ -31,7 +33,9 @@ jobs:
     - name: Install Playwright Browsers
       run: npx playwright install --with-deps
     - name: Run Playwright tests
-      run: npx playwright test 
+      run: npx playwright test
+    - name: Run TestDino Playwright tests
+      run: npx tdpw test
     - uses: actions/upload-artifact@v4
       if: ${{ !cancelled() }}
       with:
