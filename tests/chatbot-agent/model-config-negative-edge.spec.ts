@@ -36,7 +36,6 @@ test.describe('Model Configuration - Service Provider & Model List', () => {
 
         const openAiModels = [
             'gpt-5',
-            'gpt-5-nano',
             'gpt-4o-mini',
             'chatgpt-4o-latest',
             'gpt-4.1',

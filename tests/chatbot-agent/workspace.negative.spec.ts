@@ -23,7 +23,7 @@ test.describe('Create Workspace – Negative Test Cases', () => {
         await expect(page.getByText('Existing Workspaces')).toBeVisible();
     });
 
-    // ❌ TC-NEG-01: Empty workspace name
+    // TC-NEG-01: Empty workspace name
     test('should not allow creating workspace with empty name', async ({ page }) => {
         await openCreateWorkspaceModal(page);
         await clickCreateInModal(page);
@@ -31,7 +31,7 @@ test.describe('Create Workspace – Negative Test Cases', () => {
         await expect(page.getByRole('dialog')).toBeVisible();
     });
 
-    // ❌ TC-NEG-02: Workspace name with only spaces
+    //  TC-NEG-02: Workspace name with only spaces
     test('should not allow workspace name with only spaces', async ({ page }) => {
         await openCreateWorkspaceModal(page);
         await page.getByRole('textbox', { name: 'Workspace Name' }).fill('     ');
@@ -41,7 +41,7 @@ test.describe('Create Workspace – Negative Test Cases', () => {
     });
 
 
-    // ❌ TC-NEG-04: Duplicate workspace name
+    //  TC-NEG-03: Duplicate workspace name
     test('should not allow duplicate workspace name', async ({ browser }) => {
         const context = await browser.newContext({
             storageState: 'auth.json'
@@ -65,7 +65,7 @@ test.describe('Create Workspace – Negative Test Cases', () => {
     });
 
 
-    // ❌ TC-NEG-05: Special characters only
+    //  TC-NEG-04: Special characters only
     test('should not create workspace with special characters only', async ({ page }) => {
         const name = '@@@###$$$';
 
@@ -77,7 +77,7 @@ test.describe('Create Workspace – Negative Test Cases', () => {
 
         await expect(page.getByText(name)).toHaveCount(countBefore);
     });
-    // ❌ TC-NEG-06: Very long workspace name
+    //  TC-NEG-05: Very long workspace name
     test('should restrict workspace name to max 40 characters', async ({ page }) => {
         const longName = 'A'.repeat(300);
 
@@ -90,7 +90,7 @@ test.describe('Create Workspace – Negative Test Cases', () => {
         expect(value.length).toBe(40);
     });
 
-    // ❌ TC-NEG-08: Close modal without submitting
+    //  TC-NEG-06: Close modal without submitting
     test('should not create workspace when modal is closed', async ({ page }) => {
         await openCreateWorkspaceModal(page);
 

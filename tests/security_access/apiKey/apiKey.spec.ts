@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 
 test.use({ storageState: 'auth.json' });
 
-const ORG_NAME = process.env.ORG_NAME!;
+const ORG_NAME = process.env.WORKSPACE_NAME!;
 const ORG_ID = process.env.ORG_ID!;
 
 test('API Key modal – name, apikey fields and cancel', async ({ page }) => {

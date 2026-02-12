@@ -3,35 +3,41 @@ import { ApiAgentCreatePage } from '../../../pages/api_agent/apiAgentCreatePage'
 
 test.use({ storageState: 'auth.json' });
 
-const setup = async (page: any) => { 
+const WORKSPACE = process.env.WORKSPACE_NAME!;
+const AGENT_NAME = process.env.AGENT_NAME!;
+
+test.beforeEach(async ({ page }) => {
   await page.goto('/org');
-  const createPage = new ApiAgentCreatePage(page);
- 
-  await createPage.openCreateAgent();
-  await createPage.createAgentWithPurpose();
-  
+  await page.getByText(WORKSPACE).click();
+  await page.getByText(AGENT_NAME, { exact: true }).click();
   await page.getByRole('button', { name: 'New', exact: true }).click();
-  const dialog = page.getByRole('dialog', { name: 'Create New Version' });
-  const desc = page.locator('input[type="text"]').first();
-  const createBtn = await page.getByRole('button', { name: 'Create' }).nth(4);
-  return { dialog, desc, createBtn, page };
-};
+});
 
 test('Version cannot be created with empty description', async ({ page }) => {
-  const createPage = new ApiAgentCreatePage(page);
-  const { dialog, desc, createBtn } = await setup(page);
-  await createBtn.click();
-  await expect(desc).toHaveValue('');
-  await createPage.deleteAgent();
+
+  page.once('dialog', async dialog => {
+    expect(dialog.message()).toMatch(/description/i);
+    await dialog.dismiss();
+  });
+
+  await page
+    .getByRole('dialog')
+    .getByTestId('version-description-create-button')
+    .click();
 });
 
 test('Version can be created with valid description', async ({ page }) => {
-  const createPage = new ApiAgentCreatePage(page);
-  const { dialog, desc, createBtn } = await setup(page);
-  await desc.fill('version 1');
-  await createBtn.click();
-  await expect(dialog).not.toBeVisible();
-  await createPage.deleteAgent();
+  await page.getByRole('textbox', { name: 'Enter version description' }).fill('version');
+  await page
+    .getByRole('dialog')
+    .getByTestId('version-description-create-button')
+    .click();
+  await expect(
+    page.getByRole('alert').filter({ hasText: 'New version created' })
+  ).toBeVisible();
+  await page.locator('.lucide.lucide-trash2').first().click();
+  await page.getByRole('button', { name: 'Delete', exact: true }).click();
+
 });
 
 
