@@ -66,30 +66,56 @@ export class ChatbotAgentPage {
   }
 
   // -------------------------
-  // DELETE CHATBOT AGENT
-  // -------------------------
-  async deleteAgent() {
-    // Open agent menu (kebab)
-    await this.page.locator(S.agentMenuButton).first().click();
+// DELETE CHATBOT AGENT BY NAME
+// -------------------------
+async deleteAgentByName(agentName: string) {
 
-    // Click delete
-    await this.page.locator(S.deleteAgentButton).click();
+  // Open main slider
+  const sliderToggle = this.page.locator('#main-slider-toggle-button');
+  await expect(sliderToggle).toBeVisible();
+  await sliderToggle.click();
 
-    // Confirm delete
-    await this.page.locator(S.deleteConfirmButton).click();
+  // Switch to Chatbot section
+  const chatbotBtn = this.page.getByRole('button', {
+    name: 'Chatbot',
+    exact: true
+  });
+  await expect(chatbotBtn).toBeVisible();
+  await chatbotBtn.click();
 
-    // Ensure redirect back to chatbot list
-    await this.page.waitForURL(/agents\?type=chatbot/);
-  }
+  // Find agent row
+  const agentRow = this.page.getByRole('row', {
+    name: new RegExp(agentName)
+  });
+  await expect(agentRow).toBeVisible({ timeout: 15000 });
 
-  // -------------------------
-  // SAFE CLEANUP
-  // -------------------------
-  async safeDelete() {
-    try {
-      await this.deleteAgent();
-    } catch (err) {
-      console.warn('⚠️ Chatbot agent cleanup failed or already deleted');
-    }
-  }
+  // Open row actions (three dots)
+  const rowMenuBtn = agentRow.getByRole('button').last();
+  await expect(rowMenuBtn).toBeVisible();
+  await rowMenuBtn.click();
+
+  // Open kebab submenu
+  const kebabTrigger = this.page
+    .locator('div[role="button"] svg.rotate-90')
+    .first()
+    .locator('..');
+
+  await expect(kebabTrigger).toBeVisible();
+  await kebabTrigger.click();
+
+  // Click Delete Agent
+  const deleteAgentBtn = this.page.getByRole('button', {
+    name: 'Delete Agent'
+  });
+  await expect(deleteAgentBtn).toBeVisible();
+  await deleteAgentBtn.click();
+
+  // Confirm delete
+  const confirmDeleteBtn = this.page.getByRole('button', {
+    name: 'Delete'
+  });
+  await expect(confirmDeleteBtn).toBeVisible();
+  await confirmDeleteBtn.click();
+}
+ 
 }

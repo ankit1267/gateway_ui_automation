@@ -72,9 +72,26 @@ export class ConnectorPage {
   // ADD AGENT 
   // -------------------------
   async addConnectedAgent() {
-    await this.page
-      .locator(ConnectorSelectors.addFirstAgentButton)
-      .click();
+    // await this.page
+    //   .getByTestId(ConnectorSelectors.addFirstAgentButton)
+    //   .click();
+
+    const addBtn = this.page.getByTestId(
+      ConnectorSelectors.addFirstAgentButton
+    );
+
+    const dropdown = this.page.getByTestId(
+      'connect-agent-suggestion-dropdown'
+    );
+
+    for (let i = 0; i < 5; i++) {
+      if (await dropdown.isVisible()) return;
+
+      await addBtn.click({ force: true });
+      await this.page.waitForTimeout(300);
+    }
+
+    throw new Error('Connected agent dropdown did not appear');
   }
 
   //add knowledge base
