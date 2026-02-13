@@ -4,7 +4,7 @@ export const ConnectorSelectors = {
 
   // add tool / agent
   addFirstToolButton: '#embed-list-add-tool-button',
-  addFirstAgentButton: '#connected-agent-list-add-agent-button',
+  addFirstAgentButton: 'connected-agent-list-add-agent-button-empty',
   addFirstKnowledgeBase: 'knowledgebase-add-button',
 
   addNewToolsText: 'text=Add new Tools',
