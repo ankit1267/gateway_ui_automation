@@ -94,15 +94,6 @@ async deleteAgentByName(agentName: string) {
   await expect(rowMenuBtn).toBeVisible();
   await rowMenuBtn.click();
 
-  // Open kebab submenu
-  const kebabTrigger = this.page
-    .locator('div[role="button"] svg.rotate-90')
-    .first()
-    .locator('..');
-
-  await expect(kebabTrigger).toBeVisible();
-  await kebabTrigger.click();
-
   // Click Delete Agent
   const deleteAgentBtn = this.page.getByRole('button', {
     name: 'Delete Agent'
