@@ -2,12 +2,12 @@ import { test, expect } from '@playwright/test';
 
 test.use({ storageState: 'auth.json' });
 
-const ORG_NAME = process.env.WORKSPACE_NAME!;
+const WORKSPACE_NAME = process.env.WORKSPACE_NAME!;
 const ORG_ID = process.env.ORG_ID!;
 
 test('Auth Key – validation, create, copy and delete', async ({ page }) => {
   await page.goto('/org');
-  await page.getByText(`${ORG_NAME}`).click();
+  await page.getByText(`${WORKSPACE_NAME}`).click();
 
   // -----------------------------
   // Open Auth Key section
