@@ -72,7 +72,7 @@ test('add age variable, verify in payload, then delete', async ({ page }) => {
   ).toBeVisible({ timeout: 40000 });
 });
 
-test.only('Verfiy age variaable passed', async ({ page }) => {
+test('Verfiy age variaable passed', async ({ page }) => {
 
 
   // Open history
