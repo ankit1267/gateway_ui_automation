@@ -17,7 +17,8 @@ test(
     );
 
     await createPage.expectInstructionsNotEmpty();
-    await createPage.deleteAgent();
+    const agentName = await page.getByTestId('navbar-agent-name-display').innerText();
+    await createPage.deleteAgentByName(agentName);
   }
 );
 
@@ -40,7 +41,8 @@ test(
       'Respond logically and clearly, maintaining a neutral, automated tone.'
     );
     expect(instructions).toContain('Guidelines:');
-    await createPage.deleteAgent();
+    const agentName = await page.getByTestId('navbar-agent-name-display').innerText();
+    await createPage.deleteAgentByName(agentName);
   }
 );
 
@@ -57,8 +59,10 @@ test(
     );
 
     const value = await createPage.getInstructionsValue();
-    expect(['Guidelines:', 'Act like a chatbot']).toContain(value);
+    expect(value).toContain('Guidelines:');
 
-    await createPage.deleteAgent();
+    const agentName = await page.getByTestId('navbar-agent-name-display').innerText();
+    await createPage.deleteAgentByName(agentName);
+  
   }
 );

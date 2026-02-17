@@ -93,22 +93,27 @@ export class ApiAgentCreatePage {
     await agentRow.waitFor({ state: 'visible' });
 
     // Open action menu inside that row
-    await agentRow.getByRole('button').last().click();
-
-    await this.page
-      .locator('div[role="button"] svg.rotate-90')
-      .first()
-      .locator('..')
-      .click();
-
-    // Delete flow
-    await this.page
-      .getByRole('button', { name: 'Delete Agent' })
-      .click();
-
-    await this.page
-      .getByRole('button', { name: 'Delete' })
-      .click();
+      const rowMenuBtn = agentRow.getByRole('button').last();
+      await expect(rowMenuBtn).toBeVisible();
+    
+      await rowMenuBtn.click();
+    
+      // Click Delete Agent
+      const deleteAgentBtn = this.page.getByRole('button', {
+        name: 'Delete Agent'
+      });
+      while(!(await deleteAgentBtn.isVisible())){
+        await rowMenuBtn.click();
+      }
+      await expect(deleteAgentBtn).toBeVisible();
+      await deleteAgentBtn.click();
+    
+      // Confirm delete
+      const confirmDeleteBtn = this.page.getByRole('button', {
+        name: 'Delete'
+      });
+      await expect(confirmDeleteBtn).toBeVisible();
+      await confirmDeleteBtn.click();
 
   }
 

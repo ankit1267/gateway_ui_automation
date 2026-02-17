@@ -65,7 +65,7 @@ export class ChatbotAgentPage {
     ).toBeVisible();
   }
 
-  // -------------------------
+// -------------------------
 // DELETE CHATBOT AGENT BY NAME
 // -------------------------
 async deleteAgentByName(agentName: string) {
@@ -92,12 +92,16 @@ async deleteAgentByName(agentName: string) {
   // Open row actions (three dots)
   const rowMenuBtn = agentRow.getByRole('button').last();
   await expect(rowMenuBtn).toBeVisible();
+
   await rowMenuBtn.click();
 
   // Click Delete Agent
   const deleteAgentBtn = this.page.getByRole('button', {
     name: 'Delete Agent'
   });
+  while(!(await deleteAgentBtn.isVisible())){
+    await rowMenuBtn.click();
+  }
   await expect(deleteAgentBtn).toBeVisible();
   await deleteAgentBtn.click();
 

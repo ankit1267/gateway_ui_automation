@@ -25,9 +25,13 @@ export class ConnectorPage {
   // ADD TOOL FLOW
   // -------------------------
   async addTool() {
-    await this.page
-      .locator(ConnectorSelectors.addFirstToolButton)
-      .click();
+     const toolOption = this.page
+      .getByTestId(ConnectorSelectors.suggestionDropdown);
+    while(!(await toolOption.isVisible())) {
+      await this.page
+        .locator(ConnectorSelectors.addFirstToolButton)
+        .click();
+    }
   }
 
   async clickAddNewTools() {
@@ -96,9 +100,13 @@ export class ConnectorPage {
 
   //add knowledge base
   async addKnowledgeBase() {
-    await this.page
-      .getByTestId(ConnectorSelectors.addFirstKnowledgeBase)
-      .click();
+    const kbOption = this.page
+      .locator(ConnectorSelectors.suggestionDropdownKB);
+    while(!(await kbOption.isVisible())) {
+      await this.page
+        .locator(ConnectorSelectors.addFirstKnowledgeBase)
+        .click();
+    }
   }
 
   async removeTool() {
