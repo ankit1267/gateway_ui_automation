@@ -10,7 +10,7 @@ test.beforeEach(async ({ page }) => {
 
   // Open agent
   await page
-    .getByTestId('custom-table-row-69901845a2b76c9f0e179aa0')
+    .getByTestId('/^custom-table-row-/')
     .getByText('Parental Guidance')
     .click();
 });
@@ -23,7 +23,7 @@ test('add age variable, verify in payload, then delete', async ({ page }) => {
   await page.getByTestId('tab-button-connectors').click();
 
   await page
-    .getByTestId('connected-agent-config-button-699018caa2b76c9f0e179bee')
+    .getByTestId('/^connected-agent-config-button-/')
     .click();
 
   const modal = page.getByTestId('AGENT_VARIABLE_MODAL');
@@ -112,7 +112,7 @@ test('Verfiy age variaable passed', async ({ page }) => {
   await page.getByTestId('tab-button-connectors').click();
 
   await page
-    .getByTestId('connected-agent-config-button-699018caa2b76c9f0e179bee')
+    .getByTestId('/^connected-agent-config-button-/')
     .click();
 
   await page.getByTestId('param-delete-button-age').click();
