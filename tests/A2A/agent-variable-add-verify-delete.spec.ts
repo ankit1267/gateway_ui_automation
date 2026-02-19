@@ -10,7 +10,7 @@ test.beforeEach(async ({ page }) => {
 
   // Open agent
   await page
-    .getByTestId('/^custom-table-row-/')
+    .getByTestId(/^custom-table-row-/)
     .getByText('Parental Guidance')
     .click();
 });
@@ -23,7 +23,7 @@ test('add age variable, verify in payload, then delete', async ({ page }) => {
   await page.getByTestId('tab-button-connectors').click();
 
   await page
-    .getByTestId('/^connected-agent-config-button-/')
+    .getByTestId(/^connected-agent-config-button-/)
     .click();
 
   const modal = page.getByTestId('AGENT_VARIABLE_MODAL');
