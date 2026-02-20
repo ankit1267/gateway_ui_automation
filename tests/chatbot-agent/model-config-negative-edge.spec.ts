@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { ModelPage, ServiceProvider } from '../../pages/modelPage';
+import { ModelPage, ServiceProvider } from '../../pages/model.page';
 
 test.use({ storageState: 'auth.json' });
 

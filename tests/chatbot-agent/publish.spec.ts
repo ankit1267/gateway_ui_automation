@@ -1,5 +1,5 @@
 import { test, expect, Page } from '@playwright/test';
-import { ChatbotAgentPage } from '../../pages/chatbotAgentCreatePage';
+import { ChatbotAgentPage } from '../../pages/chatbot-agent-create.page';
 
 test.use({ storageState: 'auth.json' });
 

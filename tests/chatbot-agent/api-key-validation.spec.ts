@@ -1,5 +1,5 @@
 import { test } from '@playwright/test';
-import { ModelPage } from '../../pages/modelPage';
+import { ModelPage } from '../../pages/model.page';
 
 test.use({ storageState: 'auth.json' });
 

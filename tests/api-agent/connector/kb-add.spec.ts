@@ -1,5 +1,5 @@
 import { test } from '@playwright/test';
-import { ConnectorPage } from '../../../pages/api_agent/connectorPage';
+import { ConnectorPage } from '../../../pages/api-agent/connector.page';
 
 test.use({ storageState: 'auth.json' });
 
@@ -8,8 +8,8 @@ const AGENT_NAME = process.env.AGENT_NAME!;
 const K_BASE = 'Resume';
 
 test.beforeEach(async ({ page }) => {
-    await page.goto('/org');
-    await page.getByText(`${ORG_NAME}`).click();
+  await page.goto('/org');
+  await page.getByText(`${ORG_NAME}`).click();
 })
 
 test(
