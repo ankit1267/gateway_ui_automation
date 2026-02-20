@@ -8,7 +8,5 @@ export async function navigateToAgents(page: Page, type?: 'chatbot' | 'api') {
     if (type) {
         url += `?type=${type}`;
     }
-
     await page.goto(url);
-    // await page.waitForLoadState('networkidle'); // Optional, depending on app behavior
 }
