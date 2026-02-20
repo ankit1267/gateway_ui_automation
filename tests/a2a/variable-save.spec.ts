@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { navigateToAgents } from '../../utils/navigation';
 
 test.use({
   storageState: 'auth.json'
@@ -7,9 +8,7 @@ test.use({
 test('parameter input shows new0', async ({ page }) => {
 
   // Open org
-  await page.goto('/org');
-  await page.getByText('Test Space').click();
-  await page.getByRole('button', { name: 'Chatbot', exact: true }).click();
+  await navigateToAgents(page, 'chatbot');
 
   // Open agent
   await page

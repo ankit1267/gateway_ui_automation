@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { navigateToAgents } from '../../utils/navigation';
 
 test.use({ storageState: 'auth.json' });
 
@@ -6,16 +7,17 @@ const ORG_NAME = process.env.WORKSPACE_NAME!;
 const CHATBOT_AGENT = process.env.CHATBOT_AGENT!;
 
 test('Integration Guide - validate copy & access key actions', async ({ page }) => {
-    await page.goto('/org');
-    await page.getByText(`${ORG_NAME}`).click();
-    await page.getByRole('button', { name: 'Chatbot', exact: true }).click();
+    await navigateToAgents(page, 'chatbot');
 
     // Open chatbot
-    await page.getByText(`${CHATBOT_AGENT}`, { exact: true }).click();
+    await page
+    .getByTestId(/^custom-table-row-/)
+    .getByText(`${CHATBOT_AGENT}`)
+    .click();
 
     // Open Integration Guide tab
     await page.getByRole('tab', { name: 'Integration Guide' }).click();
-
+    
     // --- Slugname field ---
     const slugInput = page.getByRole('textbox', { name: /Enter Slugname/i });
     await expect(slugInput).toBeVisible();

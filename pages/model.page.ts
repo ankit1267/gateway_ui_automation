@@ -1,5 +1,6 @@
 import { Page, expect } from '@playwright/test';
 import { ModelSelectors } from '../selectors/model.selectors';
+import { navigateToAgents } from '../utils/navigation';
 
 export type ServiceProvider =
     | 'Openai'
@@ -20,13 +21,8 @@ export class ModelPage {
     // -------------------------
 
     async openChatbotAgent(agentName: string) {
-        // Go to org landing
-        await this.page.goto('/org');
-        // Open workspace
-        await this.page.getByText(`${ORG_NAME}`).click()
 
-        // Navigate to chatbot agents
-        await this.page.getByRole('button', { name: 'Chatbot', exact: true }).click();
+        await navigateToAgents(this.page, 'chatbot');
 
         // Wait for hydration
         // await this.page.waitForLoadState('networkidle');
@@ -47,14 +43,9 @@ export class ModelPage {
     }
 
     async openModelTab() {
-        const workspaceName = process.env.WORKSPACE_NAME!;
         const agentName = process.env.AGENT_NAME!;
 
-        await this.page.goto('/org');
-
-        await this.page
-            .getByText(workspaceName, { exact: true })
-            .click();
+        await navigateToAgents(this.page, 'api');
 
         await this.page
             .getByRole('table')
@@ -139,7 +130,7 @@ export class ModelPage {
     }
 
     async selectApiKey(providerName: string) {
-      
+
         await this.page
             .locator(ModelSelectors.apiKeyInputContainer)
             .getByRole('button', { name: providerName })
@@ -152,7 +143,7 @@ export class ModelPage {
         ).toBeVisible();
     }
 
-    async expectChatBotVisible(){
+    async expectChatBotVisible() {
         await expect(
             this.page.locator(ModelSelectors.iframeEmbed)
         ).toBeVisible();

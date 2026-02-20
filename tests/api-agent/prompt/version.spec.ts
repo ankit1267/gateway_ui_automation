@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { ApiAgentCreatePage } from '../../../pages/api-agent/api-agent-create.page';
+import { navigateToAgents } from '../../../utils/navigation';
 
 test.use({ storageState: 'auth.json' });
 
@@ -7,8 +8,7 @@ const WORKSPACE = process.env.WORKSPACE_NAME!;
 const AGENT_NAME = process.env.AGENT_NAME!;
 
 test.beforeEach(async ({ page }) => {
-  await page.goto('/org');
-  await page.getByText(WORKSPACE).click();
+  await navigateToAgents(page, 'api');
   await page.getByText(AGENT_NAME, { exact: true }).click();
   await page.getByRole('button', { name: 'New', exact: true }).click();
 });

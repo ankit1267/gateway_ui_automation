@@ -1,5 +1,6 @@
 import { test } from '@playwright/test';
 import { ConnectorPage } from '../../../pages/api-agent/connector.page';
+import { navigateToAgents } from '../../../utils/navigation';
 
 test.use({ storageState: 'auth.json' });
 
@@ -8,8 +9,7 @@ const TESTING_AGENT = process.env.TESTING_AGENT!;
 const A2A_AGENT = process.env.AGENT_NAME!;
 
 test.beforeEach(async ({ page }) => {
-  await page.goto('/org');
-  await page.getByText(`${ORG_NAME}`).click();
+  await navigateToAgents(page, 'api');
 })
 
 test(

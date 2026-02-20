@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { navigateToAgents } from '../../utils/navigation';
 
 test.use({
   storageState: 'auth.json',
@@ -9,9 +10,7 @@ const ORG_ID = process.env.ORG_ID!;
 
 test('Create chatbot with purpose and verify generated prompt', async ({ page }) => {
   // Open agents page
-  await page.goto('/org');
-  await page.getByText(`${ORG_NAME}`).click();
-  await page.getByRole('button', { name: 'Chatbot', exact: true }).click();
+  await navigateToAgents(page, 'chatbot');
 
   // Create new chatbot
   await page.getByRole('button', { name: '+ Create New Chatbot Agent' }).click();

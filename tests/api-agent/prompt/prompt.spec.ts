@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { ApiAgentCreatePage } from '../../../pages/api-agent/api-agent-create.page';
+import { navigateToAgents } from '../../../utils/navigation';
 
 
 test.use({ storageState: 'auth.json' });
@@ -7,7 +8,7 @@ test.use({ storageState: 'auth.json' });
 test(
   'System prompt auto-generates when agent purpose is entered',
   async ({ page }) => {
-    await page.goto('/org');
+    await navigateToAgents(page, 'api');
 
     const createPage = new ApiAgentCreatePage(page);
 
@@ -25,7 +26,7 @@ test(
 test(
   'System prompt defaults when no agent purpose is added',
   async ({ page }) => {
-    await page.goto('/org');
+    await navigateToAgents(page, 'api');
 
     const createPage = new ApiAgentCreatePage(page);
 
@@ -49,7 +50,7 @@ test(
 test(
   'System prompt resets when junk characters are used',
   async ({ page }) => {
-    await page.goto('/org');
+    await navigateToAgents(page, 'api');
 
     const createPage = new ApiAgentCreatePage(page);
 

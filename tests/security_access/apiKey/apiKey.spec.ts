@@ -1,14 +1,14 @@
 import { test, expect } from '@playwright/test';
+import { navigateToAgents } from '../../../utils/navigation';
 
 test.use({ storageState: 'auth.json' });
 
-const ORG_NAME = process.env.WORKSPACE_NAME!;
-const ORG_ID = process.env.ORG_ID!;
+
 
 test('API Key modal – name, apikey fields and cancel', async ({ page }) => {
-    await page.goto('/org');
-    await page.getByText(`${ORG_NAME}`).click();
-
+    // Navigate to org page & workspace
+    await navigateToAgents(page, 'api');
+    
     // Open API Keys
     await page.getByRole('button', { name: 'API Keys' }).click();
 

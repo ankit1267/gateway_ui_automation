@@ -1,4 +1,5 @@
 import { test, expect, Page, FrameLocator } from '@playwright/test';
+import { navigateToAgents } from '../../utils/navigation';
 
 test.use({
     storageState: 'auth.json'
@@ -10,10 +11,10 @@ const USER_QUERY = 'List all the workspace testcases.';
 const EXPECTED_FUNCTION = 'GetDocumentContentonGoogleDocs';
 
 async function openAgent(page: Page) {
-    // Open agents page
-    await page.goto('/org');
-    await page.getByText(`${WORKSPACE_NAME}`).click();
-    await page.getByRole('button', { name: 'Chatbot', exact: true }).click();
+    
+    // Navigate to org page & workspace
+    await navigateToAgents(page, 'chatbot');
+    
     await page
         .getByRole('cell', { name: 'AutomationTestcases' })
         .click();
