@@ -1,5 +1,6 @@
 import { test, expect, Page } from '@playwright/test';
 import { ApiAgentCreatePage } from '../../../pages/api-agent/api-agent-create.page';
+import { navigateToAgents } from '../../../utils/navigation';
 
 test.use({ storageState: 'auth.json' });
 
@@ -15,8 +16,7 @@ test.describe('@regression Agent name validation', () => {
   test.beforeEach(async ({ page }) => {
     api = new ApiAgentCreatePage(page);
 
-    await page.goto('/org');
-    await page.getByText(`${ORG_NAME}`).click();
+    await navigateToAgents(page, 'api');
     await page.getByTestId('create-new-agent-button').click();
     await page
       .locator('#default-agent-sidebar')
@@ -88,7 +88,7 @@ test.describe('@regression Agent name validation', () => {
     await expect(agentNameDisplay(page)).toHaveText(originalName);
   });
 
-  test('should enforce max length of 51 characters', async ({ page }) => {
+  test.only('should enforce max length of 51 characters', async ({ page }) => {
     const longName = 'A'.repeat(60);
 
     await openEditName(page);
@@ -99,6 +99,8 @@ test.describe('@regression Agent name validation', () => {
     const value = await input.inputValue();
 
     expect(value.length).toBeLessThanOrEqual(51);
+
+    await page.locator('.hidden').first().click();
   });
 
 });

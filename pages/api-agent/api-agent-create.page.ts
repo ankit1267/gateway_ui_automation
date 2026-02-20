@@ -88,32 +88,33 @@ export class ApiAgentCreatePage {
     // Locate agent row by name
     const agentRow = this.page
       .getByRole('row')
-      .filter({ hasText: agentName });
+      .filter({ hasText: agentName })
+      .first();
 
     await agentRow.waitFor({ state: 'visible' });
 
     // Open action menu inside that row
-      const rowMenuBtn = agentRow.getByRole('button').last();
-      await expect(rowMenuBtn).toBeVisible();
-    
+    const rowMenuBtn = agentRow.getByRole('button').last();
+    await expect(rowMenuBtn).toBeVisible();
+
+    await rowMenuBtn.click();
+
+    // Click Delete Agent
+    const deleteAgentBtn = this.page.getByRole('button', {
+      name: 'Delete Agent'
+    });
+    while (!(await deleteAgentBtn.isVisible())) {
       await rowMenuBtn.click();
-    
-      // Click Delete Agent
-      const deleteAgentBtn = this.page.getByRole('button', {
-        name: 'Delete Agent'
-      });
-      while(!(await deleteAgentBtn.isVisible())){
-        await rowMenuBtn.click();
-      }
-      await expect(deleteAgentBtn).toBeVisible();
-      await deleteAgentBtn.click();
-    
-      // Confirm delete
-      const confirmDeleteBtn = this.page.getByRole('button', {
-        name: 'Delete'
-      });
-      await expect(confirmDeleteBtn).toBeVisible();
-      await confirmDeleteBtn.click();
+    }
+    await expect(deleteAgentBtn).toBeVisible();
+    await deleteAgentBtn.click();
+
+    // Confirm delete
+    const confirmDeleteBtn = this.page.getByRole('button', {
+      name: 'Delete'
+    });
+    await expect(confirmDeleteBtn).toBeVisible();
+    await confirmDeleteBtn.click();
 
   }
 

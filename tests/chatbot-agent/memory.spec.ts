@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { navigateToAgents } from '../../utils/navigation';
 
 test.use({
   storageState: 'auth.json'
@@ -10,14 +11,12 @@ test('Memory feature should enable, save context, and persist', async ({ page })
   const WORKSPACE_NAME = process.env.WORKSPACE_NAME!;
   const CHATBOT_AGENT = process.env.CHATBOT_AGENT!;
 
- 
- // Open agents page
-  await page.goto('/org');
-  await page.getByText(`${WORKSPACE_NAME}`).click();
-  await page.getByRole('button', { name: 'Chatbot', exact: true }).click();
+
+  // Open agents page
+  await navigateToAgents(page, 'chatbot');
 
   await page
-    .getByTestId('custom-table-row-69845b02ff78d5f934bb77f6')
+    .getByTestId(/^custom-table-row-/)
     .getByText(`${CHATBOT_AGENT}`)
     .click();
 

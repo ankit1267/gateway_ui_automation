@@ -13,10 +13,19 @@ export const ModelSelectors = {
     dropdownButton: 'role=button',
     listbox: 'role=listbox',
 
+
     //api key
     noApiKeysMessage: 'role=button[name="No API keys for this service"]',
+
     getStartedButton: '#agent-setup-get-started-button',
+
     apiKeyErrorText: /api key required/i,
+
     apiKeyInputContainer: '#apikey-input-container',
+
     chatTextarea: '#chat-message-textarea',
+
+    scrollableDiv: '#scrollableDiv',
+
+    iframeEmbed: '#iframe-component-interfaceEmbed'
 };

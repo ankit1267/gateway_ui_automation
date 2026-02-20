@@ -1,13 +1,14 @@
 import { test, expect } from '@playwright/test';
+import { navigateToAgents } from '../../../utils/navigation';
 
 test.use({ storageState: 'auth.json' });
 
-const WORKSPACE_NAME = process.env.WORKSPACE_NAME!;
-const ORG_ID = process.env.ORG_ID!;
+
 
 test('Metrics - filters and dashboard validation', async ({ page }) => {
-  await page.goto('/org');
-  await page.getByText(`${WORKSPACE_NAME}`).click();
+  // Navigate to org page & workspace
+  await navigateToAgents(page, 'api');
+  
  
   // -----------------------------
   // Open Metrics

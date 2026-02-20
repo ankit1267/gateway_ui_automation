@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { navigateToAgents } from '../../utils/navigation';
 
 test.use({
     storageState: 'auth.json',
@@ -7,10 +8,8 @@ test.use({
 const WORKSPACE = process.env.WORKSPACE_NAME!;
 
 test.beforeEach(async ({ page }) => {
-    // Navigate to org page
-    await page.goto('/org');
-    // Select organization
-    await page.getByText(`${WORKSPACE}`, { exact: true }).click();
+    // Navigate to org page & workspace
+    await navigateToAgents(page, 'api');
     // Open Knowledge Base
     await page.getByRole('button', { name: 'Knowledge base' }).click();
     //Create Knowledge Base
