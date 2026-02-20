@@ -9,7 +9,7 @@ test.beforeEach(async ({ page }) => {
 
   // Open agent
   await page
-    .getByTestId(/^custom-table-row-/)
+    .getByTestId('/^custom-table-row-/')
     .getByText('Parental Guidance')
     .click();
 });
