@@ -29,7 +29,7 @@ export class ConnectorPage {
       .getByTestId(ConnectorSelectors.suggestionDropdown);
     while(!(await toolOption.isVisible())) {
       await this.page
-        .locator(ConnectorSelectors.addFirstToolButton)
+        .getByTestId(ConnectorSelectors.addFirstToolButton)
         .click();
     }
   }
