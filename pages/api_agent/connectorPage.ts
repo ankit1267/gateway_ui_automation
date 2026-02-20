@@ -104,7 +104,7 @@ export class ConnectorPage {
       .locator(ConnectorSelectors.suggestionDropdownKB);
     while(!(await kbOption.isVisible())) {
       await this.page
-        .getByTestId(ConnectorSelectors.addFirstKnowledgeBase)
+        .locator(ConnectorSelectors.addFirstKnowledgeBase)
         .click();
     }
   }

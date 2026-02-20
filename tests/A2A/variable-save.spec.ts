@@ -13,7 +13,7 @@ test('parameter input shows new0', async ({ page }) => {
 
   // Open agent
   await page
-    .getByTestId('/^custom-table-row-/')
+    .getByTestId('custom-table-row-69901845a2b76c9f0e179aa0')
     .getByText('Parental Guidance')
     .click();
 
@@ -22,7 +22,7 @@ test('parameter input shows new0', async ({ page }) => {
 
   // Open connected agent config
   await page
-    .getByTestId('/^connected-agent-config-button-/')
+    .getByTestId('connected-agent-config-button-699018caa2b76c9f0e179bee')
     .click();
 
   // Add parameter
@@ -33,7 +33,7 @@ test('parameter input shows new0', async ({ page }) => {
 
   // Reopen config so UI refreshes
   await page
-    .getByTestId('/^connected-agent-config-button-/')
+    .getByTestId('connected-agent-config-button-699018caa2b76c9f0e179bee')
     .click();
 
   // Assert input exists and has value "new0"
