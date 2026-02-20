@@ -1,6 +1,6 @@
 import { Page, expect } from '@playwright/test';
-import { ApiAgentCreateSelectors } from '../../selectors/api_agent/apiAgent.selectors';
-import { WORKSPACE_NAME } from '../../utils/env';
+import { ApiAgentCreateSelectors } from '../selectors/apiAgent.selectors';
+import { WORKSPACE_NAME } from '../utils/env';
 
 export class ApiAgentCreatePage {
   constructor(private page: Page) { }

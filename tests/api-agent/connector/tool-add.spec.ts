@@ -1,5 +1,5 @@
 import { test } from '@playwright/test';
-import { ConnectorPage } from '../../../pages/api-agent/connector.page';
+import { ConnectorPage } from '../../../pages/connector.page';
 import { navigateToAgents } from '../../../utils/navigation';
 
 test.use({ storageState: 'auth.json' });

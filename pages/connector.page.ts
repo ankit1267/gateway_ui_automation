@@ -1,6 +1,6 @@
 import { Page, expect } from '@playwright/test';
-import { ConnectorSelectors } from '../../selectors/api_agent/connector.selectors';
-import { ApiAgentCreateSelectors } from '../../selectors/api_agent/apiAgent.selectors';
+import { ConnectorSelectors } from '../selectors/connector.selectors';
+import { ApiAgentCreateSelectors } from '../selectors/apiAgent.selectors';
 
 export class ConnectorPage {
   constructor(private page: Page) { }
@@ -25,9 +25,9 @@ export class ConnectorPage {
   // ADD TOOL FLOW
   // -------------------------
   async addTool() {
-     const toolOption = this.page
+    const toolOption = this.page
       .getByTestId(ConnectorSelectors.suggestionDropdown);
-    while(!(await toolOption.isVisible())) {
+    while (!(await toolOption.isVisible())) {
       await this.page
         .getByTestId(ConnectorSelectors.addFirstToolButton)
         .click();
@@ -102,7 +102,7 @@ export class ConnectorPage {
   async addKnowledgeBase() {
     const kbOption = this.page
       .locator(ConnectorSelectors.suggestionDropdownKB);
-    while(!(await kbOption.isVisible())) {
+    while (!(await kbOption.isVisible())) {
       await this.page
         .getByTestId(ConnectorSelectors.addFirstKnowledgeBase)
         .click();
