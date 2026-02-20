@@ -1,5 +1,5 @@
 import { test } from '@playwright/test';
-import { ModelPage } from '../../../pages/api-agent/model.page';
+import { ModelPage } from '../../../pages/model.page';
 
 test.use({ storageState: 'auth.json' });
 
@@ -8,7 +8,6 @@ test('TC-MODEL-01: Verify model list loads for Mistral', async ({ page }) => {
 
   await modelPage.openModelTab();
   await modelPage.selectServiceProvider('Mistral');
-  await modelPage.openModelDropdown();
 
   await modelPage.expectModelsVisible([
     'mistral-medium-latest',
@@ -24,7 +23,6 @@ test('TC-MODEL-02: Verify model list loads for OpenAI', async ({ page }) => {
 
   await modelPage.openModelTab();
   await modelPage.selectServiceProvider('Openai');
-  await modelPage.openModelDropdown();
 
   await modelPage.expectModelsVisible([
     'gpt-5',
@@ -42,7 +40,6 @@ test('TC-MODEL-03: Verify model list loads for Anthropic', async ({ page }) => {
 
   await modelPage.openModelTab();
   await modelPage.selectServiceProvider('Anthropic');
-  await modelPage.openModelDropdown();
 
   await modelPage.expectModelsVisible([
     'claude-3-7-sonnet-latest',
@@ -54,7 +51,6 @@ test('TC-MODEL-04: Verify model list loads for Groq', async ({ page }) => {
 
   await modelPage.openModelTab();
   await modelPage.selectServiceProvider('Groq');
-  await modelPage.openModelDropdown();
 
   await modelPage.expectModelsVisible([
     'llama-3.3-70b-versatile',
@@ -67,7 +63,6 @@ test('TC-MODEL-05: Verify model list loads for Gemini', async ({ page }) => {
 
   await modelPage.openModelTab();
   await modelPage.selectServiceProvider('Gemini');
-  await modelPage.openModelDropdown();
 
   await modelPage.expectModelsVisible([
     'gemini-2.5-pro',
@@ -80,7 +75,6 @@ test('TC-MODEL-06: Verify model list loads for Ai-ml', async ({ page }) => {
 
   await modelPage.openModelTab();
   await modelPage.selectServiceProvider('Ai ml');
-  await modelPage.openModelDropdown();
 
   await modelPage.expectModelsVisible([
     'gpt-oss-120b',
@@ -93,7 +87,6 @@ test('TC-MODEL-07: Verify model list loads for Grok', async ({ page }) => {
 
   await modelPage.openModelTab();
   await modelPage.selectServiceProvider('Grok');
-  await modelPage.openModelDropdown();
 
   await modelPage.expectModelsVisible([
     'grok-4-fast',
