@@ -26,5 +26,7 @@ test.describe('Model - API Key validation', () => {
         await modelPage.selectServiceProvider('Mistral');
 
         await modelPage.selectApiKey('Mistral api key');
+        await modelPage.expectChatBotVisible();
+
     });
 });

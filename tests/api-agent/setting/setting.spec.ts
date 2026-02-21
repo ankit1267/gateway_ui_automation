@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { navigateToAgents } from '../../../utils/navigation';
 
 test.use({
     storageState: 'auth.json'
@@ -8,8 +9,7 @@ const ORG_NAME = process.env.WORKSPACE_NAME;
 const AGENT_NAME = process.env.AGENT_NAME;
 
 test.beforeEach(async ({ page }) => {
-    await page.goto('/org');
-    await page.getByText(`${ORG_NAME}`).click();
+    await navigateToAgents(page, 'api');
     await page.getByText(`${AGENT_NAME}`, { exact: true }).click();
     await page.getByRole('tab', { name: 'Settings' }).click();
 })
@@ -109,7 +109,7 @@ test(
         await expect(
             page.getByText('Please enter a valid webhook')
         ).toBeVisible();
-        
+
         await page.getByRole('radio', { name: 'Default' }).check();
 
     }
@@ -139,7 +139,7 @@ test(
 
 test(
     'TC-SET-07:Agent Settings – Guardrail Configuration.',
-      async ({ page }) => {
+    async ({ page }) => {
 
         const apiRadio = page.getByRole('radio', { name: 'API' });
         if (!await apiRadio.isChecked()) {
@@ -168,7 +168,7 @@ test(
         await promptInjection.uncheck();
         await bias.uncheck();
 
-        
+
 
         //Disable guardrails toggle again
         await guardrailToggle.uncheck();

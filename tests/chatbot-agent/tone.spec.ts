@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { navigateToAgents } from '../../utils/navigation';
 
 test.use({
     storageState: 'auth.json',
@@ -13,9 +14,7 @@ test.describe('Chatbot Settings – History & System Prompt Tone', () => {
     test('Verify chat history and authoritative system prompt tone', async ({ page }) => {
 
         // Open agents page
-        await page.goto('/org');
-        await page.getByText(`${WORKSPACE_NAME}`).click();
-        await page.getByRole('button', { name: 'Chatbot', exact: true }).click();
+        await navigateToAgents(page, 'chatbot');
 
 
 

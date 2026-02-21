@@ -1,12 +1,11 @@
 import { test, expect } from '@playwright/test';
+import { navigateToAgents } from '../../utils/navigation';
 
 test.use({ storageState: 'auth.json' });
 
 
 test.beforeEach(async ({ page }) => {
-  await page.goto('/org');
-  await page.getByText('Test Space').click();
-  await page.getByRole('button', { name: 'Chatbot', exact: true }).click();
+  await navigateToAgents(page, 'chatbot');
 
   // Open agent
   await page
@@ -81,18 +80,18 @@ test('Verfiy age variaable passed', async ({ page }) => {
   const frame = page
     .locator('#iframe-component-interfaceEmbed')
     .contentFrame();
-    
-  if(await frame.getByRole('img').nth(1).isVisible()){
+
+  if (await frame.getByRole('img').nth(1).isVisible()) {
     await frame.getByRole('img').nth(1).click();
   }
-  
+
   // Click first tool item (dynamic id safe)
   const toolItem = page
     .locator('[data-testid^="thread-item-tool-data-"]')
     .first();
 
   await expect(toolItem).toBeVisible();
-  if(await frame.getByRole('img').nth(1).isVisible()){
+  if (await frame.getByRole('img').nth(1).isVisible()) {
     await frame.getByRole('img').nth(1).click();
   }
   await toolItem.click();

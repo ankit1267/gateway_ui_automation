@@ -1,4 +1,6 @@
 import { Page, expect } from '@playwright/test';
+import { ModelSelectors } from '../selectors/model.selectors';
+import { navigateToAgents } from '../utils/navigation';
 
 export type ServiceProvider =
     | 'Openai'
@@ -19,13 +21,8 @@ export class ModelPage {
     // -------------------------
 
     async openChatbotAgent(agentName: string) {
-        // Go to org landing
-        await this.page.goto('/org');
-        // Open workspace
-        await this.page.getByText(`${ORG_NAME}`).click()
 
-        // Navigate to chatbot agents
-        await this.page.getByRole('button', { name: 'Chatbot', exact: true }).click();
+        await navigateToAgents(this.page, 'chatbot');
 
         // Wait for hydration
         // await this.page.waitForLoadState('networkidle');
@@ -37,12 +34,27 @@ export class ModelPage {
             .click();
 
         // Open Model tab
-        await this.page.getByRole('tab', { name: 'Model' }).click();
+        await this.page.locator(ModelSelectors.modelTab).click();
 
         // Ensure model config section is visible
         await expect(
-            this.page.locator('#model-tab-config-section')
+            this.page.locator(ModelSelectors.modelConfigSection)
         ).toBeVisible();
+    }
+
+    async openModelTab() {
+        const agentName = process.env.AGENT_NAME!;
+
+        await navigateToAgents(this.page, 'api');
+
+        await this.page
+            .getByRole('table')
+            .getByText(agentName, { exact: true })
+            .click();
+
+        await this.page
+            .locator(ModelSelectors.modelTab)
+            .click();
     }
 
 
@@ -52,19 +64,19 @@ export class ModelPage {
     // -------------------------
 
     async selectServiceProvider(provider: ServiceProvider) {
-        const modelConfig = this.page.locator('#model-tab-config-section');
+        const modelConfig = this.page.locator(ModelSelectors.modelConfigSection);
 
         // Scope to Service Provider row
         const serviceProviderRow = modelConfig
-            .getByText('Service Provider', { exact: true })
+            .getByText(ModelSelectors.serviceProviderLabel, { exact: true })
             .locator('..');
 
         // Open dropdown
-        await serviceProviderRow.getByRole('button').click();
+        await serviceProviderRow.locator(ModelSelectors.dropdownButton).click();
 
         // Select provider
         await this.page
-            .getByRole('listbox')
+            .locator(ModelSelectors.listbox)
             .getByRole('option', { name: provider, exact: true })
             .click();
 
@@ -78,14 +90,14 @@ export class ModelPage {
     // MODEL LIST ASSERTION
     // -------------------------
     async expectModelsVisible(models: string[]) {
-        const modelConfig = this.page.locator('#model-tab-config-section');
+        const modelConfig = this.page.locator(ModelSelectors.modelConfigSection);
 
         // Open Model dropdown
         const modelRow = modelConfig
-            .getByText('Model', { exact: true })
+            .getByText(ModelSelectors.modelLabel, { exact: true })
             .locator('..');
 
-        await modelRow.getByRole('button').click();
+        await modelRow.locator(ModelSelectors.dropdownButton).click();
 
         // Assert each expected model is visible
         for (const model of models) {
@@ -101,34 +113,39 @@ export class ModelPage {
 
     async expectNoApiKeysMessage() {
         await expect(
-            this.page.getByRole('button', {
-                name: 'No API keys for this service',
-            })
+            this.page.locator(ModelSelectors.noApiKeysMessage)
         ).toBeVisible();
     }
 
     async clickGetStarted() {
         await this.page
-            .locator('#agent-setup-get-started-button')
+            .locator(ModelSelectors.getStartedButton)
             .click();
     }
 
     async expectApiKeyRequiredError() {
         await expect(
-            this.page.getByText(/api key required/i)
+            this.page.getByText(ModelSelectors.apiKeyErrorText)
         ).toBeVisible();
     }
 
     async selectApiKey(providerName: string) {
+
         await this.page
-            .locator('#apikey-input-container')
+            .locator(ModelSelectors.apiKeyInputContainer)
             .getByRole('button', { name: providerName })
             .click();
     }
 
-    async expectApiKeySelected() {
+    async expectChatTextareaVisible() {
         await expect(
-            this.page.locator('#chat-message-textarea')
+            this.page.locator(ModelSelectors.chatTextarea)
+        ).toBeVisible();
+    }
+
+    async expectChatBotVisible() {
+        await expect(
+            this.page.locator(ModelSelectors.iframeEmbed)
         ).toBeVisible();
     }
 

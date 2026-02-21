@@ -1,5 +1,6 @@
 import { test, expect, Page } from '@playwright/test';
 import { ChatbotAgentPage } from '../../pages/chatbot-agent-create.page';
+import { navigateToAgents } from '../../utils/navigation';
 
 test.use({ storageState: 'auth.json' });
 
@@ -11,12 +12,8 @@ test('TC-AGENT-01 | Publish agent successfully', async ({ page }) => {
 
 
 
-    // -------- Step 1: Open Org --------
-    await page.goto('/org');
-    await page.getByText(WORKSPACE_NAME).click();
-
-    // -------- Step 2: Open Chatbot --------
-    await page.getByRole('button', { name: 'Chatbot', exact: true }).click();
+    // -------- Step 1: Open Org & Chatbots --------
+    await navigateToAgents(page, 'chatbot');
 
     // -------- Step 3: Create New Agent --------
     await page.getByTestId('create-new-agent-button').click();
