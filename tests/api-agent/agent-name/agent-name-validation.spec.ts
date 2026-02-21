@@ -88,7 +88,7 @@ test.describe('@regression Agent name validation', () => {
     await expect(agentNameDisplay(page)).toHaveText(originalName);
   });
 
-  test.only('should enforce max length of 51 characters', async ({ page }) => {
+  test('should enforce max length of 51 characters', async ({ page }) => {
     const longName = 'A'.repeat(60);
 
     await openEditName(page);
