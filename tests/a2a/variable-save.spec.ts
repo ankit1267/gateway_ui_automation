@@ -1,46 +1,34 @@
-import { test, expect } from '@playwright/test';
-import { navigateToAgents } from '../../utils/navigation';
+import { test, expect } from '../../fixtures/base.fixture';
 
-test.use({
-  storageState: 'auth.json'
+const TESTING_AGENT = 'Parental Guidance';
+
+test.beforeEach(async ({ agents }) => {
+    await agents.goto('chatbot');
 });
 
-test('parameter input shows new0', async ({ page }) => {
+test('add varaible new0 and delete it', async ({ agents }) => {
+    const agent = await agents.openAgent(TESTING_AGENT);
 
-  // Open org
-  await navigateToAgents(page, 'chatbot');
+    // Open connectors tab
+    await agent.tabs.openConnectors();
 
-  // Open agent
-  await page
-    .getByTestId(/^custom-table-row-/)
-    .getByText('Parental Guidance')
-    .click();
+    // Open connected agent config
+    await agent.connectors.clickAgentConfig();
 
-  // Open connectors tab
-  await page.getByTestId('tab-button-connectors').click();
+    // Add parameter and save
+    const modal = agent.connectors.variableModal;
+    await modal.addParameter();
+    await modal.save();
 
-  // Open connected agent config
-  await page
-    .getByTestId('connected-agent-config-button-699018caa2b76c9f0e179bee')
-    .click();
+    // Reopen config so UI refreshes
+    await agent.connectors.clickAgentConfig();
 
-  // Add parameter
-  const modal = page.getByTestId('AGENT_VARIABLE_MODAL');
+    // Assert input exists and has value "new0"
+    const paramInput = modal.getParameterNameInput('new0');
+    await expect(paramInput).toBeVisible();
+    await expect(paramInput).toHaveValue('new0');
 
-  await modal.getByRole('button', { name: 'Parameter', exact: true }).click();
-  await modal.getByRole('button', { name: 'Save' }).click();
-
-  // Reopen config so UI refreshes
-  await page
-    .getByTestId('connected-agent-config-button-699018caa2b76c9f0e179bee')
-    .click();
-
-  // Assert input exists and has value "new0"
-  const paramInput = page.getByTestId('param-name-input-new0');
-
-  await expect(paramInput).toBeVisible();
-  await expect(paramInput).toHaveValue('new0');
-  await page.getByTestId('param-delete-button-new0').click();
-  await page.getByTestId('AGENT_VARIABLE_MODAL').getByRole('button', { name: 'Save' }).click();
-
+    // Delete parameter and save
+    await modal.deleteParameter('new0');
+    await modal.save();
 });

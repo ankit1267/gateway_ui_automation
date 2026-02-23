@@ -1,0 +1,80 @@
+import type { Page, Locator } from '@playwright/test';
+
+export class AgentHeaderNav {
+  private readonly history: Locator;
+  private readonly testCases: Locator;
+  private readonly chatbotConfig: Locator;
+  private readonly publish: Locator;
+  private readonly publishToggel: Locator;
+  private readonly updatesHistory: Locator;
+  private readonly menuButton: Locator;
+  private readonly version: Locator;
+  private readonly agentName: Locator;
+  private readonly editName: Locator;
+  private readonly agentNameInput: Locator;
+
+  constructor(private readonly page: Page) {
+    this.history = this.page.getByTestId('navbar-tab-history');
+    this.testCases = this.page.getByTestId('navbar-tab-testcase');
+    this.chatbotConfig = this.page.getByTestId('navbar-tab-configure');
+    this.updatesHistory = this.page.getByTestId('navbar-history-button');
+    this.publishToggel = this.page.getByTestId('navbar-publish-dropdown-toggle');
+    this.publish = this.page.getByTestId('navbar-publish-button');
+    this.menuButton = this.page.getByTestId('navbar-ellipsis-menu-toggle');
+    this.version = this.page.getByTestId('create-new-version-button');
+    this.agentName = this.page.getByTestId('navbar-agent-name-display');
+    this.editName = this.page.locator('.lucide.lucide-pen').first();
+    this.agentNameInput = this.page.getByTestId('navbar-agent-name-input');
+  }
+
+  async openChatbotConfig() {
+    await this.chatbotConfig.click();
+  }
+
+  async openTestCases() {
+    await this.testCases.click();
+  }
+
+  async openHistory() {
+    await this.history.click();
+  }
+
+  async openUpdatesHistory() {
+    await this.updatesHistory.click();
+  }
+
+  async clickPublish() {
+    for (let i = 1; i < 3; i++) {
+      if (!(await this.publish.isVisible())) {
+        await this.publishToggel.click();
+      } else {
+        break;
+      }
+    }
+  }
+
+  async clickPublishButton() {
+    await this.publish.click();
+  }
+
+  async clickMenuButton() {
+    await this.menuButton.click();
+  }
+
+  async createNewVersion() {
+    await this.version.click();
+  }
+
+  async getAgentName() {
+    return this.agentName;
+  }
+
+  async clickEditName() {
+    await this.editName.click();
+  }
+
+  async agentNameFill(agentName: string) {
+    return this.agentNameInput.fill(agentName);
+  }
+
+}

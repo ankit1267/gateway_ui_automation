@@ -1,15 +1,16 @@
-import { test } from '@playwright/test';
-import { ModelPage } from '../../../pages/model.page';
+import { test } from '../../../fixtures/base.fixture';
 
-test.use({ storageState: 'auth.json' });
+const Agent = process.env.AGENT_NAME!;
 
-test('TC-MODEL-01: Verify model list loads for Mistral', async ({ page }) => {
-  const modelPage = new ModelPage(page);
+test('TC-MODEL-01: Verify model list loads for Mistral', async ({ agents }) => {
 
-  await modelPage.openModelTab();
-  await modelPage.selectServiceProvider('Mistral');
+  await agents.goto('api');
+  const agent = await agents.openAgent(Agent);
+  await agent.tabs.openModel();
 
-  await modelPage.expectModelsVisible([
+  await agent.model.selectServiceProvider('Mistral');
+
+  await agent.model.expectModelsVisible([
     'mistral-medium-latest',
     'magistral-medium-latest',
     'codestral-latest',
@@ -18,13 +19,14 @@ test('TC-MODEL-01: Verify model list loads for Mistral', async ({ page }) => {
   ]);
 });
 
-test('TC-MODEL-02: Verify model list loads for OpenAI', async ({ page }) => {
-  const modelPage = new ModelPage(page);
+test('TC-MODEL-02: Verify model list loads for OpenAI', async ({  agents }) => {
+  await agents.goto('api');
+  const agent = await agents.openAgent(Agent);
+  await agent.tabs.openModel();
 
-  await modelPage.openModelTab();
-  await modelPage.selectServiceProvider('Openai');
+  await agent.model.selectServiceProvider('Openai');
 
-  await modelPage.expectModelsVisible([
+  await agent.model.expectModelsVisible([
     'gpt-5',
     'gpt-5-nano',
     'gpt-4o-mini',
@@ -35,60 +37,65 @@ test('TC-MODEL-02: Verify model list loads for OpenAI', async ({ page }) => {
   ]);
 });
 
-test('TC-MODEL-03: Verify model list loads for Anthropic', async ({ page }) => {
-  const modelPage = new ModelPage(page);
+test('TC-MODEL-03: Verify model list loads for Anthropic', async ({ agents }) => {
+  await agents.goto('api');
+  const agent = await agents.openAgent(Agent);
+  await agent.tabs.openModel();
 
-  await modelPage.openModelTab();
-  await modelPage.selectServiceProvider('Anthropic');
+  await agent.model.selectServiceProvider('Anthropic');
 
-  await modelPage.expectModelsVisible([
+  await agent.model.expectModelsVisible([
     'claude-3-7-sonnet-latest',
   ]);
 });
 
-test('TC-MODEL-04: Verify model list loads for Groq', async ({ page }) => {
-  const modelPage = new ModelPage(page);
+test('TC-MODEL-04: Verify model list loads for Groq', async ({ agents }) => {
+  await agents.goto('api');
+  const agent = await agents.openAgent(Agent);
+  await agent.tabs.openModel();
 
-  await modelPage.openModelTab();
-  await modelPage.selectServiceProvider('Groq');
+  await agent.model.selectServiceProvider('Groq');
 
-  await modelPage.expectModelsVisible([
+  await agent.model.expectModelsVisible([
     'llama-3.3-70b-versatile',
     'llama-3.1-8b-instant',
   ]);
 });
 
-test('TC-MODEL-05: Verify model list loads for Gemini', async ({ page }) => {
-  const modelPage = new ModelPage(page);
+test('TC-MODEL-05: Verify model list loads for Gemini', async ({ agents }) => {
+  await agents.goto('api');
+  const agent = await agents.openAgent(Agent);
+  await agent.tabs.openModel();
 
-  await modelPage.openModelTab();
-  await modelPage.selectServiceProvider('Gemini');
+  await agent.model.selectServiceProvider('Gemini');
 
-  await modelPage.expectModelsVisible([
+  await agent.model.expectModelsVisible([
     'gemini-2.5-pro',
     'gemini-2.5-flash-lite',
   ]);
 });
 
-test('TC-MODEL-06: Verify model list loads for Ai-ml', async ({ page }) => {
-  const modelPage = new ModelPage(page);
+test('TC-MODEL-06: Verify model list loads for Ai-ml', async ({ agents }) => {
+  await agents.goto('api');
+  const agent = await agents.openAgent(Agent);
+  await agent.tabs.openModel();
 
-  await modelPage.openModelTab();
-  await modelPage.selectServiceProvider('Ai ml');
+  await agent.model.selectServiceProvider('Ai ml');
 
-  await modelPage.expectModelsVisible([
+  await agent.model.expectModelsVisible([
     'gpt-oss-120b',
     'gpt-oss-20b',
   ]);
 });
 
-test('TC-MODEL-07: Verify model list loads for Grok', async ({ page }) => {
-  const modelPage = new ModelPage(page);
+test('TC-MODEL-07: Verify model list loads for Grok', async ({ agents }) => {
+  await agents.goto('api');
+  const agent = await agents.openAgent(Agent);
+  await agent.tabs.openModel();
 
-  await modelPage.openModelTab();
-  await modelPage.selectServiceProvider('Grok');
+  await agent.model.selectServiceProvider('Grok');
 
-  await modelPage.expectModelsVisible([
+  await agent.model.expectModelsVisible([
     'grok-4-fast',
     'grok-4-0709',
   ]);
