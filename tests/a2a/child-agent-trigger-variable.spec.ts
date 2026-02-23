@@ -1,75 +1,29 @@
-import { test, expect } from '@playwright/test';
-import { navigateToAgents } from '../../utils/navigation';
+import { test, expect } from '../../fixtures/base.fixture';
 
-test.use({ storageState: 'auth.json' });
+const TESTING_AGENT = 'Parental Guidance';
 
-test.beforeEach(async ({ page }) => {
-  await navigateToAgents(page, 'chatbot');
+test.beforeEach(async ({ agents }) => {
+    await agents.goto('chatbot');
 
-  // Open agent
-  await page
-    .getByTestId(/^custom-table-row-/)
-    .getByText('Parental Guidance')
-    .click();
 });
 
-test('child agent is triggered', async ({ page }) => {
+test('child agent is triggered', async ({ agents }) => {
+    const agent = await agents.openAgent(TESTING_AGENT);
+    const chatbot = agent.chatbot;
 
-  const frame = page
-    .locator('#iframe-component-interfaceEmbed')
-    .contentFrame();
+    await chatbot.openNewThread();
+    await chatbot.sendMessage('My name is tilakraj');
+    
 
-
-  const button = frame.getByRole('button').nth(1);
-  await expect(button).toBeVisible();
-  await button.click();
-
-  const input = frame.getByRole('textbox', {
-    name: 'Message AI Assistant...'
-  });
-
-  await expect(input).toBeVisible();
-  await input.fill('My name is tilakraj');
-  await input.press('Enter');
-
-  const scrollable = frame.locator('#scrollableDiv');
-
-  //  Child Agent executed
-  await expect(
-    scrollable.getByText(/Function executed/i)
-  ).toBeVisible({ timeout: 30000 });
-
-  //  Child Agent response
-  await expect(scrollable)
-    .toContainText('tilakraj', { timeout: 30000 });
+    await chatbot.expectResponse(/Function executed/i);
+    await chatbot.expectText('tilakraj');
 });
 
+test('child agent is triggered with variable', async ({ agents }) => {
+    const agent = await agents.openAgent(TESTING_AGENT);
+    await agent.header.openHistory();
+    await agent.history.openToolItem();
+    await agent.history.verifyVariableVisible(/"user_name"\s*:\s*"tilakraj"/);
+    await agent.history.closeToolItem();
 
-test('child agent is triggered with variable', async ({ page }) => {
-  // Open history
-  await page.getByTestId('navbar-tab-history').click();
-  const frame = page
-    .locator('#iframe-component-interfaceEmbed')
-    .contentFrame();
-
-  if (await frame.getByRole('img').nth(1).isVisible()) {
-    await frame.getByRole('img').nth(1).click();
-  }
-
-  // Click first tool item (dynamic id safe)
-  const toolItem = page
-    .locator('[data-testid^="thread-item-tool-data-"]')
-    .first();
-
-
-
-  await expect(toolItem).toBeVisible();
-
-
-  await toolItem.click();
-
-  // Assert variable JSON
-  await expect(
-    page.getByText(/"user_name"\s*:\s*"tilakraj"/)
-  ).toBeVisible();
 });

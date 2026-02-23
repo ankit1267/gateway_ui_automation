@@ -1,5 +1,4 @@
 import { test, expect } from '@playwright/test';
-import { ApiAgentCreatePage } from '../../../pages/api-agent/api-agent-create.page';
 import { navigateToAgents } from '../../../utils/navigation';
 
 test.use({ storageState: 'auth.json' });

@@ -1,29 +1,18 @@
-import { test } from '@playwright/test';
-import { ConnectorPage } from '../../../pages/api-agent/connector.page';
-import { navigateToAgents } from '../../../utils/navigation';
+import { test } from '../../../fixtures/base.fixture';
 
-test.use({ storageState: 'auth.json' });
-
-const ORG_NAME = process.env.WORKSPACE_NAME!;
 const AGENT_NAME = process.env.AGENT_NAME!;
 
-test.beforeEach(async ({ page }) => {
-  await navigateToAgents(page, 'api');
-})
+test('ViaSocket embed is visible when adding a tool',
+  async ({
+    agents,
+  }) => {
 
-test(
-  'ViaSocket embed is visible when adding a tool',
-  async ({ page }) => {
+    await agents.goto('api');
+    const agent = await agents.openAgent(AGENT_NAME);
+    await agent.tabs.openConnectors();
 
-
-    const connectorPage = new ConnectorPage(page);
-
-    await connectorPage.openAgent(AGENT_NAME);
-    await connectorPage.openConnectorsTab();
-
-    await connectorPage.addTool();
-    await connectorPage.clickAddNewTools();
-
-    await connectorPage.expectViaSocketVisible();
+    await agent.connectors.clickAddTool();
+    await agent.connectors.toolDropdown.clickAddNewTools();
+    await agent.connectors.toolDropdown.expectViaSocketVisible();
   }
 );

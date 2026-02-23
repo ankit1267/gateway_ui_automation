@@ -1,30 +1,22 @@
-import { test } from '@playwright/test';
-import { ConnectorPage } from '../../../pages/api-agent/connector.page';
-import { navigateToAgents } from '../../../utils/navigation';
+import { test } from '../../../fixtures/base.fixture';
 
-test.use({ storageState: 'auth.json' });
 
-const ORG_NAME = process.env.WORKSPACE_NAME!;
 const AGENT_NAME = process.env.AGENT_NAME!;
 const TOOL_NAME = 'SendEmailonGmail2';
 
-test.beforeEach(async ({ page }) => {
-  await navigateToAgents(page, 'api');
-})
+test('Tool renders inside embed container after selection',
+  async ({
+    agents,
+  }) => {
 
-test(
-  'Tool renders inside embed container after selection',
-  async ({ page }) => {
+    await agents.goto('api');
+    const agent = await agents.openAgent(AGENT_NAME);
+    await agent.tabs.openConnectors();
 
-    const connectorPage = new ConnectorPage(page);
+    await agent.connectors.clickAddTool();
+    await agent.connectors.toolDropdown.selectTool(TOOL_NAME);
 
-    await connectorPage.openAgent(AGENT_NAME);
-    await connectorPage.openConnectorsTab();
-
-    await connectorPage.addTool();
-    await connectorPage.selectTool(TOOL_NAME);
-
-    await connectorPage.expectEmbedRendered(TOOL_NAME);
-    await connectorPage.removeTool();
+    await agent.connectors.expectEmbedVisible(TOOL_NAME);
+    await agent.connectors.removeTool();
   }
 );

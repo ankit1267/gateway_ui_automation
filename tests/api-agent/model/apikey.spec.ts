@@ -1,41 +1,41 @@
-import { test, expect } from '@playwright/test';
-import { ModelPage } from '../../../pages/model.page';
+import { test } from '../../../fixtures/base.fixture';
 
-test.use({
-  storageState: 'auth.json'
-});
 
-test('TC-APIKEY-01: API key required error is shown', async ({ page }) => {
+const Agent = process.env.AGENT_NAME!;
 
-  const modelPage = new ModelPage(page);
+test('TC-APIKEY-01: API key required error is shown', async ({ agents }) => {
 
+  await agents.goto('api');
   // Step 1: Open Model tab
-  await modelPage.openModelTab();
+  const agent = await agents.openAgent(Agent);
+  await agent.tabs.openModel();
 
   // Step 2: Ensure provider is selected (example: OpenAI)
-  await modelPage.selectServiceProvider('Openai');
+  await agent.model.selectServiceProvider('Openai');
 
   // Step 3: Ensure API key field is empty
-  await modelPage.expectNoApiKeysMessage();
+  await agent.model.expectNoApiKeysMessage();
 
   // Step 4: Click Get Started / Publish
-  await modelPage.clickGetStarted();
+  await agent.model.clickGetStarted();
 
   // Assertion: Error message is shown
-  await modelPage.expectApiKeyRequiredError();
+  await agent.model.expectApiKeyRequiredError();
 
 });
 
-test('TC-APIKEY-02: API key is added', async ({ page }) => {
-  const modelPage = new ModelPage(page);
+test('TC-APIKEY-02: API key is added', async ({ agents }) => {
+ 
   // Step 1: Open Model tab
-  await modelPage.openModelTab();
+  await agents.goto('api');
+  const agent = await agents.openAgent(Agent);
+  await agent.tabs.openModel();
   // Step 2: Ensure provider is selected (example: OpenAI)
-  await modelPage.selectServiceProvider('Mistral');
+  await agent.model.selectServiceProvider('Mistral');
 
   // Step 3: Select API key field is selected
-  await modelPage.selectApiKey('Mistral');
+  await agent.model.selectApiKey('Mistral');
 
   // Assertion: Chat is visible
-  await modelPage.expectChatTextareaVisible();
+  await agent.model.expectChatTextareaVisible();
 });

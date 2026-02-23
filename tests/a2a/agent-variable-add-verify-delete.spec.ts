@@ -1,122 +1,57 @@
-import { test, expect } from '@playwright/test';
-import { navigateToAgents } from '../../utils/navigation';
+import { test, expect } from '../../fixtures/base.fixture';
 
-test.use({ storageState: 'auth.json' });
+const TESTING_AGENT = 'Parental Guidance';
 
-
-test.beforeEach(async ({ page }) => {
-  await navigateToAgents(page, 'chatbot');
-
-  // Open agent
-  await page
-    .getByTestId(/^custom-table-row-/)
-    .getByText('Parental Guidance')
-    .click();
+test.beforeEach(async ({ agents }) => {
+    await agents.goto('chatbot');
+    
 });
 
-test('add age variable, verify in payload, then delete', async ({ page }) => {
+test('add age variable, verify in payload, then delete', async ({ agents }) => {
 
-  // -------------------------
-  // Open Connector Config
-  // -------------------------
-  await page.getByTestId('tab-button-connectors').click();
+    // -------------------------
+    // Open Connectors Config
+    // -------------------------
+    const agent = await agents.openAgent(TESTING_AGENT);
+    await agent.tabs.openConnectors();
 
-  await page
-    .getByTestId('connected-agent-config-button-699018caa2b76c9f0e179bee')
-    .click();
+    await agent.connectors.clickAgentConfig();
 
-  const modal = page.getByTestId('AGENT_VARIABLE_MODAL');
+    const modal = agent.connectors.variableModal;
+    // -------------------------
+    // Add Variable
+    // -------------------------
+    await modal.addParameter();
+    await modal.fillParameterName('new0');
+    await modal.setRequired('new0');
+    await modal.selectType('new0', 'number');
+    await modal.fillValuePath('new0', 'age');
+    await modal.save();
 
-  // -------------------------
-  // Add Variable: age
-  // -------------------------
-  await modal.getByRole('button', { name: 'Parameter', exact: true }).click();
+    // -------------------------
+    // Send Query in Chatbot
+    // -------------------------
 
-  const paramName = page.getByTestId('param-name-input-new0');
-  await expect(paramName).toBeVisible();
-  await paramName.fill('age');
-  await paramName.press('Enter');
-  const checkbox = page.getByTestId('param-required-checkbox-age');
-  await expect(checkbox).toBeVisible();
-  await checkbox.check();
-  await page.getByTestId('param-type-select-age').selectOption('number');
-  await page.getByTestId('param-value-path-input-age').fill('age');
+    const chatbot = agent.chatbot;
+    if (await chatbot.isCopyButtonVisible()) {
+        await chatbot.openNewThread();
+    }
+    if(await chatbot.isHomeVisible()){
+        await chatbot.sendMessage('hello i am tilak');
+    }
+    await chatbot.expectResponse(/Function executed/i);
 
-  await modal.getByRole('button', { name: 'Save' }).click();
-
-  // -------------------------
-  // Send User Query
-  // -------------------------
-  const frame = page
-    .locator('#iframe-component-interfaceEmbed')
-    .contentFrame();
-
-  const button = frame.getByRole('button').nth(1);
-  await expect(button).toBeVisible();
-  await button.click();
-
-  const input = frame.getByRole('textbox', {
-    name: 'Message AI Assistant...'
-  });
-
-  await expect(input).toBeVisible();
-  await input.fill('hello i am tilak');
-  await input.press('Enter');
-
-  const scrollable = frame.locator('#scrollableDiv');
-
-  //  Child Agent executed
-  await expect(
-    scrollable.getByText(/Function executed/i)
-  ).toBeVisible({ timeout: 40000 });
 });
 
-test('Verfiy age variaable passed', async ({ page }) => {
-
-
-  // Open history
-  await page.getByTestId('navbar-tab-history').click();
-
-  const frame = page
-    .locator('#iframe-component-interfaceEmbed')
-    .contentFrame();
-
-  if (await frame.getByRole('img').nth(1).isVisible()) {
-    await frame.getByRole('img').nth(1).click();
-  }
-
-  // Click first tool item (dynamic id safe)
-  const toolItem = page
-    .locator('[data-testid^="thread-item-tool-data-"]')
-    .first();
-
-  await expect(toolItem).toBeVisible();
-  if (await frame.getByRole('img').nth(1).isVisible()) {
-    await frame.getByRole('img').nth(1).click();
-  }
-  await toolItem.click();
-
-  // Assert variable JSON
-  await expect(
-    page.getByText(/"age"\s*:\s*\d+/)
-  ).toBeVisible();
-
-  await page.getByTestId('tools-data-modal-close-button').click();
-
-  // -------------------------
-  // Delete Variable
-  // -------------------------
-  const modal = page.getByTestId('AGENT_VARIABLE_MODAL');
-  await page.getByTestId('navbar-tab-configure').click();
-  await page.getByTestId('tab-button-connectors').click();
-
-  await page
-    .getByTestId('connected-agent-config-button-699018caa2b76c9f0e179bee')
-    .click();
-
-  await page.getByTestId('param-delete-button-age').click();
-
-  await modal.getByRole('button', { name: 'Save' }).click();
-
-
+test.only('Verify new0 variable passed', async ({ agents }) => {
+    const agent = await agents.openAgent(TESTING_AGENT);
+    await agent.header.openHistory();
+    await agent.history.openToolItem();
+    await agent.history.verifyVariableVisible(/"new0"\s*:\s*0/);
+    await agent.history.closeToolItem();
+    await agent.header.openChatbotConfig();
+    await agent.tabs.openConnectors();
+    await agent.connectors.clickAgentConfig();
+    await agent.connectors.variableModal.deleteParameter('new0');
+    await agent.connectors.variableModal.save();
 });
