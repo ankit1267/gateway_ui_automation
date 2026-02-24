@@ -1,32 +1,32 @@
-import { test } from '@playwright/test';
-import { ModelPage } from '../../pages/model.page';
+import { test, expect } from '../../fixtures/base.fixture';
 
-test.use({ storageState: 'auth.json' });
+const Agent = process.env.CHATBOT_AGENT!
 
 test.describe('Model - API Key validation', () => {
-    let modelPage: ModelPage;
-
-    test.beforeEach(async ({ page }) => {
-        modelPage = new ModelPage(page);
-        // open chatbot agent + model tab
-        await modelPage.openChatbotAgent(process.env.CHATBOT_AGENT!);
+   
+    test.beforeEach(async ({ agents }) => {
+        agents.goto('chatbot');
+        
     });
 
-    test('TC-APIKEY-01: API key required error is shown', async () => {
-        await modelPage.selectServiceProvider('Anthropic');
+    test('TC-APIKEY-01: API key required error is shown', async ({ agents }) => {
+        const agent = await agents.openAgent(Agent);
+        await agent.tabs.openModel();
+        await agent.model.selectServiceProvider('Anthropic');
+        await agent.model.expectNoApiKeysMessage();
 
-        await modelPage.expectNoApiKeysMessage();
+        await agent.model.clickGetStarted();
 
-        await modelPage.clickGetStarted();
-
-        await modelPage.expectApiKeyRequiredError();
+        await agent.model.expectApiKeyRequiredError();
     });
 
-    test('TC-APIKEY-02: API key is added', async () => {
-        await modelPage.selectServiceProvider('Mistral');
+    test('TC-APIKEY-02: API key is added', async ({ agents }) => {
+        const agent = await agents.openAgent(Agent);
+        await agent.tabs.openModel();
+        await agent.model.selectServiceProvider('Mistral');
 
-        await modelPage.selectApiKey('Mistral api key');
-        await modelPage.expectChatBotVisible();
+        await agent.model.selectApiKey('Mistral api key');
+        await agent.model.expectChatBotVisible();
 
     });
 });
