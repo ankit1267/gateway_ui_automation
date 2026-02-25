@@ -12,6 +12,10 @@ export class AgentHeaderNav {
   private readonly agentName: Locator;
   private readonly editName: Locator;
   private readonly agentNameInput: Locator;
+  private readonly newButton: Locator;
+  private readonly versionDescriptionInput: Locator;
+  private readonly trashIcon: Locator;
+  private readonly deleteButton: Locator;
 
   constructor(private readonly page: Page) {
     this.history = this.page.getByTestId('navbar-tab-history');
@@ -21,10 +25,14 @@ export class AgentHeaderNav {
     this.publishToggel = this.page.getByTestId('navbar-publish-dropdown-toggle');
     this.publish = this.page.getByTestId('navbar-publish-button');
     this.menuButton = this.page.getByTestId('navbar-ellipsis-menu-toggle');
-    this.version = this.page.getByTestId('create-new-version-button');
+    this.version = this.page.getByRole('dialog').getByTestId('version-description-create-button');
     this.agentName = this.page.getByTestId('navbar-agent-name-display');
     this.editName = this.page.locator('.lucide.lucide-pen').first();
     this.agentNameInput = this.page.getByTestId('navbar-agent-name-input');
+    this.newButton = this.page.getByRole('button', { name: 'New', exact: true });
+    this.versionDescriptionInput = this.page.getByRole('textbox', { name: 'Enter version description' });
+    this.trashIcon = this.page.locator('.lucide.lucide-trash2').first();
+    this.deleteButton = this.page.getByRole('button', { name: 'Delete', exact: true });
   }
 
   async openChatbotConfig() {
@@ -75,6 +83,19 @@ export class AgentHeaderNav {
 
   async agentNameFill(agentName: string) {
     return this.agentNameInput.fill(agentName);
+  }
+
+  async clickNewButton() {
+    await this.newButton.click();
+  }
+
+  async fillVersionDescription(desc: string) {
+    await this.versionDescriptionInput.fill(desc);
+  }
+
+  async deleteFirstVersion() {
+    await this.trashIcon.click();
+    await this.deleteButton.click();
   }
 
 }

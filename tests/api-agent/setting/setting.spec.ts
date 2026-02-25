@@ -1,179 +1,146 @@
-import { test, expect } from '@playwright/test';
-import { navigateToAgents } from '../../../utils/navigation';
+import { test, expect } from '../../../fixtures/base.fixture';
 
-test.use({
-    storageState: 'auth.json'
-});
+
 
 const ORG_NAME = process.env.WORKSPACE_NAME;
-const AGENT_NAME = process.env.AGENT_NAME;
+const AGENT_NAME = process.env.AGENT_NAME!;
 
-test.beforeEach(async ({ page }) => {
-    await navigateToAgents(page, 'api');
-    await page.getByText(`${AGENT_NAME}`, { exact: true }).click();
-    await page.getByRole('tab', { name: 'Settings' }).click();
-})
+test.beforeEach(async ({ agents }) => {
+    await agents.goto('api');
+});
 
 test(
     'TC-SET-01: Switching to Triggers shows ViaSocket embed in Settings',
-    async ({ page }) => {
+    async ({ agents }) => {
+       const agent = await agents.openAgent(AGENT_NAME);
+       await agent.tabs.openSettings();
+      
 
-        const triggerCheck = page.getByRole('radio', { name: 'Triggers' });
-        const apiRadio = page.getByRole('radio', { name: 'API' });
-        if (!await triggerCheck.isChecked()) {
-            triggerCheck.click();
-        }
-        await expect(triggerCheck).toBeChecked({ timeout: 10_000 });
-        const embedHeader = page.locator('#viasocket-embed-header');
-        await expect(embedHeader).toBeVisible();
+        await agent.settings.checkTriggerRadio();
+        await expect(agent.settings.bridgeTypeTrigger).toBeChecked({ timeout: 10_000 });
 
-        if (await embedHeader.isVisible()) {
-            await page.locator('#viasocket-embed-close-button').click();
-        }
+        await expect(agent.settings.embedHeader).toBeVisible();
 
-        await apiRadio.click();
-        await expect(
-            page.getByRole('radio', { name: 'API' })
-        ).toBeChecked({ timeout: 10_000 });
+        await agent.settings.closeEmbedIfVisible();
+
+        await agent.settings.selectApiRadio();
+        await expect(agent.settings.bridgeTypeApi).toBeChecked({ timeout: 10_000 });
     }
 );
 
 test(
     'TC-SET-02:Verify that user can select different tone options in Settings.',
-    async ({ page }) => {
+    async ({ agents }) => {
+       const agent = await agents.openAgent(AGENT_NAME);
+       await agent.tabs.openSettings();
+      
 
-        const apiRadio = page.getByRole('radio', { name: 'API' });
-        if (!await apiRadio.isChecked()) {
-            await page.locator('#viasocket-embed-close-button').click();
-            await apiRadio.click();
-        }
-        await page.locator('#tone-select').selectOption('neutral');
-        await page.locator('#tone-select').selectOption('humorous');
-        await page.locator('#tone-select').selectOption('formal');
+        await agent.settings.ensureApiMode();
 
+        await agent.settings.selectTone('neutral');
+        await agent.settings.selectTone('humorous');
+        await agent.settings.selectTone('formal');
     }
-)
+);
 
 test(
     'TC-SET-03:Verify response style dropdown accepts valid values.',
-    async ({ page }) => {
+    async ({ agents }) => {
+       const agent = await agents.openAgent(AGENT_NAME);
+       await agent.tabs.openSettings();
+      
 
-        const apiRadio = page.getByRole('radio', { name: 'API' });
-        if (!await apiRadio.isChecked()) {
-            await page.locator('#viasocket-embed-close-button').click();
-            await apiRadio.click();
-        }
-        const responseStyle = page.locator('#response-style-select');
+        await agent.settings.ensureApiMode();
 
-        await responseStyle.selectOption('analytical');
-        await responseStyle.selectOption('crisp');
-        await responseStyle.selectOption('storytelling');
-
+        await agent.settings.selectResponseStyle('analytical');
+        await agent.settings.selectResponseStyle('crisp');
+        await agent.settings.selectResponseStyle('storytelling');
     }
-)
+);
 
 test(
     'TC-SET-04:Verify enabling and disable Guardrails configuration.',
-    async ({ page }) => {
+    async ({ agents }) => {
+       const agent = await agents.openAgent(AGENT_NAME);
+       await agent.tabs.openSettings();
+      
 
-        const apiRadio = page.getByRole('radio', { name: 'API' });
-        if (!await apiRadio.isChecked()) {
-            await page.locator('#viasocket-embed-close-button').click();
-            await apiRadio.click();
-        }
-        await page.locator('#guardrails-toggle').click();
+        await agent.settings.ensureApiMode();
 
-        await expect(
-            page.getByRole('button', { name: 'Add Guardrail Types' })
-        ).toBeVisible({ timeout: 10_000 });
-        await page.locator('#guardrails-toggle').click();
-        await expect(
-            page.getByRole('button', { name: 'Add Guardrail Types' })
-        ).toBeHidden({ timeout: 10_000 });
+        await agent.settings.toggleGuardrails();
+        await expect(agent.settings.addGuardrailBtn).toBeVisible({ timeout: 10_000 });
+
+        await agent.settings.toggleGuardrails();
+        await expect(agent.settings.addGuardrailBtn).toBeHidden({ timeout: 10_000 });
     }
-)
+);
 
 test(
     'TC-SET-05:Verify webhook validation when Custom mode is selected.',
-    async ({ page }) => {
+    async ({ agents }) => {
+       const agent = await agents.openAgent(AGENT_NAME);
+       await agent.tabs.openSettings();
+      
 
-        const apiRadio = page.getByRole('radio', { name: 'API' });
-        if (!await apiRadio.isChecked()) {
-            await page.locator('#viasocket-embed-close-button').click();
-            await apiRadio.click();
-        }
-        await page.getByRole('radio', { name: 'Custom' }).check();
-        await page.getByRole('textbox', { name: 'Webhook URL' }).fill('');
-        await page.locator('.hidden').first().click();
+        await agent.settings.ensureApiMode();
 
-        await expect(
-            page.getByText('Please enter a valid webhook')
-        ).toBeVisible();
+        await agent.settings.selectCustomMode();
+        await agent.settings.fillWebhookUrl('');
+        await agent.settings.clickHiddenElement();
 
-        await page.getByRole('radio', { name: 'Default' }).check();
+        await expect(agent.settings.getByText('Please enter a valid webhook')).toBeVisible();
 
+        await agent.settings.selectDefaultMode();
     }
-)
+);
 
 test(
     'TC-SET-06:Invalid headers JSON is rejected.',
-    async ({ page }) => {
-        const apiRadio = page.getByRole('radio', { name: 'API' });
-        if (!await apiRadio.isChecked()) {
-            await page.locator('#viasocket-embed-close-button').click();
-            await apiRadio.click();
-        }
-        await page.getByRole('radio', { name: 'Custom' }).check();
-        await page
-            .getByRole('textbox', { name: 'Headers (JSON format)' })
-            .fill('{invalid}');
-        await page.locator('.hidden').first().click();
-        await expect(
-            page.getByText('Invalid JSON')
-        ).toBeVisible();
+    async ({ agents }) => {
+       const agent = await agents.openAgent(AGENT_NAME);
+       await agent.tabs.openSettings();
+      
 
-        await page.getByRole('radio', { name: 'Default' }).check();
+        await agent.settings.ensureApiMode();
 
+        await agent.settings.selectCustomMode();
+        await agent.settings.fillHeaders('{invalid}');
+        await agent.settings.clickHiddenElement();
+
+        await expect(agent.settings.getByText('Invalid JSON')).toBeVisible();
+
+        await agent.settings.selectDefaultMode();
     }
-)
+);
 
 test(
     'TC-SET-07:Agent Settings – Guardrail Configuration.',
-    async ({ page }) => {
+    async ({ agents }) => {
+       const agent = await agents.openAgent(AGENT_NAME);
+       await agent.tabs.openSettings();
+      
 
-        const apiRadio = page.getByRole('radio', { name: 'API' });
-        if (!await apiRadio.isChecked()) {
-            await page.locator('#viasocket-embed-close-button').click();
-            await apiRadio.click();
-        }
-        const guardrailToggle = page.locator('#guardrails-toggle');
-        await guardrailToggle.check();
+        await agent.settings.ensureApiMode();
 
-        const addGuardrailBtn = page.getByRole('button', { name: 'Add Guardrail Types' });
-        await expect(addGuardrailBtn).toBeEnabled();
-        await addGuardrailBtn.click();
+        await agent.settings.checkGuardrailToggle();
 
-        const promptInjection = page.locator('#guardrail-checkbox-prompt_injection');
-        const bias = page.locator('#guardrail-checkbox-bias');
+        await expect(agent.settings.addGuardrailBtn).toBeEnabled();
+        await agent.settings.clickAddGuardrailTypes();
 
-        await expect(promptInjection).toBeVisible();
-        await expect(bias).toBeVisible();
+        await expect(agent.settings.promptInjection).toBeVisible();
+        await expect(agent.settings.bias).toBeVisible();
 
-        await promptInjection.check();
-        await bias.check();
+        await agent.settings.checkPromptInjection();
+        await agent.settings.checkBias();
 
-        await expect(promptInjection).toBeChecked();
-        await expect(bias).toBeChecked();
+        await expect(agent.settings.promptInjection).toBeChecked();
+        await expect(agent.settings.bias).toBeChecked();
 
-        await promptInjection.uncheck();
-        await bias.uncheck();
-
-
+        await agent.settings.uncheckPromptInjection();
+        await agent.settings.uncheckBias();
 
         //Disable guardrails toggle again
-        await guardrailToggle.uncheck();
-        await expect(guardrailToggle).not.toBeChecked();
+        await agent.settings.uncheckGuardrailToggle();
+        await expect(agent.settings.guardrailsToggle).not.toBeChecked();
     }
-)
-
-
+);

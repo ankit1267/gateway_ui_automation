@@ -9,3 +9,4 @@ node_modules/
 notes.md
 .env
 Usersanshpchrome-playwright-profile
+tests/test.spec.ts

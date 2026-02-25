@@ -7,6 +7,7 @@ import { HistoryPage } from "./history.page";
 import { expect } from "../../fixtures/base.fixture";
 import { ModelPage } from "./model.page";
 import { IntegrationGuidePage } from "./integration-guide.page";
+import { SettingsPage } from "./settings.page";
 
 export class AgentPage {
   readonly tabs: AgentTabs;
@@ -16,6 +17,7 @@ export class AgentPage {
   readonly history: HistoryPage;
   readonly model: ModelPage;
   readonly integrationGuide: IntegrationGuidePage;
+  readonly settings: SettingsPage;
 
   constructor(private readonly page: Page) {
     this.tabs = new AgentTabs(page);
@@ -25,6 +27,7 @@ export class AgentPage {
     this.history = new HistoryPage(page);
     this.model = new ModelPage(page);
     this.integrationGuide = new IntegrationGuidePage(page);
+    this.settings = new SettingsPage(page);
   }
 
   async blurInput() {
