@@ -23,7 +23,7 @@ test('@regression Integration Guide → Create Auth Key navigates correctly in a
   await authKeyPage.expectPageVisible();
 });
 
-test('@regression Integration Guide → Create Auth Key navigates correctlyin batch api tab', async ({ agents, context }) => {
+test('@regression Integration Guide → Create Auth Key navigates correctly in batch api tab', async ({ agents, context }) => {
 
   await agents.goto('api');
   const agent = await agents.openAgent(AGENT_NAME);
@@ -40,4 +40,22 @@ test('@regression Integration Guide → Create Auth Key navigates correctlyin ba
   const authKeyPage = new AuthKeyPage(newTab);
 
   await authKeyPage.expectPageVisible();
+});
+
+test('@regression Integration Guide → Copy buttons work in API and Batch tabs', async ({ agents }) => {
+  await agents.goto('api');
+  const agent = await agents.openAgent(AGENT_NAME);
+  await agent.tabs.openIntegrationGuide();
+
+  await agent.integrationGuide.expectPageVisible();
+
+  // API Guide tab (default)
+  await agent.integrationGuide.copyCurlCodeBlock();
+  await agent.integrationGuide.copyResponseCodeBlock();
+
+  // Batch API tab
+  await agent.integrationGuide.clickBatchTab();
+
+  await agent.integrationGuide.copyBatchCurlCodeBlock();
+  await agent.integrationGuide.copyBatchResponseCodeBlock();
 });
