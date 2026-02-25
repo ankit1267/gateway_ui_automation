@@ -43,7 +43,7 @@ test('add age variable, verify in payload, then delete', async ({ agents }) => {
 
 });
 
-test.only('Verify new0 variable passed', async ({ agents }) => {
+test('Verify new0 variable passed', async ({ agents }) => {
     const agent = await agents.openAgent(TESTING_AGENT);
     await agent.header.openHistory();
     await agent.history.openToolItem();
