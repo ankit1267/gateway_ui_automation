@@ -1,104 +1,88 @@
-import { test, expect, Page } from '@playwright/test';
+import { test, expect } from '@playwright/test';
+import { WorkspacePage } from '../../pages/workspace.page';
 
-/**
- * Helper: open Create Workspace modal
- */
-async function openCreateWorkspaceModal(page: Page) {
-    await page.getByRole('button', { name: '+ Create New Workspace' }).click();
-    await expect(page.getByRole('dialog')).toBeVisible();
-}
-
-/**
- * Helper: click Create button INSIDE modal
- */
-async function clickCreateInModal(page: Page) {
-    const modal = page.getByRole('dialog');
-    await modal.getByRole('button', { name: 'Create', exact: true }).click();
-}
-
-test.describe('Create Workspace – Negative Test Cases', () => {
+test.describe('Create Workspace - Negative Test Cases (POM)', () => {
+    let workspacePage: WorkspacePage;
 
     test.beforeEach(async ({ page }) => {
-        await page.goto('/org');
+        workspacePage = new WorkspacePage(page);
+        await workspacePage.goto();
         await expect(page.getByText('Existing Workspaces')).toBeVisible();
     });
 
     // TC-NEG-01: Empty workspace name
     test('should not allow creating workspace with empty name', async ({ page }) => {
-        await openCreateWorkspaceModal(page);
-        await clickCreateInModal(page);
+        await workspacePage.clickCreateWorkspace();
+        await expect(page.getByRole('dialog')).toBeVisible();
+
+        await workspacePage.submit();
 
         await expect(page.getByRole('dialog')).toBeVisible();
     });
 
-    //  TC-NEG-02: Workspace name with only spaces
+    // TC-NEG-02: Workspace name with only spaces
     test('should not allow workspace name with only spaces', async ({ page }) => {
-        await openCreateWorkspaceModal(page);
-        await page.getByRole('textbox', { name: 'Workspace Name' }).fill('     ');
-        await clickCreateInModal(page);
+        await workspacePage.clickCreateWorkspace();
+        await expect(page.getByRole('dialog')).toBeVisible();
+
+        await workspacePage.fillName('     ');
+        await workspacePage.submit();
 
         await expect(page.getByRole('dialog')).toBeVisible();
     });
 
-
-    //  TC-NEG-03: Duplicate workspace name
-    test('should not allow duplicate workspace name', async ({ browser }) => {
-        const context = await browser.newContext({
-            storageState: 'auth.json'
-        });
-
-        const page = await context.newPage();
-        await page.goto('/org');
-
+    // TC-NEG-03: Duplicate workspace name
+    test('should not allow duplicate workspace name', async ({ page }) => {
         const workspaceName = 'Ansh Pandit';
 
         const workspaces = page.getByText(workspaceName);
         const countBefore = await workspaces.count();
 
-        await openCreateWorkspaceModal(page);
-        await page.getByRole('textbox', { name: 'Workspace Name' }).fill(workspaceName);
-        await clickCreateInModal(page);
+        await workspacePage.clickCreateWorkspace();
+        await expect(page.getByRole('dialog')).toBeVisible();
+
+        await workspacePage.fillName(workspaceName);
+        await workspacePage.submit();
 
         await expect(workspaces).toHaveCount(countBefore);
-
-        await context.close();
     });
 
-
-    //  TC-NEG-04: Special characters only
+    // TC-NEG-04: Special characters only
     test('should not create workspace with special characters only', async ({ page }) => {
         const name = '@@@###$$$';
 
         const countBefore = await page.getByText(name).count();
 
-        await openCreateWorkspaceModal(page);
-        await page.getByRole('textbox', { name: 'Workspace Name' }).fill(name);
-        await clickCreateInModal(page);
+        await workspacePage.clickCreateWorkspace();
+        await expect(page.getByRole('dialog')).toBeVisible();
+
+        await workspacePage.fillName(name);
+        await workspacePage.submit();
 
         await expect(page.getByText(name)).toHaveCount(countBefore);
     });
-    //  TC-NEG-05: Very long workspace name
+
+    // TC-NEG-05: Very long workspace name
     test('should restrict workspace name to max 40 characters', async ({ page }) => {
         const longName = 'A'.repeat(300);
 
-        await openCreateWorkspaceModal(page);
+        await workspacePage.clickCreateWorkspace();
+        await expect(page.getByRole('dialog')).toBeVisible();
 
-        const input = page.getByRole('textbox', { name: 'Workspace Name' });
-        await input.fill(longName);
+        await workspacePage.fillName(longName);
 
-        const value = await input.inputValue();
+        const value = await workspacePage.nameInput.inputValue();
         expect(value.length).toBe(40);
     });
 
-    //  TC-NEG-06: Close modal without submitting
+    // TC-NEG-06: Close modal without submitting
     test('should not create workspace when modal is closed', async ({ page }) => {
-        await openCreateWorkspaceModal(page);
+        await workspacePage.clickCreateWorkspace();
+        await expect(page.getByRole('dialog')).toBeVisible();
 
-        // Use actual Cancel / Close button
-        await page.getByRole('button', { name: /cancel|close/i }).click();
+        await workspacePage.close();
 
         await expect(page.getByText('Existing Workspaces')).toBeVisible();
     });
-
 
 });

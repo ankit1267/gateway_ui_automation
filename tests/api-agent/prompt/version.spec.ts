@@ -1,42 +1,33 @@
-import { test, expect } from '@playwright/test';
-import { navigateToAgents } from '../../../utils/navigation';
+import { test, expect } from '../../../fixtures/base.fixture';
 
-test.use({ storageState: 'auth.json' });
-
-const WORKSPACE = process.env.WORKSPACE_NAME!;
 const AGENT_NAME = process.env.AGENT_NAME!;
 
-test.beforeEach(async ({ page }) => {
-  await navigateToAgents(page, 'api');
-  await page.getByText(AGENT_NAME, { exact: true }).click();
-  await page.getByRole('button', { name: 'New', exact: true }).click();
+test.beforeEach(async ({ agents }) => {
+    await agents.goto('api');
 });
 
-test('Version cannot be created with empty description', async ({ page }) => {
+test('TC-VER-01: Version cannot be created with empty description', async ({ agents, page }) => {
+    const agent = await agents.openAgent(AGENT_NAME);
+    await agent.header.clickNewButton();
 
-  page.once('dialog', async dialog => {
-    expect(dialog.message()).toMatch(/description/i);
-    await dialog.dismiss();
-  });
+    page.once('dialog', async dialog => {
+        expect(dialog.message()).toMatch(/description/i);
+        await dialog.dismiss();
+    });
 
-  await page
-    .getByRole('dialog')
-    .getByTestId('version-description-create-button')
-    .click();
+    await agent.header.createNewVersion();
 });
 
-test('Version can be created with valid description', async ({ page }) => {
-  await page.getByRole('textbox', { name: 'Enter version description' }).fill('version');
-  await page
-    .getByRole('dialog')
-    .getByTestId('version-description-create-button')
-    .click();
-  await expect(
-    page.getByRole('alert').filter({ hasText: 'New version created' })
-  ).toBeVisible();
-  await page.locator('.lucide.lucide-trash2').first().click();
-  await page.getByRole('button', { name: 'Delete', exact: true }).click();
+test('TC-VER-02: Version can be created with valid description', async ({ agents, page }) => {
+    const agent = await agents.openAgent(AGENT_NAME);
+    await agent.header.clickNewButton();
 
+    await agent.header.fillVersionDescription('version');
+    await agent.header.createNewVersion();
+
+    await expect(
+        page.getByRole('alert').filter({ hasText: 'New version created' })
+    ).toBeVisible();
+
+    await agent.header.deleteFirstVersion();
 });
-
-
