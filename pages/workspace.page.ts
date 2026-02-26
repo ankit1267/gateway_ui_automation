@@ -12,11 +12,16 @@ export class WorkspacePage {
     readonly closeButton: Locator;
     readonly logoutButton: Locator;
     readonly loginButton: Locator;
+    readonly workspaceButton: Locator;
+    readonly userDetailsButton: Locator;
+    readonly nameInputUserDetails: Locator;
+    readonly updateButton: Locator;
+    
     constructor(page: Page) {
         this.page = page;
 
         this.createWorkspaceButton = page.getByRole('button', { name: '+ Create New Workspace' });
-        this.userMenuButton = page.locator('#org-header-user-menu-button');
+        this.userMenuButton = page.locator('#org-header-user-menu-button-alt');
         this.nameInput = page.getByTestId('create-org-name-input');
         this.descriptionInput = page.getByTestId('create-org-description-input');
         this.timezoneTrigger = page.getByTestId('create-org-timezone-trigger');
@@ -24,7 +29,19 @@ export class WorkspacePage {
         this.closeButton = page.getByTestId('create-org-close-button');
         this.logoutButton = page.getByRole('button', { name: 'Logout' });
         this.loginButton = page.getByTestId('login-button');
+        this.workspaceButton = page.getByRole('button', { name: 'T Test Space Organization' });// on agent list page
+        this.userDetailsButton = page.getByRole('button', { name: 'User Details' });
+        this.nameInputUserDetails = page.getByRole('textbox', { name: 'Name', exact: true });// on user detial page
+        this.updateButton = page.getByRole('button', { name: 'Update' });// on user detial page
 
+    }
+
+    async fillNameUserDetails(name: string) {
+        await this.nameInputUserDetails.fill(name);
+    }
+
+    async clickUpdateButton() {
+        await this.updateButton.click();
     }
 
     // ---------------- Navigation ----------
@@ -84,5 +101,11 @@ export class WorkspacePage {
     }
     async expectLogin() {
         await expect(this.loginButton).toBeVisible();
+    }
+    async clickUserDetails(){
+        await this.userDetailsButton.click();
+    }
+    async clickWorkspaceButton(){
+        await this.workspaceButton.click();
     }
 }
