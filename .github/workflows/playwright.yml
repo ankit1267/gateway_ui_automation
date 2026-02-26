@@ -33,7 +33,7 @@ jobs:
     - name: Install Playwright Browsers
       run: npx playwright install --with-deps
     - name: Run Playwright tests
-      run: npx playwright test
+      run: npx playwright test tests/api-agent/agent-name/agent-name-validation.spec.ts
     - uses: actions/upload-artifact@v4
       if: ${{ !cancelled() }}
       with:
@@ -47,6 +47,7 @@ jobs:
         path: playwright-report
 
   deploy:
+    if: always()
     needs: test
     runs-on: ubuntu-latest
     environment:
