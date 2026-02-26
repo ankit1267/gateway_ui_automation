@@ -4,7 +4,9 @@ on:
     - cron: '0 19 * * *' 
   workflow_dispatch:
 permissions:
-  contents: write   # REQUIRED for GitHub Pages push
+  contents: read
+  pages: write
+  id-token: write   # REQUIRED for GitHub Pages push
 jobs:
   test:
     timeout-minutes: 60
