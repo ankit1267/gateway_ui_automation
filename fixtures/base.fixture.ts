@@ -1,8 +1,10 @@
 import { test as base } from '@playwright/test';
 import { AgentsPage } from '../pages/sidepanel/agents.page';
+import { SidepanelPage } from '../pages/sidepanel/sidepanel.page';
 
 type Fixtures = {
   agents: AgentsPage;
+  sidepanel: SidepanelPage;
 };
 
 export const test = base.extend<Fixtures>({
@@ -10,6 +12,9 @@ export const test = base.extend<Fixtures>({
 
   agents: async ({ page }, use) => {
     await use(new AgentsPage(page));
+  },
+  sidepanel: async ({ page }, use) => {
+    await use(new SidepanelPage(page));
   }
 });
 

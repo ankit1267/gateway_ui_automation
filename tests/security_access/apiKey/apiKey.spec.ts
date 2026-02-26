@@ -5,7 +5,7 @@ test.use({ storageState: 'auth.json' });
 
 
 
-test('API Key modal – name, apikey fields and cancel', async ({ page }) => {
+test('API Key modal - name, apikey fields and cancel', async ({ page }) => {
     // Navigate to org page & workspace
     await navigateToAgents(page, 'api');
     
