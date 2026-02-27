@@ -19,7 +19,7 @@ test('Playground strategy selection', async ({ agents }) => {
 });
 
 
-test.only('Playground add new test case click open new playground', async ({ agents }) => {
+test('Playground add new test case click open new playground', async ({ agents }) => {
   await agents.goto('api');
   const agent = await agents.openAgent(process.env.AGENT_NAME!);
 

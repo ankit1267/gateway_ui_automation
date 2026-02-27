@@ -37,7 +37,7 @@ test('User Details page should not show 404', async ({ page }) => {
 
 });
 
-test.only('update org name',async({page})=>{
+test('update org name',async({page})=>{
   const workspacePage = new WorkspacePage(page);
   const newName = `Tilakraj Singh ${Date.now()}`;
   await workspacePage.goto();
