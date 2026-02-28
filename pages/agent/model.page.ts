@@ -6,14 +6,14 @@ export type ServiceProvider =
     | 'Anthropic'
     | 'Groq'
     | 'Gemini'
-    | 'Ai ml'
+    | 'Ai-ml'
     | 'Grok';
 
 export class ModelPage {
     private readonly modelConfigSection: Locator;
 
-    private readonly serviceProviderLabel: string;
-    private readonly modelLabel: string;
+    private readonly serviceProvider: Locator;
+    private readonly model: Locator;
 
     private readonly dropdownButton: string;
     private readonly listbox: Locator;
@@ -28,11 +28,11 @@ export class ModelPage {
 
     constructor(private page: Page) {
         // config section
-        this.modelConfigSection = page.locator('#model-tab-config-section');
+        this.modelConfigSection = page.getByTestId('model-tab-config-section');
 
         // labels
-        this.serviceProviderLabel = 'Service Provider';
-        this.modelLabel = 'Model';
+        this.serviceProvider = this.modelConfigSection.getByTestId('service-dropdown-trigger-button');
+        this.model = this.modelConfigSection.getByTestId('model-dropdown-trigger-button');
 
         // generic
         this.dropdownButton = 'role=button';
@@ -58,19 +58,8 @@ export class ModelPage {
     // -------------------------
 
     async selectServiceProvider(provider: ServiceProvider) {
-        const serviceProviderRow = this.modelConfigSection
-            .getByText(this.serviceProviderLabel, { exact: true })
-            .locator('..');
-
-        await serviceProviderRow.locator(this.dropdownButton).click();
-
-        await this.listbox
-            .getByRole('option', { name: provider, exact: true })
-            .click();
-
-        await expect(
-            serviceProviderRow.getByRole('button', { name: provider })
-        ).toBeVisible();
+        await this.serviceProvider.click();
+        await this.page.getByTestId(`service-dropdown-option-${provider.toLowerCase()}`).click();
     }
 
     // -------------------------
@@ -78,15 +67,13 @@ export class ModelPage {
     // -------------------------
 
     async expectModelsVisible(models: string[]) {
-        const modelRow = this.modelConfigSection
-            .getByText(this.modelLabel, { exact: true })
-            .locator('..');
 
-        await modelRow.locator(this.dropdownButton).click();
+
+        await this.model.click();
 
         for (const model of models) {
             await expect(
-                this.page.getByRole('option', { name: model, exact: true })
+                this.page.getByTestId(`model-dropdown-grouped-option-${model.toLowerCase()}`)
             ).toBeVisible();
         }
     }
@@ -146,7 +133,7 @@ export class ModelPage {
     async clickAdvancedParameterDropdown(parameterName: string) {
         await this.page.getByTestId(`advanced-param-dropdown-trigger-${parameterName}`).click();
     }
-    async expectAdvancedParameterMenuVisible(parameterName: string){
+    async expectAdvancedParameterMenuVisible(parameterName: string) {
         await expect(this.page.getByTestId(`advanced-param-dropdown-menu-${parameterName}`)).toBeVisible();
     }
 
@@ -167,19 +154,19 @@ export class ModelPage {
         }
     }
 
-    async clickFallbackServiceDropdown(){
+    async clickFallbackServiceDropdown() {
         await this.page.getByTestId('fallback-service-dropdown-button').click();
     }
 
-    async clickFallbackModelDropdown(){
+    async clickFallbackModelDropdown() {
         await this.page.getByTestId('fallback-model-dropdown-button').click();
     }
 
-    async expectFallbackModelDropdownVisible(){
+    async expectFallbackModelDropdownVisible() {
         await expect(this.page.getByTestId('fallback-model-dropdown-menu')).toBeVisible();
     }
 
-    async expectFallbackServiceDropdownVisible(){
+    async expectFallbackServiceDropdownVisible() {
         await expect(this.page.getByTestId('fallback-service-dropdown-menu')).toBeVisible();
     }
 
@@ -191,7 +178,7 @@ export class ModelPage {
         }
     }
 
-    
+
     async expectEnableFallbackModelTextVisible() {
         await expect(this.page.getByText('Enable fallback model')).toBeVisible();
     }
@@ -200,11 +187,11 @@ export class ModelPage {
         await expect(this.page.locator('.w-full.p-3.border.border-base-200')).toBeVisible();
     }
 
-    async clickConfigureApiKey(){
+    async clickConfigureApiKey() {
         await this.page.locator('div').filter({ hasText: /^Configure API keys\.\.\.$/ }).nth(2).click();
     }
 
-    async expectDropdownApiKeyVisible(){
+    async expectDropdownApiKeyVisible() {
         await expect(this.page.getByText('AnthropicNo API keys available for AnthropicGroqNo API keys available for')).toBeVisible();
     }
 }

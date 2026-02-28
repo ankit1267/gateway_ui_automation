@@ -85,7 +85,7 @@ test.describe('Model Configuration - Service Provider & Model List', () => {
     test('TC-MODEL-07: Verify Model List Loads for Ai-ml', async ({ agents }) => {
         const agent = await agents.openAgent(Agent);
         await agent.tabs.openModel();
-        await agent.model.selectServiceProvider('Ai ml');
+        await agent.model.selectServiceProvider('Ai-ml');
 
         const aimlModels = [
             'gpt-oss-120b',

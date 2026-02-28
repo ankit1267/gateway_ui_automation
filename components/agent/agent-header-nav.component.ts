@@ -32,7 +32,7 @@ export class AgentHeaderNav {
     this.newButton = this.page.getByRole('button', { name: 'New', exact: true });
     this.versionDescriptionInput = this.page.getByRole('textbox', { name: 'Enter version description' });
     this.trashIcon = this.page.locator('.lucide.lucide-trash2').first();
-    this.deleteButton = this.page.getByRole('button', { name: 'Delete', exact: true });
+    this.deleteButton = this.page.getByTestId('DELETE_VERSION_MODAL').getByTestId('delete-modal-confirm-button').first();
   }
 
   async openChatbotConfig() {
