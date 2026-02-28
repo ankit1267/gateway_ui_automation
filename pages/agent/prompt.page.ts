@@ -10,6 +10,13 @@ export class PromptPage {
   private readonly agentSetupCard: Locator;
   private readonly diffButton: Locator;
   private readonly diffModal: Locator;
+  private readonly instructionsSection: Locator;
+  private readonly manageVariablesButton: Locator;
+  private readonly responseTypeSelect: Locator;
+  private readonly variableSlider: Locator;
+  private readonly migrateButton: Locator;
+  private readonly simpleModeButton: Locator;
+  private readonly advancedModeButton: Locator;
   readonly promptHelper: PromptHelperPanel;
 
   constructor(page: Page) {
@@ -20,9 +27,55 @@ export class PromptPage {
     this.agentSetupCard = page.getByTestId('agent-setup-guide-container');
     this.diffButton = page.getByTestId('prompt-header-diff-button');
     this.diffModal = page.getByTestId('DIFF_PROMPT');
-
+    this.instructionsSection = page.getByText('InstructionsAdd dynamic');
+    this.manageVariablesButton = page.getByTestId('default-variables-manage-button');
+    this.variableSlider = page.getByRole('complementary', {
+      name: 'Variable collection slider'
+    });
     this.promptHelper = new PromptHelperPanel(page);
+    this.responseTypeSelect = page.getByTestId('advanced-param-select-response_type');
 
+    this.migrateButton = page.getByTestId('prompt-header-migrate-button');
+    this.simpleModeButton = page.getByRole('button', { name: 'simple' });
+    this.advancedModeButton = page.getByRole('button', { name: 'advanced' });
+
+  }
+
+  async expectMigrateButtonVisible() {
+    await expect(this.migrateButton).toBeVisible();
+  }
+
+  async expectParamModesVisible() {
+    await expect(this.simpleModeButton).toBeVisible();
+    await expect(this.advancedModeButton).toBeVisible();
+  }
+
+  async selectResponseType(value: string) {
+    await this.responseTypeSelect.selectOption(value);
+    await expect(this.responseTypeSelect).toHaveValue(value);
+  }
+
+  //deleteVariable
+  async deleteVariable(index: number) {
+    await this.page.locator(`#variable-delete-button-${index}`).click();
+  }
+
+  async openInstructionsSection() {
+    await this.instructionsSection.click();
+  }
+
+  async openVariableManager() {
+    await this.manageVariablesButton.click();
+  }
+
+  async expectVariableSliderVisible() {
+    await expect(this.variableSlider).toBeVisible();
+  }
+
+  async expectVariableKeyInputVisible(index: number) {
+    await expect(
+      this.page.locator(`#variable-key-input-${index}`)
+    ).toBeVisible();
   }
 
   async diffModalVisible() {
