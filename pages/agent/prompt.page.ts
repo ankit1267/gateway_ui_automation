@@ -1,5 +1,6 @@
 import type { Page, Locator } from '@playwright/test';
 import { expect } from '@playwright/test';
+import { PromptHelperPanel } from '../../components/prompt/prompt-helper.panel';
 
 export class PromptPage {
   private readonly page: Page;
@@ -9,7 +10,7 @@ export class PromptPage {
   private readonly agentSetupCard: Locator;
   private readonly diffButton: Locator;
   private readonly diffModal: Locator;
-
+  readonly promptHelper: PromptHelperPanel;
 
   constructor(page: Page) {
     this.page = page;
@@ -20,6 +21,8 @@ export class PromptPage {
     this.diffButton = page.getByTestId('prompt-header-diff-button');
     this.diffModal = page.getByTestId('DIFF_PROMPT');
 
+    this.promptHelper = new PromptHelperPanel(page);
+
   }
 
   async diffModalVisible() {
@@ -28,6 +31,7 @@ export class PromptPage {
 
   async diffButtonClick() {
     await this.diffButton.click();
+    await this.diffModalVisible();
   }
 
   async fillRole(prompt: string) {
