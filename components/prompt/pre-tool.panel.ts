@@ -1,0 +1,28 @@
+import type { Page, Locator, FrameLocator } from '@playwright/test';
+import { expect } from '@playwright/test';
+
+export class PreToolDropdown {
+    private readonly page: Page;
+    private readonly addNewTool: Locator;
+    private readonly searchInput: Locator;
+
+    constructor(page: Page) {
+        this.page = page;
+        this.addNewTool = page.getByTestId('embed-suggestion-add-new-button');
+        this.searchInput = page.getByTestId('embed-suggestion-search-input');
+
+    }
+
+    async clickAddNewTool() {
+        await this.addNewTool.click();
+    }
+
+    async search(toolName: string) {
+        await this.searchInput.fill(toolName);
+    }
+
+    async selectTool(toolName: string) {
+        await this.page.getByText(toolName).click();
+    }
+
+}

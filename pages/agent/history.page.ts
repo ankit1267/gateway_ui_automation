@@ -4,6 +4,8 @@ export class HistoryPage {
     private readonly page: Page
     private readonly toolItem: Locator;
     private readonly closeToolItemBtn: Locator;
+    private readonly threadItemVar: Locator;
+    private readonly pre_function: Locator;
 
     constructor(page: Page) {
         this.page = page;
@@ -11,6 +13,17 @@ export class HistoryPage {
             .locator('[data-testid^="thread-item-tool-data-"]')
             .first();
         this.closeToolItemBtn = page.getByTestId('tools-data-modal-close-button');
+        this.threadItemVar = page.getByTestId('thread-item-user-variables-button').first();
+        this.pre_function = page.getByRole('heading', { name: 'pre_function' });
+
+    }
+
+    async verifyPreFunctionVisible() {
+        await expect(this.pre_function).toBeVisible();
+    }
+
+    async openThreadItemVar() {
+        await this.threadItemVar.click();
     }
 
     /**
@@ -20,11 +33,22 @@ export class HistoryPage {
         await expect(this.toolItem).toBeVisible({ timeout: 10000 });
     }
 
+    async waitForJustNowVisible() {
+        await expect(this.page.getByText('Just now').first()).toBeVisible({ timeout: 10000 });
+    }
+
     async openToolItem() {
         await this.waitForVisible();
         await this.toolItem.click();
     }
 
+    async verifyPreToolVariableVisible(message: string | RegExp) {
+        const preFunctionSection = this.page
+            .getByRole('heading', { name: 'pre_function' })
+            .locator('..');
+
+        await expect(preFunctionSection).toContainText(message);
+    }
     async verifyVariableVisible(message: string | RegExp) {
         await expect(
             this.page.getByText(message)

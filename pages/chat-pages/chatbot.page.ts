@@ -11,18 +11,20 @@ export class ChatbotPage {
   private readonly badResponseButton: Locator;
 
   constructor(public readonly page: Page) {
-    this.frame = this.page.locator('#iframe-component-interfaceEmbed').contentFrame();
+    this.frame = this.page.frameLocator(
+      'iframe[src*="chatbot"]'
+    );
     this.scrollable = this.frame.locator('#scrollableDiv');
     this.newThreadButton = this.frame.getByRole('button').nth(1);
     this.input = this.frame.getByRole('textbox', {
       name: 'Message AI Assistant...'
     });
-     this.copyButton =  this.frame.locator('button[data-tip="Copy"]')
-     this.goodResponseButton = this.frame.locator('button[data-tip="Good response"]')
-     this.badResponseButton = this.frame.locator('button[data-tip="Bad response"]')
+    this.copyButton = this.frame.getByRole('button', { name: 'Copy' });
+    this.goodResponseButton = this.frame.getByRole('button', { name: 'Good response' });
+    this.badResponseButton = this.frame.getByRole('button', { name: 'Bad response' });
   }
 
-  async isHomeVisible(){
+  async isHomeVisible() {
     return await this.frame
       .getByText('What can I help with?')
       .isVisible();
@@ -50,9 +52,9 @@ export class ChatbotPage {
   async expectResponse(message: string | RegExp) {
     await expect(this.scrollable.getByText(message)).toBeVisible({ timeout: 40000 });
   }
-  async  expectText(message:string){
+  async expectText(message: string) {
     await expect(this.scrollable)
-    .toContainText(message, { timeout: 30000 });
+      .toContainText(message, { timeout: 30000 });
   }
 
   async isCopyButtonVisible() {
@@ -61,11 +63,12 @@ export class ChatbotPage {
       .isVisible();
   }
 
+
   async expectCopyButtonVisible() {
     await expect(this.copyButton).toBeVisible({ timeout: 40000 });
   }
 
-  async expectGoodResponseButtonVisible() { 
+  async expectGoodResponseButtonVisible() {
     await expect(this.goodResponseButton).toBeVisible({ timeout: 40000 });
   }
 
