@@ -1,6 +1,7 @@
 import type { Page, Locator } from '@playwright/test';
 import { expect } from '@playwright/test';
 import { PromptHelperPanel } from '../../components/prompt/prompt-helper.panel';
+import { PreToolDropdown } from '../../components/prompt/pre-tool.panel';
 
 export class PromptPage {
   private readonly page: Page;
@@ -17,8 +18,11 @@ export class PromptPage {
   private readonly migrateButton: Locator;
   private readonly simpleModeButton: Locator;
   private readonly advancedModeButton: Locator;
+  private readonly addPreTool: Locator;
   readonly promptHelper: PromptHelperPanel;
-
+  readonly preToolDropdown: PreToolDropdown;
+  readonly deleteButton: Locator;
+  readonly deleteModal: Locator;
   constructor(page: Page) {
     this.page = page;
     this.role = page.getByRole('textbox', { name: 'e.g. You are a helpful customer support agent' });
@@ -38,6 +42,11 @@ export class PromptPage {
     this.migrateButton = page.getByTestId('prompt-header-migrate-button');
     this.simpleModeButton = page.getByRole('button', { name: 'simple' });
     this.advancedModeButton = page.getByRole('button', { name: 'advanced' });
+    this.addPreTool = page.getByTestId('pre-embed-add-button');
+    this.promptHelper = new PromptHelperPanel(page);
+    this.preToolDropdown = new PreToolDropdown(page);
+    this.deleteButton = page.getByTestId(/^render-embed-delete-button-/);
+    this.deleteModal = page.getByTestId('DELETE_PRE_TOOL_MODAL').getByTestId('delete-modal-confirm-button');
 
   }
 
@@ -76,6 +85,17 @@ export class PromptPage {
     await expect(
       this.page.locator(`#variable-key-input-${index}`)
     ).toBeVisible();
+    
+  }
+
+  async deletePreTool() {
+    await this.deleteButton.click();
+    await this.deleteModal.click();
+  }
+
+
+  async addPreToolClick() {
+    await this.addPreTool.click();
   }
 
   async diffModalVisible() {
