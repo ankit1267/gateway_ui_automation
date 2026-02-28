@@ -6,6 +6,9 @@ export class ChatbotPage {
   private readonly scrollable: Locator;
   private readonly newThreadButton: Locator;
   private readonly input: Locator;
+  private readonly copyButton: Locator;
+  private readonly goodResponseButton: Locator;
+  private readonly badResponseButton: Locator;
 
   constructor(public readonly page: Page) {
     this.frame = this.page.locator('#iframe-component-interfaceEmbed').contentFrame();
@@ -14,6 +17,9 @@ export class ChatbotPage {
     this.input = this.frame.getByRole('textbox', {
       name: 'Message AI Assistant...'
     });
+     this.copyButton =  this.frame.locator('button[data-tip="Copy"]')
+     this.goodResponseButton = this.frame.locator('button[data-tip="Good response"]')
+     this.badResponseButton = this.frame.locator('button[data-tip="Bad response"]')
   }
 
   async isHomeVisible(){
@@ -53,6 +59,30 @@ export class ChatbotPage {
     return await this.frame
       .getByRole('button', { name: 'Copy' })
       .isVisible();
+  }
+
+  async expectCopyButtonVisible() {
+    await expect(this.copyButton).toBeVisible({ timeout: 40000 });
+  }
+
+  async expectGoodResponseButtonVisible() { 
+    await expect(this.goodResponseButton).toBeVisible({ timeout: 40000 });
+  }
+
+  async expectBadResponseButtonVisible() {
+    await expect(this.badResponseButton).toBeVisible({ timeout: 40000 });
+  }
+
+  async clickCopyButton() {
+    await this.copyButton.click();
+  }
+
+  async clickGoodResponseButton() {
+    await this.goodResponseButton.click();
+  }
+
+  async clickBadResponseButton() {
+    await this.badResponseButton.click();
   }
 
 

@@ -39,3 +39,18 @@ test('Playground add new test case click open new playground', async ({ agents }
   await agent.playground.clickAddNewTestCase();
   await agent.playground.expectChatControlsNotVisible();
 });
+
+test('Playground send message and verify response', async ({ agents }) => {
+  await agents.goto('api');
+  const agent = await agents.openAgent(process.env.AGENT_NAME!);
+
+  await agent.tabs.openModel();
+  await agent.model.selectServiceProvider("Mistral");
+  await agent.model.clickConfigureApiKey();
+  await agent.model.selectApiKey("Mistral api key");
+  
+
+  await agent.playground.typeMessage('hi');
+  await agent.playground.expectChatMessageVisible(1);
+  
+});

@@ -7,12 +7,14 @@ export class PlaygroundPage {
   readonly messageTextarea: Locator;
   readonly strategySelect: Locator;
   readonly addTestCaseButton: Locator;
+ 
 
   constructor(page: Page) {
     this.page = page;
     this.messageTextarea = page.getByTestId('chat-message-textarea');
     this.strategySelect = page.getByTestId('chat-strategy-select');
     this.addTestCaseButton = page.getByTestId('chat-add-testcase-button');
+
   }
 
   async typeMessage(message: string) {
@@ -35,7 +37,12 @@ export class PlaygroundPage {
       .getByTestId('chat-strategy-select')
       .selectOption(strategy);
   }
+
   async clickAddNewTestCase(){
     await this.addTestCaseButton.click();
+  }
+
+  async expectChatMessageVisible(i:number) {
+    await expect(this.page.getByTestId(`chat-message-${i}`)).toBeVisible();
   }
 }

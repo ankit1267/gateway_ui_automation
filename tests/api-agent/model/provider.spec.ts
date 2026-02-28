@@ -1,6 +1,6 @@
 import { test } from '../../../fixtures/base.fixture';
 
-const Agent = process.env.AGENT_NAME!;
+const Agent = process.env.TESTING_AGENT!;
 
 test('TC-MODEL-01: Verify model list loads for Mistral', async ({ agents }) => {
 
@@ -19,7 +19,7 @@ test('TC-MODEL-01: Verify model list loads for Mistral', async ({ agents }) => {
   ]);
 });
 
-test('TC-MODEL-02: Verify model list loads for OpenAI', async ({  agents }) => {
+test('TC-MODEL-02: Verify model list loads for OpenAI', async ({ agents }) => {
   await agents.goto('api');
   const agent = await agents.openAgent(Agent);
   await agent.tabs.openModel();
@@ -80,7 +80,7 @@ test('TC-MODEL-06: Verify model list loads for Ai-ml', async ({ agents }) => {
   const agent = await agents.openAgent(Agent);
   await agent.tabs.openModel();
 
-  await agent.model.selectServiceProvider('Ai ml');
+  await agent.model.selectServiceProvider('Ai-ml');
 
   await agent.model.expectModelsVisible([
     'gpt-oss-120b',
