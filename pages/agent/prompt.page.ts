@@ -8,6 +8,9 @@ export class PromptPage {
   private readonly role: Locator;
   private readonly goal: Locator;
   private readonly instructions: Locator;
+  private readonly migrateRole: Locator;
+  private readonly migrateGoal: Locator;
+  private readonly migrateInstructions: Locator;
   private readonly agentSetupCard: Locator;
   private readonly diffButton: Locator;
   private readonly diffModal: Locator;
@@ -23,11 +26,15 @@ export class PromptPage {
   readonly preToolDropdown: PreToolDropdown;
   readonly deleteButton: Locator;
   readonly deleteModal: Locator;
+  private readonly migrateModal: Locator;
   constructor(page: Page) {
     this.page = page;
     this.role = page.getByRole('textbox', { name: 'e.g. You are a helpful customer support agent' });
     this.goal = page.getByRole('textbox', { name: 'e.g. Help users resolve billing issues' });
     this.instructions = page.getByRole('textbox', { name: 'e.g. Always be polite. Never' });
+    this.migrateRole = page.getByRole('textbox', { name: 'e.g. You are a helpful customer support assistant' });
+    this.migrateGoal = page.getByRole('textbox', { name: 'e.g. Help users resolve their issues quickly and accurately' });
+    this.migrateInstructions = page.getByRole('textbox', { name: 'e.g. Always be polite. Ask clarifying questions if needed...' });
     this.agentSetupCard = page.getByTestId('agent-setup-guide-container');
     this.diffButton = page.getByTestId('prompt-header-diff-button');
     this.diffModal = page.getByTestId('DIFF_PROMPT');
@@ -47,7 +54,30 @@ export class PromptPage {
     this.preToolDropdown = new PreToolDropdown(page);
     this.deleteButton = page.getByTestId(/^render-embed-delete-button-/);
     this.deleteModal = page.getByTestId('DELETE_PRE_TOOL_MODAL').getByTestId('delete-modal-confirm-button');
+    this.migrateModal = page.getByTestId('MIGRATE_PROMPT_MODAL');
+  }
 
+  async openMigrateModal() {
+    await this.migrateButton.click();
+    await expect(this.migrateModal).toBeVisible();
+  }
+
+  async expectMigrateModalFieldsVisible() {
+    await expect(this.migrateModal.getByText('role')).toBeVisible();
+    await expect(this.migrateModal.getByText('goal')).toBeVisible();
+    await expect(this.migrateModal.getByText('instruction')).toBeVisible();
+
+    await expect(
+      this.migrateModal.getByRole('button', { name: 'Cancel' })
+    ).toBeVisible();
+
+    await expect(
+      this.migrateModal.getByRole('button', { name: 'Migrate & Save' })
+    ).toBeVisible();
+  }
+
+  async clickMigrateAndSaveButton() {
+    await this.migrateModal.getByRole('button', { name: 'Migrate & Save' }).click();
   }
 
   async expectMigrateButtonVisible() {
@@ -85,7 +115,31 @@ export class PromptPage {
     await expect(
       this.page.locator(`#variable-key-input-${index}`)
     ).toBeVisible();
-    
+
+  }
+
+  async getRoleValue(): Promise<string> {
+    return await this.role.inputValue();
+  }
+
+  async getGoalValue(): Promise<string> {
+    return await this.goal.inputValue();
+  }
+
+  async getInstructionsValue(): Promise<string> {
+    return await this.instructions.inputValue();
+  }
+  
+  async getMigrateRoleValue(): Promise<string> {
+    return await this.migrateRole.inputValue();
+  }
+  
+  async getMigrateGoalValue(): Promise<string> {
+    return await this.migrateGoal.inputValue();
+  }
+  
+  async getMigrateInstructionsValue(): Promise<string> {
+    return await this.migrateInstructions.inputValue();
   }
 
   async deletePreTool() {
@@ -126,6 +180,27 @@ export class PromptPage {
     await this.fillRole(role);
     await this.fillGoal(goal);
     await this.fillInstructions(instructions);
+  }
+
+  async fillMigrateRole(prompt: string) {
+    await this.migrateRole.fill(prompt);
+    await this.blurInput();
+  }
+
+  async fillMigrateGoal(prompt: string) {
+    await this.migrateGoal.fill(prompt);
+    await this.blurInput();
+  }
+
+  async fillMigrateInstructions(prompt: string) {
+    await this.migrateInstructions.fill(prompt);
+    await this.blurInput();
+  }
+
+  async fillMigratePrompt(role: string, goal: string, instructions: string) {
+    await this.fillMigrateRole(role);
+    await this.fillMigrateGoal(goal);
+    await this.fillMigrateInstructions(instructions);
   }
 
   async blurInput() {

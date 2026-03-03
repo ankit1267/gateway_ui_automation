@@ -16,6 +16,8 @@ export class AgentHeaderNav {
   private readonly versionDescriptionInput: Locator;
   private readonly trashIcon: Locator;
   private readonly deleteButton: Locator;
+  private readonly revert: Locator;
+  private readonly discardChangesButton: Locator;
 
   constructor(private readonly page: Page) {
     this.history = this.page.getByTestId('navbar-tab-history');
@@ -24,6 +26,7 @@ export class AgentHeaderNav {
     this.updatesHistory = this.page.getByTestId('navbar-history-button');
     this.publishToggel = this.page.getByTestId('navbar-publish-dropdown-toggle');
     this.publish = this.page.getByTestId('navbar-publish-button');
+    this.revert = this.page.getByTestId('navbar-revert-button');
     this.menuButton = this.page.getByTestId('navbar-ellipsis-menu-toggle');
     this.version = this.page.getByRole('dialog').getByTestId('version-description-create-button');
     this.agentName = this.page.getByTestId('navbar-agent-name-display');
@@ -33,6 +36,7 @@ export class AgentHeaderNav {
     this.versionDescriptionInput = this.page.getByRole('textbox', { name: 'Enter version description' });
     this.trashIcon = this.page.locator('.lucide.lucide-trash2').first();
     this.deleteButton = this.page.getByTestId('DELETE_VERSION_MODAL').getByTestId('delete-modal-confirm-button').first();
+    this.discardChangesButton = this.page.getByTestId('DELETE_MODAL').getByTestId('delete-modal-confirm-button');
   }
 
   async openChatbotConfig() {
@@ -59,6 +63,14 @@ export class AgentHeaderNav {
         break;
       }
     }
+  }
+
+  async clickDiscardChangesButton() {
+    await this.discardChangesButton.click();
+  }
+
+  async clickRevertButton() {
+    await this.revert.click();
   }
 
   async clickPublishButton() {
