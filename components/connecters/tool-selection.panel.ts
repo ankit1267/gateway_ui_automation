@@ -44,6 +44,28 @@ export class ToolSelectionDropdown {
         await expect(this.viasocketHeader).toBeVisible({ timeout: 15000 });
     }
 
+    async clearSearch() {
+        await this.searchInput.clear();
+    }
 
+    async getSearchValue(): Promise<string> {
+        return this.searchInput.inputValue();
+    }
 
+    async isVisible(): Promise<boolean> {
+        return this.dropdown.isVisible();
+    }
+
+    getDropdown(): Locator {
+        return this.dropdown;
+    }
+
+    async isAddNewToolsVisible(): Promise<boolean> {
+        return this.addNewToolsLink.isVisible();
+    }
+
+    async searchAndSelect(toolName: string) {
+        await this.search(toolName);
+        await this.selectTool(toolName);
+    }
 }

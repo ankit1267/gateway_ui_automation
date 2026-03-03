@@ -27,6 +27,21 @@ export class PromptPage {
   readonly deleteButton: Locator;
   readonly deleteModal: Locator;
   private readonly migrateModal: Locator;
+  private readonly promptHeaderDefault: Locator;
+  private readonly promptHeaderHelperOpen: Locator;
+  private readonly closeHelperButton: Locator;
+  private readonly openHelperButton: Locator;
+  private readonly diffButtonOpen: Locator;
+  private readonly promptViewModeToggle: Locator;
+  private readonly promptConfigContainer: Locator;
+  private readonly promptSummaryButton: Locator;
+  private readonly optimizePromptButton: Locator;
+  private readonly promptEditorContainer: Locator;
+  private readonly promptFullscreenToggle: Locator;
+  private readonly promptResizeHandle: Locator;
+  private readonly defaultVariablesCollapse: Locator;
+  private readonly defaultVariablesToggle: Locator;
+
   constructor(page: Page) {
     this.page = page;
     this.role = page.getByRole('textbox', { name: 'e.g. You are a helpful customer support agent' });
@@ -55,6 +70,24 @@ export class PromptPage {
     this.deleteButton = page.getByTestId(/^render-embed-delete-button-/);
     this.deleteModal = page.getByTestId('DELETE_PRE_TOOL_MODAL').getByTestId('delete-modal-confirm-button');
     this.migrateModal = page.getByTestId('MIGRATE_PROMPT_MODAL');
+
+    // Prompt header
+    this.promptHeaderDefault = page.getByTestId('prompt-header-default');
+    this.promptHeaderHelperOpen = page.getByTestId('prompt-header-helper-open');
+    this.closeHelperButton = page.getByTestId('prompt-header-close-helper-button');
+    this.openHelperButton = page.getByTestId('prompt-header-open-helper-button');
+    this.diffButtonOpen = page.getByTestId('prompt-header-diff-button-open');
+    this.promptViewModeToggle = page.getByTestId('prompt-view-mode-toggle');
+
+    // Prompt config (advanced mode)
+    this.promptConfigContainer = page.getByTestId('prompt-config-container');
+    this.promptSummaryButton = page.getByTestId('prompt-summary-button');
+    this.optimizePromptButton = page.getByTestId('optimize-prompt-button');
+    this.promptEditorContainer = page.getByTestId('prompt-editor-container');
+    this.promptFullscreenToggle = page.getByTestId('prompt-fullscreen-toggle');
+    this.promptResizeHandle = page.getByTestId('prompt-resize-handle');
+    this.defaultVariablesCollapse = page.getByTestId('default-variables-collapse');
+    this.defaultVariablesToggle = page.getByTestId('default-variables-toggle');
   }
 
   async openMigrateModal() {
@@ -115,8 +148,6 @@ export class PromptPage {
     await expect(
       this.page.locator(`#variable-key-input-${index}`)
     ).toBeVisible();
-
-
   }
 
   async getRoleValue(): Promise<string> {
@@ -130,15 +161,15 @@ export class PromptPage {
   async getInstructionsValue(): Promise<string> {
     return await this.instructions.inputValue();
   }
-  
+
   async getMigrateRoleValue(): Promise<string> {
     return await this.migrateRole.inputValue();
   }
-  
+
   async getMigrateGoalValue(): Promise<string> {
     return await this.migrateGoal.inputValue();
   }
-  
+
   async getMigrateInstructionsValue(): Promise<string> {
     return await this.migrateInstructions.inputValue();
   }
@@ -147,7 +178,6 @@ export class PromptPage {
     await this.deleteButton.click();
     await this.deleteModal.click();
   }
-
 
   async addPreToolClick() {
     await this.addPreTool.click();
@@ -249,7 +279,6 @@ export class PromptPage {
     expect(instruction.published).not.toBe(instruction.current);
   }
 
-
   getSetupStepCard(step: number) {
     return this.page.getByTestId(`agent-setup-step-${step}`);
   }
@@ -270,8 +299,6 @@ export class PromptPage {
     });
   }
 
-
-
   async expectAgentSetupGuideVisible() {
     await expect(this.agentSetupCard).toBeVisible();
   }
@@ -280,5 +307,128 @@ export class PromptPage {
     await expect(this.agentSetupCard).not.toBeVisible();
   }
 
+  // --- Prompt header actions ---
 
+  async isPromptHeaderDefaultVisible(): Promise<boolean> {
+    return this.promptHeaderDefault.isVisible();
+  }
+
+  async isPromptHeaderHelperOpenVisible(): Promise<boolean> {
+    return this.promptHeaderHelperOpen.isVisible();
+  }
+
+  async openPromptHelper() {
+    await this.openHelperButton.click();
+  }
+
+  async closePromptHelper() {
+    await this.closeHelperButton.click();
+  }
+
+  async clickDiffButtonFromHelperView() {
+    await this.diffButtonOpen.click();
+  }
+
+  async isPromptViewModeToggleVisible(): Promise<boolean> {
+    return this.promptViewModeToggle.isVisible();
+  }
+
+  // --- Prompt config actions ---
+
+  async isPromptConfigVisible(): Promise<boolean> {
+    return this.promptConfigContainer.isVisible();
+  }
+
+  async clickPromptSummary() {
+    await this.promptSummaryButton.click();
+  }
+
+  async clickOptimizePrompt() {
+    await this.optimizePromptButton.click();
+  }
+
+  async toggleFullscreen() {
+    await this.promptFullscreenToggle.click();
+  }
+
+  async toggleDefaultVariables() {
+    await this.defaultVariablesToggle.click();
+  }
+
+  async isDefaultVariablesCollapseVisible(): Promise<boolean> {
+    return this.defaultVariablesCollapse.isVisible();
+  }
+
+  // --- Variable slider fields (id-based locators) ---
+
+  getVariableKeyInput(index: number): Locator {
+    return this.page.locator(`#variable-key-input-${index}`);
+  }
+
+  getVariableValueText(index: number): Locator {
+    return this.page.locator(`#variable-value-text-${index}`);
+  }
+
+  getVariableValueNumber(index: number): Locator {
+    return this.page.locator(`#variable-value-number-${index}`);
+  }
+
+  getVariableValueSelect(index: number): Locator {
+    return this.page.locator(`#variable-value-select-${index}`);
+  }
+
+  getVariableValueTextarea(index: number): Locator {
+    return this.page.locator(`#variable-value-textarea-${index}`);
+  }
+
+  getVariableDefaultText(index: number): Locator {
+    return this.page.locator(`#variable-default-text-${index}`);
+  }
+
+  getVariableDefaultNumber(index: number): Locator {
+    return this.page.locator(`#variable-default-number-${index}`);
+  }
+
+  getVariableDefaultSelect(index: number): Locator {
+    return this.page.locator(`#variable-default-select-${index}`);
+  }
+
+  getVariableDefaultTextarea(index: number): Locator {
+    return this.page.locator(`#variable-default-textarea-${index}`);
+  }
+
+  getVariableTypeSelect(index: number): Locator {
+    return this.page.locator(`#variable-type-select-${index}`);
+  }
+
+  getVariableRequiredToggle(index: number): Locator {
+    return this.page.locator(`#variable-required-toggle-${index}`);
+  }
+
+  getVariableDeleteButton(index: number): Locator {
+    return this.page.locator(`#variable-delete-button-${index}`);
+  }
+
+  async fillVariableKey(index: number, key: string) {
+    await this.getVariableKeyInput(index).fill(key);
+    await this.getVariableKeyInput(index).blur();
+  }
+
+  async fillVariableValue(index: number, value: string) {
+    await this.getVariableValueText(index).fill(value);
+    await this.getVariableValueText(index).blur();
+  }
+
+  async selectVariableType(index: number, type: string) {
+    await this.getVariableTypeSelect(index).selectOption(type);
+  }
+
+  async toggleVariableRequired(index: number) {
+    await this.getVariableRequiredToggle(index).click();
+  }
+
+  async fillVariableDefault(index: number, value: string) {
+    await this.getVariableDefaultText(index).fill(value);
+    await this.getVariableDefaultText(index).blur();
+  }
 }

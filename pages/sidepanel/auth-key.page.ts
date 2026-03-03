@@ -46,4 +46,34 @@ export class AuthKeyPage {
   async clickSmartLinkExternalLink() {
     await this.smartLinkExternalLink.click();
   }
+
+  async waitForPage() {
+    await expect(this.heading).toBeVisible();
+  }
+
+  async isCreateButtonVisible(): Promise<boolean> {
+    return this.createButton.isVisible();
+  }
+
+  async isTableVisible(): Promise<boolean> {
+    return this.table.isVisible();
+  }
+
+  getKeyRow(name: string): Locator {
+    return this.table.getByRole('row', { name: new RegExp(name) });
+  }
+
+  async getTableRowCount(): Promise<number> {
+    return this.table.getByRole('row').count();
+  }
+
+  async clickKeyRow(name: string) {
+    await this.getKeyRow(name).click();
+  }
+
+  async copyKeyByName(name: string) {
+    const row = this.getKeyRow(name);
+    await row.hover();
+    await row.locator('[data-tip="Copy"]').click();
+  }
 }

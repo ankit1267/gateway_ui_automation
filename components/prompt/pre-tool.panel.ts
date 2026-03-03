@@ -25,4 +25,20 @@ export class PreToolDropdown {
         await this.page.getByText(toolName).click();
     }
 
+    async clearSearch() {
+        await this.searchInput.clear();
+    }
+
+    async getSearchValue(): Promise<string> {
+        return this.searchInput.inputValue();
+    }
+
+    async isAddNewToolVisible(): Promise<boolean> {
+        return this.addNewTool.isVisible();
+    }
+
+    async searchAndSelect(toolName: string) {
+        await this.search(toolName);
+        await this.selectTool(toolName);
+    }
 }

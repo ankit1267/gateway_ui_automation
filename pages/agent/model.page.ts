@@ -194,4 +194,59 @@ export class ModelPage {
     async expectDropdownApiKeyVisible() {
         await expect(this.page.getByText('AnthropicNo API keys available for AnthropicGroqNo API keys available for')).toBeVisible();
     }
+
+    // -------------------------
+    // FALLBACK MODEL EXTENDED
+    // -------------------------
+
+    async selectFallbackService(serviceValue: string) {
+        await this.clickFallbackServiceDropdown();
+        await this.page.getByTestId(`fallback-service-item-${serviceValue}`).click();
+    }
+
+    async isFallbackSameModelAlertVisible(): Promise<boolean> {
+        return this.page.getByTestId('fallback-model-same-model-alert').isVisible();
+    }
+
+    getFallbackServiceItem(serviceValue: string): Locator {
+        return this.page.getByTestId(`fallback-service-item-${serviceValue}`);
+    }
+
+    // -------------------------
+    // MODEL CONFIG VISIBILITY
+    // -------------------------
+
+    async isModelConfigSectionVisible(): Promise<boolean> {
+        return this.modelConfigSection.isVisible();
+    }
+
+    async isServiceProviderVisible(): Promise<boolean> {
+        return this.serviceProvider.isVisible();
+    }
+
+    async isModelDropdownVisible(): Promise<boolean> {
+        return this.model.isVisible();
+    }
+
+    // -------------------------
+    // API KEY INPUT
+    // -------------------------
+
+    async clickApikeyDropdown() {
+        await this.page.getByTestId('apikey-input-dropdown').click();
+    }
+
+    async isApikeyInputVisible(): Promise<boolean> {
+        return this.apiKeyInputContainer.isVisible();
+    }
+
+    async selectApikeyByName(name: string) {
+        await this.clickApikeyDropdown();
+        await this.page.getByRole('option', { name }).click();
+    }
+
+    async clickAddNewApiKey() {
+        await this.clickApikeyDropdown();
+        await this.page.getByText('+  Add new API Key').click();
+    }
 }

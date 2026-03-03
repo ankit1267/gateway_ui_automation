@@ -52,4 +52,40 @@ export class AgentConfigModal {
   getParameterNameInput(paramName: string) {
     return this.modal.getByTestId(`param-name-input-${paramName}`);
   }
+
+  async isVisible(): Promise<boolean> {
+    return this.modal.isVisible();
+  }
+
+  async waitForVisible() {
+    await this.modal.waitFor({ state: 'visible' });
+  }
+
+  getRequiredCheckbox(paramName: string): Locator {
+    return this.modal.getByTestId(`param-required-checkbox-${paramName}`);
+  }
+
+  getTypeSelect(paramName: string): Locator {
+    return this.modal.getByTestId(`param-type-select-${paramName}`);
+  }
+
+  getValuePathInput(paramName: string): Locator {
+    return this.modal.getByTestId(`param-value-path-input-${paramName}`);
+  }
+
+  getDeleteButton(paramName: string): Locator {
+    return this.modal.getByTestId(`param-delete-button-${paramName}`);
+  }
+
+  getModal(): Locator {
+    return this.modal;
+  }
+
+  async addParameterWithDetails(name: string, type?: string, valuePath?: string, required?: boolean) {
+    await this.addParameter();
+    await this.fillParameterName(name);
+    if (type) await this.selectType(name, type);
+    if (valuePath) await this.fillValuePath(name, valuePath);
+    if (required) await this.setRequired(name);
+  }
 }

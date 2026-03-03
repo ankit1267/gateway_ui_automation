@@ -9,11 +9,20 @@ import { KnowledgeBaseModal } from '../../modals/knowledge-base.modal';
 
 export class ConnectersPage {
   private readonly addToolButton: Locator;
+  private readonly addToolButtonHasTools: Locator;
   private readonly addAgentButton: Locator;
+  private readonly addAgentButtonHasAgents: Locator;
   private readonly addKBButton: Locator;
   private readonly agentList: Locator;
+  private readonly agentListContainer: Locator;
   private readonly embedList: Locator;
+  private readonly embedToolsContainer: Locator;
   private readonly agentConfig: Locator;
+  private readonly addAgentDropdown: Locator;
+  private readonly addToolDropdown: Locator;
+  private readonly kbDropdown: Locator;
+  private readonly kbSearchInput: Locator;
+  private readonly kbAddNewButton: Locator;
   readonly a2aDropdown: A2AAgentDropdown;
   readonly knowledgeBaseDropdown: KnowledgeBaseDropdown;
   readonly toolDropdown: ToolSelectionDropdown;
@@ -21,11 +30,20 @@ export class ConnectersPage {
   constructor(public readonly page: Page) { 
     
     this.addToolButton = this.page.getByTestId('embed-list-add-tool-button-empty');
+    this.addToolButtonHasTools = this.page.getByTestId('embed-list-add-tool-button');
     this.addAgentButton = this.page.getByTestId('connected-agent-list-add-agent-button-empty');
+    this.addAgentButtonHasAgents = this.page.getByTestId('connected-agent-list-add-agent-button');
     this.addKBButton = this.page.getByTestId('knowledgebase-add-button');
-    this.agentList = this.page.getByTestId('connected-agent-list-agents-container')
+    this.agentList = this.page.getByTestId('connected-agent-list-agents-container');
+    this.agentListContainer = this.page.getByTestId('connected-agent-list-container');
     this.embedList = this.page.getByTestId('embed-list-container');
+    this.embedToolsContainer = this.page.getByTestId('embed-list-tools-container');
     this.agentConfig = this.page.locator('[data-testid^="connected-agent-config-button-"]');
+    this.addAgentDropdown = this.page.getByTestId('connected-agent-list-add-agent-dropdown');
+    this.addToolDropdown = this.page.getByTestId('embed-list-add-tool-dropdown');
+    this.kbDropdown = this.page.getByTestId('knowledgebase-dropdown');
+    this.kbSearchInput = this.page.getByTestId('knowledgebase-search-input');
+    this.kbAddNewButton = this.page.getByTestId('knowledgebase-add-new-button');
     this.a2aDropdown = new A2AAgentDropdown(this.page);
     this.knowledgeBaseDropdown = new KnowledgeBaseDropdown(this.page);
     this.toolDropdown = new ToolSelectionDropdown(this.page);
@@ -98,8 +116,83 @@ export class ConnectersPage {
         await removeKBBtn.click();
    }
 
-   
+   // --- Agent items by bridge ID ---
 
-  
+   getAgentItem(bridgeId: string): Locator {
+       return this.page.getByTestId(`connected-agent-item-${bridgeId}`);
+   }
 
+   async clickAgentConfigById(bridgeId: string) {
+       await this.page.getByTestId(`connected-agent-config-button-${bridgeId}`).click();
+   }
+
+   async deleteAgentById(bridgeId: string) {
+       await this.page.getByTestId(`connected-agent-delete-button-${bridgeId}`).click();
+   }
+
+   async clickAddAgentWhenHasAgents() {
+       await this.addAgentButtonHasAgents.click();
+   }
+
+   // --- Tool (embed) items ---
+
+   getPrebuiltTool(toolValue: string): Locator {
+       return this.page.getByTestId(`embed-list-prebuilt-tool-${toolValue}`);
+   }
+
+   async clickPrebuiltToolConfig(toolValue: string) {
+       await this.page.getByTestId(`embed-list-prebuilt-tool-config-button-${toolValue}`).click();
+   }
+
+   async deletePrebuiltTool(toolValue: string) {
+       await this.page.getByTestId(`embed-list-prebuilt-tool-delete-button-${toolValue}`).click();
+   }
+
+   async clickAddToolWhenHasTools() {
+       await this.addToolButtonHasTools.click();
+   }
+
+   // --- Knowledgebase items ---
+
+   getKbCard(kbId: string): Locator {
+       return this.page.getByTestId(`knowledgebase-card-${kbId}`);
+   }
+
+   async editKbById(kbId: string) {
+       await this.page.getByTestId(`knowledgebase-edit-button-${kbId}`).click();
+   }
+
+   async deleteKbById(kbId: string) {
+       await this.page.getByTestId(`knowledgebase-delete-button-${kbId}`).click();
+   }
+
+   getKbDropdownItem(kbId: string): Locator {
+       return this.page.getByTestId(`knowledgebase-dropdown-item-${kbId}`);
+   }
+
+   async selectKbFromDropdown(kbId: string) {
+       await this.getKbDropdownItem(kbId).click();
+   }
+
+   async searchKb(query: string) {
+       await this.kbSearchInput.fill(query);
+   }
+
+   async clickAddNewKb() {
+       await this.kbAddNewButton.click();
+   }
+
+   // --- Visibility checks ---
+
+   async isAgentListVisible(): Promise<boolean> {
+       return this.agentList.isVisible();
+   }
+
+   async isEmbedListVisible(): Promise<boolean> {
+       return this.embedList.isVisible();
+   }
+
+   async isKbDropdownVisible(): Promise<boolean> {
+       return this.kbDropdown.isVisible();
+   }
 }

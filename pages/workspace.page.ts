@@ -108,4 +108,51 @@ export class WorkspacePage {
     async clickWorkspaceButton(){
         await this.workspaceButton.click();
     }
+
+    // --- Create org form ---
+
+    private get createOrgForm(): Locator {
+        return this.page.getByTestId('create-org-form');
+    }
+
+    private get timezoneSearchInput(): Locator {
+        return this.page.getByTestId('create-org-timezone-search-input');
+    }
+
+    private get timezoneDropdown(): Locator {
+        return this.page.getByTestId('create-org-timezone-dropdown');
+    }
+
+    async isCreateFormVisible(): Promise<boolean> {
+        return this.createOrgForm.isVisible();
+    }
+
+    async searchTimezone(query: string) {
+        await this.timezoneTrigger.click();
+        await this.timezoneSearchInput.fill(query);
+    }
+
+    async isTimezoneDropdownVisible(): Promise<boolean> {
+        return this.timezoneDropdown.isVisible();
+    }
+
+    async isSubmitDisabled(): Promise<boolean> {
+        return this.submitButton.isDisabled();
+    }
+
+    async getNameValue(): Promise<string> {
+        return this.nameInput.inputValue();
+    }
+
+    async getDescriptionValue(): Promise<string> {
+        return this.descriptionInput.inputValue();
+    }
+
+    async clearName() {
+        await this.nameInput.clear();
+    }
+
+    async clearDescription() {
+        await this.descriptionInput.clear();
+    }
 }

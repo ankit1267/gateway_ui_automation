@@ -37,4 +37,56 @@ export class KnowledgeBaseModal {
 
     await this.addResourceButton.click();
   }
+
+  async fillName(name: string) {
+    await this.nameInput.fill(name);
+  }
+
+  async fillDescription(description: string) {
+    await this.descriptionInput.fill(description);
+  }
+
+  async fillUrl(url: string) {
+    await this.urlInput.fill(url);
+  }
+
+  async clickAddResource() {
+    await this.addResourceButton.click();
+  }
+
+  async isVisible(): Promise<boolean> {
+    return this.modal.isVisible();
+  }
+
+  async waitForVisible() {
+    await this.modal.waitFor({ state: 'visible' });
+  }
+
+  async getNameValue(): Promise<string> {
+    return this.nameInput.inputValue();
+  }
+
+  async getDescriptionValue(): Promise<string> {
+    return this.descriptionInput.inputValue();
+  }
+
+  async getUrlValue(): Promise<string> {
+    return this.urlInput.inputValue();
+  }
+
+  async clearName() {
+    await this.nameInput.clear();
+  }
+
+  async clearDescription() {
+    await this.descriptionInput.clear();
+  }
+
+  async clearUrl() {
+    await this.urlInput.clear();
+  }
+
+  getModal(): Locator {
+    return this.modal;
+  }
 }

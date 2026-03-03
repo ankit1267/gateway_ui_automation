@@ -9,6 +9,8 @@ export class ChatbotPage {
   private readonly copyButton: Locator;
   private readonly goodResponseButton: Locator;
   private readonly badResponseButton: Locator;
+  private readonly loadingSpinner: Locator;
+  private readonly sendButton: Locator;
 
   constructor(public readonly page: Page) {
     this.frame = this.page.frameLocator(
@@ -22,6 +24,8 @@ export class ChatbotPage {
     this.copyButton = this.frame.getByRole('button', { name: 'Copy' });
     this.goodResponseButton = this.frame.getByRole('button', { name: 'Good response' });
     this.badResponseButton = this.frame.getByRole('button', { name: 'Bad response' });
+    this.loadingSpinner = this.frame.locator('.loading-spinner, .animate-spin');
+    this.sendButton = this.frame.getByRole('button', { name: /send/i });
   }
 
   async isHomeVisible() {
@@ -88,5 +92,53 @@ export class ChatbotPage {
     await this.badResponseButton.click();
   }
 
+  // --- Additional iframe locators ---
 
+  getFrameLocator(): FrameLocator {
+    return this.frame;
+  }
+
+  getScrollable(): Locator {
+    return this.scrollable;
+  }
+
+  async isLoadingVisible(): Promise<boolean> {
+    return this.loadingSpinner.isVisible();
+  }
+
+  async waitForResponseComplete(timeout = 40000) {
+    await this.loadingSpinner.waitFor({ state: 'hidden', timeout });
+  }
+
+  async clickSendButton() {
+    await this.sendButton.click();
+  }
+
+  async getInputPlaceholder(): Promise<string | null> {
+    return this.input.getAttribute('placeholder');
+  }
+
+  async clearInput() {
+    await this.input.clear();
+  }
+
+  async getInputValue(): Promise<string> {
+    return this.input.inputValue();
+  }
+
+  getMessageByText(text: string): Locator {
+    return this.scrollable.getByText(text);
+  }
+
+  async getMessageCount(): Promise<number> {
+    return this.scrollable.locator('[class*="message"]').count();
+  }
+
+  getStarterQuestion(text: string): Locator {
+    return this.frame.getByRole('button', { name: text });
+  }
+
+  async clickStarterQuestion(text: string) {
+    await this.getStarterQuestion(text).click();
+  }
 }

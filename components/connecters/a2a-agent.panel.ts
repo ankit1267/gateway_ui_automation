@@ -31,6 +31,21 @@ export class A2AAgentDropdown {
         await this.searchInput.fill(agentName);
     }
 
+    async clearSearch() {
+        await this.searchInput.clear();
+    }
 
+    async getSearchValue(): Promise<string> {
+        return this.searchInput.inputValue();
+    }
+
+    getDropdown(): Locator {
+        return this.dropdown;
+    }
+
+    async searchAndSelect(agentName: string) {
+        await this.search(agentName);
+        await this.selectAgent(agentName);
+    }
 
 }

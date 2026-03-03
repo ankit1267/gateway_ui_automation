@@ -104,4 +104,45 @@ export class PromptHelperPanel {
   async expectMainVisible() {
     await expect(this.mainContent).toBeVisible();
   }
+
+  async isOpen(): Promise<boolean> {
+    return this.promptHelperContainer.isVisible();
+  }
+
+  async isOpenButtonVisible(): Promise<boolean> {
+    return this.openHelperButton.isVisible();
+  }
+
+  async isCloseButtonVisible(): Promise<boolean> {
+    return this.closeHelperButton.isVisible();
+  }
+
+  async getInstructionValue(): Promise<string> {
+    return this.canvasInstructionTextarea.inputValue();
+  }
+
+  async clearInstruction() {
+    await this.canvasInstructionTextarea.clear();
+  }
+
+  async clickResetChat() {
+    await this.resetChatButton.click();
+  }
+
+  async clickCopyButton() {
+    await this.copyButton.first().click();
+  }
+
+  getMessagesPanel(): Locator {
+    return this.messagesPanel;
+  }
+
+  getContainer(): Locator {
+    return this.promptHelperContainer;
+  }
+
+  async generateAndApply(text: string) {
+    await this.generateInstruction(text);
+    await this.clickCanvasSendButton();
+  }
 }

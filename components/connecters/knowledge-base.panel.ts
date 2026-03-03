@@ -32,7 +32,29 @@ export class KnowledgeBaseDropdown {
     async search(kbName: string) {
         await this.searchInput.fill(kbName);
     }
-    
-    
 
+    async clearSearch() {
+        await this.searchInput.clear();
+    }
+
+    async getSearchValue(): Promise<string> {
+        return this.searchInput.inputValue();
+    }
+
+    async isVisible(): Promise<boolean> {
+        return this.dropdown.isVisible();
+    }
+
+    getDropdown(): Locator {
+        return this.dropdown;
+    }
+
+    async isAddNewKBVisible(): Promise<boolean> {
+        return this.addNewKBButton.isVisible();
+    }
+
+    async searchAndSelect(kbName: string) {
+        await this.search(kbName);
+        await this.selectKB(kbName);
+    }
 }

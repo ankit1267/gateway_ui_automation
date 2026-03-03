@@ -155,4 +155,73 @@ export class KnowledgeBasePage {
     await kbRow.locator('[data-tip="Test Knowledgebase"]').click();
   }
 
+  async waitForPage() {
+    await this.createButton.waitFor({ state: 'visible' });
+  }
+
+  async isCreateButtonVisible(): Promise<boolean> {
+    return this.createButton.isVisible();
+  }
+
+  async isTableVisible(): Promise<boolean> {
+    return this.table.isVisible();
+  }
+
+  async getTableRowCount(): Promise<number> {
+    return this.table.getByRole('row').count();
+  }
+
+  async getKbNameValue(): Promise<string> {
+    return this.kbNameInput.inputValue();
+  }
+
+  async getKbDescriptionValue(): Promise<string> {
+    return this.kbDescriptionInput.inputValue();
+  }
+
+  async getUrlValue(): Promise<string> {
+    return this.urlInput.inputValue();
+  }
+
+  async getContentValue(): Promise<string> {
+    return this.contentFill.inputValue();
+  }
+
+  async clearKbName() {
+    await this.kbNameInput.clear();
+  }
+
+  async clearKbDescription() {
+    await this.kbDescriptionInput.clear();
+  }
+
+  async clearUrl() {
+    await this.urlInput.clear();
+  }
+
+  async clearContent() {
+    await this.contentFill.clear();
+  }
+
+  async isAdvancedSettingsVisible(): Promise<boolean> {
+    return this.advancedToggle.isVisible();
+  }
+
+  async createKnowledgeBaseWithContent(name: string, description: string, content: string) {
+    await this.clickCreate();
+    await this.fillKbName(name);
+    await this.fillKbDescription(description);
+    await this.selectContentRadio();
+    await this.fillContent(content);
+    await this.clickSubmit();
+  }
+
+  async createKnowledgeBaseWithUrl(name: string, description: string, url: string) {
+    await this.clickCreate();
+    await this.fillKbName(name);
+    await this.fillKbDescription(description);
+    await this.selectUrlRadio();
+    await this.fillUrl(url);
+    await this.clickSubmit();
+  }
 }
