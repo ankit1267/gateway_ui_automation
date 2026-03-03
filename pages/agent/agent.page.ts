@@ -10,6 +10,7 @@ import { IntegrationGuidePage } from "./integration-guide.page";
 import { SettingsPage } from "./settings.page";
 import { PromptPage } from "./prompt.page";
 import { PlaygroundPage } from "../chat-pages/playground.page";
+import { MemoryPage } from "./memory.page";
 
 export class AgentPage {
   readonly tabs: AgentTabs;
@@ -22,6 +23,7 @@ export class AgentPage {
   readonly settings: SettingsPage;
   readonly prompt: PromptPage;
   readonly playground: PlaygroundPage;
+  readonly memory: MemoryPage;
 
   constructor(private readonly page: Page) {
     this.tabs = new AgentTabs(page);
@@ -34,6 +36,7 @@ export class AgentPage {
     this.settings = new SettingsPage(page);
     this.prompt = new PromptPage(page);
     this.playground = new PlaygroundPage(page);
+    this.memory = new MemoryPage(page);
   }
 
   async blurInput() {
