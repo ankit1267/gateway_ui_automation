@@ -16,6 +16,8 @@ export class KnowledgeBasePage {
   private readonly highAccuracyRadio: Locator;
   private readonly submitButton: Locator;
   private readonly resourceChunkModal: Locator;
+  private readonly queryKbTextarea: Locator;
+  private readonly querySubmit: Locator;
 
   constructor(private page: Page) {
     this.createButton = page.getByRole('button', {
@@ -34,6 +36,21 @@ export class KnowledgeBasePage {
     this.submitButton = page.getByTestId('knowledgebase-submit-button');
     this.urlInput = page.getByTestId('knowledgebase-url-input-create');
     this.resourceChunkModal = page.getByTestId('RESOURCE_CHUNKS_MODAL');
+    this.queryKbTextarea = page.getByTestId('query-kb-textarea');
+    this.querySubmit = page.getByTestId('query-kb-submit-button')
+  }
+
+  async clickQuerySubmit() {
+    await this.querySubmit.click();
+  }
+
+  async fillQueryKbTextarea(query: string) {
+    await this.queryKbTextarea.click();
+    await this.queryKbTextarea.fill(query);
+  }
+
+  async expectQueryResultsVisible() {
+    await expect(this.page.locator('div.divider', { hasText: 'Results' })).toBeVisible({ timeout: 15000 });
   }
 
   async expectResourceChunkModalVisible() {
@@ -130,6 +147,12 @@ export class KnowledgeBasePage {
 
   async clickKbByName(name: string) {
     await this.page.getByText(name, { exact: true }).click();
+  }
+
+  async queryKbByName(name: string) {
+    const kbRow = this.getRowByName(name);
+    await kbRow.hover();
+    await kbRow.locator('[data-tip="Test Knowledgebase"]').click();
   }
 
 }
