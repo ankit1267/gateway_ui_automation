@@ -6,7 +6,7 @@ export type ServiceProvider =
     | 'Anthropic'
     | 'Groq'
     | 'Gemini'
-    | 'Ai-ml'
+    | 'Ai_ml'
     | 'Grok';
 
 export class ModelPage {

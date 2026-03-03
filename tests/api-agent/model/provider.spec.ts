@@ -80,7 +80,7 @@ test('TC-MODEL-06: Verify model list loads for Ai-ml', async ({ agents }) => {
   const agent = await agents.openAgent(Agent);
   await agent.tabs.openModel();
 
-  await agent.model.selectServiceProvider('Ai-ml');
+  await agent.model.selectServiceProvider('Ai_ml');
 
   await agent.model.expectModelsVisible([
     'gpt-oss-120b',

@@ -116,6 +116,7 @@ export class PromptPage {
       this.page.locator(`#variable-key-input-${index}`)
     ).toBeVisible();
 
+
   }
 
   async getRoleValue(): Promise<string> {
@@ -164,16 +165,19 @@ export class PromptPage {
   async fillRole(prompt: string) {
     await this.role.fill(prompt);
     await this.blurInput();
+    await this.expectSavedVisible();
   }
 
   async fillGoal(prompt: string) {
     await this.goal.fill(prompt);
     await this.blurInput();
+    await this.expectSavedVisible();
   }
 
   async fillInstructions(prompt: string) {
     await this.instructions.fill(prompt);
     await this.blurInput();
+    await this.expectSavedVisible();
   }
 
   async fillPrompt(role: string, goal: string, instructions: string) {
@@ -205,6 +209,12 @@ export class PromptPage {
 
   async blurInput() {
     await this.page.locator('body').click();
+  }
+
+  async expectSavedVisible() {
+    await expect(
+      this.page.locator('div.text-base-content', { hasText: 'Saved' })
+    ).toBeVisible();
   }
 
   //click on instructions input

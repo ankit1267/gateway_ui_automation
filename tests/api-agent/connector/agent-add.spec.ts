@@ -10,8 +10,13 @@ test('Agent renders inside embed container after selection', async ({
   const agent = await agents.openAgent(TESTING_AGENT);
   await agent.tabs.openConnectors();
 
-  await agent.connectors.clickAddAgent();
-  await agent.connectors.a2aDropdown.selectAgent(A2A_AGENT);
+  for (let i = 0; i < 5; i++) {
+    await agent.connectors.clickAddAgent();
+    if (await agent.connectors.a2aDropdown.isVisible()) {
+      await agent.connectors.a2aDropdown.selectAgent(A2A_AGENT);
+      break;
+    }
+  }
 
   await agent.connectors.expectAgentVisible(A2A_AGENT);
   await agent.connectors.removeAgent();
