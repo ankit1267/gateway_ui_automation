@@ -110,4 +110,48 @@ export class AgentHeaderNav {
     await this.deleteButton.click();
   }
 
+  async getAgentNameText(): Promise<string> {
+    return this.agentName.innerText();
+  }
+
+  async isHistoryTabVisible(): Promise<boolean> {
+    return this.history.isVisible();
+  }
+
+  async isTestCasesTabVisible(): Promise<boolean> {
+    return this.testCases.isVisible();
+  }
+
+  async isChatbotConfigTabVisible(): Promise<boolean> {
+    return this.chatbotConfig.isVisible();
+  }
+
+  async isPublishVisible(): Promise<boolean> {
+    return this.publish.isVisible();
+  }
+
+  async isRevertVisible(): Promise<boolean> {
+    return this.revert.isVisible();
+  }
+
+  async isNewButtonVisible(): Promise<boolean> {
+    return this.newButton.isVisible();
+  }
+
+  async submitAgentName() {
+    await this.agentNameInput.press('Enter');
+  }
+
+  async renameAgent(newName: string) {
+    await this.clickEditName();
+    await this.agentNameFill(newName);
+    await this.submitAgentName();
+  }
+
+  async publishAndCreateVersion(desc: string) {
+    await this.clickPublish();
+    await this.clickPublishButton();
+    await this.fillVersionDescription(desc);
+    await this.createNewVersion();
+  }
 }

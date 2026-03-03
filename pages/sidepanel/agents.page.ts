@@ -6,19 +6,31 @@ import { KnowledgeBasePage } from './knowledge-base.page';
 
 export class AgentsPage {
   private readonly agentTable: Locator;
+  private readonly customTable: Locator;
+  private readonly customTableSelectAll: Locator;
+  private readonly tableNoData: Locator;
   private readonly createAgentButton: Locator;
   private readonly usageFilterButton: Locator;
   private readonly createAgentModal: Locator;
   private readonly createAgentSubmitButton: Locator;
+  private readonly emptyStateContainer: Locator;
+  private readonly emptyStateCreateButton: Locator;
+  private readonly emptyStateSpeakButton: Locator;
   readonly sidebar: Sidebar;
   readonly knowledgeBasePage: KnowledgeBasePage;
 
   constructor(private page: Page) {
     this.agentTable = this.page.getByTestId('custom-table-view');
+    this.customTable = this.page.getByTestId('custom-table');
+    this.customTableSelectAll = this.page.getByTestId('custom-table-select-all');
+    this.tableNoData = this.page.getByTestId('table-no-data');
     this.createAgentButton = this.page.getByTestId('create-new-agent-button');
     this.usageFilterButton = this.page.getByRole('button', { name: 'Usage Filter' });
     this.createAgentModal = this.page.locator('#default-agent-sidebar');
     this.createAgentSubmitButton = this.createAgentModal.getByTestId('create-new-bridge-submit-button');
+    this.emptyStateContainer = this.page.getByTestId('agent-empty-state-container');
+    this.emptyStateCreateButton = this.page.getByTestId('agent-empty-create-agent-button');
+    this.emptyStateSpeakButton = this.page.getByTestId('agent-empty-speak-to-us-button');
     this.sidebar = new Sidebar(page);
     this.knowledgeBasePage = new KnowledgeBasePage(page);
   }
@@ -75,7 +87,7 @@ export class AgentsPage {
       name: 'Delete Agent'
     });
 
-    await expect(deleteAgentBtn).toBeVisible(); // auto-waits
+    await expect(deleteAgentBtn).toBeVisible();
     await deleteAgentBtn.click();
 
     const confirmDeleteBtn = this.page.getByRole('button', {
@@ -91,4 +103,46 @@ export class AgentsPage {
     await this.page.getByRole('button', { name: 'Knowledge base' }).click();
   }
 
+  // --- Table ---
+
+  async isTableVisible(): Promise<boolean> {
+    return this.agentTable.isVisible();
+  }
+
+  async isTableEmpty(): Promise<boolean> {
+    return this.tableNoData.isVisible();
+  }
+
+  async selectAllAgents() {
+    await this.customTableSelectAll.click();
+  }
+
+  // --- Empty state ---
+
+  async isEmptyStateVisible(): Promise<boolean> {
+    return this.emptyStateContainer.isVisible();
+  }
+
+  async clickEmptyStateCreate() {
+    await this.emptyStateCreateButton.click();
+  }
+
+  async clickEmptyStateSpeakToUs() {
+    await this.emptyStateSpeakButton.click();
+  }
+
+  // --- Agent row actions by name ---
+
+  getAgentRow(agentName: string): Locator {
+    return this.agentTable.filter({ hasText: agentName }).first();
+  }
+
+  async isAgentVisible(agentName: string): Promise<boolean> {
+    return this.getAgentRow(agentName).isVisible();
+  }
+
+  async openAgentMenuByName(agentName: string) {
+    const row = this.getAgentRow(agentName);
+    await row.getByRole('button').last().click();
+  }
 }

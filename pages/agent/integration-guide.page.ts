@@ -67,4 +67,54 @@ export class IntegrationGuidePage {
   async copyBatchResponseCodeBlock() {
     await this.batchResponseCodeBlockCopyButton.click();
   }
+
+  // --- Container and tabs ---
+
+  private get container(): Locator {
+    return this.page.getByTestId('integration-guide-container');
+  }
+
+  private get lockedContainer(): Locator {
+    return this.page.getByTestId('integration-guide-locked-container');
+  }
+
+  private get tabsContainer(): Locator {
+    return this.page.getByTestId('integration-guide-tabs');
+  }
+
+  async isContainerVisible(): Promise<boolean> {
+    return this.container.isVisible();
+  }
+
+  async isLockedVisible(): Promise<boolean> {
+    return this.lockedContainer.isVisible();
+  }
+
+  async isTabsVisible(): Promise<boolean> {
+    return this.tabsContainer.isVisible();
+  }
+
+  getTab(tabId: string): Locator {
+    return this.page.getByTestId(`integration-tab-${tabId}`);
+  }
+
+  async clickTab(tabId: string) {
+    await this.getTab(tabId).click();
+  }
+
+  async isCurlCodeBlockVisible(): Promise<boolean> {
+    return this.curlCodeBlock.isVisible();
+  }
+
+  async isResponseCodeBlockVisible(): Promise<boolean> {
+    return this.responseCodeBlock.isVisible();
+  }
+
+  async getCurlCodeText(): Promise<string> {
+    return this.curlCodeBlock.innerText();
+  }
+
+  async getResponseCodeText(): Promise<string> {
+    return this.responseCodeBlock.innerText();
+  }
 }

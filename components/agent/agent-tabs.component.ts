@@ -41,4 +41,36 @@ export class AgentTabs {
   async openIntegrationGuide() {
     await this.integrationGuideTab.click();
   }
+
+  async isConnectorsTabVisible(): Promise<boolean> {
+    return this.connecterTab.isVisible();
+  }
+
+  async isPromptTabVisible(): Promise<boolean> {
+    return this.promptTab.isVisible();
+  }
+
+  async isModelTabVisible(): Promise<boolean> {
+    return this.modelTab.isVisible();
+  }
+
+  async isMemoryTabVisible(): Promise<boolean> {
+    return this.memoryTab.isVisible();
+  }
+
+  async isSettingsTabVisible(): Promise<boolean> {
+    return this.settingsTab.isVisible();
+  }
+
+  async isIntegrationGuideTabVisible(): Promise<boolean> {
+    return this.integrationGuideTab.isVisible();
+  }
+
+  getTab(tabName: string): Locator {
+    return this.page.getByTestId(`tab-button-${tabName}`);
+  }
+
+  async clickTab(tabName: string) {
+    await this.getTab(tabName).click();
+  }
 }
