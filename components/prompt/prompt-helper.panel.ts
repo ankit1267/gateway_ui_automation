@@ -1,97 +1,107 @@
 import type { Page, Locator, FrameLocator } from '@playwright/test';
-
 import { expect } from '@playwright/test';
 
-
-
 export class PromptHelperPanel {
-
   private readonly page: Page;
-
   private readonly openHelperButton: Locator;
-
   private readonly closeHelperButton: Locator;
-
   private readonly messagesPanel: Locator;
-
   private readonly configScrollContainer: Locator;
-
   private readonly canvasInstructionTextarea: Locator;
-
   private readonly techDocFrame: FrameLocator;
-
   private readonly mainContent: Locator;
-
-
+  private readonly applyButton: Locator;
+  private readonly copyButton: Locator;
+  private readonly resetChatButton: Locator;
+  private readonly canvasSendButton: Locator;
+  private readonly promptHelperContainer: Locator;
 
   constructor(page: Page) {
-
     this.page = page;
-
+    this.promptHelperContainer = page.getByTestId('prompt-helper-container');
     this.openHelperButton = page.getByTestId('prompt-header-open-helper-button');
-
     this.closeHelperButton = page.getByTestId('prompt-header-close-helper-button');
-
-    this.messagesPanel = page.locator('#messages');
-
+    this.messagesPanel = this.promptHelperContainer.locator('#messages');
     this.configScrollContainer = page.locator('#config-scroll-container');
-
-    this.canvasInstructionTextarea = page.getByTestId('canvas-instruction-textarea');
-
+    this.canvasInstructionTextarea = this.promptHelperContainer.getByTestId('canvas-instruction-textarea');
     this.techDocFrame = page.frameLocator('#iframe-component-techdocEmbed');
-
     this.mainContent = page.getByRole('main');
+    this.applyButton = page.locator('[data-testid^="canvas-apply-button-"]');
+    this.copyButton = page.locator('[data-testid^="canvas-copy-button-"]');
+    this.resetChatButton = page.getByTestId('canvas-reset-chat-button');
+    this.canvasSendButton = this.promptHelperContainer.getByTestId('canvas-send-button');
+  }
 
+  async clickApplyButton() {
+    await this.applyButton.click();
   }
 
 
+  async OpenHelperButtonVisible() {
+    return await this.openHelperButton.isVisible();
+  }
+
+  async clickCanvasSendButton() {
+    await this.canvasSendButton.click();
+  }
+
+  async expectCanvasInputVisible() {
+    await expect(this.canvasInstructionTextarea).toBeVisible();
+    await expect(this.canvasSendButton).toBeVisible();
+  }
+
+  async expectResetChatVisible() {
+    await expect(this.resetChatButton).toBeVisible();
+  }
+
+  async expectApplyButtonVisible() {
+    await expect(this.applyButton).toBeVisible();
+  }
+
+  async expectCopyButtonVisible() {
+    await expect(this.copyButton).toBeVisible();
+  }
+
+  async generateInstruction(text: string) {
+    await this.canvasInstructionTextarea.click();
+    await this.canvasInstructionTextarea.fill(text);
+  }
+
+  async applyGeneratedInstruction() {
+    await this.applyButton.first().click();
+  }
+
+  async copyGeneratedInstruction() {
+    await this.copyButton.first().click();
+  }
 
   async open() {
-
-    await this.page.getByRole('textbox', { name: 'e.g. Always be polite. Never' }).click();
-
-    await this.openHelperButton.click();
-
+    for(let i=0 ;i<5 ;i++){
+      await this.page.getByRole('textbox', { name: 'e.g. Always be polite. Never' }).click();
+      if((await this.openHelperButton.isVisible())) {
+        await this.openHelperButton.click();
+        break;
+      }
+    }
   }
-
-
 
   async close() {
-
     await this.closeHelperButton.click();
-
   }
-
-
 
   async expectVisible() {
-
     await expect(this.messagesPanel).toBeVisible();
-
     await expect(this.configScrollContainer).toBeVisible();
-
     await expect(this.canvasInstructionTextarea).toBeVisible();
-
   }
-
-
 
   async expectTipTapEditorVisible() {
-
     await expect(
-
       this.techDocFrame.locator('#tiptap-editor')
-
     ).toBeVisible();
-
   }
-
-
 
   async expectMainVisible() {
-
     await expect(this.mainContent).toBeVisible();
-
   }
-
 }

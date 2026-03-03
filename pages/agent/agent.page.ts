@@ -42,4 +42,8 @@ export class AgentPage {
   async invalidAgentNameAlert(expectedMessage: string) {
     await expect(this.page.getByRole('alert').filter({ hasText: expectedMessage })).toBeVisible();
   }
+
+  get getPage(): Page {
+    return this.page;
+  }
 }
