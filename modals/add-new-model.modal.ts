@@ -1,6 +1,7 @@
 import type { Page, Locator } from '@playwright/test';
 
 export class AddNewModelModal {
+  private readonly modal: Locator;
   private readonly container: Locator;
   private readonly resetButton: Locator;
   private readonly serviceSelect: Locator;
@@ -14,6 +15,7 @@ export class AddNewModelModal {
   private readonly outputCostInput: Locator;
 
   constructor(private readonly page: Page) {
+    this.modal = page.getByTestId('ADD_NEW_MODEL_MODAL');
     this.container = page.locator('#add-new-model-modal-container');
     this.resetButton = page.getByTestId('add-model-reset-button');
     this.serviceSelect = page.getByTestId('add-model-service-select');
@@ -67,12 +69,16 @@ export class AddNewModelModal {
     await this.resetButton.click();
   }
 
+  getModal(): Locator {
+    return this.modal;
+  }
+
   async isVisible(): Promise<boolean> {
-    return this.container.isVisible();
+    return this.modal.isVisible();
   }
 
   async waitForVisible() {
-    await this.container.waitFor({ state: 'visible' });
+    await this.modal.waitFor({ state: 'visible' });
   }
 
   async getModelNameValue(): Promise<string> {

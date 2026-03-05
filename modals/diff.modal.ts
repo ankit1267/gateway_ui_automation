@@ -6,7 +6,7 @@ export class DiffModal {
 
   constructor(private readonly page: Page) {
     this.modal = page.getByTestId('DIFF_PROMPT');
-    this.closeButton = this.modal.getByRole('button', { name: 'Close' });
+    this.closeButton = page.getByTestId('diff-modal-close-button');
   }
 
   getModal(): Locator {

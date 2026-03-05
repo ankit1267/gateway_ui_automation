@@ -9,10 +9,10 @@ export class InviteUserModal {
 
   constructor(private readonly page: Page) {
     this.modal = page.getByTestId('INVITE_USER');
-    this.emailInput = this.modal.getByRole('textbox', { name: /email/i });
+    this.emailInput = page.getByTestId('invite-user-email-input');
     this.roleSelect = this.modal.getByRole('combobox');
-    this.inviteButton = this.modal.getByRole('button', { name: /invite/i });
-    this.cancelButton = this.modal.getByRole('button', { name: 'Cancel' });
+    this.inviteButton = page.getByTestId('invite-user-send-button');
+    this.cancelButton = page.getByTestId('invite-user-cancel-button');
   }
 
   async fillEmail(email: string) {

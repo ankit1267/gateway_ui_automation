@@ -41,6 +41,7 @@ export class PromptPage {
   private readonly promptResizeHandle: Locator;
   private readonly defaultVariablesCollapse: Locator;
   private readonly defaultVariablesToggle: Locator;
+  private readonly promptTextarea: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -60,7 +61,7 @@ export class PromptPage {
     });
     this.promptHelper = new PromptHelperPanel(page);
     this.responseTypeSelect = page.getByTestId('advanced-param-select-response_type');
-
+    this.promptTextarea = page.getByTestId('prompt-textarea');
     this.migrateButton = page.getByTestId('prompt-header-migrate-button');
     this.simpleModeButton = page.getByRole('button', { name: 'simple' });
     this.advancedModeButton = page.getByRole('button', { name: 'advanced' });
@@ -69,7 +70,7 @@ export class PromptPage {
     this.preToolDropdown = new PreToolDropdown(page);
     this.deleteButton = page.getByTestId(/^render-embed-delete-button-/);
     this.deleteModal = page.getByTestId('DELETE_PRE_TOOL_MODAL').getByTestId('delete-modal-confirm-button');
-    this.migrateModal = page.getByTestId('MIGRATE_PROMPT_MODAL');
+    this.migrateModal = page.getByTestId('MIGRATE_PROMPT_WARNING_MODAL');
 
     // Prompt header
     this.promptHeaderDefault = page.getByTestId('prompt-header-default');
@@ -162,6 +163,10 @@ export class PromptPage {
     return await this.instructions.inputValue();
   }
 
+  async getSystemPromptValue(): Promise<string> {
+    return await this.promptTextarea.inputValue();
+  }
+
   async getMigrateRoleValue(): Promise<string> {
     return await this.migrateRole.inputValue();
   }
@@ -250,6 +255,18 @@ export class PromptPage {
   //click on instructions input
   async clickInstructions() {
     await this.instructions.click();
+  }
+
+  async expectRoleVisible() {
+    await expect(this.role).toBeVisible();
+  }
+
+  async clickGoal() {
+    await this.goal.click();
+  }
+
+  async expectInstructionsVisible() {
+    await expect(this.instructions).toBeVisible();
   }
 
   private async getDiffTexts(sectionName: string) {

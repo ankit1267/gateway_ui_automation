@@ -1,6 +1,7 @@
 import type { Page, Locator } from '@playwright/test';
 
 export class AuthDataModal {
+  private readonly modal: Locator;
   private readonly closeXButton: Locator;
   private readonly routeNameInput: Locator;
   private readonly copyRouteNameButton: Locator;
@@ -12,6 +13,7 @@ export class AuthDataModal {
   private readonly closeButton: Locator;
 
   constructor(private readonly page: Page) {
+    this.modal = page.getByTestId('AUTH_DATA_MODAL');
     this.closeXButton = page.getByTestId('auth-data-close-x-button');
     this.routeNameInput = page.getByTestId('auth-data-route-name-input');
     this.copyRouteNameButton = page.getByTestId('auth-data-copy-route-name-button');
@@ -59,12 +61,16 @@ export class AuthDataModal {
     return this.redirectionUrlInput;
   }
 
+  getModal(): Locator {
+    return this.modal;
+  }
+
   async isVisible(): Promise<boolean> {
-    return this.routeNameInput.isVisible();
+    return this.modal.isVisible();
   }
 
   async waitForVisible() {
-    await this.routeNameInput.waitFor({ state: 'visible' });
+    await this.modal.waitFor({ state: 'visible' });
   }
 
   async getRouteNameValue(): Promise<string> {

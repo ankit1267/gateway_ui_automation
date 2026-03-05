@@ -8,9 +8,9 @@ export class UsageLimitModal {
 
   constructor(private readonly page: Page) {
     this.modal = page.getByTestId('API_KEY_LIMIT_MODAL');
-    this.limitInput = this.modal.getByRole('textbox');
-    this.saveButton = this.modal.getByRole('button', { name: /save|update/i });
-    this.cancelButton = this.modal.getByRole('button', { name: 'Cancel' });
+    this.limitInput = page.getByTestId('usage-limit-input');
+    this.saveButton = page.getByTestId('usage-limit-save-button');
+    this.cancelButton = page.getByTestId('usage-limit-cancel-button');
   }
 
   async fillLimit(limit: string) {

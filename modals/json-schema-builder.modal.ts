@@ -2,6 +2,7 @@ import type { Page, Locator } from '@playwright/test';
 
 export class JsonSchemaBuilderModal {
   readonly page: Page;
+  readonly modal: Locator;
   readonly schemaNameInput: Locator;
   readonly addPropertyButton: Locator;
   readonly closeButton: Locator;
@@ -9,6 +10,7 @@ export class JsonSchemaBuilderModal {
 
   constructor(page: Page) {
     this.page = page;
+    this.modal = page.getByTestId('JSON_SCHEMA_BUILDER');
     this.schemaNameInput = page.getByTestId('json-schema-name-input');
     this.addPropertyButton = page.getByTestId('json-schema-builder-add-property-button');
     this.closeButton = page.getByTestId('json-schema-builder-close-button');
@@ -16,7 +18,11 @@ export class JsonSchemaBuilderModal {
   }
 
   async isVisible(): Promise<boolean> {
-    return this.schemaNameInput.isVisible();
+    return this.modal.isVisible();
+  }
+
+  async waitForVisible() {
+    await this.modal.waitFor({ state: 'visible' });
   }
 
   async fillSchemaName(name: string) {

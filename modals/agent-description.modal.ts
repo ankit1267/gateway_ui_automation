@@ -1,11 +1,13 @@
 import type { Page, Locator } from '@playwright/test';
 
 export class AgentDescriptionModal {
+  private readonly modal: Locator;
   private readonly descriptionTextarea: Locator;
   private readonly cancelButton: Locator;
   private readonly saveButton: Locator;
 
   constructor(private readonly page: Page) {
+    this.modal = page.getByTestId('AGENT_DESCRIPTION_MODAL');
     this.descriptionTextarea = page.getByTestId('agent-description-textarea');
     this.cancelButton = page.getByTestId('agent-description-cancel-button');
     this.saveButton = page.getByTestId('agent-description-save-button');
@@ -28,12 +30,16 @@ export class AgentDescriptionModal {
     await this.clickSave();
   }
 
+  getModal(): Locator {
+    return this.modal;
+  }
+
   async isVisible(): Promise<boolean> {
-    return this.descriptionTextarea.isVisible();
+    return this.modal.isVisible();
   }
 
   async waitForVisible() {
-    await this.descriptionTextarea.waitFor({ state: 'visible' });
+    await this.modal.waitFor({ state: 'visible' });
   }
 
   async getDescriptionValue(): Promise<string> {

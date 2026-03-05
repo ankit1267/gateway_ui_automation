@@ -11,21 +11,10 @@ export class KnowledgeBaseModal {
   constructor(private readonly page: Page) {
     this.modal = this.page.getByTestId('KNOWLEDGE_BASE_MODAL');
 
-    this.nameInput = this.modal.getByRole('textbox', {
-      name: 'Knowledge Base name'
-    });
-
-    this.descriptionInput = this.modal.getByRole('textbox', {
-      name: /Brief description/i
-    });
-
-    this.urlInput = this.modal.getByPlaceholder(
-      'https://example.com/resource'
-    );
-
-    this.addResourceButton = this.modal.getByRole('button', {
-      name: 'Add Resource'
-    });
+    this.nameInput = this.page.getByTestId('knowledgebase-name-input');
+    this.descriptionInput = this.page.getByTestId('knowledgebase-description-textarea');
+    this.urlInput = this.page.getByTestId('knowledgebase-url-input-create');
+    this.addResourceButton = this.page.getByTestId('knowledgebase-submit-button');
   }
 
   async createKB(name: string, description: string, url: string) {

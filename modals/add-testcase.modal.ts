@@ -8,11 +8,11 @@ export class AddTestCaseModal {
   private readonly cancelButton: Locator;
 
   constructor(private readonly page: Page) {
-    this.modal = page.getByTestId('ADD_TESTCASE_MODAL');
+    this.modal = page.getByTestId('ADD_TEST_CASE_MODAL');
     this.inputTextarea = this.modal.getByRole('textbox', { name: /input/i });
     this.expectedTextarea = this.modal.getByRole('textbox', { name: /expected/i });
-    this.submitButton = this.modal.getByRole('button', { name: /add|save|submit/i });
-    this.cancelButton = this.modal.getByRole('button', { name: 'Cancel' });
+    this.submitButton = page.getByTestId('add-testcase-create-button');
+    this.cancelButton = page.getByTestId('add-testcase-cancel-button');
   }
 
   async fillInput(input: string) {

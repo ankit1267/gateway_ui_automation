@@ -1,5 +1,4 @@
 import { test, expect, Page } from '@playwright/test';
-import { ChatbotAgentPage } from '../../pages/chatbot-agent-create.page';
 import { navigateToAgents } from '../../utils/navigation';
 
 test.use({ storageState: 'auth.json' });
@@ -77,8 +76,5 @@ test('TC-AGENT-01 | Publish agent successfully', async ({ page }) => {
         page.getByText('Agent Version published')
     ).toBeVisible({ timeout: 15000 });
 
-    const agentPage = new ChatbotAgentPage(page);
     const agentName = await page.getByTestId('navbar-agent-name-display').innerText();
-    await agentPage.deleteAgentByName(agentName);
-
 });

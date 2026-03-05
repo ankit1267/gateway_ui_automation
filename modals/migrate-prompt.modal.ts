@@ -9,7 +9,7 @@ export class MigratePromptModal {
   private readonly cancelButton: Locator;
 
   constructor(private readonly page: Page) {
-    this.modal = page.getByTestId('MIGRATE_PROMPT_MODAL');
+    this.modal = page.getByTestId('MIGRATE_PROMPT_WARNING_MODAL');
     this.roleField = this.modal.getByRole('textbox', { name: 'e.g. You are a helpful customer support assistant' });
     this.goalField = this.modal.getByRole('textbox', { name: 'e.g. Help users resolve their issues quickly and accurately' });
     this.instructionField = this.modal.getByRole('textbox', { name: 'e.g. Always be polite. Ask clarifying questions if needed...' });

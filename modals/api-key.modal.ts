@@ -1,6 +1,7 @@
 import type { Page, Locator } from '@playwright/test';
 
 export class ApiKeyModal {
+  private readonly modal: Locator;
   private readonly form: Locator;
   private readonly title: Locator;
   private readonly nameInput: Locator;
@@ -12,6 +13,7 @@ export class ApiKeyModal {
   private readonly serviceSelect: Locator;
 
   constructor(private readonly page: Page) {
+    this.modal = page.getByTestId('API_KEY_MODAL');
     this.form = page.locator('#apikey-modal-form');
     this.title = this.form.getByRole('heading');
     this.nameInput = page.getByTestId('apikey-modal-field-name-input');
@@ -51,12 +53,16 @@ export class ApiKeyModal {
     await this.submit();
   }
 
+  getModal(): Locator {
+    return this.modal;
+  }
+
   async isVisible(): Promise<boolean> {
-    return this.form.isVisible();
+    return this.modal.isVisible();
   }
 
   async waitForVisible() {
-    await this.form.waitFor({ state: 'visible' });
+    await this.modal.waitFor({ state: 'visible' });
   }
 
   async getNameValue(): Promise<string> {

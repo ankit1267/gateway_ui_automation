@@ -10,9 +10,9 @@ export class AgentConfigModal {
 
   constructor(private readonly page: Page) {
     this.modal = this.page.getByTestId('AGENT_VARIABLE_MODAL');
-    this.saveButton = this.modal.getByRole('button', { name: 'Save' });
-    this.closeButton = this.modal.getByRole('button', { name: 'Close' });
-    this.parameterButton = this.modal.getByRole('button', { name: 'Parameter', exact: true })
+    this.saveButton = this.page.locator('#function-param-save-button');
+    this.closeButton = this.page.locator('#function-param-close-button');
+    this.parameterButton = this.page.locator('#function-param-add-param-button')
     this.parameterNameInput = this.modal.getByTestId('param-name-input-new0');
   }
 

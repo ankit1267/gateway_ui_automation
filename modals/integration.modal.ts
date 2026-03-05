@@ -1,12 +1,14 @@
 import type { Page, Locator } from '@playwright/test';
 
 export class IntegrationModal {
+  private readonly modal: Locator;
   private readonly container: Locator;
   private readonly nameInput: Locator;
   private readonly closeButton: Locator;
   private readonly createButton: Locator;
 
   constructor(private readonly page: Page) {
+    this.modal = page.getByTestId('INTEGRATION_MODAL');
     this.container = page.locator('#integration-modal-container');
     this.nameInput = page.getByTestId('integration-name-input');
     this.closeButton = page.getByTestId('integration-close-button');
@@ -30,12 +32,16 @@ export class IntegrationModal {
     await this.clickCreate();
   }
 
+  getModal(): Locator {
+    return this.modal;
+  }
+
   async isVisible(): Promise<boolean> {
-    return this.container.isVisible();
+    return this.modal.isVisible();
   }
 
   async waitForVisible() {
-    await this.container.waitFor({ state: 'visible' });
+    await this.modal.waitFor({ state: 'visible' });
   }
 
   async getNameValue(): Promise<string> {

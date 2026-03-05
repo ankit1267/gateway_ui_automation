@@ -28,12 +28,12 @@ export class AgentHeaderNav {
     this.publish = this.page.getByTestId('navbar-publish-button');
     this.revert = this.page.getByTestId('navbar-revert-button');
     this.menuButton = this.page.getByTestId('navbar-ellipsis-menu-toggle');
-    this.version = this.page.getByRole('dialog').getByTestId('version-description-create-button');
+    this.version = this.page.getByTestId('version_description_modal').getByTestId('version-description-create-button');
     this.agentName = this.page.getByTestId('navbar-agent-name-display');
     this.editName = this.page.locator('.lucide.lucide-pen').first();
     this.agentNameInput = this.page.getByTestId('navbar-agent-name-input');
     this.newButton = this.page.getByRole('button', { name: 'New', exact: true });
-    this.versionDescriptionInput = this.page.getByRole('textbox', { name: 'Enter version description' });
+    this.versionDescriptionInput = this.page.getByTestId('version-description-input');
     this.trashIcon = this.page.locator('.lucide.lucide-trash2').first();
     this.deleteButton = this.page.getByTestId('DELETE_VERSION_MODAL').getByTestId('delete-modal-confirm-button').first();
     this.discardChangesButton = this.page.getByTestId('DELETE_MODAL').getByTestId('delete-modal-confirm-button');

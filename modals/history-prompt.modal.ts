@@ -2,6 +2,7 @@ import type { Page, Locator } from '@playwright/test';
 
 export class HistoryPromptModal {
   readonly page: Page;
+  readonly modal: Locator;
   readonly regenerateButton: Locator;
   readonly previousTextarea: Locator;
   readonly updatedTextarea: Locator;
@@ -10,6 +11,7 @@ export class HistoryPromptModal {
 
   constructor(page: Page) {
     this.page = page;
+    this.modal = page.getByTestId('HISTORY_PAGE_PROMPT_UPDATE_MODAL');
     this.regenerateButton = page.getByTestId('history-prompt-regenerate-button');
     this.previousTextarea = page.getByTestId('history-prompt-previous-textarea');
     this.updatedTextarea = page.getByTestId('history-prompt-updated-textarea');
@@ -43,6 +45,14 @@ export class HistoryPromptModal {
 
   async cancel() {
     await this.cancelButton.click();
+  }
+
+  async isVisible(): Promise<boolean> {
+    return this.modal.isVisible();
+  }
+
+  async waitForVisible() {
+    await this.modal.waitFor({ state: 'visible' });
   }
 
   async isRegenerateVisible(): Promise<boolean> {

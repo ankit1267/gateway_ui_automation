@@ -32,8 +32,8 @@ export class Navbar {
     this.configureTab = page.getByTestId('navbar-tab-configure');
     this.ellipsisMenuToggle = page.getByTestId('navbar-ellipsis-menu-toggle');
     this.historyButton = page.getByTestId('navbar-history-button');
-    this.versionDescriptionInput = page.getByRole('textbox', { name: 'Enter version description' });
-    this.versionCreateButton = page.getByRole('dialog').getByTestId('version-description-create-button');
+    this.versionDescriptionInput = page.getByTestId('version-description-input');
+    this.versionCreateButton = page.getByTestId('version_description_modal').getByTestId('version-description-create-button');
     this.mobileAgentNameDisplay = page.getByTestId('navbar-mobile-agent-name-display-inner');
     this.mobileAgentNameInput = page.getByTestId('navbar-mobile-agent-name-input');
     this.mobilePublishedButton = page.getByTestId('navbar-mobile-published-button');
