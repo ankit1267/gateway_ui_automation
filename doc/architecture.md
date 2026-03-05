@@ -109,17 +109,17 @@ gateway_ui_automation/
 └─────────────────┘          └─────────────────┘
 ```
 
-### 3.2 Composition Pattern
+### 3.2 How Pages Are Built
 
-Pages compose components and modals as readonly properties:
+A page class bundles together all the smaller pieces (components, modals, sub-pages) that belong to it. Tests access them as properties — no need to create them manually.
 
 ```typescript
 // pages/agent/agent.page.ts
 export class AgentPage {
-  readonly header: AgentHeaderNav;
-  readonly tabs: AgentTabs;
-  readonly prompt: PromptPage;
-  readonly model: ModelPage;
+  readonly header: AgentHeaderNav;   // top bar (name, publish, revert)
+  readonly tabs: AgentTabs;          // tab switcher (Prompt, Model, etc.)
+  readonly prompt: PromptPage;       // Prompt tab content
+  readonly model: ModelPage;         // Model tab content
 
   constructor(page: Page) {
     this.header = new AgentHeaderNav(page);
@@ -130,9 +130,9 @@ export class AgentPage {
 }
 ```
 
-### 3.3 Aggregator Pages
+### 3.3 Top-Level Pages
 
-`SidepanelPage` aggregates all sidepanel sub-pages and provides direct `goto*()` navigation:
+`AgentsPage` and `SidepanelPage` are the two entry points that fixtures inject into tests. They hold all sub-pages and provide `goto*()` methods for navigation.
 
 ```typescript
 // pages/sidepanel/sidepanel.page.ts
@@ -251,36 +251,6 @@ Tests import `test` and `expect` from the fixture file instead of `@playwright/t
 | 4 | `page.getByText(...)` | Visible text content when no better selector exists |
 | **Avoid** | CSS class selectors | Classes change frequently — never use for test selectors |
 | **Avoid** | XPath | Fragile, hard to maintain |
-
-### 5.2 Frontend Convention
-
-The React frontend sets `data-testid` attributes on interactive elements:
-
-```jsx
-// React component
-<button data-testid="delete-modal-confirm-button" onClick={handleDelete}>
-  Delete
-</button>
-```
-
-Modal wrappers receive their `data-testid` from the `MODAL_TYPE` enum:
-
-```jsx
-// Modal component renders: <dialog data-testid="DELETE_MODAL">
-<Modal MODAL_ID={MODAL_TYPE.DELETE_MODAL}>
-  ...
-</Modal>
-```
-
-### 5.3 Naming Conventions for data-testid
-
-| Element Type | Pattern | Example |
-|---|---|---|
-| Modal dialog | `UPPER_SNAKE_CASE` (from `MODAL_TYPE`) | `DELETE_MODAL`, `API_KEY_MODAL` |
-| Buttons | `feature-action-button` | `delete-modal-confirm-button` |
-| Inputs | `feature-field-input` | `apikey-modal-field-name-input` |
-| Containers | `feature-container` | `page-header-container` |
-| Dynamic | `feature-item-${id}` | `render-embed-delete-button-${id}` |
 
 ---
 
@@ -510,145 +480,14 @@ npx playwright show-trace test-results/<test-name>/trace.zip
 
 ## 11. Best Practices
 
-### Writing Selectors
-
 - **Always use `data-testid`** — request frontend devs to add one if missing
-- **Scope selectors to parent containers** when multiple elements share a testid pattern:
-  ```typescript
-  this.createButton = this.modal.getByTestId('version-description-create-button');
-  ```
-- **Use regex for dynamic testids:**
-  ```typescript
-  this.deleteButton = page.getByTestId(/^render-embed-delete-button-/);
-  ```
-
-### Writing Page Objects
-
-- **One class per page/modal/component** — never mix concerns
-- **All locators in the constructor** — single source of truth
+- **Scope selectors** to parent containers when elements share a testid pattern
+- **One class per page/modal/component** — all locators in the constructor
 - **Expose actions, not locators** — tests call `modal.close()`, not `modal.closeButton.click()`
-- **Use `getModal()` / `getContainer()`** for assertions that need the raw locator
-
-### Writing Tests
-
 - **Import from fixtures**, not from `@playwright/test` directly
-- **No hardcoded URLs** — use `process.env.ORG_ID` and navigation helpers
-- **Clean up after yourself** — delete created agents/resources at test end
+- **No hardcoded URLs or names** — use `process.env.*` and POM navigation
+- **Clean up** — delete created agents/resources at test end
 - **One assertion focus per test** — test one behavior, assert clearly
-- **Use `test.describe`** to group related tests
-
-### Naming Conventions
-
-| Item | Convention | Example |
-|---|---|---|
-| Page class | `PascalCase` + `Page` suffix | `PromptPage` |
-| Modal class | `PascalCase` + `Modal` suffix | `DeleteModal` |
-| Component class | `PascalCase` descriptive name | `AgentHeaderNav` |
-| Spec file | `kebab-case.spec.ts` | `prompt-diff.spec.ts` |
-| Test name | `TC-FEATURE-## \| Description` | `TC-AGENT-01 \| Publish agent` |
-
----
-
-## 12. Example Workflow: Writing a New UI Test
-
-### Scenario: Test that a user can create a Knowledge Base entry
-
-#### Step 1 — Check for `data-testid` attributes
-
-Search the React frontend for existing testids on the target elements:
-
-```bash
-# In the frontend repo
-grep -r "data-testid.*knowledgebase" components/
-```
-
-#### Step 2 — Create or update the Page Object
-
-```typescript
-// pages/sidepanel/knowledge-base.page.ts (already exists)
-export class KnowledgeBasePage {
-  private readonly createButton: Locator;
-
-  constructor(private readonly page: Page) {
-    this.createButton = page.getByTestId('knowledgebase-create-button');
-  }
-
-  async clickCreate() {
-    await this.createButton.click();
-  }
-}
-```
-
-#### Step 3 — Create or update the Modal Object
-
-```typescript
-// modals/knowledge-base.modal.ts (already exists)
-export class KnowledgeBaseModal {
-  private readonly modal: Locator;
-  private readonly nameInput: Locator;
-  private readonly submitButton: Locator;
-
-  constructor(private readonly page: Page) {
-    this.modal        = page.getByTestId('KNOWLEDGE_BASE_MODAL');
-    this.nameInput    = page.getByTestId('knowledgebase-name-input');
-    this.submitButton = page.getByTestId('knowledgebase-submit-button');
-  }
-
-  async createKB(name: string, description: string, url: string) {
-    await expect(this.modal).toBeVisible();
-    await this.nameInput.fill(name);
-    // ... fill other fields
-    await this.submitButton.click();
-  }
-}
-```
-
-#### Step 4 — Write the test spec
-
-```typescript
-// tests/configuration/knowledge-base.spec.ts
-import { test, expect } from '../../fixtures/base.fixture';
-
-test.describe('Knowledge Base', () => {
-
-  test('TC-KB-01 | Create a new Knowledge Base', async ({ sidepanel }) => {
-    // Navigate
-    await sidepanel.gotoKnowledgeBase();
-
-    // Act
-    await sidepanel.knowledgeBasePage.clickCreate();
-    const modal = new KnowledgeBaseModal(sidepanel.page);
-    await modal.createKB('Test KB', 'Test description', 'https://example.com');
-
-    // Assert
-    await expect(
-      sidepanel.page.getByText('Test KB')
-    ).toBeVisible({ timeout: 10000 });
-
-    // Cleanup
-    await sidepanel.knowledgeBasePage.deleteKBByName('Test KB');
-  });
-});
-```
-
-#### Step 5 — Run and verify
-
-```bash
-# Run just the new test
-npx playwright test tests/configuration/knowledge-base.spec.ts --headed
-
-# Debug if needed
-npx playwright test tests/configuration/knowledge-base.spec.ts --debug
-```
-
-#### Step 6 — Commit and trigger CI
-
-```bash
-git add tests/ pages/ modals/
-git commit -m "test(kb): add TC-KB-01 create knowledge base"
-git push
-# Trigger the workflow_dispatch in GitHub Actions
-```
 
 ---
 
