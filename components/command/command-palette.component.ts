@@ -31,6 +31,7 @@ export class CommandPalette {
 
   async open() {
     await this.page.keyboard.press('Control+k');
+    await this.searchInput.waitFor({ state: 'visible' });
   }
 
   async close() {
