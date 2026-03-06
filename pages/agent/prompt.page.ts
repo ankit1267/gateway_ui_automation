@@ -42,6 +42,8 @@ export class PromptPage {
   private readonly defaultVariablesCollapse: Locator;
   private readonly defaultVariablesToggle: Locator;
   private readonly promptTextarea: Locator;
+  private readonly advancedParamsWrapper: Locator;
+  private readonly buildWithAiButton: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -70,7 +72,7 @@ export class PromptPage {
     this.preToolDropdown = new PreToolDropdown(page);
     this.deleteButton = page.getByTestId(/^render-embed-delete-button-/);
     this.deleteModal = page.getByTestId('DELETE_PRE_TOOL_MODAL').getByTestId('delete-modal-confirm-button');
-    this.migrateModal = page.getByTestId('MIGRATE_PROMPT_WARNING_MODAL');
+    this.migrateModal = page.locator('dialog').filter({ hasText: 'Migrate Prompt to Structured Format' });
 
     // Prompt header
     this.promptHeaderDefault = page.getByTestId('prompt-header-default');
@@ -89,6 +91,8 @@ export class PromptPage {
     this.promptResizeHandle = page.getByTestId('prompt-resize-handle');
     this.defaultVariablesCollapse = page.getByTestId('default-variables-collapse');
     this.defaultVariablesToggle = page.getByTestId('default-variables-toggle');
+    this.advancedParamsWrapper = page.getByTestId('prompt-tab-advanced-params-wrapper');
+    this.buildWithAiButton = page.getByText('Build with AI');
   }
 
   async openMigrateModal() {
@@ -364,6 +368,10 @@ export class PromptPage {
     await this.optimizePromptButton.click();
   }
 
+  async openBuildWithAI() {
+    await this.buildWithAiButton.click();
+  }
+
   async toggleFullscreen() {
     await this.promptFullscreenToggle.click();
   }
@@ -447,5 +455,55 @@ export class PromptPage {
   async fillVariableDefault(index: number, value: string) {
     await this.getVariableDefaultText(index).fill(value);
     await this.getVariableDefaultText(index).blur();
+  }
+
+  // --- Widget response type ---
+
+  private getWidgetResponseCard(index: number): Locator {
+    return this.advancedParamsWrapper
+      .locator('[data-testid^="widget-response-card-"]')
+      .nth(index);
+  }
+
+  async expectAvailableWidgetsPanelVisible() {
+    await expect(this.advancedParamsWrapper.getByText('Available Widgets:')).toBeVisible();
+  }
+
+  async selectWidgetByIndex(index: number) {
+    const cardsByTestId = this.getWidgetResponseCard(index);
+
+    if (await cardsByTestId.count()) {
+      await cardsByTestId.first().click();
+      return;
+    }
+
+    if (index === 0) {
+      await this.advancedParamsWrapper
+        .locator('.flex.flex-col.gap-2.p-3')
+        .first()
+        .click();
+      return;
+    }
+
+    await this.advancedParamsWrapper
+      .locator('.flex.flex-col.gap-2.p-3.rounded-lg.border.cursor-pointer.transition-colors.min-w-\\[280px\\].flex-shrink-0.bg-base-100')
+      .first()
+      .click();
+  }
+
+  async expectSelectedWidgetChipVisible(id: number) {
+    await expect(this.page.locator(`[id="${id}"]`)).toBeVisible();
+  }
+
+  async expectWidgetsSelectedCount(count: number) {
+    await expect(
+      this.advancedParamsWrapper.getByText(`Updated widgets (${count} selected)`)
+    ).toBeVisible();
+  }
+
+  async expectManageButtonVisible() {
+    await expect(
+      this.advancedParamsWrapper.getByRole('button', { name: 'Manage' })
+    ).toBeVisible();
   }
 }
