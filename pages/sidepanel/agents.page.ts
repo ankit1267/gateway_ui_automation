@@ -4,6 +4,8 @@ import { AgentPage } from '../agent/agent.page';
 import { Sidebar } from '../../components/sidebar/sidebar.component';
 import { KnowledgeBasePage } from './knowledge-base.page';
 import { CreateNewBridgeModal } from '../../modals/create-new-bridge.modal';
+import { DeleteModal } from '../../modals/delete.modal';
+import { CommandPalette } from '../../components/command/command-palette.component';
 
 export class AgentsPage {
   private readonly agentTable: Locator;
@@ -18,9 +20,11 @@ export class AgentsPage {
   readonly sidebar: Sidebar;
   readonly knowledgeBasePage: KnowledgeBasePage;
   readonly createAgentModal: CreateNewBridgeModal;
+  readonly deleteModal: DeleteModal;
+  readonly commandPalette: CommandPalette;
 
   constructor(private page: Page) {
-    this.agentTable = this.page.getByTestId('custom-table-view');
+    this.agentTable = this.page.getByTestId(/custom-table-row-/);
     this.customTable = this.page.getByTestId('custom-table');
     this.customTableSelectAll = this.page.getByTestId('custom-table-select-all');
     this.tableNoData = this.page.getByTestId('table-no-data');
@@ -32,6 +36,8 @@ export class AgentsPage {
     this.sidebar = new Sidebar(page);
     this.knowledgeBasePage = new KnowledgeBasePage(page);
     this.createAgentModal = new CreateNewBridgeModal(page);
+    this.deleteModal = new DeleteModal(page);
+    this.commandPalette = new CommandPalette(page);
   }
 
   async goto(type?: 'chatbot' | 'api') {
@@ -48,8 +54,6 @@ export class AgentsPage {
   async search() {
 
   }
-
-
 
   async openAgent(agentName: string): Promise<AgentPage> {
     await this.agentTable
@@ -79,27 +83,49 @@ export class AgentsPage {
 
     await expect(agentRow).toBeVisible();
 
-    const rowMenuBtn = agentRow.getByRole('button').last();
+    const rowMenuBtn = agentRow.locator('[role="button"]').last();
     await rowMenuBtn.click();
 
-    const deleteAgentBtn = this.page.getByRole('button', {
-      name: 'Delete Agent'
-    });
-
+    const deleteAgentBtn = this.page.getByRole('button', { name: 'Delete Agent' });
     await expect(deleteAgentBtn).toBeVisible();
     await deleteAgentBtn.click();
 
-    const confirmDeleteBtn = this.page.getByRole('button', {
-      name: 'Delete'
-    });
-
-    await expect(confirmDeleteBtn).toBeVisible();
-    await confirmDeleteBtn.click();
-
+    await this.deleteModal.waitForVisible();
+    await this.deleteModal.confirm();
   }
 
   async openKnowledgeBasePanel() {
     await this.page.getByRole('button', { name: 'Knowledge base' }).click();
+  }
+
+  async cancelDeleteAgentByName(agentName: string) {
+    const agentRow = this.agentTable
+      .filter({ hasText: agentName })
+      .first();
+
+    await expect(agentRow).toBeVisible();
+
+    const rowMenuBtn = agentRow.locator('[role="button"]').last();
+    await rowMenuBtn.click();
+
+    const deleteAgentBtn = this.page.getByRole('button', { name: 'Delete Agent' });
+    await expect(deleteAgentBtn).toBeVisible();
+    await deleteAgentBtn.click();
+
+    await this.deleteModal.waitForVisible();
+    await this.deleteModal.cancel();
+  }
+
+  async undoDeleteAgentByName(agentName: string) {
+    const row = this.getAgentRow(agentName);
+    await row.hover();
+    await row.getByRole('button', { name: 'Undo' }).click();
+  }
+
+  async verifyDeleteCountdown(agentName: string, days: number = 30) {
+    const row = this.getAgentRow(agentName);
+    await row.hover();
+    await expect(row.getByText(`${days} days left`)).toBeVisible();
   }
 
   // --- Table ---
@@ -138,6 +164,10 @@ export class AgentsPage {
 
   async isAgentVisible(agentName: string): Promise<boolean> {
     return this.getAgentRow(agentName).isVisible();
+  }
+
+  async assertAgentVisible(agentName: string) {
+    await expect(this.getAgentRow(agentName)).toBeVisible();
   }
 
   async openAgentMenuByName(agentName: string) {

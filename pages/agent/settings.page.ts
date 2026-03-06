@@ -45,6 +45,11 @@ export class SettingsPage {
     readonly triggersAddButton: Locator;
     readonly triggersAddFirstButton: Locator;
 
+    // Agent flow
+    readonly agentFlowToggle: Locator;
+    readonly tabsLayoutContent: Locator;
+    readonly agentFlowTestModelTextbox: Locator;
+
     constructor(page: Page) {
         this.page = page;
         this.toneSelect = page.getByTestId('tone-select');
@@ -89,6 +94,11 @@ export class SettingsPage {
         // Triggers
         this.triggersAddButton = page.getByTestId('triggers-add-button');
         this.triggersAddFirstButton = page.getByTestId('triggers-add-first-button');
+
+        // Agent flow
+        this.agentFlowToggle = page.getByTestId('connected-agent-flow-toggle');
+        this.tabsLayoutContent = page.getByTestId('tabs-layout-content');
+        this.agentFlowTestModelTextbox = page.getByRole('textbox', { name: 'Test the model...' });
     }
 
     async selectCustomMode() {
@@ -346,6 +356,18 @@ export class SettingsPage {
         await this.webhookHeadersTextarea.clear();
     }
 
+    async checkAgentFlowToggle() {
+        await this.agentFlowToggle.click();
+    }
+
+    async uncheckAgentFlowToggle() {
+        await this.agentFlowToggle.click();
+    }
+
+    async isTabsLayoutContentVisible(): Promise<boolean> {
+        return this.tabsLayoutContent.isVisible();
+    }
+
     // --- Connected Agent Flow Panel ---
 
     private get agentFlowPanel(): Locator {
@@ -362,6 +384,10 @@ export class SettingsPage {
 
     private get agentFlowSection(): Locator {
         return this.page.getByTestId('agent-flow-section');
+    }
+
+    async clickAgentFlowSection() {
+        await this.agentFlowSection.click();
     }
 
     async isAgentFlowPanelVisible(): Promise<boolean> {
