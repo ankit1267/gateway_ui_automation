@@ -16,20 +16,6 @@
 
 ---
 
-## 1. Project Architecture
-
-| Concern | Value |
-|---|---|
-| **Pattern** | Page Object Model (POM) with component and modal sub-objects |
-| **Language** | TypeScript |
-| **Runner** | `@playwright/test` |
-| **Auth** | `auth.json` via `storageState` (handled by fixtures) |
-| **Fixtures** | `fixtures/base.fixture.ts` injects `agents` and `sidepanel` |
-| **Selector priority** | `data-testid` > `id` > `getByRole` > `getByText` |
-| **Execution** | Single worker, sequential |
-
----
-
 ## 2. Codegen to POM Conversion
 
 The developer provides raw Playwright Codegen output. Convert it to fixture-based POM style.
@@ -171,74 +157,6 @@ sidepanel.gotoWorkspaceSetting()
 
 ---
 
-## 6. Selector Rules
-
-### Priority (strict order)
-
-| Priority | Method | When |
-|---|---|---|
-| 1 | `page.getByTestId('...')` | Always preferred |
-| 2 | `page.locator('#id')` | Has `id` but no `data-testid` |
-| 3 | `page.getByRole(...)` | Semantic element without testid |
-| 4 | `page.getByText(...)` | Last resort |
-| NEVER | CSS class / XPath | Forbidden |
-
-### Placement
-
-- All selectors go in POM constructors, never in test files
-- Scope selectors to parent container: `this.modal.getByTestId(...)`
-- Modal containers use UPPER_SNAKE_CASE testid: `'DELETE_MODAL'`
-- Inner elements use kebab-case testid: `'delete-modal-confirm-button'`
-
----
-
-## 7. Naming Conventions
-
-| Item | Convention | Example |
-|---|---|---|
-| Test file | `kebab-case.spec.ts` | `prompt-diff.spec.ts` |
-| Test name | `TC-<FEATURE>-<##>: Description` | `TC-MODEL-01: Verify model list` |
-| Page class | `PascalCase` + `Page` | `PromptPage` |
-| Modal class | `PascalCase` + `Modal` | `DeleteModal` |
-| Component class | `PascalCase` | `AgentHeaderNav` |
-| POM file | `kebab-case` + type suffix | `prompt.page.ts` |
-| Env vars | `UPPER_SNAKE_CASE` | `process.env.AGENT_NAME!` |
-| Constants | `UPPER_SNAKE_CASE` | `const KB_NAME = 'Resume'` |
-| Local vars | `camelCase` | `const agent = ...` |
-
----
-
-## 8. Cleanup
-
-- Tests that create data **must** clean it up
-- Use inline cleanup at end of test, or `test.afterEach` if test may fail before cleanup
-- Pattern: get created name -> navigate back -> delete by name
-
----
-
-## 9. Chatbot Iframe
-
-- Access chatbot via `agent.chatbot` POM only
-- Never access the iframe directly
-- Key methods: `sendMessage()`, `expectResponse()`, `openNewThread()`, `clickCopyButton()`
-
----
-
-## 10. Anti-Patterns (NEVER do these)
-
-| Forbidden | Use instead |
-|---|---|
-| `page.waitForTimeout(N)` | `expect().toBeVisible()` or `waitFor()` |
-| `page.locator('.css-class')` | `page.getByTestId(...)` |
-| `page.locator('div > span:nth-child(2)')` | `page.getByTestId(...)` |
-| Raw selectors in test files | POM method calls |
-| `import from '@playwright/test'` | `import from 'fixtures/base.fixture'` |
-| Hardcoded agent/workspace names | `process.env.*` |
-| `page.waitForLoadState('networkidle')` | Specific element waits |
-| Manual `new PageObject(page)` in tests | Use fixture-injected objects |
-
----
-
 ## 11. Reference Example
 
 ```typescript
@@ -269,19 +187,3 @@ test.describe('Memory - API Agent', () => {
 
 });
 ```
-
----
-
-## 12. Pre-Submit Checklist
-
-- [ ] Import from `fixtures/base.fixture`
-- [ ] Test data uses `process.env.*`
-- [ ] All interactions use POM methods
-- [ ] No raw selectors in test file
-- [ ] No `page.waitForTimeout()`
-- [ ] No CSS class selectors
-- [ ] Test cleans up created data
-- [ ] Test name has `TC-<FEATURE>-<##>:` prefix
-- [ ] Tests grouped in `test.describe`
-- [ ] File is `kebab-case.spec.ts`
-- [ ] File in correct `tests/<feature>/` directory
