@@ -11,6 +11,7 @@ test('child agent is triggered', async ({ agents }) => {
     const agent = await agents.openAgent(TESTING_AGENT);
     const chatbot = agent.chatbot;
 
+    await chatbot.isCopyButtonVisible();
     await chatbot.openNewThread();
     await chatbot.sendMessage('My name is tilakraj');
     

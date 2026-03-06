@@ -5,6 +5,7 @@ import { KnowledgeBaseDropdown } from '../../components/connecters/knowledge-bas
 import { ToolSelectionDropdown } from '../../components/connecters/tool-selection.panel';
 import { AgentConfigModal } from '../../modals/agent-config.modal';
 import { KnowledgeBaseModal } from '../../modals/knowledge-base.modal';
+import { PrebuiltToolsConfigModal } from '../../modals/prebuilt-tools-config.modal';
 
 
 export class ConnectersPage {
@@ -55,6 +56,10 @@ export class ConnectersPage {
 
   get knowledgeBaseModal() {
     return new KnowledgeBaseModal(this.page);
+  }
+
+  get prebuiltToolsConfigModal() {
+    return new PrebuiltToolsConfigModal(this.page);
   }
 
  
@@ -148,6 +153,13 @@ export class ConnectersPage {
        await this.page.getByTestId(`embed-list-prebuilt-tool-delete-button-${toolValue}`).click();
    }
 
+   async confirmDeletePrebuiltTool() {
+       await this.page
+           .getByTestId('DELETE_PREBUILT_TOOL_MODAL')
+           .getByTestId('delete-modal-confirm-button')
+           .click();
+   }
+
    async clickAddToolWhenHasTools() {
        await this.addToolButtonHasTools.click();
    }
@@ -194,5 +206,24 @@ export class ConnectersPage {
 
    async isKbDropdownVisible(): Promise<boolean> {
        return this.kbDropdown.isVisible();
+   }
+
+   // --- Info tooltip and tutorial video ---
+
+   async hoverInfoTooltipIcon() {
+       await this.page.getByTestId('info-tooltip-trigger').first().hover();
+   }
+
+   async clickInfoTooltipVideoButton() {
+       await this.page.getByTestId('info-tooltip-video-button').click();
+   }
+
+   async expectTutorialVideoVisible() {
+       await expect(
+           this.page
+               .locator('[data-testid="tutorial-video-iframe"]')
+               .contentFrame()
+               .getByRole('region', { name: 'Interactive demo' })
+       ).toBeVisible();
    }
 }

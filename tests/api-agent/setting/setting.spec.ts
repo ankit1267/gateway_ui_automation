@@ -3,7 +3,7 @@ import { test, expect } from '../../../fixtures/base.fixture';
 
 
 const ORG_NAME = process.env.WORKSPACE_NAME;
-const AGENT_NAME = process.env.AGENT_NAME!;
+const AGENT_NAME = process.env.TESTING_AGENT!;
 
 test.beforeEach(async ({ agents }) => {
     await agents.goto('api');

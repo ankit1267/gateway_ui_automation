@@ -8,9 +8,9 @@ test('Fill Prompt and api configured should not show agent guide', async ({ agen
   const agent = await agents.openAgent(testing_agent);
 
   await agent.prompt.fillPrompt(
-    'Support agent',
-    'Help users',
-    'Be polite'
+    `Support agent${Date.now()}`,
+    `Help users${Date.now()}`,
+    `Be polite${Date.now()}`
   );
 
   await agent.prompt.expectStepState(1, 'completed');
@@ -37,9 +37,9 @@ test('Agent setup card updates dynamically when prompt entered', async ({ agents
   await agent.prompt.expectStepState(1, 'incomplete');
 
   await agent.prompt.fillPrompt(
-    'Support agent',
-    'Help users',
-    'Be polite'
+    `Support agent${Date.now()}`,
+    `Help users${Date.now()}`,
+    `Be polite${Date.now()}`
   );
 
   await agent.prompt.expectStepState(1, 'completed');
@@ -75,9 +75,9 @@ test('Fill Prompt and api not configured should show agent guide', async ({ agen
   const agent = await agents.openAgent(testing_agent);
 
   await agent.prompt.fillPrompt(
-    'Support agent',
-    'Help users',
-    'Be polite'
+    `Support agent${Date.now()}`,
+    `Help users${Date.now()}`,
+    `Be polite${Date.now()}`
   );
 
   await agent.tabs.openModel();
@@ -94,8 +94,8 @@ test('Only fill role and goal should results in setup card remain same', async (
   const agent = await agents.openAgent(testing_agent);
 
   await agent.prompt.fillPrompt(
-    'Support agent',
-    'Help users',
+    `Support agent${Date.now()}`,
+    `Help users${Date.now()}`,
     ''
   );
   await agent.prompt.expectStepState(1, 'incomplete');

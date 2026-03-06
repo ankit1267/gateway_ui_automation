@@ -54,7 +54,7 @@ export class HistoryPage {
         this.selectUpdatedMessage = page.getByTestId('thread-item-select-updated-message');
 
         // Tools data modal
-        this.toolsDataModal = page.getByTestId('tools-data-modal');
+        this.toolsDataModal = page.getByTestId('tools-data-modal').first();
 
         // History sidebar
         this.advanceFilter = page.getByTestId('history-sidebar-advance-filter');
@@ -90,8 +90,9 @@ export class HistoryPage {
         await expect(preFunctionSection).toContainText(message);
     }
     async verifyVariableVisible(message: string | RegExp) {
+        await this.toolsDataModal.waitFor({ state: 'visible' });
         await expect(
-            this.page.getByText(message)
+            this.toolsDataModal.getByText(message)
         ).toBeVisible();
     }
 

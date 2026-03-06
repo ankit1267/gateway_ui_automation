@@ -11,7 +11,6 @@ export class ToolSelectionDropdown {
         this.dropdown = page.getByTestId('embed-suggestion-dropdown-menu');
         this.searchInput = this.dropdown.getByTestId('embed-suggestion-search-input');
         this.addNewToolsLink = this.dropdown.getByTestId('embed-suggestion-add-new-button')
-       
         this.viasocketHeader = this.page.locator('#viasocket-embed-header');
     }
 

@@ -16,7 +16,7 @@ export class CreateNewBridgeModal {
     this.container = page.getByTestId('create-new-bridge-modal-container');
     this.closeButton = page.getByTestId('create-new-bridge-close-button');
     this.cancelButton = page.getByTestId('create-new-bridge-cancel-button');
-    this.submitButton = page.getByTestId('create-new-bridge-submit-button');
+    this.submitButton = page.getByTestId('create-new-bridge-submit-button').first();
     this.purposeTextarea = page.getByTestId('agent-purpose').first();
     this.globalError = page.getByTestId('create-new-bridge-error-alert');
     this.heading = page.getByRole('heading', { name: 'Create New Agent' });
