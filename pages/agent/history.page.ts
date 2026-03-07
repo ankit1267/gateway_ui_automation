@@ -102,8 +102,83 @@ export class HistoryPage {
 
     // --- Thread container ---
 
+    private get firstSidebarThread(): Locator {
+        return this.page
+            .locator('li[data-testid^="history-sidebar-thread-"]:not([data-testid^="history-sidebar-thread-toggle-"])')
+            .first();
+    }
+
+    private get sidebarThreads(): Locator {
+        return this.page
+            .locator('li[data-testid^="history-sidebar-thread-"]:not([data-testid^="history-sidebar-thread-toggle-"])');
+    }
+
+    private get firstThreadResponseItem(): Locator {
+        return this.page.locator('[data-testid^="thread-item-"]').first();
+    }
+
     async isThreadContainerVisible(): Promise<boolean> {
         return this.threadContainer.isVisible();
+    }
+
+    async openFirstSidebarThread() {
+        await expect(this.firstSidebarThread).toBeVisible();
+        await this.firstSidebarThread.click();
+    }
+
+    async openFirstSidebarThreadAndGetApiStatus(): Promise<number> {
+        await expect(this.firstSidebarThread).toBeVisible();
+
+        const threadCount = await this.sidebarThreads.count();
+        const maxAttempts = Math.min(threadCount, 3);
+
+        for (let index = 0; index < maxAttempts; index++) {
+            const responsePromise = this.page
+                .waitForResponse((response) => {
+                    const url = decodeURIComponent(response.url());
+                    return response.request().method() === 'GET'
+                        && url.includes('/api/history/')
+                        && (
+                            url.includes('thread_id=')
+                            || url.includes('message_id=')
+                            || /\/api\/history\/[^/?]+/.test(url)
+                        );
+                }, { timeout: 7000 })
+                .catch(() => null);
+
+            await this.sidebarThreads.nth(index).click();
+
+            const response = await responsePromise;
+            console.log("Response:", response);
+            if (response) {
+                return response.status();
+            }
+        }
+
+        throw new Error('No history detail API response captured after clicking visible sidebar threads.');
+    }
+
+    async expectThreadResponseVisible() {
+        await expect(this.threadContainer).toBeVisible();
+        await expect(this.firstThreadResponseItem).toBeVisible();
+    }
+
+    async hoverGroupChatAgentsResponse() {
+        const editMessageButton = this.page.locator('#thread-item-edit-message-button').first();
+        const responseBubble = editMessageButton.locator('xpath=ancestor::div[contains(@class,"chat-bubble")]').first();
+
+        await expect(responseBubble).toBeVisible();
+        await responseBubble.hover();
+    }
+
+    async expectGroupChatHoverActionsVisible() {
+        const editMessageButton = this.page.locator('#thread-item-edit-message-button').first();
+        const editMessageTooltip = editMessageButton.locator('xpath=ancestor::div[@data-tip][1]');
+
+        await expect(this.page.locator('#thread-item-add-test-case-button').first()).toBeVisible();
+        await expect(this.page.locator('#thread-item-debug-agent-button').first()).toBeVisible();
+        await expect(editMessageButton).toBeVisible();
+        await expect(editMessageTooltip).toHaveAttribute('data-tip', /edit message/i);
     }
 
     async scrollToBottom() {
@@ -205,195 +280,299 @@ export class HistoryPage {
     }
 
     // --- History sidebar extended ---
-
     private get versionSelect(): Locator {
-        return this.page.getByTestId('history-sidebar-version-select');
-    }
+    return this.page.getByTestId('history-sidebar-version-select');
+}
 
-    private get searchInput(): Locator {
-        return this.page.getByTestId('history-sidebar-search-input');
-    }
+private get searchInput(): Locator {
+    return this.page.getByTestId('history-sidebar-search-input');
+}
 
-    private get searchClear(): Locator {
-        return this.page.getByTestId('history-sidebar-search-clear');
-    }
+private get searchClear(): Locator {
+    return this.page.getByTestId('history-sidebar-search-clear');
+}
 
-    private get errorToggle(): Locator {
-        return this.page.getByTestId('history-sidebar-error-toggle');
-    }
+private get errorToggle(): Locator {
+    return this.page.getByTestId('history-sidebar-error-toggle');
+}
 
-    async selectVersion(value: string) {
-        await this.versionSelect.selectOption(value);
-    }
+private async resolveVersionOption(value: string): Promise<{ value: string; label: string }> {
+    const target = value.trim();
+    await this.versionSelect.waitFor({ state: 'visible' });
 
-    async getSelectedVersion(): Promise<string> {
-        return this.versionSelect.inputValue();
-    }
-
-    async searchHistory(query: string) {
-        await this.searchInput.fill(query);
-        await this.searchInput.press('Enter');
-    }
-
-    async clearSearch() {
-        await this.searchClear.click();
-    }
-
-    async isSearchClearVisible(): Promise<boolean> {
-        return this.searchClear.isVisible();
-    }
-
-    async toggleErrorHistory() {
-        await this.errorToggle.click();
-    }
-
-    async isErrorToggleChecked(): Promise<boolean> {
-        return this.errorToggle.isChecked();
-    }
-
-    // --- Chat details slider ---
-
-    private get chatDetailsSlider(): Locator {
-        return this.page.getByTestId('chat-details-slider');
-    }
-
-    private get chatDetailsCloseButton(): Locator {
-        return this.page.getByTestId('chat-details-close-button');
-    }
-
-    private get chatDetailsCopyDropdown(): Locator {
-        return this.page.getByTestId('chat-details-variables-copy-dropdown');
-    }
-
-    private get chatDetailsCopyCurrentValues(): Locator {
-        return this.page.getByTestId('chat-details-copy-current-values');
-    }
-
-    private get chatDetailsCopyKeyValuePairs(): Locator {
-        return this.page.getByTestId('chat-details-copy-key-value-pairs');
-    }
-
-    private get chatDetailsCopySystemPrompt(): Locator {
-        return this.page.getByTestId('chat-details-copy-system-prompt');
-    }
-
-    async isChatDetailsVisible(): Promise<boolean> {
-        return this.chatDetailsSlider.isVisible();
-    }
-
-    async closeChatDetails() {
-        await this.chatDetailsCloseButton.click();
-    }
-
-    async openCopyDropdown() {
-        await this.chatDetailsCopyDropdown.click();
-    }
-
-    async copyCurrentValues() {
-        await this.chatDetailsCopyCurrentValues.click();
-    }
-
-    async copyKeyValuePairs() {
-        await this.chatDetailsCopyKeyValuePairs.click();
-    }
-
-    async copySystemPrompt() {
-        await this.chatDetailsCopySystemPrompt.click();
-    }
-
-    // --- Date range picker ---
-
-    private get dateRangePicker(): Locator {
-        return this.page.getByTestId('history-date-range-picker');
-    }
-
-    private get dateRangeFromInput(): Locator {
-        return this.page.getByTestId('history-date-range-from-input');
-    }
-
-    private get dateRangeToInput(): Locator {
-        return this.page.getByTestId('history-date-range-to-input');
-    }
-
-    private get dateRangeApplyButton(): Locator {
-        return this.page.getByTestId('history-date-range-apply-button');
-    }
-
-    private get dateRangeClearButton(): Locator {
-        return this.page.getByTestId('history-date-range-clear-button');
-    }
-
-    async isDateRangePickerVisible(): Promise<boolean> {
-        return this.dateRangePicker.isVisible();
-    }
-
-    async fillDateFrom(value: string) {
-        await this.dateRangeFromInput.fill(value);
-    }
-
-    async fillDateTo(value: string) {
-        await this.dateRangeToInput.fill(value);
-    }
-
-    async applyDateRange() {
-        await this.dateRangeApplyButton.click();
-    }
-
-    async clearDateRange() {
-        await this.dateRangeClearButton.click();
-    }
-
-    async applyDateFilter(from: string, to: string): Promise<any> {
-        await this.advanceFilterToggle.check();
-        await this.fillDateFrom(from);
-        await this.fillDateTo(to);
-
-        const responsePromise = this.page.waitForResponse((response) =>
-            response.status() === 200
-            && response.url().includes('/api/history/')
-            && decodeURIComponent(response.url()).includes(`page=1`)
-            && decodeURIComponent(response.url()).includes(`limit=40`)
-            && decodeURIComponent(response.url()).includes(`user_feedback=all`)
-            && decodeURIComponent(response.url()).includes(`error=false`)
-            && decodeURIComponent(response.url()).includes(`start_date=${from}`)
-            && decodeURIComponent(response.url()).includes(`end_date=${to}`)
+    const options = await this.versionSelect
+        .locator('option')
+        .evaluateAll((nodes) =>
+            nodes.map((node) => {
+                const option = node as HTMLOptionElement;
+                return {
+                    value: option.value,
+                    label: (option.label || option.textContent || '').trim()
+                };
+            })
         );
 
-        await this.applyDateRange();
+    const exactMatch = options.find((option) =>
+        option.value === target || option.label === target
+    );
 
-        const response = await responsePromise;
+    const versionLabelMatch = options.find((option) =>
+        /version/i.test(option.label)
+        && option.label.includes(target)
+    );
 
-        return response.json();
+    const containsMatch = options.find((option) =>
+        option.value.includes(target) || option.label.includes(target)
+    );
+
+    const selectedOption = exactMatch ?? versionLabelMatch ?? containsMatch;
+    if (!selectedOption) {
+        const available = options
+            .map((option) => `${option.label} [${option.value}]`)
+            .join(', ');
+        throw new Error(`Unable to select history version "${target}". Available options: ${available}`);
     }
 
-    async getUIThreadIds(): Promise<string[]> {
-        const ids = await this.page
-            .locator('li[data-testid^="history-sidebar-thread-"]')
-            .evaluateAll((nodes) =>
-                nodes.map((node) =>
-                    node
-                        .getAttribute('data-testid')
-                        ?.replace('history-sidebar-thread-', '') ?? ''
-                )
-            );
+    return selectedOption;
+}
 
-        return ids.filter((id) => id && !id.startsWith('toggle-'));
+async selectVersion(value: string) {
+    const selectedOption = await this.resolveVersionOption(value);
+    await this.versionSelect.selectOption({ value: selectedOption.value });
+}
+
+async selectVersionAndGetHistoryResponse(value: string): Promise<any> {
+    const selectedOption = await this.resolveVersionOption(value);
+    const currentValue = await this.getSelectedVersion();
+
+    if (currentValue === selectedOption.value) {
+        const fallback = this.versionSelect.locator('option').filter({ hasNotText: selectedOption.label }).first();
+        if (await fallback.count()) {
+            const fallbackValue = (await fallback.getAttribute('value')) || '';
+            if (fallbackValue && fallbackValue !== selectedOption.value) {
+                await this.versionSelect.selectOption({ value: fallbackValue });
+            }
+        }
     }
 
+    const responsePromise = this.page.waitForResponse((response) =>
+        response.status() === 200
+        && response.request().method() === 'GET'
+        && response.url().includes('/api/history/')
+        && decodeURIComponent(response.url()).includes('page=1')
+        && decodeURIComponent(response.url()).includes('limit=40')
+        && !decodeURIComponent(response.url()).includes('thread_id=')
+        && !decodeURIComponent(response.url()).includes('message_id=')
+    );
 
-    async verifyHistoryMatchesAPI(apiResponse: any) {
+    await this.versionSelect.selectOption({ value: selectedOption.value });
 
-        const items = Array.isArray(apiResponse?.data) ? apiResponse.data : [];
-        const apiIds = items
-            .map((item: Record<string, unknown>) =>
-                String(item.thread_id ?? item.threadId ?? item._id ?? item.id ?? '')
+    const response = await responsePromise;
+    return response.json();
+}
+
+async getSelectedVersion(): Promise<string> {
+    return this.versionSelect.inputValue();
+}
+
+async searchHistory(query: string) {
+    await this.searchInput.fill(query);
+    await this.searchInput.press('Enter');
+}
+
+async clearSearch() {
+    await this.searchClear.click();
+}
+
+async isSearchClearVisible(): Promise<boolean> {
+    return this.searchClear.isVisible();
+}
+
+async toggleErrorHistory() {
+    await this.errorToggle.click();
+}
+
+async isErrorToggleChecked(): Promise<boolean> {
+    return this.errorToggle.isChecked();
+}
+
+private get chatDetailsSlider(): Locator {
+    return this.page.getByTestId('chat-details-slider');
+}
+
+private get chatDetailsCloseButton(): Locator {
+    return this.page.getByTestId('chat-details-close-button');
+}
+
+private get chatDetailsCopyDropdown(): Locator {
+    return this.page.getByTestId('chat-details-variables-copy-dropdown');
+}
+
+private get chatDetailsCopyCurrentValues(): Locator {
+    return this.page.getByTestId('chat-details-copy-current-values');
+}
+
+private get chatDetailsCopyKeyValuePairs(): Locator {
+    return this.page.getByTestId('chat-details-copy-key-value-pairs');
+}
+
+private get chatDetailsCopySystemPrompt(): Locator {
+    return this.page.getByTestId('chat-details-copy-system-prompt');
+}
+
+async isChatDetailsVisible(): Promise<boolean> {
+    return this.chatDetailsSlider.isVisible();
+}
+
+async closeChatDetails() {
+    await this.chatDetailsCloseButton.click();
+}
+
+async openCopyDropdown() {
+    await this.chatDetailsCopyDropdown.click();
+}
+
+async copyCurrentValues() {
+    await this.chatDetailsCopyCurrentValues.click();
+}
+
+async copyKeyValuePairs() {
+    await this.chatDetailsCopyKeyValuePairs.click();
+}
+
+async copySystemPrompt() {
+    await this.chatDetailsCopySystemPrompt.click();
+}
+
+// --- Date range picker ---
+
+private get dateRangePicker(): Locator {
+    return this.page.getByTestId('history-date-range-picker');
+}
+
+private get dateRangeFromInput(): Locator {
+    return this.page.getByTestId('history-date-range-from-input');
+}
+
+private get dateRangeToInput(): Locator {
+    return this.page.getByTestId('history-date-range-to-input');
+}
+
+private get dateRangeApplyButton(): Locator {
+    return this.page.getByTestId('history-date-range-apply-button');
+}
+
+private get dateRangeClearButton(): Locator {
+    return this.page.getByTestId('history-date-range-clear-button');
+}
+
+async isDateRangePickerVisible(): Promise<boolean> {
+    return this.dateRangePicker.isVisible();
+}
+
+async fillDateFrom(value: string) {
+    await this.dateRangeFromInput.fill(value);
+}
+
+async fillDateTo(value: string) {
+    await this.dateRangeToInput.fill(value);
+}
+
+async applyDateRange() {
+    await this.dateRangeApplyButton.click();
+}
+
+async clearDateRange() {
+    await this.dateRangeClearButton.click();
+}
+
+async applyDateFilter(from: string, to: string): Promise<any> {
+    await this.advanceFilterToggle.check();
+    await this.fillDateFrom(from);
+    await this.fillDateTo(to);
+
+    const responsePromise = this.page.waitForResponse((response) =>
+        response.status() === 200
+        && response.url().includes('/api/history/')
+        && decodeURIComponent(response.url()).includes(`page=1`)
+        && decodeURIComponent(response.url()).includes(`limit=40`)
+        && decodeURIComponent(response.url()).includes(`user_feedback=all`)
+        && decodeURIComponent(response.url()).includes(`error=false`)
+        && decodeURIComponent(response.url()).includes(`start_date=${from}`)
+        && decodeURIComponent(response.url()).includes(`end_date=${to}`)
+    );
+
+    await this.applyDateRange();
+
+    const response = await responsePromise;
+
+    return response.json();
+}
+
+async getUIThreadIds(): Promise<string[]> {
+    const ids = await this.page
+        .locator('li[data-testid^="history-sidebar-thread-"]:visible')
+        .evaluateAll((nodes) =>
+            nodes.map((node) =>
+                node
+                    .getAttribute('data-testid')
+                    ?.replace('history-sidebar-thread-', '') ?? ''
             )
-            .filter(Boolean);
+        );
 
-        const uiIds = await this.getUIThreadIds();
-        console.log("UI IDs:", uiIds);
-        console.log("API IDs:", apiIds);
-        expect([...uiIds].sort()).toEqual([...apiIds].sort());
+    return [...new Set(ids.filter((id) => id && !id.startsWith('toggle-')))];
+}
 
+private collectThreadIdsFromApi(payload: unknown): string[] {
+    const result = new Set<string>();
+    const maybeUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+    const visit = (value: unknown) => {
+        if (!value) return;
+
+        if (Array.isArray(value)) {
+            for (const item of value) {
+                visit(item);
+            }
+            return;
+        }
+
+        if (typeof value !== 'object') return;
+
+        const record = value as Record<string, unknown>;
+        for (const [key, entry] of Object.entries(record)) {
+            if (typeof entry === 'string') {
+                const isThreadLikeKey =
+                    key === 'thread_id'
+                    || key === 'threadId'
+                    || key === 'subThread_id'
+                    || key === 'subThreadId'
+                    || key === 'id'
+                    || key === '_id';
+
+                if (isThreadLikeKey && maybeUuid.test(entry)) {
+                    result.add(entry);
+                }
+            }
+
+            visit(entry);
+        }
+    };
+
+    visit(payload);
+    return [...result];
+}
+
+async verifyHistoryMatchesAPI(apiResponse: any) {
+    const apiIds = this.collectThreadIdsFromApi(apiResponse);
+
+    if (apiIds.length > 0) {
+        await expect(this.page.getByTestId(`history-sidebar-thread-${apiIds[0]}`).first()).toBeVisible();
     }
+
+    const uiIds = await this.getUIThreadIds();
+    console.log("UI IDs:", uiIds);
+    console.log("API IDs:", apiIds);
+    expect([...uiIds].sort()).toEqual([...apiIds].sort());
+}
 }
