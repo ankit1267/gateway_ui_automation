@@ -6,7 +6,7 @@
 
 - **Never guess.** If intent, constraints, or compatibility with the system are unclear, ask questions before acting.
 - **Never write raw selectors in test files.** All selectors belong in POM classes.
-- **Always use existing POM methods** if one exists for the action. Check page/modal/component classes first.
+- **Always use existing POM methods** if one exists for the action. Check page/modal/component classes first if you dont find then make it from the AI-middleware-frontend code.
 - **Never use `page.waitForTimeout()`.** Use `expect().toBeVisible()` or `waitFor()` instead.
 - **Prefer `data-testid`** over any other locator strategy.
 - **Do not invent new selectors** unless no existing POM method or locator covers the element.

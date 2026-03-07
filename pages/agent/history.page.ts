@@ -188,6 +188,22 @@ export class HistoryPage {
         await this.page.getByTestId(`history-sidebar-filter-${value}`).click();
     }
 
+    async expectAdvanceFilterControlsVisible() {
+        await expect(this.advanceFilterToggle).toBeVisible();
+        await this.advanceFilterToggle.check();
+        await expect(this.advanceFilter).toBeVisible();
+
+        await expect(this.dateRangeFromInput).toBeVisible();
+        await expect(this.dateRangeToInput).toBeVisible();
+        await expect(this.dateRangeApplyButton).toBeVisible();
+        await expect(this.dateRangeClearButton).toBeVisible();
+
+        await expect(this.errorToggle).toBeVisible();
+        await expect(this.page.getByTestId('history-sidebar-filter-all')).toBeVisible();
+        await expect(this.page.getByTestId('history-sidebar-filter-1')).toBeVisible();
+        await expect(this.page.getByTestId('history-sidebar-filter-2')).toBeVisible();
+    }
+
     // --- History sidebar extended ---
 
     private get versionSelect(): Locator {
@@ -327,9 +343,57 @@ export class HistoryPage {
         await this.dateRangeClearButton.click();
     }
 
-    async setDateRange(from: string, to: string) {
+    async applyDateFilter(from: string, to: string): Promise<any> {
+        await this.advanceFilterToggle.check();
         await this.fillDateFrom(from);
         await this.fillDateTo(to);
+
+        const responsePromise = this.page.waitForResponse((response) =>
+            response.status() === 200
+            && response.url().includes('/api/history/')
+            && decodeURIComponent(response.url()).includes(`page=1`)
+            && decodeURIComponent(response.url()).includes(`limit=40`)
+            && decodeURIComponent(response.url()).includes(`user_feedback=all`)
+            && decodeURIComponent(response.url()).includes(`error=false`)
+            && decodeURIComponent(response.url()).includes(`start_date=${from}`)
+            && decodeURIComponent(response.url()).includes(`end_date=${to}`)
+        );
+
         await this.applyDateRange();
+
+        const response = await responsePromise;
+
+        return response.json();
+    }
+
+    async getUIThreadIds(): Promise<string[]> {
+        const ids = await this.page
+            .locator('li[data-testid^="history-sidebar-thread-"]')
+            .evaluateAll((nodes) =>
+                nodes.map((node) =>
+                    node
+                        .getAttribute('data-testid')
+                        ?.replace('history-sidebar-thread-', '') ?? ''
+                )
+            );
+
+        return ids.filter((id) => id && !id.startsWith('toggle-'));
+    }
+
+
+    async verifyHistoryMatchesAPI(apiResponse: any) {
+
+        const items = Array.isArray(apiResponse?.data) ? apiResponse.data : [];
+        const apiIds = items
+            .map((item: Record<string, unknown>) =>
+                String(item.thread_id ?? item.threadId ?? item._id ?? item.id ?? '')
+            )
+            .filter(Boolean);
+
+        const uiIds = await this.getUIThreadIds();
+        console.log("UI IDs:", uiIds);
+        console.log("API IDs:", apiIds);
+        expect([...uiIds].sort()).toEqual([...apiIds].sort());
+
     }
 }
