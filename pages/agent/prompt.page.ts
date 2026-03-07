@@ -44,6 +44,16 @@ export class PromptPage {
   private readonly promptTextarea: Locator;
   private readonly advancedParamsWrapper: Locator;
   private readonly buildWithAiButton: Locator;
+  private readonly jsonSchemaTextarea: Locator;
+  private readonly buildVisuallyButton: Locator;
+  private readonly jsonSchemaBuilder: Locator;
+  private readonly jsonSchemaNameInput: Locator;
+  private readonly jsonSchemaAddPropertyButton: Locator;
+  private readonly jsonSchemaSaveButton: Locator;
+  private readonly jsonSchemaCloseButton: Locator;
+  private readonly schemaPropTypeSelectNew0: Locator;
+  private readonly schemaPropDeleteButtonNew0: Locator;
+  private readonly schemaPropDescriptionTextareaNew0: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -93,6 +103,16 @@ export class PromptPage {
     this.defaultVariablesToggle = page.getByTestId('default-variables-toggle');
     this.advancedParamsWrapper = page.getByTestId('prompt-tab-advanced-params-wrapper');
     this.buildWithAiButton = page.getByText('Build with AI');
+    this.jsonSchemaTextarea = page.getByRole('textbox', { name: 'Enter JSON schema...' });
+    this.buildVisuallyButton = page.getByText('Build Visually');
+    this.jsonSchemaBuilder = page.getByTestId('JSON_SCHEMA_BUILDER');
+    this.jsonSchemaNameInput = page.getByTestId('json-schema-name-input');
+    this.jsonSchemaAddPropertyButton = page.getByTestId('json-schema-builder-add-property-button');
+    this.jsonSchemaSaveButton = page.getByTestId('json-schema-builder-save-button');
+    this.jsonSchemaCloseButton = page.getByTestId('json-schema-builder-close-button');
+    this.schemaPropTypeSelectNew0 = page.getByTestId('schema-prop-type-select-new0');
+    this.schemaPropDeleteButtonNew0 = page.getByTestId('schema-prop-delete-button-new0');
+    this.schemaPropDescriptionTextareaNew0 = page.getByTestId('schema-prop-description-textarea-new0');
   }
 
   async openMigrateModal() {
@@ -130,6 +150,48 @@ export class PromptPage {
   async selectResponseType(value: string) {
     await this.responseTypeSelect.selectOption(value);
     await expect(this.responseTypeSelect).toHaveValue(value);
+  }
+
+  async fillJsonSchema(text: string) {
+    await this.jsonSchemaTextarea.fill(text);
+  }
+
+  async openBuildVisually() {
+    await this.buildVisuallyButton.click();
+  }
+
+  async expectJsonSchemaBuilderVisible() {
+    await expect(this.jsonSchemaNameInput).toBeVisible();
+    await expect(this.jsonSchemaAddPropertyButton).toBeVisible();
+    await expect(this.jsonSchemaBuilder).toBeVisible();
+    await expect(this.jsonSchemaSaveButton).toBeVisible();
+    await expect(this.jsonSchemaCloseButton).toBeVisible();
+  }
+
+  async addJsonSchemaProperty() {
+    await this.jsonSchemaAddPropertyButton.click();
+  }
+
+  async expectNewJsonSchemaPropertyVisible() {
+    await expect(this.jsonSchemaBuilder.getByText('Required')).toBeVisible();
+    await expect(this.schemaPropTypeSelectNew0).toBeVisible();
+    await expect(this.schemaPropDeleteButtonNew0).toBeVisible();
+    await expect(this.schemaPropDescriptionTextareaNew0).toBeVisible();
+  }
+
+  async fillNewJsonSchemaPropertyDescription(text: string) {
+    await this.schemaPropDescriptionTextareaNew0.click();
+    await this.schemaPropDescriptionTextareaNew0.fill(text);
+  }
+
+  async saveJsonSchemaBuilder() {
+    await this.jsonSchemaSaveButton.click();
+  }
+
+  async expectJsonSchemaSavedSuccessfully() {
+    await expect(
+      this.page.getByRole('alert').filter({ hasText: 'JSON Schema saved successfully' })
+    ).toBeVisible();
   }
 
   //deleteVariable
