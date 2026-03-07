@@ -43,6 +43,10 @@ export class A2AAgentDropdown {
         return this.dropdown;
     }
 
+    async expectItemVisible(agentName: string) {
+        await expect(this.dropdown.getByText(agentName, { exact: true })).toBeVisible({ timeout: 15000 });
+    }
+
     async searchAndSelect(agentName: string) {
         await this.search(agentName);
         await this.selectAgent(agentName);

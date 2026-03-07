@@ -1,4 +1,5 @@
 import type { Page, Locator } from '@playwright/test';
+import { expect } from '@playwright/test';
 
 export class AgentHeaderNav {
   private readonly history: Locator;
@@ -18,6 +19,7 @@ export class AgentHeaderNav {
   private readonly deleteButton: Locator;
   private readonly revert: Locator;
   private readonly discardChangesButton: Locator;
+  private readonly configHistorySlider: Locator;
 
   constructor(private readonly page: Page) {
     this.history = this.page.getByTestId('navbar-tab-history');
@@ -37,6 +39,7 @@ export class AgentHeaderNav {
     this.trashIcon = this.page.locator('.lucide.lucide-trash2').first();
     this.deleteButton = this.page.getByTestId('DELETE_VERSION_MODAL').getByTestId('delete-modal-confirm-button').first();
     this.discardChangesButton = this.page.getByTestId('DELETE_MODAL').getByTestId('delete-modal-confirm-button');
+    this.configHistorySlider = this.page.locator('#default-config-history-slider');
   }
 
   async openChatbotConfig() {
@@ -112,6 +115,10 @@ export class AgentHeaderNav {
 
   async getAgentNameText(): Promise<string> {
     return this.agentName.innerText();
+  }
+
+  async assertConfigHistorySliderVisible() {
+    await expect(this.configHistorySlider).toBeInViewport({ timeout: 10000 });
   }
 
   async isHistoryTabVisible(): Promise<boolean> {

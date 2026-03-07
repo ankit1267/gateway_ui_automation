@@ -1,4 +1,5 @@
 import type { Page, Locator } from '@playwright/test';
+import { expect } from '@playwright/test';
 
 export class PrebuiltToolsConfigModal {
   readonly page: Page;
@@ -7,6 +8,7 @@ export class PrebuiltToolsConfigModal {
   readonly addDomainButton: Locator;
   readonly domainsList: Locator;
   readonly closeButton: Locator;
+  private readonly validationError: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -15,6 +17,7 @@ export class PrebuiltToolsConfigModal {
     this.addDomainButton = page.getByTestId('prebuilt-tools-config-add-domain-button');
     this.domainsList = page.getByTestId('prebuilt-tools-config-domains-list');
     this.closeButton = page.getByTestId('prebuilt-tools-config-close-button');
+    this.validationError = this.container.locator('.label-text-alt.text-error');
   }
 
   async isVisible(): Promise<boolean> {
@@ -72,6 +75,26 @@ export class PrebuiltToolsConfigModal {
 
   async clickDeleteDomain(index: number) {
     await this.page.getByTestId(`prebuilt-tools-config-delete-button-${index}`).click();
+  }
+
+  async expectDomainItemVisible(index: number) {
+    await expect(this.getDomainItem(index)).toBeVisible({ timeout: 10000 });
+  }
+
+  async expectDomainItemNotVisible(index: number) {
+    await expect(this.getDomainItem(index)).not.toBeVisible({ timeout: 10000 });
+  }
+
+  async expectDomainAlreadyExistsError() {
+    await expect(this.validationError).toHaveText('This domain already exists', { timeout: 10000 });
+  }
+
+  async expectInvalidDomainError() {
+    await expect(this.validationError).toHaveText('Please enter a valid domain', { timeout: 10000 });
+  }
+
+  async expectEditInvalidDomainError(index: number) {
+    await expect(this.getDomainItem(index).locator('.text-xs.text-error')).toHaveText('Please enter a valid domain', { timeout: 10000 });
   }
 
   async editDomain(index: number, newDomain: string) {

@@ -6,6 +6,8 @@ import { KnowledgeBasePage } from './knowledge-base.page';
 import { CreateNewBridgeModal } from '../../modals/create-new-bridge.modal';
 import { DeleteModal } from '../../modals/delete.modal';
 import { CommandPalette } from '../../components/command/command-palette.component';
+import { AccessManagementModal } from '../../modals/access-management.modal';
+import { UsageSummaryPopover } from '../../components/agents/usage-summary-popover';
 
 export class AgentsPage {
   private readonly agentTable: Locator;
@@ -22,6 +24,8 @@ export class AgentsPage {
   readonly createAgentModal: CreateNewBridgeModal;
   readonly deleteModal: DeleteModal;
   readonly commandPalette: CommandPalette;
+  readonly accessManagementModal: AccessManagementModal;
+  readonly usageSummaryPopover: UsageSummaryPopover;
 
   constructor(private page: Page) {
     this.agentTable = this.page.getByTestId(/custom-table-row-/);
@@ -38,6 +42,8 @@ export class AgentsPage {
     this.createAgentModal = new CreateNewBridgeModal(page);
     this.deleteModal = new DeleteModal(page);
     this.commandPalette = new CommandPalette(page);
+    this.accessManagementModal = new AccessManagementModal(page);
+    this.usageSummaryPopover = new UsageSummaryPopover(page);
   }
 
   async goto(type?: 'chatbot' | 'api') {
@@ -173,5 +179,47 @@ export class AgentsPage {
   async openAgentMenuByName(agentName: string) {
     const row = this.getAgentRow(agentName);
     await row.getByRole('button').last().click();
+  }
+
+  async openManageAccessForAgent(agentName: string) {
+    await this.openAgentMenuByName(agentName);
+    await this.page.getByRole('button', { name: 'Manage Access' }).click();
+  }
+
+  async openUsageLimitsForAgent(agentName: string) {
+    await this.openAgentMenuByName(agentName);
+    await this.page.getByRole('button', { name: 'Usage & Limits' }).click();
+  }
+
+  async pauseAgent(agentName: string) {
+    await this.openAgentMenuByName(agentName);
+    await this.page.getByRole('button', { name: 'Pause Agent' }).click();
+  }
+
+  async resumeAgent(agentName: string) {
+    await this.openAgentMenuByName(agentName);
+    await this.page.getByRole('button', { name: 'Resume Agent' }).click();
+  }
+
+  async expectPausedToastVisible() {
+    await expect(
+      this.page.getByRole('alert').filter({ hasText: 'Agent paused successfully' })
+    ).toBeVisible();
+  }
+
+  async expectResumedToastVisible() {
+    await expect(
+      this.page.getByRole('alert').filter({ hasText: 'Agent resumed successfully' })
+    ).toBeVisible();
+  }
+
+  async clickHistoryButton(agentName: string) {
+    const row = this.getAgentRow(agentName);
+    await row.hover();
+    await row.getByRole('button', { name: 'History' }).click();
+  }
+
+  async expectHistoryPageUrl() {
+    await expect(this.page).toHaveURL(/\/agents\/history\//, { timeout: 10000 });
   }
 }

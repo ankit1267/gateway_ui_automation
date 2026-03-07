@@ -24,9 +24,12 @@ export class ToolSelectionDropdown {
 
     async selectTool(toolName: string) {
         await this.expectVisible();
-        await this.dropdown
-            .getByText(toolName, { exact: true })
-            .click();
+        const item = this.dropdown
+            .locator('button, li')
+            .filter({ hasText: toolName })
+            .first();
+        await item.scrollIntoViewIfNeeded();
+        await item.click();
     }
 
     async clickAddNewTools() {
@@ -37,7 +40,9 @@ export class ToolSelectionDropdown {
         await expect(this.dropdown.getByText('No tools found')).toBeVisible({ timeout: 15000 });
     }
 
-   
+    async expectItemVisible(toolName: string) {
+        await expect(this.dropdown.getByText(toolName, { exact: true })).toBeVisible({ timeout: 15000 });
+    }
 
     async expectViaSocketVisible() {
         await expect(this.viasocketHeader).toBeVisible({ timeout: 15000 });

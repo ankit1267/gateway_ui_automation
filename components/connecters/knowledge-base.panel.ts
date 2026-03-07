@@ -53,6 +53,10 @@ export class KnowledgeBaseDropdown {
         return this.addNewKBButton.isVisible();
     }
 
+    async expectItemVisible(kbName: string) {
+        await expect(this.dropdown.getByText(kbName, { exact: true })).toBeVisible({ timeout: 15000 });
+    }
+
     async searchAndSelect(kbName: string) {
         await this.search(kbName);
         await this.selectKB(kbName);
