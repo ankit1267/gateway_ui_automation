@@ -6,6 +6,8 @@ import { ToolSelectionDropdown } from '../../components/connecters/tool-selectio
 import { AgentConfigModal } from '../../modals/agent-config.modal';
 import { KnowledgeBaseModal } from '../../modals/knowledge-base.modal';
 import { PrebuiltToolsConfigModal } from '../../modals/prebuilt-tools-config.modal';
+import { AgentDescriptionModal } from '../../modals/agent-description.modal';
+import { ToolConfigModal } from '../../modals/tool-config.modal';
 
 
 export class ConnectersPage {
@@ -27,6 +29,8 @@ export class ConnectersPage {
   readonly a2aDropdown: A2AAgentDropdown;
   readonly knowledgeBaseDropdown: KnowledgeBaseDropdown;
   readonly toolDropdown: ToolSelectionDropdown;
+  readonly agentDescriptionModal: AgentDescriptionModal;
+  readonly toolConfigModal: ToolConfigModal;
 
   constructor(public readonly page: Page) { 
     
@@ -48,6 +52,8 @@ export class ConnectersPage {
     this.a2aDropdown = new A2AAgentDropdown(this.page);
     this.knowledgeBaseDropdown = new KnowledgeBaseDropdown(this.page);
     this.toolDropdown = new ToolSelectionDropdown(this.page);
+    this.agentDescriptionModal = new AgentDescriptionModal(this.page);
+    this.toolConfigModal = new ToolConfigModal(this.page);
   }
 
   get variableModal() {
@@ -64,11 +70,22 @@ export class ConnectersPage {
 
  
   async clickAddTool() {
-    await this.addToolButton.click();
+    for (let i = 0; i < 4; i++) {
+      if (await this.addToolButton.isVisible()) {
+        await this.addToolButton.click();
+      } else {
+        await this.addToolButtonHasTools.click();
+      }
+      if (await this.toolDropdown.isVisible()) break;
+    }
   }
 
   async clickAddAgent() {
-    await this.addAgentButton.click();
+    if (await this.addAgentButton.isVisible()) {
+      await this.addAgentButton.click();
+    } else {
+      await this.addAgentButtonHasAgents.click();
+    }
   }
 
   async clickAddKB() {
@@ -97,6 +114,41 @@ export class ConnectersPage {
         await expect(this.agentList).toBeVisible({ timeout: 15000 });
         await expect(this.agentList).toContainText(agentName);
     }
+
+   async openEmbedToolConfig() {
+        const toolItem = this.embedToolsContainer
+            .locator('[data-testid^="render-embed-item-"]')
+            .first();
+        await toolItem.hover();
+        await toolItem.getByTitle('Config').click();
+   }
+
+   async removeEmbedToolIfExists() {
+        if (!await this.embedToolsContainer.isVisible()) return;
+        const toolItem = this.embedToolsContainer
+            .locator('[data-testid^="render-embed-item-"]').first();
+        if (!await toolItem.isVisible()) return;
+        await toolItem.hover();
+        await toolItem.getByTitle('Remove').click();
+        const confirmBtn = this.page.getByTestId('DELETE_TOOL_MODAL').getByTestId('delete-modal-confirm-button');
+        await expect(confirmBtn).toBeVisible();
+        await confirmBtn.click();
+   }
+
+   async clickConnectedAgent(agentName: string) {
+        await this.agentList.getByText(agentName, { exact: true }).click();
+   }
+
+   async removeConnectedAgentIfExists(agentName: string) {
+        if (!await this.agentList.isVisible()) return;
+        const agentText = this.agentList.getByText(agentName, { exact: true });
+        if (!await agentText.isVisible()) return;
+        await agentText.hover();
+        await this.agentList.getByTitle('Remove').click();
+        const removeAgentBtn = this.page.getByRole('button', { name: 'Remove Agent' });
+        await expect(removeAgentBtn).toBeVisible();
+        await removeAgentBtn.click();
+   }
 
     async removeAgent() {
         const removeIcon = this.agentList.getByTitle('Remove');
@@ -158,6 +210,14 @@ export class ConnectersPage {
            .getByTestId('DELETE_PREBUILT_TOOL_MODAL')
            .getByTestId('delete-modal-confirm-button')
            .click();
+   }
+
+   async deletePrebuiltToolIfExists(toolValue: string) {
+       const tool = this.getPrebuiltTool(toolValue);
+       if (await tool.isVisible()) {
+           await this.deletePrebuiltTool(toolValue);
+           await this.confirmDeletePrebuiltTool();
+       }
    }
 
    async clickAddToolWhenHasTools() {

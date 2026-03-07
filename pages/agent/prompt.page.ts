@@ -17,6 +17,7 @@ export class PromptPage {
   private readonly instructionsSection: Locator;
   private readonly manageVariablesButton: Locator;
   private readonly responseTypeSelect: Locator;
+  private readonly responseTypeSetDefaultButton: Locator;
   private readonly variableSlider: Locator;
   private readonly migrateButton: Locator;
   private readonly simpleModeButton: Locator;
@@ -73,6 +74,7 @@ export class PromptPage {
     });
     this.promptHelper = new PromptHelperPanel(page);
     this.responseTypeSelect = page.getByTestId('advanced-param-select-response_type');
+    this.responseTypeSetDefaultButton = page.getByTestId('advanced-param-reset-response_type');
     this.promptTextarea = page.getByTestId('prompt-textarea');
     this.migrateButton = page.getByTestId('prompt-header-migrate-button');
     this.simpleModeButton = page.getByRole('button', { name: 'simple' });
@@ -152,8 +154,80 @@ export class PromptPage {
     await expect(this.responseTypeSelect).toHaveValue(value);
   }
 
+  async clickResponseTypeSetDefault() {
+    await this.responseTypeSetDefaultButton.click();
+  }
+
+  async expectResponseTypeSetDefaultVisible() {
+    await expect(this.responseTypeSetDefaultButton).toBeVisible({ timeout: 10000 });
+  }
+
+  async expectResponseTypeIsDefault() {
+    await expect(this.responseTypeSelect).toHaveValue('default', { timeout: 10000 });
+  }
+
   async fillJsonSchema(text: string) {
+    await this.jsonSchemaTextarea.click();
+    await this.jsonSchemaTextarea.press('Control+a');
     await this.jsonSchemaTextarea.fill(text);
+  }
+
+  async typeJsonSchema(text: string) {
+    await this.jsonSchemaTextarea.click();
+    await this.jsonSchemaTextarea.press('Control+a');
+    await this.jsonSchemaTextarea.pressSequentially(text);
+  }
+
+  async pasteJsonSchema(text: string) {
+    await this.page.evaluate((value) => navigator.clipboard.writeText(value), text);
+    await this.jsonSchemaTextarea.click();
+    await this.jsonSchemaTextarea.press('Control+a');
+    await this.jsonSchemaTextarea.press('Control+v');
+  }
+
+  async expectJsonSchemaTextareaValue(text: string) {
+    await expect(this.jsonSchemaTextarea).toHaveValue(text, { timeout: 10000 });
+  }
+
+  async pressKeyInJsonSchema(key: string) {
+    await this.jsonSchemaTextarea.focus();
+    await this.jsonSchemaTextarea.press(key);
+  }
+
+  async expectJsonSchemaTextareaScrollable() {
+    const isScrollable = await this.jsonSchemaTextarea.evaluate(
+      (el: HTMLTextAreaElement) => el.scrollHeight > el.clientHeight
+    );
+    expect(isScrollable).toBe(true);
+  }
+
+  async scrollJsonSchemaToBottom() {
+    await this.jsonSchemaTextarea.evaluate(
+      (el: HTMLTextAreaElement) => el.scrollTo(0, el.scrollHeight)
+    );
+  }
+
+  async expectJsonSchemaScrolled() {
+    const scrollTop = await this.jsonSchemaTextarea.evaluate(
+      (el: HTMLTextAreaElement) => el.scrollTop
+    );
+    expect(scrollTop).toBeGreaterThan(0);
+  }
+
+  async getJsonSchemaTextareaHeight(): Promise<number> {
+    const box = await this.jsonSchemaTextarea.boundingBox();
+    return box!.height;
+  }
+
+  async resizeJsonSchemaTextarea(deltaX: number, deltaY: number) {
+    const box = await this.jsonSchemaTextarea.boundingBox();
+    if (!box) throw new Error('Could not get textarea bounding box');
+    const handleX = box.x + box.width - 4;
+    const handleY = box.y + box.height - 4;
+    await this.page.mouse.move(handleX, handleY);
+    await this.page.mouse.down();
+    await this.page.mouse.move(handleX + deltaX, handleY + deltaY, { steps: 10 });
+    await this.page.mouse.up();
   }
 
   async openBuildVisually() {
