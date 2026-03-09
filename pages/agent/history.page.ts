@@ -195,6 +195,10 @@ export class HistoryPage {
         await this.aiConfigButton.click();
     }
 
+    async clickLastAiConfig() {
+        await this.page.getByTestId('thread-item-user-aiconfig-button').last().click();
+    }
+
     async clickSystemPrompt() {
         await this.systemPromptButton.click();
     }
@@ -721,6 +725,13 @@ async clickAddTestCaseCreateButton() {
 
 async expectTestCaseCreatedToastVisible() {
     await expect(this.page.getByText('Test case created successfully')).toBeVisible();
+}
+
+async expectAiConfigDetailModalContainsText(text: string) {
+    const modal = this.page.locator('#chat-details-modal-container').first();
+    const contentContainer = modal.getByTestId('chat-details-content-container').first();
+    await expect(contentContainer).toBeVisible();
+    await expect(contentContainer.locator('pre').filter({ hasText: text })).toBeVisible();
 }
 
 async verifyHistoryMatchesAPI(apiResponse: any) {
