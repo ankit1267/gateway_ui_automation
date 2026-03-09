@@ -116,6 +116,57 @@ export class ApiKeysPage {
     return this.guideSlider.isVisible();
   }
 
+  async expectGuideSliderVisible() {
+    await expect(this.guideSlider).toBeVisible();
+  }
+
+  async expectGuideTabsVisible() {
+    await expect(this.guideTabs).toBeVisible();
+  }
+
+  async expectCloseGuideButtonVisible() {
+    await expect(this.closeGuideButton).toBeVisible();
+  }
+
+  async expectGuideTabVisible(tab: ApiKeyGuideTab) {
+    await expect(this.page.getByTestId(`api-key-guide-tab-${tab}`)).toBeVisible();
+  }
+
+  async expectAllGuideTabsVisible() {
+    const tabs: ApiKeyGuideTab[] = ['openai', 'groq', 'anthropic', 'openrouter', 'mistral', 'gemini', 'aiml'];
+    for (const tab of tabs) {
+      await this.expectGuideTabVisible(tab);
+    }
+  }
+
+  async expectProviderLinkVisible() {
+    await expect(this.page.getByTestId('api-key-guide-provider-link')).toBeVisible();
+  }
+
+  private readonly guideTabTitles: Record<ApiKeyGuideTab, string> = {
+    openai: 'OpenAI API Key Setup',
+    groq: 'Groq API Key Setup',
+    anthropic: 'Anthropic API Key Setup',
+    openrouter: 'OpenRouter API Key Setup',
+    mistral: 'Mistral AI API Key Setup',
+    gemini: 'Google Gemini API Key Setup',
+    aiml: 'AI ML API Key Setup',
+  };
+
+  async expectGuideTabContentVisible(tab: ApiKeyGuideTab) {
+    await this.clickGuideTab(tab);
+    await expect(
+      this.page.getByRole('heading', { name: this.guideTabTitles[tab], exact: true })
+    ).toBeVisible();
+  }
+
+  async expectAllGuideTabContentsVisible() {
+    const tabs: ApiKeyGuideTab[] = ['openai', 'groq', 'anthropic', 'openrouter', 'mistral', 'gemini', 'aiml'];
+    for (const tab of tabs) {
+      await this.expectGuideTabContentVisible(tab);
+    }
+  }
+
   async getApiKeyNameValue(): Promise<string> {
     return this.apiKeyNameInput.inputValue();
   }
