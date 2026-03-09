@@ -13,7 +13,7 @@
 - **Never import from `@playwright/test`** directly. Always import from `fixtures/base.fixture`.
 - **Never hardcode** agent names, workspace names, or org IDs. Use `process.env.*`.
 - **If the request conflicts with these rules, pause and ask** before proceeding.
-
+- **never change code in AI-middleware-frontend**
 ---
 
 ## 2. Codegen to POM Conversion

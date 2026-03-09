@@ -52,6 +52,7 @@ export class PromptPage {
   private readonly jsonSchemaAddPropertyButton: Locator;
   private readonly jsonSchemaSaveButton: Locator;
   private readonly jsonSchemaCloseButton: Locator;
+  private readonly buildWithAiCloseButton: Locator;
   private readonly schemaPropTypeSelectNew0: Locator;
   private readonly schemaPropDeleteButtonNew0: Locator;
   private readonly schemaPropDescriptionTextareaNew0: Locator;
@@ -112,6 +113,7 @@ export class PromptPage {
     this.jsonSchemaAddPropertyButton = page.getByTestId('json-schema-builder-add-property-button');
     this.jsonSchemaSaveButton = page.getByTestId('json-schema-builder-save-button');
     this.jsonSchemaCloseButton = page.getByTestId('json-schema-builder-close-button');
+    this.buildWithAiCloseButton = page.getByTestId('json-schema-close-button');
     this.schemaPropTypeSelectNew0 = page.getByTestId('schema-prop-type-select-new0');
     this.schemaPropDeleteButtonNew0 = page.getByTestId('schema-prop-delete-button-new0');
     this.schemaPropDescriptionTextareaNew0 = page.getByTestId('schema-prop-description-textarea-new0');
@@ -194,6 +196,12 @@ export class PromptPage {
     await this.jsonSchemaTextarea.press(key);
   }
 
+  async expectInvalidJsonSchemaVisible() {
+    await expect(
+      this.page.getByRole('alert').filter({ hasText: 'Invalid JSON Schema' })
+    ).toBeVisible();
+  }
+
   async expectJsonSchemaTextareaScrollable() {
     const isScrollable = await this.jsonSchemaTextarea.evaluate(
       (el: HTMLTextAreaElement) => el.scrollHeight > el.clientHeight
@@ -266,6 +274,100 @@ export class PromptPage {
     await expect(
       this.page.getByRole('alert').filter({ hasText: 'JSON Schema saved successfully' })
     ).toBeVisible();
+  }
+
+  // --- Dynamic JSON Schema Property methods ---
+
+  async fillSchemaName(name: string) {
+    await this.jsonSchemaNameInput.clear();
+    await this.jsonSchemaNameInput.fill(name);
+  }
+
+  async getSchemaNameValue(): Promise<string> {
+    return this.jsonSchemaNameInput.inputValue();
+  }
+
+  async expectNoPropertiesMessage() {
+    await expect(
+      this.jsonSchemaBuilder.getByText('No properties available. Click the "+ Add Property" button above to add your first property.')
+    ).toBeVisible();
+  }
+
+  getPropertyNameInput(path: string): Locator {
+    return this.page.getByTestId(`schema-prop-name-input-${path}`);
+  }
+
+  getPropertyRequiredCheckbox(path: string): Locator {
+    return this.page.getByTestId(`schema-prop-required-checkbox-${path}`);
+  }
+
+  getPropertyTypeSelect(path: string): Locator {
+    return this.page.getByTestId(`schema-prop-type-select-${path}`);
+  }
+
+  getPropertyDeleteButton(path: string): Locator {
+    return this.page.getByTestId(`schema-prop-delete-button-${path}`);
+  }
+
+  getPropertyDescriptionTextarea(path: string): Locator {
+    return this.page.getByTestId(`schema-prop-description-textarea-${path}`);
+  }
+
+  getPropertyExpandButton(path: string): Locator {
+    return this.page.locator(`#schema-prop-expand-button-${path}`);
+  }
+
+  getPropertyAddChildButton(path: string): Locator {
+    return this.page.locator(`#schema-prop-add-property-button-${path}`);
+  }
+
+  async fillPropertyName(path: string, name: string) {
+    const input = this.getPropertyNameInput(path);
+    await input.clear();
+    await input.fill(name);
+    await input.blur();
+  }
+
+  async togglePropertyRequired(path: string) {
+    await this.getPropertyRequiredCheckbox(path).click();
+  }
+
+  async selectPropertyType(path: string, type: string) {
+    await this.getPropertyTypeSelect(path).selectOption(type);
+  }
+
+  async fillPropertyDescription(path: string, text: string) {
+    const textarea = this.getPropertyDescriptionTextarea(path);
+    await textarea.click();
+    await textarea.fill(text);
+  }
+
+  async deleteProperty(path: string) {
+    await this.getPropertyDeleteButton(path).click();
+  }
+
+  async expectPropertyVisible(path: string) {
+    await expect(this.getPropertyNameInput(path)).toBeVisible();
+  }
+
+  async expectPropertyNotVisible(path: string) {
+    await expect(this.getPropertyNameInput(path)).not.toBeVisible();
+  }
+
+  async clickObjectAddChildProperty(path: string) {
+    await this.getPropertyAddChildButton(path).click();
+  }
+
+  async expectObjectAddChildPropertyVisible(path: string) {
+    await expect(this.getPropertyAddChildButton(path)).toBeVisible();
+  }
+
+  async togglePropertyExpand(path: string) {
+    await this.getPropertyExpandButton(path).click();
+  }
+
+  async expectPropertyExpandButtonVisible(path: string) {
+    await expect(this.getPropertyExpandButton(path)).toBeVisible();
   }
 
   //deleteVariable
@@ -506,6 +608,24 @@ export class PromptPage {
 
   async openBuildWithAI() {
     await this.buildWithAiButton.click();
+  }
+
+  async closeJsonSchemaBuilder() {
+    await expect(this.jsonSchemaCloseButton).toBeVisible();
+    await this.jsonSchemaCloseButton.click();
+  }
+
+  async closeBuildWithAI() {
+    await expect(this.buildWithAiCloseButton).toBeVisible();
+    await this.buildWithAiCloseButton.click();
+  }
+
+  async expectBuildWithAIScrollable() {
+    const messagesPanel = this.page.locator('#json-schema-modal-container #messages');
+    const isScrollable = await messagesPanel.evaluate(
+      (el: HTMLElement) => el.scrollHeight > el.clientHeight
+    );
+    expect(isScrollable).toBe(true);
   }
 
   async toggleFullscreen() {

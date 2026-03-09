@@ -86,6 +86,7 @@ export class PromptHelperPanel {
   }
 
   async close() {
+    await expect(this.closeHelperButton).toBeVisible();
     await this.closeHelperButton.click();
   }
 
@@ -127,6 +128,17 @@ export class PromptHelperPanel {
 
   async clickResetChat() {
     await this.resetChatButton.click();
+  }
+
+  async expectConversationsCleared() {
+    await expect(this.page.getByTestId('canvas-empty-state')).toBeVisible();
+  }
+
+  async expectMessagesPanelScrollable() {
+    const isScrollable = await this.messagesPanel.evaluate(
+      (el: HTMLElement) => el.scrollHeight > el.clientHeight
+    );
+    expect(isScrollable).toBe(true);
   }
 
   async clickCopyButton() {

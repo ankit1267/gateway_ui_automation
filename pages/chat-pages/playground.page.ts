@@ -232,6 +232,10 @@ export class PlaygroundPage {
     await this.chatUrlCancelButton.click();
   }
 
+  async expectChatMessageContainsText(index: number, text: string) {
+    await expect(this.getChatMessage(index)).toContainText(text, { timeout: 30000 });
+  }
+
   // --- File link ---
 
   getChatFileLink(index: number): Locator {

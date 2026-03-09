@@ -1,4 +1,5 @@
 import type { Page, Locator } from '@playwright/test';
+import { expect } from '@playwright/test';
 
 export class CommandPalette {
   readonly page: Page;
@@ -7,6 +8,7 @@ export class CommandPalette {
   readonly searchInput: Locator;
   readonly closeButton: Locator;
   readonly clearFilterButton: Locator;
+  readonly noResults: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -15,6 +17,7 @@ export class CommandPalette {
     this.searchInput = page.getByTestId('command-palette-search-input');
     this.closeButton = page.getByTestId('command-palette-close-button');
     this.clearFilterButton = page.getByTestId('command-palette-clear-filter');
+    this.noResults = this.modal.getByText('No results');
   }
 
   async isVisible(): Promise<boolean> {
@@ -94,5 +97,13 @@ export class CommandPalette {
 
   async clickResult(type: string, id: string) {
     await this.getResult(type, id).click();
+  }
+
+  async expectNoResultsVisible() {
+    await expect(this.noResults).toBeVisible();
+  }
+
+  async expectNoResultsNotVisible() {
+    await expect(this.noResults).not.toBeVisible();
   }
 }

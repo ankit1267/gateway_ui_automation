@@ -15,6 +15,14 @@ export class IntegrationGuidePage {
   private readonly responseCodeBlockCopyButton: Locator;
   private readonly batchResponseCodeBlock: Locator;
   private readonly batchResponseCodeBlockCopyButton: Locator;
+  private readonly languageDropdownTrigger: Locator;
+  private readonly languageDropdownMenu: Locator;
+  private readonly apiStep1Section: Locator;
+  private readonly apiStep2Section: Locator;
+  private readonly batchStep1Section: Locator;
+  private readonly batchStep2Section: Locator;
+  private readonly apiResponseSection: Locator;
+  private readonly batchResponseSection: Locator;
 
   constructor(private page: Page) {
     this.pageTitle = page.getByRole('heading', { name: 'Integration Guide' });
@@ -22,14 +30,22 @@ export class IntegrationGuidePage {
     this.integrationTabBatch = page.getByTestId('integration-tab-batch');
     this.creatApiAuthKey = page.getByTestId('api-guide-create-authkey-link');
     this.createBatchAuthKey = page.getByTestId('batch-api-guide-create-authkey-link');
-    this.curlCodeBlock = page.getByTestId('api-guide-curl-code-block');
-    this.curlCodeBlockCopyButton = this.curlCodeBlock.getByTestId('copy-button');
+    this.curlCodeBlock = page.getByTestId('api-guide-snippet-curl');
+    this.curlCodeBlockCopyButton = this.curlCodeBlock.getByTestId('code-block-copy-button');
     this.batchCurlCodeBlock = page.getByTestId('batch-api-guide-curl-code-block');
     this.batchCurlCodeBlockCopyButton = this.batchCurlCodeBlock.getByTestId('copy-button');
     this.responseCodeBlock = page.getByTestId('api-guide-response-code-block');
-    this.responseCodeBlockCopyButton = this.responseCodeBlock.getByTestId('copy-button');
+    this.responseCodeBlockCopyButton = this.responseCodeBlock.getByTestId('code-block-copy-button');
     this.batchResponseCodeBlock = page.getByTestId('batch-api-guide-response-code-block');
     this.batchResponseCodeBlockCopyButton = this.batchResponseCodeBlock.getByTestId('copy-button');
+    this.languageDropdownTrigger = page.getByTestId('language-dropdown-trigger');
+    this.languageDropdownMenu = page.getByTestId('language-dropdown-menu');
+    this.apiStep1Section = page.locator('#api-guide-step1-section');
+    this.apiStep2Section = page.getByTestId('api-guide-step2-section');
+    this.batchStep1Section = page.getByTestId('batch-api-guide-step1-section');
+    this.batchStep2Section = page.getByTestId('batch-api-guide-step2-section');
+    this.apiResponseSection = page.getByTestId('api-guide-response-section');
+    this.batchResponseSection = page.getByTestId('batch-api-guide-response-section');
   }
 
   async expectPageVisible() {
@@ -68,30 +84,16 @@ export class IntegrationGuidePage {
     await this.batchResponseCodeBlockCopyButton.click();
   }
 
-  // --- Container and tabs ---
-
-  private get container(): Locator {
-    return this.page.getByTestId('integration-guide-container');
-  }
-
-  private get lockedContainer(): Locator {
-    return this.page.getByTestId('integration-guide-locked-container');
-  }
-
-  private get tabsContainer(): Locator {
-    return this.page.getByTestId('integration-guide-tabs');
-  }
-
   async isContainerVisible(): Promise<boolean> {
-    return this.container.isVisible();
+    return this.page.getByTestId('integration-guide-container').isVisible();
   }
 
   async isLockedVisible(): Promise<boolean> {
-    return this.lockedContainer.isVisible();
+    return this.page.getByTestId('integration-guide-locked-container').isVisible();
   }
 
   async isTabsVisible(): Promise<boolean> {
-    return this.tabsContainer.isVisible();
+    return this.page.getByTestId('integration-guide-tabs').isVisible();
   }
 
   getTab(tabId: string): Locator {
@@ -116,5 +118,86 @@ export class IntegrationGuidePage {
 
   async getResponseCodeText(): Promise<string> {
     return this.responseCodeBlock.innerText();
+  }
+
+  async clickLanguageDropdown() {
+    await this.languageDropdownTrigger.click();
+  }
+
+  async selectLanguage(langId: string) {
+    await this.clickLanguageDropdown();
+    await this.page.getByTestId(`language-option-${langId}`).click();
+  }
+
+  async expectLanguageDropdownVisible() {
+    await expect(this.languageDropdownTrigger).toBeVisible();
+  }
+
+  getApiSnippet(lang: string): Locator {
+    return this.page.getByTestId(`api-guide-snippet-${lang}`);
+  }
+
+  getApiSnippetCopyButton(lang: string): Locator {
+    return this.getApiSnippet(lang).getByTestId('code-block-copy-button');
+  }
+
+  async expectApiSnippetVisible(lang: string) {
+    await expect(this.getApiSnippet(lang)).toBeVisible();
+  }
+
+  async clickApiSnippetCopyButton(lang: string) {
+    await this.getApiSnippetCopyButton(lang).click();
+  }
+
+  async expectApiSnippetCopied(lang: string) {
+    await expect(this.getApiSnippetCopyButton(lang)).toHaveText('Copied!');
+  }
+
+  async expectApiResponseCopied() {
+    await expect(this.responseCodeBlockCopyButton).toHaveText('Copied!');
+  }
+
+  async expectBatchCurlCopied() {
+    await expect(this.batchCurlCodeBlock.getByText('Copied!')).toBeVisible();
+  }
+
+  async expectBatchResponseCopied() {
+    await expect(this.batchResponseCodeBlock.getByText('Copied!')).toBeVisible();
+  }
+
+  async expectApiStep1HasText() {
+    await expect(this.apiStep1Section).toBeVisible();
+    const text = await this.apiStep1Section.innerText();
+    expect(text.trim().length).toBeGreaterThan(0);
+  }
+
+  async expectApiStep2HasText() {
+    await expect(this.apiStep2Section).toBeVisible();
+    const text = await this.apiStep2Section.innerText();
+    expect(text.trim().length).toBeGreaterThan(0);
+  }
+
+  async expectApiResponseSectionHasText() {
+    await expect(this.apiResponseSection).toBeVisible();
+    const text = await this.apiResponseSection.innerText();
+    expect(text.trim().length).toBeGreaterThan(0);
+  }
+
+  async expectBatchStep1HasText() {
+    await expect(this.batchStep1Section).toBeVisible();
+    const text = await this.batchStep1Section.innerText();
+    expect(text.trim().length).toBeGreaterThan(0);
+  }
+
+  async expectBatchStep2HasText() {
+    await expect(this.batchStep2Section).toBeVisible();
+    const text = await this.batchStep2Section.innerText();
+    expect(text.trim().length).toBeGreaterThan(0);
+  }
+
+  async expectBatchResponseSectionHasText() {
+    await expect(this.batchResponseSection).toBeVisible();
+    const text = await this.batchResponseSection.innerText();
+    expect(text.trim().length).toBeGreaterThan(0);
   }
 }

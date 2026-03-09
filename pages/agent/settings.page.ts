@@ -1,4 +1,5 @@
 import type { Page, Locator } from "@playwright/test";
+import { expect } from "@playwright/test";
 
 export class SettingsPage {
     readonly page: Page;
@@ -39,6 +40,7 @@ export class SettingsPage {
     readonly responseFormatApplyButton: Locator;
 
     // Tool call count
+    readonly maximumFunctionCallLimitLabel: Locator;
     readonly toolCallCountInput: Locator;
 
     // Triggers
@@ -89,6 +91,7 @@ export class SettingsPage {
         this.responseFormatApplyButton = page.getByTestId('response-format-apply-button');
 
         // Tool call count
+        this.maximumFunctionCallLimitLabel = page.getByText('Maximum Function Call Limit');
         this.toolCallCountInput = page.getByTestId('tool-call-count-input');
 
         // Triggers
@@ -280,6 +283,14 @@ export class SettingsPage {
 
     async clearToolCallCount() {
         await this.toolCallCountInput.clear();
+    }
+
+    async expectMaximumFunctionCallLimitVisible() {
+        await expect(this.maximumFunctionCallLimitLabel).toBeVisible();
+    }
+
+    async expectToolCallCountInputVisible() {
+        await expect(this.toolCallCountInput).toBeVisible();
     }
 
     // --- Triggers ---
