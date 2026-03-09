@@ -203,6 +203,28 @@ export class HistoryPage {
         await this.moreButton.click();
     }
 
+    async clickVisualizeButton() {
+        const visualizeButton = this.page.locator('button', { hasText: 'Visualize' }).first();
+        await expect(visualizeButton).toBeVisible();
+        await visualizeButton.click();
+    }
+
+    async expectChatDetailsSliderVisible() {
+        await expect(this.page.getByTestId('chat-details-slider')).toBeVisible();
+    }
+
+    async expectChatDetailsAiConfigValueVisible() {
+        await expect(this.page.locator('#chat-details-AiConfig-value')).toBeVisible();
+    }
+
+    async expectChatDetailsLatencyValueVisible() {
+        await expect(this.page.locator('#chat-details-latency-value')).toBeVisible();
+    }
+
+    async expectChatDetailsVariablesValueVisible() {
+        await expect(this.page.locator('#chat-details-variables-value')).toBeVisible();
+    }
+
     // --- Message by ID ---
 
     getMessageById(messageId: string): Locator {
@@ -561,6 +583,144 @@ private collectThreadIdsFromApi(payload: unknown): string[] {
 
     visit(payload);
     return [...result];
+}
+
+// --- Edit Message Modal ---
+
+private get editMessageButton(): Locator {
+    return this.page.locator('#thread-item-edit-message-button').first();
+}
+
+private get editMessageModalContainer(): Locator {
+    return this.page.locator('#edit-message-modal-container');
+}
+
+private get editMessageImproveButton(): Locator {
+    return this.page.getByTestId('edit-message-improve-button');
+}
+
+private get editMessageCancelButton(): Locator {
+    return this.page.getByTestId('edit-message-cancel-button');
+}
+
+// --- History Prompt Update Modal ---
+
+private get historyPromptUpdateModalContainer(): Locator {
+    return this.page.locator('#history-prompt-update-modal-container');
+}
+
+private get historyPromptPreviousTextarea(): Locator {
+    return this.page.getByTestId('history-prompt-previous-textarea');
+}
+
+private get historyPromptUpdatedTextarea(): Locator {
+    return this.page.getByTestId('history-prompt-updated-textarea');
+}
+
+private get historyPromptRegenerateButton(): Locator {
+    return this.page.getByTestId('history-prompt-regenerate-button');
+}
+
+private get historyPromptSaveButton(): Locator {
+    return this.page.getByTestId('history-prompt-save-button');
+}
+
+async clickEditMessageButton() {
+    await expect(this.editMessageButton).toBeVisible();
+    await this.editMessageButton.click();
+}
+
+async expectEditMessageTextareaVisible() {
+    await expect(this.page.getByTestId('edit-message-textarea')).toBeVisible();
+}
+
+async expectShowGeneratedButtonVisible() {
+    await expect(this.page.getByTestId('edit-message-show-generated-button')).toBeVisible();
+}
+
+async clickBetterPromptButton() {
+    await expect(this.editMessageModalContainer).toBeVisible();
+    await expect(this.editMessageImproveButton).toBeVisible();
+    await this.editMessageImproveButton.click();
+}
+
+async expectPromptPreviousTextareaVisible() {
+    await expect(this.historyPromptUpdateModalContainer).toBeVisible();
+    await expect(this.historyPromptPreviousTextarea).toBeVisible();
+}
+
+async expectPromptUpdatedTextareaVisible() {
+    await expect(this.historyPromptUpdateModalContainer).toBeVisible();
+    await expect(this.historyPromptUpdatedTextarea).toBeVisible();
+}
+
+async clickPromptRegenerateButton() {
+    await expect(this.historyPromptRegenerateButton).toBeVisible();
+    await this.historyPromptRegenerateButton.click();
+}
+
+async clickPromptSaveButton() {
+    await expect(this.historyPromptSaveButton).toBeVisible();
+    await this.historyPromptSaveButton.click();
+}
+
+async clickEditMessageCancelButton() {
+    await expect(this.editMessageCancelButton).toBeVisible();
+    await this.editMessageCancelButton.click();
+}
+
+// --- Debug Agent ---
+
+async clickDebugAgentButton() {
+    const debugButton = this.page.locator('#thread-item-debug-agent-button').first();
+    await expect(debugButton).toBeVisible();
+    await debugButton.click();
+}
+
+async expectIframeParentContainerVisible() {
+    await expect(this.page.locator('#iframe-parent-container')).toBeVisible();
+}
+
+// --- Add Test Case Modal ---
+
+async clickAddTestCaseButton() {
+    const addTestCaseButton = this.page.locator('#thread-item-add-test-case-button').first();
+    await expect(addTestCaseButton).toBeVisible();
+    await addTestCaseButton.click();
+}
+
+async expectAddTestCaseSecondLastRemoveToolVisible() {
+    await expect(this.page.locator('#add-testcase-second-last-remove-tool')).toBeVisible();
+}
+
+async expectAddTestCaseExpectedContentTextareaVisible() {
+    await expect(this.page.locator('#add-testcase-expected-content-textarea')).toBeVisible();
+}
+
+async expectAddTestCaseCloseXButtonVisible() {
+    await expect(this.page.getByTestId('add-testcase-close-x-button')).toBeVisible();
+}
+
+async expectAddTestCaseCreateButtonVisible() {
+    await expect(this.page.getByTestId('add-testcase-create-button')).toBeVisible();
+}
+
+async expectAddTestCaseCancelButtonVisible() {
+    await expect(this.page.getByTestId('add-testcase-cancel-button')).toBeVisible();
+}
+
+async selectAddTestCaseMatchingStrategy(value: string) {
+    const select = this.page.getByTestId('add-testcase-matching-strategy-select');
+    await expect(select).toBeVisible();
+    await select.selectOption(value);
+}
+
+async clickAddTestCaseCreateButton() {
+    await this.page.getByTestId('add-testcase-create-button').click();
+}
+
+async expectTestCaseCreatedToastVisible() {
+    await expect(this.page.getByText('Test case created successfully')).toBeVisible();
 }
 
 async verifyHistoryMatchesAPI(apiResponse: any) {
