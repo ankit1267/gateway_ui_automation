@@ -213,6 +213,39 @@ export class ModelPage {
     }
 
     // -------------------------
+    // MODEL HOVER PREVIEW
+    // -------------------------
+
+    async openModelDropdown() {
+        await this.model.click();
+    }
+
+    async hoverOverModelOption(modelName: string) {
+        const option = this.page.getByTestId(`model-dropdown-grouped-option-${modelName}`);
+        await expect(option).toBeVisible();
+        await option.scrollIntoViewIfNeeded();
+        await this.page.waitForTimeout(300);
+        const box = await option.boundingBox();
+        // Hover left edge to avoid the preview portal that renders to the right of the dropdown
+        await this.page.mouse.move(box!.x + 10, box!.y + box!.height / 2);
+        await this.page.waitForTimeout(500);
+    }
+
+    async expectModelPreviewVisible() {
+        await expect(this.page.getByTestId('model-preview-container')).toBeVisible({ timeout: 10000 });
+    }
+
+    async expectModelPreviewNotVisible() {
+        await expect(this.page.getByTestId('model-preview-container')).not.toBeVisible();
+    }
+
+    async expectModelPreviewContainsName(modelName: string) {
+        await expect(
+            this.page.getByTestId('model-preview-container').getByRole('heading', { name: modelName })
+        ).toBeVisible();
+    }
+
+    // -------------------------
     // MODEL CONFIG VISIBILITY
     // -------------------------
 

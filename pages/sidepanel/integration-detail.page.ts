@@ -1,4 +1,5 @@
 import type { Page, Locator } from '@playwright/test';
+import { expect } from '@playwright/test';
 
 export class IntegrationDetailPage {
   readonly page: Page;
@@ -127,5 +128,37 @@ export class IntegrationDetailPage {
 
   async isIntegrationMode(): Promise<boolean> {
     return this.mainNav.isVisible();
+  }
+
+  async expectAllStepsHaveText() {
+    const stepTestIds = [
+      'integration-tab-step1',
+      'integration-tab-step2',
+      'integration-tab-configure-interface',
+      'integration-tab-step3',
+      'integration-tab-event-listener',
+    ];
+    for (const testId of stepTestIds) {
+      const section = this.page.getByTestId(testId);
+      await expect(section).toBeVisible();
+      const text = await section.innerText();
+      expect(text.trim().length).toBeGreaterThan(0);
+    }
+  }
+
+  async expectAllCopyButtonsWork() {
+    const containers = this.page.getByTestId('copy-button-container');
+    const count = await containers.count();
+    expect(count).toBeGreaterThan(0);
+    let clicked = 0;
+    for (let i = 0; i < count; i++) {
+      const container = containers.nth(i);
+      const btn = container.getByTestId('copy-button');
+      if (!await btn.isVisible()) continue;
+      await btn.dispatchEvent('click');
+      await expect(container.getByText('Copied!')).toBeVisible();
+      clicked++;
+    }
+    expect(clicked).toBeGreaterThan(0);
   }
 }

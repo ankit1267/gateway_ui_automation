@@ -39,6 +39,10 @@ export class IntegrationPage {
     await this.page.getByText(name, { exact: true }).click();
   }
 
+  async openFirstRow() {
+    await this.page.locator('table tbody tr').first().click();
+  }
+
   async isEmptyState(): Promise<boolean> {
     return this.emptyStateText.isVisible();
   }
