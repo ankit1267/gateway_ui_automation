@@ -49,6 +49,10 @@ export class RAGEmbedPage {
     await this.getTableRow(name).click();
   }
 
+  async openFirstRow() {
+    await this.page.locator('table tbody tr').first().click();
+  }
+
   async clickLearnMore() {
     await this.learnMoreLink.click();
   }

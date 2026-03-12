@@ -160,4 +160,10 @@ export class SidepanelPage {
     if (!orgId) throw new Error('ORG_ID env variable is not set');
     await this.page.goto(`/org/${orgId}/auth_route`);
   }
+
+  async gotoAgents() {
+    const orgId = process.env.ORG_ID;
+    if (!orgId) throw new Error('ORG_ID env variable is not set');
+    await this.page.goto(`/org/${orgId}/agents`);
+  }
 }
