@@ -51,6 +51,7 @@ export class SettingsPage {
     readonly agentFlowToggle: Locator;
     readonly tabsLayoutContent: Locator;
     readonly agentFlowTestModelTextbox: Locator;
+    readonly agentFlowChatCloseButton: Locator;
 
     constructor(page: Page) {
         this.page = page;
@@ -102,6 +103,7 @@ export class SettingsPage {
         this.agentFlowToggle = page.getByTestId('connected-agent-flow-toggle');
         this.tabsLayoutContent = page.getByTestId('tabs-layout-content');
         this.agentFlowTestModelTextbox = page.getByRole('textbox', { name: 'Test the model...' });
+        this.agentFlowChatCloseButton = page.locator('#flow-control-chat-close-button');
     }
 
     async selectCustomMode() {
@@ -411,5 +413,18 @@ export class SettingsPage {
 
     async isAgentFlowCanvasVisible(): Promise<boolean> {
         return this.agentFlowCanvasContainer.isVisible();
+    }
+
+    async fillAndSendAgentFlowTestMessage(message: string) {
+        await this.agentFlowTestModelTextbox.fill(message);
+        await this.agentFlowTestModelTextbox.press('Enter');
+    }
+
+    async expectAgentFlowChatVisible() {
+        await expect(this.page.getByRole('heading', { name: 'Test Your Model' })).toBeVisible();
+    }
+
+    async closeAgentFlowChat() {
+        await this.agentFlowChatCloseButton.click();
     }
 }

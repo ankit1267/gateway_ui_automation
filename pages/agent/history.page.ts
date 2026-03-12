@@ -658,6 +658,10 @@ async expectPromptUpdatedTextareaVisible() {
     await expect(this.historyPromptUpdatedTextarea).toBeVisible();
 }
 
+async expectPromptRegenerateButtonVisible() {
+    await expect(this.historyPromptRegenerateButton).toBeVisible();
+}
+
 async clickPromptRegenerateButton() {
     await expect(this.historyPromptRegenerateButton).toBeVisible();
     await this.historyPromptRegenerateButton.click();
@@ -668,9 +672,22 @@ async clickPromptSaveButton() {
     await this.historyPromptSaveButton.click();
 }
 
+async clickPromptCancelButton() {
+    await expect(this.page.getByTestId('history-prompt-cancel-button')).toBeVisible();
+    await this.page.getByTestId('history-prompt-cancel-button').click();
+}
+
 async clickEditMessageCancelButton() {
     await expect(this.editMessageCancelButton).toBeVisible();
     await this.editMessageCancelButton.click();
+}
+
+async fillEditMessageTextarea(text: string) {
+    await this.page.getByTestId('edit-message-textarea').fill(text);
+}
+
+async expectEditMessageModalClosed() {
+    await expect(this.page.locator('dialog#EDIT_MESSAGE_MODAL')).not.toHaveAttribute('open');
 }
 
 // --- Debug Agent ---
@@ -721,6 +738,14 @@ async selectAddTestCaseMatchingStrategy(value: string) {
 
 async clickAddTestCaseCreateButton() {
     await this.page.getByTestId('add-testcase-create-button').click();
+}
+
+async clickAddTestCaseCancelButton() {
+    await this.page.getByTestId('add-testcase-cancel-button').click();
+}
+
+async expectAddTestCaseModalClosed() {
+    await expect(this.page.locator('dialog#ADD_TEST_CASE_MODAL')).not.toHaveAttribute('open');
 }
 
 async expectTestCaseCreatedToastVisible() {
