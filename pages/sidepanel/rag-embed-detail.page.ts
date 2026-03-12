@@ -1,4 +1,5 @@
 import type { Page, Locator } from '@playwright/test';
+import { expect } from '@playwright/test';
 
 export class RAGEmbedDetailPage {
   readonly page: Page;
@@ -105,5 +106,34 @@ export class RAGEmbedDetailPage {
 
   async isIntegrationMode(): Promise<boolean> {
     return this.mainNav.isVisible();
+  }
+
+  async expectAllStepsHaveText() {
+    const contentArea = this.page.getByTestId('rag-embed-content-area');
+    const stepHeaders = contentArea.locator('h3').filter({ hasText: /^Step/ });
+    const count = await stepHeaders.count();
+    expect(count).toBeGreaterThan(0);
+    for (let i = 0; i < count; i++) {
+      const header = stepHeaders.nth(i);
+      await expect(header).toBeVisible();
+      const text = await header.innerText();
+      expect(text.trim().length).toBeGreaterThan(0);
+    }
+  }
+
+  async expectAllCopyButtonsWork() {
+    const containers = this.page.getByTestId('copy-button-container');
+    const count = await containers.count();
+    expect(count).toBeGreaterThan(0);
+    let clicked = 0;
+    for (let i = 0; i < count; i++) {
+      const container = containers.nth(i);
+      const btn = container.getByTestId('copy-button');
+      if (!await btn.isVisible()) continue;
+      await btn.dispatchEvent('click');
+      await expect(container.getByText('Copied!')).toBeVisible();
+      clicked++;
+    }
+    expect(clicked).toBeGreaterThan(0);
   }
 }
