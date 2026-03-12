@@ -155,4 +155,12 @@ export class WorkspacePage {
     async clearDescription() {
         await this.descriptionInput.clear();
     }
+
+    async getOrganizationCount(): Promise<number> {
+        return this.page.locator('#organization-grid-table tbody tr').count();
+    }
+
+    async expectSearchBarVisible() {
+        await expect(this.page.getByTestId('search-items-input')).toBeVisible();
+    }
 }

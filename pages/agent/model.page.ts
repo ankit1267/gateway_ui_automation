@@ -273,13 +273,30 @@ export class ModelPage {
         return this.apiKeyInputContainer.isVisible();
     }
 
-    async selectApikeyByName(name: string) {
-        await this.clickApikeyDropdown();
-        await this.page.getByRole('option', { name }).click();
-    }
+async selectApikeyByName(name: string) {
+    await this.clickApikeyDropdown();
+    await this.page.getByRole('option', { name }).click();
+}
 
-    async clickAddNewApiKey() {
-        await this.clickApikeyDropdown();
-        await this.page.getByText('+  Add new API Key').click();
-    }
+async clickAddNewApiKey() {
+    await this.clickApikeyDropdown();
+    await this.page.getByText('+  Add new API Key').click();
+}
+
+async selectModel(modelName: string) {
+    await this.model.click();
+    await this.page.getByTestId(`model-dropdown-grouped-option-${modelName.toLowerCase()}`).click();
+}
+
+async expectParameterVisible(paramName: string) {
+    await expect(this.page.locator(`#advanced-param-field-${paramName}`)).toBeVisible();
+}
+
+async expectParameterNotVisible(paramName: string) {
+    await expect(this.page.locator(`#advanced-param-field-${paramName}`)).not.toBeVisible();
+}
+
+async fillAdvancedParameterText(paramName: string, value: string) {
+    await this.page.getByTestId(`advanced-param-text-${paramName}`).fill(value);
+}
 }

@@ -222,4 +222,40 @@ export class AgentsPage {
   async expectHistoryPageUrl() {
     await expect(this.page).toHaveURL(/\/agents\/history\//, { timeout: 10000 });
   }
+
+  // --- Usage Filter ---
+
+  async openUsageFilter() {
+    await this.usageFilterButton.click();
+  }
+
+  async selectUsagePreset(days: 1 | 5 | 10 | 15 | 30) {
+    const label = days === 1 ? 'Last 1 day' : `Last ${days} days`;
+    await this.page.getByRole('button', { name: label }).click();
+  }
+
+  async openCustomDateRange() {
+    await this.page.getByRole('button', { name: 'Custom date range…' }).click();
+  }
+
+  async fillCustomDateRange(startDate: string, endDate: string) {
+    await this.page.locator('input[type="date"]').first().fill(startDate);
+    await this.page.locator('input[type="date"]').last().fill(endDate);
+  }
+
+  async applyCustomDateRange() {
+    await this.page.getByRole('button', { name: 'Apply' }).click();
+  }
+
+  async resetUsageFilter() {
+    await this.page.getByRole('button', { name: 'Reset filter' }).click();
+  }
+
+  async closeUsageFilterDropdown() {
+    await this.page.mouse.click(10, 10);
+  }
+
+  async expectUsageFilterInactive() {
+    await expect(this.usageFilterButton).not.toContainText('→');
+  }
 }
