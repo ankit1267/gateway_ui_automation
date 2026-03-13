@@ -40,22 +40,28 @@ jobs:
         node << 'EOF'
         const fs = require("fs");
 
+        if (!fs.existsSync("test-results.json")) {
+          fs.writeFileSync("summary.txt","No test report found.");
+          process.exit(0);
+        }
+
         const report = JSON.parse(fs.readFileSync("test-results.json","utf8"));
 
-        let failedTests = [];
+        let failed = [];
         let passed = 0;
         let total = 0;
 
         function walkSuite(suite){
-          if(!suite.specs) return;
+          if (!suite.specs) return;
 
           suite.specs.forEach(spec=>{
             spec.tests.forEach(test=>{
               total++;
+
               const result = test.results[0];
 
               if(result.status === "failed"){
-                failedTests.push({
+                failed.push({
                   name: spec.title,
                   error: result.error?.message || "Unknown error"
                 });
@@ -74,24 +80,27 @@ jobs:
 
         report.suites.forEach(walkSuite);
 
-        let message = `
-        Playwright Test Results
+        let summary = `Playwright Test Results
 
         Total: ${total}
         Passed: ${passed}
-        Failed: ${failedTests.length}
-
-        Failed Tests
+        Failed: ${failed.length}
         `;
 
-        failedTests.forEach((t,i)=>{
-          message += `\n${i+1}. ${t.name}\n   Reason: ${t.error}\n`;
-        });
+        if(failed.length){
+          summary += "\nFailed Tests\n";
 
-        fs.writeFileSync("summary.txt", message);
+          failed.forEach((t,i)=>{
+            summary += `\n${i+1}. ${t.name}\n   Reason: ${t.error}\n`;
+          });
+        }
 
-        console.log(message);
+        fs.writeFileSync("summary.txt", summary);
+
+        console.log(summary);
         EOF
+    - name: Debug summary
+      run: cat summary.txt
     - uses: actions/upload-artifact@v4
       if: ${{ !cancelled() }}
       with:
@@ -118,7 +127,7 @@ jobs:
         uses: actions/deploy-pages@v4
       - name: Send Report + Summary
         run: |
-          SUMMARY=$(cat summary.txt | sed ':a;N;$!ba;s/\n/\\n/g')
+          SUMMARY=$(cat summary.txt | tr '\n' '\\n')
 
           curl -X POST https://flow.sokt.io/func/scri8acRJpTe \
           -H "Content-Type: application/json" \
