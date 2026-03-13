@@ -149,7 +149,6 @@ export class HistoryPage {
             await this.sidebarThreads.nth(index).click();
 
             const response = await responsePromise;
-            console.log("Response:", response);
             if (response) {
                 return response.status();
             }
@@ -767,8 +766,6 @@ async verifyHistoryMatchesAPI(apiResponse: any) {
     }
 
     const uiIds = await this.getUIThreadIds();
-    console.log("UI IDs:", uiIds);
-    console.log("API IDs:", apiIds);
     expect([...uiIds].sort()).toEqual([...apiIds].sort());
 }
 }
