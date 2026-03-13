@@ -20,6 +20,9 @@ export class AgentHeaderNav {
   private readonly revert: Locator;
   private readonly discardChangesButton: Locator;
   private readonly configHistorySlider: Locator;
+  private readonly publishedButton: Locator;
+  private readonly publishedDataBanner: Locator;
+  private readonly versionTabs: Locator;
 
   constructor(private readonly page: Page) {
     this.history = this.page.getByTestId('navbar-tab-history');
@@ -40,6 +43,9 @@ export class AgentHeaderNav {
     this.deleteButton = this.page.getByTestId('DELETE_VERSION_MODAL').getByTestId('delete-modal-confirm-button').first();
     this.discardChangesButton = this.page.getByTestId('DELETE_MODAL').getByTestId('delete-modal-confirm-button');
     this.configHistorySlider = this.page.locator('#default-config-history-slider');
+    this.publishedButton = this.page.getByTestId('navbar-published-button');
+    this.publishedDataBanner = this.page.getByTestId('published-data-banner');
+    this.versionTabs = this.page.getByTestId('bridge-version-tabs');
   }
 
   async openChatbotConfig() {
@@ -160,5 +166,76 @@ export class AgentHeaderNav {
     await this.clickPublishButton();
     await this.fillVersionDescription(desc);
     await this.createNewVersion();
+  }
+
+  async clickPublishedButton() {
+    await this.publishedButton.click();
+  }
+
+  async expectPublishedButtonVisible() {
+    await expect(this.publishedButton).toBeVisible();
+  }
+
+  async expectPublishedDataBannerVisible() {
+    await expect(this.publishedDataBanner).toBeVisible();
+    await expect(this.publishedDataBanner).toContainText('read-only');
+  }
+
+  async expectPublishedDataBannerNotVisible() {
+    await expect(this.publishedDataBanner).not.toBeVisible();
+  }
+
+  async clickVersionButton(versionId: string) {
+    await this.page.getByTestId(`version-button-${versionId}`).click();
+  }
+
+  async getFirstVersionButton(): Promise<Locator> {
+    return this.versionTabs.locator('button[data-testid^="version-button-"]').first();
+  }
+
+  async getVersionButtonCount(): Promise<number> {
+    return this.versionTabs.locator('button[data-testid^="version-button-"]').count();
+  }
+
+  async clickFirstVersionButton() {
+    const btn = this.versionTabs.locator('button[data-testid^="version-button-"]').first();
+    await btn.dispatchEvent('click');
+  }
+
+  async clickSecondVersionButton() {
+    const btn = this.versionTabs.locator('button[data-testid^="version-button-"]').nth(1);
+    await btn.dispatchEvent('click');
+  }
+
+  async getVersionFromUrl(): Promise<string | null> {
+    const url = new URL(this.page.url());
+    return url.searchParams.get('version');
+  }
+
+  async waitForVersionInUrl(versionId: string) {
+    await this.page.waitForURL(`**version=${versionId}**`, { timeout: 10000 });
+  }
+
+  async hoverVersionButton(versionId: string) {
+    await this.page.getByTestId(`version-button-${versionId}`).hover();
+  }
+
+  async hoverFirstVersionButton() {
+    const btn = this.versionTabs.locator('button[data-testid^="version-button-"]').first();
+    await btn.hover();
+  }
+
+  async expectVersionTooltipVisible() {
+    await expect(this.page.locator('.tooltip.tooltip-bottom[data-tip]').first()).toBeVisible();
+  }
+
+  async getFirstVersionButtonTestId(): Promise<string> {
+    const btn = this.versionTabs.locator('button[data-testid^="version-button-"]').first();
+    return (await btn.getAttribute('data-testid')) || '';
+  }
+
+  async getSecondVersionButtonTestId(): Promise<string> {
+    const btn = this.versionTabs.locator('button[data-testid^="version-button-"]').nth(1);
+    return (await btn.getAttribute('data-testid')) || '';
   }
 }

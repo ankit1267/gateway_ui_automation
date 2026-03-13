@@ -108,6 +108,94 @@ export class RAGEmbedDetailPage {
     return this.mainNav.isVisible();
   }
 
+  async expectTestingControlsVisible() {
+    await expect(this.testingControls).toBeVisible();
+  }
+
+  async expectRagControlsVisible() {
+    await expect(this.ragControls).toBeVisible();
+  }
+
+  async expectCreateDocumentButtonVisible() {
+    await expect(this.createDocumentButton).toBeVisible();
+  }
+
+  async expectShowDocumentsButtonVisible() {
+    await expect(this.showDocumentsButton).toBeVisible();
+  }
+
+  async expectCloseDocumentsButtonVisible() {
+    await expect(this.closeDocumentsButton).toBeVisible();
+  }
+
+  async expectThemeLightButtonVisible() {
+    await expect(this.themeLightButton).toBeVisible();
+  }
+
+  async expectThemeDarkButtonVisible() {
+    await expect(this.themeDarkButton).toBeVisible();
+  }
+
+  async expectTestingBackButtonVisible() {
+    await expect(this.testingBackButton).toBeVisible();
+  }
+
+  async expectTestingSidebarContentVisible() {
+    await expect(this.testingSidebarContent).toBeVisible();
+  }
+
+  async expectEventLogNotEmpty() {
+    await expect(this.page.getByText('No events yet')).not.toBeVisible();
+  }
+
+  async expectEventLogContains(text: string) {
+    await expect(this.page.locator('p').filter({ hasText: text }).first()).toBeVisible();
+  }
+
+  async clickEventLogClear() {
+    await this.page.getByRole('button', { name: 'Clear' }).click({ force: true });
+  }
+
+  async expectEventLogEmpty() {
+    await expect(this.page.getByText('No events yet')).toBeVisible();
+  }
+
+  getRagEmbedFrame() {
+    return this.page.frameLocator('#iframe-component-ragInterfaceEmbed');
+  }
+
+  async clickAddNewDocumentInFrame() {
+    const frame = this.getRagEmbedFrame();
+    await frame.getByText('Add New Document').click({ force: true });
+  }
+
+  async fillKnowledgeBaseName(name: string) {
+    const frame = this.getRagEmbedFrame();
+    await frame.getByPlaceholder('Enter document name').fill(name, { force: true });
+  }
+
+  async fillDescription(description: string) {
+    const frame = this.getRagEmbedFrame();
+    await frame.getByPlaceholder('Enter a description for this knowledge base entry').fill(description, { force: true });
+  }
+
+  async fillUrl(url: string) {
+    const frame = this.getRagEmbedFrame();
+    await frame.locator('input[type="url"]').fill(url, { force: true });
+  }
+
+  async clickCreateInFrame() {
+    const frame = this.getRagEmbedFrame();
+    await frame.getByText('Create', { exact: true }).click({ force: true });
+  }
+
+  async expectResourceVisibleInFrame(name: string) {
+    await expect(async () => {
+      const frame = this.page.frameLocator('#iframe-component-ragInterfaceEmbed');
+      await expect(frame.getByText(name).first()).toBeVisible();
+    }).toPass({ timeout: 30000 });
+  }
+
   async expectAllStepsHaveText() {
     const contentArea = this.page.getByTestId('rag-embed-content-area');
     const stepHeaders = contentArea.locator('h3').filter({ hasText: /^Step/ });

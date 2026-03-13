@@ -554,6 +554,74 @@ export class IntegrationDetailPage {
     await expect(this.configBackButton).toBeVisible();
   }
 
+  async expectTestingControlsVisible() {
+    await expect(this.testingControls).toBeVisible();
+  }
+
+  async expectTestingBasicControlsVisible() {
+    await expect(this.testingBasicControls).toBeVisible();
+  }
+
+  async expectTestingOpenButtonVisible() {
+    await expect(this.testingOpenButton).toBeVisible();
+  }
+
+  async expectTestingCloseButtonVisible() {
+    await expect(this.testingCloseButton).toBeVisible();
+  }
+
+  async expectTestingSendDataVisible() {
+    await expect(this.testingSendData).toBeVisible();
+  }
+
+  async expectTestingSendDataInputVisible() {
+    await expect(this.testingSendDataInput).toBeVisible();
+  }
+
+  async expectTestingSendDataButtonVisible() {
+    await expect(this.testingSendDataButton).toBeVisible();
+  }
+
+  async expectTestingGetAgentsVisible() {
+    await expect(this.testingGetAgents).toBeVisible();
+  }
+
+  async expectTestingGetAgentsButtonVisible() {
+    await expect(this.testingGetAgentsButton).toBeVisible();
+  }
+
+  async expectTestingBackButtonVisible() {
+    await expect(this.testingBackButton).toBeVisible();
+  }
+
+  async expectTestingSidebarContentVisible() {
+    await expect(this.testingSidebarContent).toBeVisible();
+  }
+
+  async expectEventLogNotEmpty() {
+    await expect(this.page.getByText('No events yet')).not.toBeVisible();
+  }
+
+  async expectEventLogContains(text: string) {
+    await expect(this.page.locator('p').filter({ hasText: text }).first()).toBeVisible();
+  }
+
+  async clickEventLogClear() {
+    await this.page.getByRole('button', { name: 'Clear' }).click();
+  }
+
+  async expectEventLogEmpty() {
+    await expect(this.page.getByText('No events yet')).toBeVisible();
+  }
+
+  async expectEmbedPreviewVisible() {
+    await expect(this.page.locator('#iframe-component-gtwyInterfaceEmbed').first()).toBeVisible();
+  }
+
+  async expectEmbedPreviewNotVisible() {
+    await expect(this.page.locator('#iframe-component-gtwyInterfaceEmbed').first()).not.toBeVisible();
+  }
+
   async expectMainNavVisible() {
     await expect(this.mainNav).toBeVisible();
   }

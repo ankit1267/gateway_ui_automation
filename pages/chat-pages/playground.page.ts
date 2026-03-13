@@ -14,6 +14,11 @@ export class PlaygroundPage {
   readonly chatLoadingOverlay: Locator;
   readonly chatInputWrapper: Locator;
 
+  // Test case sidebar
+  readonly testcaseSidebar: Locator;
+  readonly testcaseRunAllButton: Locator;
+  readonly testcaseListContainer: Locator;
+
   // Chat controls
   readonly messageTextarea: Locator;
   readonly strategySelect: Locator;
@@ -95,6 +100,11 @@ export class PlaygroundPage {
 
     // YouTube link
     this.chatYoutubeLink = page.getByTestId('chat-youtube-link');
+
+    // Test case sidebar
+    this.testcaseSidebar = page.getByTestId('testcase-sidebar');
+    this.testcaseRunAllButton = page.getByTestId('testcase-run-all-button');
+    this.testcaseListContainer = page.getByTestId('testcase-list-container');
   }
 
   // --- Basic chat actions ---
@@ -266,5 +276,96 @@ export class PlaygroundPage {
 
   async isTestCaseSidebarVisible(): Promise<boolean> {
     return this.chatTestCaseSidebar.isVisible();
+  }
+
+  // --- Test Case Sidebar ---
+
+  async expectTestCaseSidebarVisible() {
+    await expect(this.chatTestCaseSidebar).toBeVisible();
+  }
+
+  async expectRunAllButtonVisible() {
+    await expect(this.testcaseRunAllButton).toBeVisible();
+  }
+
+  getTestCaseCard(testId: string): Locator {
+    return this.page.getByTestId(`testcase-card-${testId}`);
+  }
+
+  getTestCaseExpandButton(testId: string): Locator {
+    return this.page.getByTestId(`testcase-toggle-expand-${testId}`);
+  }
+
+  getTestCaseRunButton(testId: string): Locator {
+    return this.page.getByTestId(`testcase-run-button-${testId}`);
+  }
+
+  getTestCaseDeleteButton(testId: string): Locator {
+    return this.page.getByTestId(`testcase-delete-button-${testId}`);
+  }
+
+  getTestCaseDetails(testId: string): Locator {
+    return this.page.getByTestId(`testcase-details-${testId}`);
+  }
+
+  async getLastTestCaseCard(): Promise<Locator> {
+    const cards = this.testcaseListContainer.locator('[data-testid^="testcase-card-"]');
+    const count = await cards.count();
+    return cards.nth(count - 1);
+  }
+
+  async getLastTestCaseId(): Promise<string> {
+    const card = await this.getLastTestCaseCard();
+    const testId = await card.getAttribute('data-testid');
+    return testId?.replace('testcase-card-', '') || '';
+  }
+
+  async clickLastTestCaseCard() {
+    const card = await this.getLastTestCaseCard();
+    await card.click();
+  }
+
+  async clickLastTestCaseExpandButton() {
+    const testId = await this.getLastTestCaseId();
+    await this.getTestCaseExpandButton(testId).click();
+  }
+
+  async expectLastTestCaseDetailsVisible() {
+    const testId = await this.getLastTestCaseId();
+    await expect(this.getTestCaseDetails(testId)).toBeVisible();
+  }
+
+  async expectLastTestCaseDetailsNotVisible() {
+    const testId = await this.getLastTestCaseId();
+    await expect(this.getTestCaseDetails(testId)).not.toBeVisible();
+  }
+
+  async clickLastTestCaseRunButton() {
+    const testId = await this.getLastTestCaseId();
+    await this.getTestCaseRunButton(testId).click();
+  }
+
+  async clickLastTestCaseDeleteButton() {
+    const testId = await this.getLastTestCaseId();
+    await this.getTestCaseDeleteButton(testId).click();
+  }
+
+  async expectLastTestCaseExpandButtonVisible() {
+    const testId = await this.getLastTestCaseId();
+    await expect(this.getTestCaseExpandButton(testId)).toBeVisible();
+  }
+
+  async expectLastTestCaseRunButtonVisible() {
+    const testId = await this.getLastTestCaseId();
+    await expect(this.getTestCaseRunButton(testId)).toBeVisible();
+  }
+
+  async expectLastTestCaseDeleteButtonVisible() {
+    const testId = await this.getLastTestCaseId();
+    await expect(this.getTestCaseDeleteButton(testId)).toBeVisible();
+  }
+
+  async getTestCaseCardCount(): Promise<number> {
+    return this.testcaseListContainer.locator('[data-testid^="testcase-card-"]').count();
   }
 }
