@@ -40,28 +40,22 @@ jobs:
         node << 'EOF'
         const fs = require("fs");
 
-        if (!fs.existsSync("test-results.json")) {
-          fs.writeFileSync("summary.txt","No test report found.");
-          process.exit(0);
-        }
-
         const report = JSON.parse(fs.readFileSync("test-results.json","utf8"));
 
-        let failed = [];
+        let failedTests = [];
         let passed = 0;
         let total = 0;
 
         function walkSuite(suite){
-          if (!suite.specs) return;
+          if(!suite.specs) return;
 
           suite.specs.forEach(spec=>{
             spec.tests.forEach(test=>{
               total++;
-
               const result = test.results[0];
 
               if(result.status === "failed"){
-                failed.push({
+                failedTests.push({
                   name: spec.title,
                   error: result.error?.message || "Unknown error"
                 });
@@ -80,27 +74,24 @@ jobs:
 
         report.suites.forEach(walkSuite);
 
-        let summary = `Playwright Test Results
+        let message = `
+        Playwright Test Results
 
         Total: ${total}
         Passed: ${passed}
-        Failed: ${failed.length}
+        Failed: ${failedTests.length}
+
+        Failed Tests
         `;
 
-        if(failed.length){
-          summary += "\nFailed Tests\n";
+        failedTests.forEach((t,i)=>{
+          message += `\n${i+1}. ${t.name}\n   Reason: ${t.error}\n`;
+        });
 
-          failed.forEach((t,i)=>{
-            summary += `\n${i+1}. ${t.name}\n   Reason: ${t.error}\n`;
-          });
-        }
+        fs.writeFileSync("summary.txt", message);
 
-        fs.writeFileSync("summary.txt", summary);
-
-        console.log(summary);
+        console.log(message);
         EOF
-    - name: Debug summary
-      run: cat summary.txt
     - uses: actions/upload-artifact@v4
       if: ${{ !cancelled() }}
       with:
@@ -125,12 +116,10 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
-      - name: Send Report + Summary
+      - name: Send Report URL to Webhook
         run: |
-          SUMMARY=$(cat summary.txt | tr '\n' '\\n')
+          SUMMARY=$(cat summary.txt | sed ':a;N;$!ba;s/\n/\\n/g')
 
           curl -X POST https://flow.sokt.io/func/scri8acRJpTe \
           -H "Content-Type: application/json" \
-          -d "{\"report_url\":\"${{ steps.deployment.outputs.page_url }}\",\"summary\":\"$SUMMARY\"}"
-
-        
+          -d "{\"report_url\":\"${{ steps.deployment.outputs.page_url }}\"}"
