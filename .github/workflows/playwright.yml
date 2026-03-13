@@ -130,6 +130,10 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+      - name: Download summary
+        uses: actions/download-artifact@v4
+        with:
+          name: test-summary
       - name: Send Report + Summary
         run: |
           SUMMARY=$(cat summary.txt | tr '\n' '\\n')
