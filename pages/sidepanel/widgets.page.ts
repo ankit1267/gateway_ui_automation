@@ -1,4 +1,5 @@
 import type { Page, Locator } from '@playwright/test';
+import { expect } from '@playwright/test';
 
 export class WidgetsPage {
   readonly page: Page;
@@ -16,6 +17,10 @@ export class WidgetsPage {
   readonly generatingIndicator: Locator;
   readonly messagesContainer: Locator;
   readonly saveWidgetButtonInChat: Locator;
+  readonly saveWidgetModal: Locator;
+  readonly saveWidgetModalNameInput: Locator;
+  readonly saveWidgetModalSaveButton: Locator;
+  readonly saveWidgetModalCancelButton: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -34,7 +39,12 @@ export class WidgetsPage {
 
     this.generatingIndicator = page.getByText('Generating...');
     this.messagesContainer = page.locator('.overflow-y-auto.px-6.py-8');
-    this.saveWidgetButtonInChat = page.getByRole('button', { name: 'Save Widget' });
+    this.saveWidgetButtonInChat = this.messagesContainer.getByRole('button', { name: 'Save Widget' });
+
+    this.saveWidgetModal = page.locator('#SAVE_WIDGET_MODAL');
+    this.saveWidgetModalNameInput = this.saveWidgetModal.getByPlaceholder('Enter widget name');
+    this.saveWidgetModalSaveButton = this.saveWidgetModal.getByRole('button', { name: 'Save Widget' });
+    this.saveWidgetModalCancelButton = this.saveWidgetModal.getByRole('button', { name: 'Cancel' });
   }
 
   async goto() {
@@ -60,7 +70,7 @@ export class WidgetsPage {
   }
 
   getWidgetCard(widgetName: string): Locator {
-    return this.widgetGrid.locator('.card').filter({ hasText: widgetName });
+    return this.widgetGrid.locator('.card').first().filter({ hasText: widgetName });
   }
 
   async getWidgetCardTitle(index: number): Promise<string> {
@@ -126,5 +136,30 @@ export class WidgetsPage {
     const orgId = process.env.ORG_ID;
     if (!orgId) throw new Error('ORG_ID env variable is not set');
     await this.page.goto(`/org/${orgId}/widgets?create=true`);
+  }
+
+  async fillSaveWidgetName(name: string) {
+    await this.saveWidgetModalNameInput.clear();
+    await this.saveWidgetModalNameInput.fill(name);
+  }
+
+  async clickSaveWidgetModalSave() {
+    await this.saveWidgetModalSaveButton.click();
+  }
+
+  async closeSaveWidgetModal() {
+    await this.saveWidgetModalCancelButton.click();
+  }
+
+  async expectSaveWidgetModalVisible() {
+    await expect(this.saveWidgetModal).toBeVisible();
+  }
+
+  async expectWidgetInGrid(widgetName: string) {
+    await expect(this.getWidgetCard(widgetName)).toBeVisible({ timeout: 15000 });
+  }
+
+  async expectSaveSuccessToast() {
+    await expect(this.page.getByText('Widget saved successfully!')).toBeVisible({ timeout: 10000 });
   }
 }

@@ -1,4 +1,5 @@
 import type { Page, Locator } from '@playwright/test';
+import { expect } from '@playwright/test';
 
 export class ChatbotConfigPage {
   readonly page: Page;
@@ -217,5 +218,223 @@ export class ChatbotConfigPage {
 
   async isTestingControlsVisible(): Promise<boolean> {
     return this.testingControls.isVisible();
+  }
+
+  // --- Testing tab visibility assertions ---
+
+  async clickTestingTab() {
+    await this.clickConfigTab('testing');
+  }
+
+  async expectTestingControlsVisible() {
+    await expect(this.testingControls).toBeVisible({ timeout: 15000 });
+  }
+
+  async expectTestingOpenButtonVisible() {
+    await expect(this.testingOpenButton).toBeVisible();
+  }
+
+  async expectTestingCloseButtonVisible() {
+    await expect(this.testingCloseButton).toBeVisible();
+  }
+
+  async expectTestingShowIconButtonVisible() {
+    await expect(this.testingShowIconButton).toBeVisible();
+  }
+
+  async expectTestingHideIconButtonVisible() {
+    await expect(this.testingHideIconButton).toBeVisible();
+  }
+
+  async expectTestingReloadChatsButtonVisible() {
+    await expect(this.testingReloadChatsButton).toBeVisible();
+  }
+
+  async expectTestingSendDataVisible() {
+    await expect(this.testingSendDataInput).toBeVisible();
+    await expect(this.testingSendDataButton).toBeVisible();
+  }
+
+  async expectTestingAskAiVisible() {
+    await expect(this.testingAskAiInput).toBeVisible();
+    await expect(this.testingAskAiButton).toBeVisible();
+  }
+
+  async expectTestingBackButtonVisible() {
+    await expect(this.testingBackButton).toBeVisible();
+  }
+
+  // --- Testing tab event log methods ---
+
+  async expectEventLogNotEmpty() {
+    await expect(this.page.getByText('No events yet')).not.toBeVisible();
+  }
+
+  async expectEventLogContains(text: string) {
+    await expect(this.page.getByText(text).first()).toBeVisible({ timeout: 10000 });
+  }
+
+  async clickEventLogClear() {
+    await this.page.getByRole('button', { name: 'Clear' }).click({ force: true });
+  }
+
+  async expectEventLogEmpty() {
+    await expect(this.page.getByText('No events yet')).toBeVisible();
+  }
+
+  // --- Integration Guide assertions ---
+
+  async expectFirstStepVisible() {
+    await expect(this.firstStepContainer).toBeVisible();
+  }
+
+  async expectSecondStepVisible() {
+    await expect(this.secondStepContainer).toBeVisible();
+  }
+
+  async expectAllStepsHaveText() {
+    await expect(this.firstStepContainer).toBeVisible();
+    await expect(this.firstStepContainer.locator('h3')).toContainText('Step 1');
+    await expect(this.secondStepContainer).toBeVisible();
+    await expect(this.secondStepContainer.locator('h3').first()).toContainText('Step 2');
+  }
+
+  async expectAllCopyButtonsWork() {
+    const containers = this.page.getByTestId('copy-button-container');
+    const count = await containers.count();
+    expect(count).toBeGreaterThan(0);
+    let clicked = 0;
+    for (let i = 0; i < count; i++) {
+      const container = containers.nth(i);
+      const btn = container.getByTestId('copy-button');
+      if (!await btn.isVisible()) continue;
+      await btn.dispatchEvent('click');
+      await expect(container.getByText('Copied!')).toBeVisible();
+      clicked++;
+    }
+    expect(clicked).toBeGreaterThan(0);
+  }
+
+  // --- Configuration tab sidebar methods ---
+
+  async clickConfigurationTab() {
+    await this.clickConfigTab('configuration');
+  }
+
+  async expectConfigSidebarContentVisible() {
+    await expect(this.configSidebarContent).toBeVisible({ timeout: 15000 });
+  }
+
+  async fillConfigChatbotTitle(title: string) {
+    const input = this.configSidebarContent.getByPlaceholder('Enter chatbot title');
+    await input.clear();
+    await input.fill(title);
+    await input.blur();
+  }
+
+  async fillConfigChatbotSubtitle(subtitle: string) {
+    const input = this.configSidebarContent.getByPlaceholder('Enter chatbot subtitle');
+    await input.clear();
+    await input.fill(subtitle);
+    await input.blur();
+  }
+
+  async fillConfigButtonTitle(title: string) {
+    const input = this.configSidebarContent.getByPlaceholder('Enter button title');
+    await input.clear();
+    await input.fill(title);
+    await input.blur();
+  }
+
+  async fillConfigIconUrl(url: string) {
+    const input = this.configSidebarContent.getByPlaceholder('Enter icon URL');
+    await input.clear();
+    await input.fill(url);
+    await input.blur();
+  }
+
+  async fillConfigHeight(value: string) {
+    const input = this.configSidebarContent.locator('#dimension-input-height');
+    await input.clear();
+    await input.fill(value);
+    await input.blur();
+  }
+
+  async selectConfigHeightUnit(unit: string) {
+    const select = this.configSidebarContent.locator('#dimension-select-height-unit');
+    await select.selectOption(unit);
+  }
+
+  async fillConfigWidth(value: string) {
+    const input = this.configSidebarContent.locator('#dimension-input-width');
+    await input.clear();
+    await input.fill(value);
+    await input.blur();
+  }
+
+  async selectConfigWidthUnit(unit: string) {
+    const select = this.configSidebarContent.locator('#dimension-select-width-unit');
+    await select.selectOption(unit);
+  }
+
+  async selectConfigPosition(position: string) {
+    const select = this.configSidebarContent.locator('#radio-group-position select');
+    await select.selectOption(position);
+  }
+
+  async fillConfigThemeColor(color: string) {
+    const input = this.configSidebarContent.locator('input[name="themeColor"]');
+    await input.evaluate((el: HTMLInputElement, c: string) => {
+      el.value = c;
+      el.dispatchEvent(new Event('input', { bubbles: true }));
+      el.dispatchEvent(new Event('change', { bubbles: true }));
+      el.dispatchEvent(new Event('blur', { bubbles: true }));
+    }, color);
+  }
+
+  async getConfigThemeColorDisplay(): Promise<string> {
+    return await this.configSidebarContent.locator('input[name="themeColor"]').evaluate((el: HTMLInputElement) => el.value);
+  }
+
+  // --- Live Preview iframe assertions ---
+
+  getPreviewFrame() {
+    return this.page.frameLocator('iframe[src*="chatbot"]');
+  }
+
+  async expectPreviewFrameVisible() {
+    await expect(this.page.locator('iframe[src*="chatbot"]')).toBeVisible({ timeout: 30000 });
+  }
+
+  async reloadPreview() {
+    await this.page.getByRole('button', { name: 'Reload preview' }).click();
+    await this.page.locator('iframe[src*="chatbot"]').waitFor({ state: 'attached', timeout: 30000 });
+  }
+
+  async closeChatbotInPreview() {
+    await this.page.evaluate(() => {
+      if ((window as any).Chatbot?.close) {
+        (window as any).Chatbot.close();
+      }
+    });
+  }
+
+  async expectPreviewContainsText(text: string) {
+    const frame = this.getPreviewFrame();
+    await expect(frame.getByText(text).first()).toBeVisible({ timeout: 15000 });
+  }
+
+  async expectFloatingButtonText(text: string) {
+    await expect(this.page.locator('#chatbot-preview-container').getByText(text)).toBeVisible({ timeout: 15000 });
+  }
+
+  async expectShowAccessKeyRevealsKeyWithCopy() {
+    await expect(this.firstStepShowAccessKey).toBeVisible();
+    await this.clickShowAccessKey();
+    await expect(this.inputWithCopyInput).toBeVisible({ timeout: 10000 });
+    const value = await this.getAccessKeyValue();
+    expect(value.length).toBeGreaterThan(0);
+    await expect(this.inputWithCopyButton).toBeVisible();
+    await this.copyAccessKey();
   }
 }

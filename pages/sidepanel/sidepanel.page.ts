@@ -16,6 +16,7 @@ import { IntegrationDetailPage } from "./integration-detail.page";
 import { AddNewModelPage } from "./add-new-model.page";
 import { HistoryVisualizePage } from "./history-visualize.page";
 import { AuthRoutePage } from "./auth-route.page";
+import { TutorialModalPage } from "./tutorial-modal.page";
 import { expect } from "@playwright/test";
 
 export class SidepanelPage {
@@ -37,6 +38,7 @@ export class SidepanelPage {
   readonly addNewModelPage: AddNewModelPage;
   readonly historyVisualizePage: HistoryVisualizePage;
   readonly authRoutePage: AuthRoutePage;
+  readonly tutorialModalPage: TutorialModalPage;
   readonly smartLinkExternal: Locator;
 
   constructor(page: Page) {
@@ -58,6 +60,7 @@ export class SidepanelPage {
     this.addNewModelPage = new AddNewModelPage(page);
     this.historyVisualizePage = new HistoryVisualizePage(page);
     this.authRoutePage = new AuthRoutePage(page);
+    this.tutorialModalPage = new TutorialModalPage(page);
     this.smartLinkExternal = page.getByTestId('smart-link-external-link');
   }
 
