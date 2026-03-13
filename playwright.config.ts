@@ -11,10 +11,7 @@ export default defineConfig({
   workers: 1,
 
   // 📊 HTML Report
-  reporter: [
-    ['html'],
-    ['json', { outputFile: 'test-results.json' }]
-  ],
+  reporter: [['html', { open: 'on-failure' }]],
 
   use: {
     baseURL: process.env.BASE_URL!,
