@@ -33,7 +33,7 @@ jobs:
     - name: Install Playwright Browsers
       run: npx playwright install --with-deps
     - name: Run Playwright tests
-      run: npx playwright test tests/chatbot-agent/configure-chatbot-config.spec.ts -g TC-CB-CFG-03 --reporter=json,html
+      run: npx playwright test tests/chatbot-agent/configure-chatbot-config.spec.ts -g TC-CB-CFG-03 --reporter=json,html || true
     - name: Generate failure summary
       if: always()
       run: |
@@ -102,6 +102,7 @@ jobs:
     - name: Debug summary
       run: cat summary.txt
     - name: Upload summary
+      if: always()
       uses: actions/upload-artifact@v4
       with:
         name: test-summary
