@@ -33,65 +33,7 @@ jobs:
     - name: Install Playwright Browsers
       run: npx playwright install --with-deps
     - name: Run Playwright tests
-      run: npx playwright test tests/chatbot-agent/configure-chatbot-config.spec.ts -g TC-CB-CFG-03
-    - name: Generate failure summary
-      if: always()
-      run: |
-        node << 'EOF'
-        const fs = require("fs");
-
-        const report = JSON.parse(fs.readFileSync("test-results.json","utf8"));
-
-        let failedTests = [];
-        let passed = 0;
-        let total = 0;
-
-        function walkSuite(suite){
-          if(!suite.specs) return;
-
-          suite.specs.forEach(spec=>{
-            spec.tests.forEach(test=>{
-              total++;
-              const result = test.results[0];
-
-              if(result.status === "failed"){
-                failedTests.push({
-                  name: spec.title,
-                  error: result.error?.message || "Unknown error"
-                });
-              }
-
-              if(result.status === "passed"){
-                passed++;
-              }
-            });
-          });
-
-          if(suite.suites){
-            suite.suites.forEach(walkSuite);
-          }
-        }
-
-        report.suites.forEach(walkSuite);
-
-        let message = `
-        Playwright Test Results
-
-        Total: ${total}
-        Passed: ${passed}
-        Failed: ${failedTests.length}
-
-        Failed Tests
-        `;
-
-        failedTests.forEach((t,i)=>{
-          message += `\n${i+1}. ${t.name}\n   Reason: ${t.error}\n`;
-        });
-
-        fs.writeFileSync("summary.txt", message);
-
-        console.log(message);
-        EOF
+      run: npx playwright test
     - uses: actions/upload-artifact@v4
       if: ${{ !cancelled() }}
       with:
@@ -118,8 +60,6 @@ jobs:
         uses: actions/deploy-pages@v4
       - name: Send Report URL to Webhook
         run: |
-          SUMMARY=$(cat summary.txt | sed ':a;N;$!ba;s/\n/\\n/g')
-
           curl -X POST https://flow.sokt.io/func/scri8acRJpTe \
           -H "Content-Type: application/json" \
           -d "{\"report_url\":\"${{ steps.deployment.outputs.page_url }}\"}"
