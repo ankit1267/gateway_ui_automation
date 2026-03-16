@@ -55,6 +55,11 @@ export class AgentsPage {
       url += `?type=${type}`;
     }
     await this.page.goto(url);
+
+    const tutorialCloseBtn = this.page.getByRole('button', { name: 'Close Tutorials' });
+    if (await tutorialCloseBtn.isVisible({ timeout: 3000 }).catch(() => false)) {
+      await tutorialCloseBtn.click();
+    }
   }
 
   async search() {
