@@ -1,6 +1,6 @@
 import { test, expect } from '../../../fixtures/base.fixture';
 
-const AGENT_NAME = process.env.TESTING_AGENT!;
+const AGENT_ID = process.env.TESTING_AGENT_ID!;
 
 test.describe('Tool Call Count - API Agent', () => {
 
@@ -9,7 +9,7 @@ test.describe('Tool Call Count - API Agent', () => {
   });
 
   test('TC-SET-08: Maximum Function Call Limit label and input are visible, input clamps 90 to 30', async ({ agents }) => {
-    const agent = await agents.openAgent(AGENT_NAME);
+    const agent = await agents.openAgentById(AGENT_ID);
     await agent.tabs.openSettings();
 
     await agent.settings.expectMaximumFunctionCallLimitVisible();

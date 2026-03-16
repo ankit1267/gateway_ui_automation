@@ -1,12 +1,12 @@
 import { test, expect } from '../../../fixtures/base.fixture';
 
-const TESTING_AGENT = process.env.TESTING_AGENT!;
+const AGENT_ID = process.env.TESTING_AGENT_ID!;
 
 test(
   'TC-KB-01: User can create a Knowledge Base and see it listed in Connectors',
   async ({ agents }) => {
     await agents.goto('api');
-    const agent = await agents.openAgent(TESTING_AGENT);
+    const agent = await agents.openAgentById(AGENT_ID);
     await agent.tabs.openConnectors();
     await agent.connectors.clickAddKB();
     await agent.connectors.knowledgeBaseDropdown.addNewKnowledgeBase();

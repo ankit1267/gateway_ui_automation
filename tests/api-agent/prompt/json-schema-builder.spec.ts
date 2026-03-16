@@ -1,6 +1,6 @@
 import { test, expect } from '../../../fixtures/base.fixture';
 
-const AGENT_ID = '69844323ff78d5f934bb7281';
+const AGENT_ID = process.env.AGENT_ID!;
 
 test.describe('Prompt - JSON Schema Builder', () => {
 

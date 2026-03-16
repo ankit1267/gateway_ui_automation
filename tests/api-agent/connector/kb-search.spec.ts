@@ -1,6 +1,6 @@
 import { test, expect } from '../../../fixtures/base.fixture';
 
-const TESTING_AGENT = process.env.TESTING_AGENT!;
+const AGENT_ID = process.env.TESTING_AGENT_ID!;
 const KB_RESULT = 'Wikipedia';
 
 test.describe('Connectors - KB Search - API Agent', () => {
@@ -10,7 +10,7 @@ test.describe('Connectors - KB Search - API Agent', () => {
   });
 
   test('TC-CON-KB-01: Search for Wikipedia in Add Knowledge Base dropdown shows result', async ({ agents }) => {
-    const agent = await agents.openAgent(TESTING_AGENT);
+    const agent = await agents.openAgentById(AGENT_ID);
     await agent.tabs.openConnectors();
     await agent.connectors.clickAddKB();
     await agent.connectors.knowledgeBaseDropdown.search('wikipedia');
@@ -18,7 +18,7 @@ test.describe('Connectors - KB Search - API Agent', () => {
   });
 
   test('TC-CON-KB-02: Search with spaced query in Add Knowledge Base dropdown shows matching result', async ({ agents }) => {
-    const agent = await agents.openAgent(TESTING_AGENT);
+    const agent = await agents.openAgentById(AGENT_ID);
     await agent.tabs.openConnectors();
     await agent.connectors.clickAddKB();
     await agent.connectors.knowledgeBaseDropdown.search('wikipedia   ');//spaced text

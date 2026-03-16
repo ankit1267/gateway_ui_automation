@@ -1,6 +1,6 @@
 import { test, expect } from '../../../fixtures/base.fixture';
 
-const AGENT_NAME = process.env.TESTING_AGENT!;
+const AGENT_ID = process.env.TESTING_AGENT_ID!;
 
 test.describe('Test Cases - API Agent', () => {
 
@@ -9,7 +9,7 @@ test.describe('Test Cases - API Agent', () => {
   });
 
   test('TC-TESTCASE-01: Open first test case row and verify elements, then run test case v1 and v2', async ({ agents }) => {
-    const agent = await agents.openAgent(AGENT_NAME);
+    const agent = await agents.openAgentById(AGENT_ID);
     await agent.header.openTestCases();
 
     // Open the first row

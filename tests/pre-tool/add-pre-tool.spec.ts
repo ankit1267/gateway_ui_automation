@@ -1,13 +1,13 @@
 import { test, expect } from '../../fixtures/base.fixture';
 
-const TESTING_AGENT = process.env.TESTING_AGENT!;
+const AGENT_ID = process.env.TESTING_AGENT_ID!;
 
 test('Add a pre-tool', async ({ agents }) => {
     // open api page
     await agents.goto('api');
 
     // open testing agent
-    const agentPage = await agents.openAgent(TESTING_AGENT);
+    const agentPage = await agents.openAgentById(AGENT_ID);
     await agentPage.tabs.openPrompt();
     await agentPage.prompt.addPreToolClick();
 

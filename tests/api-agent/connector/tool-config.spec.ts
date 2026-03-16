@@ -1,6 +1,6 @@
 import { test } from '../../../fixtures/base.fixture';
 
-const TESTING_AGENT = process.env.TESTING_AGENT!;
+const AGENT_ID = process.env.TESTING_AGENT_ID!;
 const TOOL_NAME = 'factorial_of_a_numbe...';
 
 test.describe('Connectors - Tool Config - API Agent', () => {
@@ -11,13 +11,13 @@ test.describe('Connectors - Tool Config - API Agent', () => {
 
   test.afterEach(async ({ agents }) => {
     await agents.goto('api');
-    const agent = await agents.openAgent(TESTING_AGENT);
+    const agent = await agents.openAgentById(AGENT_ID);
     await agent.tabs.openConnectors();
     await agent.connectors.removeEmbedToolIfExists();
   });
 
   test('TC-CON-TOOL-CONFIG-01: Add tool, open settings, switch to advanced mode, verify old data toggle is visible', async ({ agents }) => {
-    const agent = await agents.openAgent(TESTING_AGENT);
+    const agent = await agents.openAgentById(AGENT_ID);
     await agent.tabs.openConnectors();
 
     await agent.connectors.clickAddTool();
@@ -36,7 +36,7 @@ test.describe('Connectors - Tool Config - API Agent', () => {
   });
 
   test('TC-CON-TOOL-CONFIG-02: Open tool settings, click Name & Description, verify name input and description are visible', async ({ agents }) => {
-    const agent = await agents.openAgent(TESTING_AGENT);
+    const agent = await agents.openAgentById(AGENT_ID);
     await agent.tabs.openConnectors();
 
     await agent.connectors.clickAddTool();

@@ -1,6 +1,7 @@
 import { test } from '../../../fixtures/base.fixture';
 
 const TESTING_AGENT = process.env.TESTING_AGENT!;
+const AGENT_ID = process.env.TESTING_AGENT_ID!;
 
 test.describe('Agent - Config History Panel', () => {
 
@@ -11,7 +12,7 @@ test.describe('Agent - Config History Panel', () => {
   test('TC-HISTORY-01: Click Updates History button on navbar and verify side panel is visible', async ({ agents }) => {
     await agents.assertAgentVisible(TESTING_AGENT);
 
-    const agent = await agents.openAgent(TESTING_AGENT);
+    const agent = await agents.openAgentById(AGENT_ID);
 
     await agent.header.openUpdatesHistory();
 

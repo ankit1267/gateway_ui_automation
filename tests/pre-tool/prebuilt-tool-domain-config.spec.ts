@@ -1,6 +1,6 @@
 import { test } from '../../fixtures/base.fixture';
 
-const AGENT = process.env.AGENT_NAME!;
+const AGENT_ID = process.env.AGENT_ID!;
 const TOOL_NAME = 'Gtwy web search';
 const TOOL_KEY = 'Gtwy_Web_Search';
 const DOMAIN = 'dev.gtwy.ai';
@@ -12,7 +12,7 @@ test.describe('Tool - Prebuilt Tool Domain Config', () => {
   });
 
   test('TC-TOOL-01: Add domain, edit with invalid then valid value, and delete', async ({ agents }) => {
-    const agent = await agents.openAgent(AGENT);
+    const agent = await agents.openAgentById(AGENT_ID);
     await agent.tabs.openConnectors();
     await agent.connectors.clickAddTool();
     await agent.connectors.toolDropdown.selectTool(TOOL_NAME);
@@ -37,7 +37,7 @@ test.describe('Tool - Prebuilt Tool Domain Config', () => {
   });
 
   test('TC-TOOL-02: Domain format validation — full URL rejected, no TLD rejected, www prefix accepted, duplicate rejected', async ({ agents }) => {
-    const agent = await agents.openAgent(AGENT);
+    const agent = await agents.openAgentById(AGENT_ID);
     await agent.tabs.openConnectors();
     await agent.connectors.clickAddTool();
     await agent.connectors.toolDropdown.selectTool(TOOL_NAME);
@@ -68,7 +68,7 @@ test.describe('Tool - Prebuilt Tool Domain Config', () => {
 
   test.afterEach(async ({ agents }) => {
     await agents.goto('api');
-    const agent = await agents.openAgent(AGENT);
+    const agent = await agents.openAgentById(AGENT_ID);
     await agent.tabs.openConnectors();
     await agent.connectors.deletePrebuiltToolIfExists(TOOL_KEY);
   });

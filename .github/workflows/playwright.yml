@@ -22,6 +22,9 @@ jobs:
       BASE_URL: ${{ secrets.BASE_URL }}
       CHATBOT_AGENT: ${{ secrets.CHATBOT_AGENT }}
       TESTING_AGENT: ${{ secrets.TESTING_AGENT }}
+      AGENT_ID: ${{ secrets.AGENT_ID }}
+      CHATBOT_AGENT_ID: ${{ secrets.CHATBOT_AGENT_ID }}
+      TESTING_AGENT_ID: ${{ secrets.TESTING_AGENT_ID }}
 
     steps:
     - uses: actions/checkout@v4
@@ -33,7 +36,7 @@ jobs:
     - name: Install Playwright Browsers
       run: npx playwright install --with-deps
     - name: Run Playwright tests
-      run: npx playwright test tests/api-agent/prompt/json-schema-builder.spec.ts
+      run: npx playwright test
     - uses: actions/upload-artifact@v4
       if: ${{ !cancelled() }}
       with:

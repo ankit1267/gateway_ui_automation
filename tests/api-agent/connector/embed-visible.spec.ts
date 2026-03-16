@@ -1,6 +1,6 @@
 import { test } from '../../../fixtures/base.fixture';
 
-const AGENT_NAME = process.env.AGENT_NAME!;
+const AGENT_ID = process.env.AGENT_ID!;
 
 test('ViaSocket embed is visible when adding a tool',
   async ({
@@ -8,7 +8,7 @@ test('ViaSocket embed is visible when adding a tool',
   }) => {
 
     await agents.goto('api');
-    const agent = await agents.openAgent(AGENT_NAME);
+    const agent = await agents.openAgentById(AGENT_ID);
     await agent.tabs.openConnectors();
 
     await agent.connectors.clickAddTool();

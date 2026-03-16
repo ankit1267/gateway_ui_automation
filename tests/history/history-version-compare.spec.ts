@@ -1,11 +1,11 @@
 import { test } from '../../fixtures/base.fixture';
 
-const AGENT_NAME = process.env.AGENT_NAME!;
+const AGENT_ID = process.env.AGENT_ID!;
 
 test.describe('History - Chatbot Agent Version Compare', () => {
   test('TC-HISTORY-01: Compare UI thread IDs with API IDs for versions 1 and 2', async ({ agents }) => {
     await agents.goto('api');
-    const agent = await agents.openAgent(AGENT_NAME);
+    const agent = await agents.openAgentById(AGENT_ID);
 
     await agent.header.openHistory();
 

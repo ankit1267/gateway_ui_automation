@@ -1,10 +1,12 @@
 import { expect, test } from '../../../fixtures/base.fixture';
 
+const AGENT_ID = process.env.AGENT_ID!;
+
 test('open and close prompt helper and apply prompt', async ({ agents }) => {
 
   await agents.goto('api');
 
-  const agent = await agents.openAgent(process.env.AGENT_NAME!);
+  const agent = await agents.openAgentById(AGENT_ID);
 
   // Open helper from instructions field
   await agent.prompt.promptHelper.open();

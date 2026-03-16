@@ -1,13 +1,13 @@
 import { test } from '../../../fixtures/base.fixture';
 
 
-const Agent = process.env.AGENT_NAME!;
+const AGENT_ID = process.env.AGENT_ID!;
 
 test('TC-APIKEY-01: API key required error is shown', async ({ agents }) => {
 
   await agents.goto('api');
   // Step 1: Open Model tab
-  const agent = await agents.openAgent(Agent);
+  const agent = await agents.openAgentById(AGENT_ID);
   await agent.tabs.openModel();
 
   // Step 2: Ensure provider is selected (example: OpenAI)
@@ -28,7 +28,7 @@ test('TC-APIKEY-02: API key is added', async ({ agents }) => {
  
   // Step 1: Open Model tab
   await agents.goto('api');
-  const agent = await agents.openAgent(Agent);
+  const agent = await agents.openAgentById(AGENT_ID);
   await agent.tabs.openModel();
   // Step 2: Ensure provider is selected (example: OpenAI)
   await agent.model.selectServiceProvider('Mistral');

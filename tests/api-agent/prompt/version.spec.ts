@@ -1,13 +1,13 @@
 import { test, expect } from '../../../fixtures/base.fixture';
 
-const AGENT_NAME = process.env.AGENT_NAME!;
+const AGENT_ID = process.env.AGENT_ID!;
 
 test.beforeEach(async ({ agents }) => {
     await agents.goto('api');
 });
 
 test('TC-VER-01: Version cannot be created with empty description', async ({ agents, page }) => {
-    const agent = await agents.openAgent(AGENT_NAME);
+    const agent = await agents.openAgentById(AGENT_ID);
     await agent.header.clickNewButton();
 
     page.once('dialog', async dialog => {
@@ -19,7 +19,7 @@ test('TC-VER-01: Version cannot be created with empty description', async ({ age
 });
 
 test('TC-VER-02: Version can be created with valid description', async ({ agents, page }) => {
-    const agent = await agents.openAgent(AGENT_NAME);
+    const agent = await agents.openAgentById(AGENT_ID);
     await agent.header.clickNewButton();
 
     await agent.header.fillVersionDescription('version');
