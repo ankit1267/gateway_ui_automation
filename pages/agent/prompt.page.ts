@@ -227,15 +227,14 @@ export class PromptPage {
     return box!.height;
   }
 
-  async resizeJsonSchemaTextarea(deltaX: number, deltaY: number) {
-    const box = await this.jsonSchemaTextarea.boundingBox();
-    if (!box) throw new Error('Could not get textarea bounding box');
-    const handleX = box.x + box.width - 4;
-    const handleY = box.y + box.height - 4;
-    await this.page.mouse.move(handleX, handleY);
-    await this.page.mouse.down();
-    await this.page.mouse.move(handleX + deltaX, handleY + deltaY, { steps: 10 });
-    await this.page.mouse.up();
+  async resizeJsonSchemaTextarea(deltaY: number) {
+    await this.jsonSchemaTextarea.evaluate((el: HTMLTextAreaElement, dy: number) => {
+      const computedStyle = window.getComputedStyle(el);
+      if (computedStyle.resize === 'none') {
+        throw new Error('Textarea resize is disabled');
+      }
+      el.style.height = `${el.offsetHeight + dy}px`;
+    }, deltaY);
   }
 
   async openBuildVisually() {

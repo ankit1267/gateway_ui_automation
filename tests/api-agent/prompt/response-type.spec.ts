@@ -136,7 +136,7 @@ test.describe('Prompt - Response Type', () => {
 
     // fill with enough lines to overflow the fixed h-32 height
 
-    const manyLines = Array.from({ length: 30 }, (_, i) => `"key${i}": "value${i}"`).join(',\n');
+    const manyLines = Array.from({ length: 100 }, (_, i) => `"key${i}": "value${i}"`).join(',\n');
 
     await agent.prompt.fillJsonSchema(`{\n${manyLines}\n}`);
 
@@ -156,7 +156,7 @@ test.describe('Prompt - Response Type', () => {
 
     const originalHeight = await agent.prompt.getJsonSchemaTextareaHeight();
 
-    await agent.prompt.resizeJsonSchemaTextarea(0, 100);
+    await agent.prompt.resizeJsonSchemaTextarea(100);
 
     const newHeight = await agent.prompt.getJsonSchemaTextareaHeight();
 
