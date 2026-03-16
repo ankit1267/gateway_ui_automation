@@ -55,11 +55,6 @@ export class AgentsPage {
       url += `?type=${type}`;
     }
     await this.page.goto(url);
-
-    const tutorialCloseBtn = this.page.getByRole('button', { name: 'Close Tutorials' });
-    if (await tutorialCloseBtn.isVisible({ timeout: 3000 }).catch(() => false)) {
-      await tutorialCloseBtn.click();
-    }
   }
 
   async search() {
@@ -71,6 +66,11 @@ export class AgentsPage {
       .filter({ hasText: agentName })
       .click();
 
+    return new AgentPage(this.page);
+  }
+
+  async openAgentById(id: string): Promise<AgentPage> {
+    await this.page.getByTestId(`custom-table-row-${id}`).click();
     return new AgentPage(this.page);
   }
 
