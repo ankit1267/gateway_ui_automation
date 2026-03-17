@@ -55,6 +55,11 @@ export class WorkspacePage {
 
     // ---------- Actions ----------
     async clickCreateWorkspace() {
+        const onboardingOverlay = this.page.getByTestId('org-page-guard-modal-overlay');
+        if (await onboardingOverlay.isVisible()) {
+            await this.page.getByRole('button', { name: 'Close onboarding' }).click();
+            await onboardingOverlay.waitFor({ state: 'hidden' });
+        }
         await this.createWorkspaceButton.click();
     }
 

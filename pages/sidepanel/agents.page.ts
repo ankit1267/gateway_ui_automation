@@ -55,6 +55,7 @@ export class AgentsPage {
       url += `?type=${type}`;
     }
     await this.page.goto(url);
+    await this.page.waitForURL(url);
   }
 
   async search() {
