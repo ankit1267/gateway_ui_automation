@@ -56,6 +56,11 @@ export class AgentsPage {
     }
     await this.page.goto(url);
     await this.page.waitForURL(url);
+    const onboardingOverlay = this.page.getByTestId('org-page-guard-modal-overlay');
+    if (await onboardingOverlay.isVisible()) {
+      await this.page.getByRole('button', { name: 'Close onboarding' }).click();
+      await onboardingOverlay.waitFor({ state: 'hidden' });
+    }
   }
 
   async search() {
