@@ -70,7 +70,10 @@ export class AgentsPage {
   }
 
   async openAgentById(id: string): Promise<AgentPage> {
-    await this.page.getByTestId(`custom-table-row-${id}`).click();
+    await Promise.all([
+      this.page.waitForURL(/\/agents\//),
+      this.page.getByTestId(`custom-table-row-${id}`).click(),
+    ]);
     return new AgentPage(this.page);
   }
 
