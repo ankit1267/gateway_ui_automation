@@ -45,6 +45,7 @@ export class WorkspaceSettingPage {
     const orgId = process.env.ORG_ID;
     if (!orgId) throw new Error('ORG_ID env variable is not set');
     await this.page.goto(`/org/${orgId}/workspaceSetting`);
+    await this.page.waitForURL(`/org/${orgId}/workspaceSetting`);
   }
 
   async waitForPage() {

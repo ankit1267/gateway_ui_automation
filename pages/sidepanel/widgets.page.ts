@@ -51,6 +51,7 @@ export class WidgetsPage {
     const orgId = process.env.ORG_ID;
     if (!orgId) throw new Error('ORG_ID env variable is not set');
     await this.page.goto(`/org/${orgId}/widgets`);
+    await this.page.waitForURL(`/org/${orgId}/widgets`);
   }
 
   async waitForPage() {
@@ -136,6 +137,7 @@ export class WidgetsPage {
     const orgId = process.env.ORG_ID;
     if (!orgId) throw new Error('ORG_ID env variable is not set');
     await this.page.goto(`/org/${orgId}/widgets?create=true`);
+    await this.page.waitForURL(`/org/${orgId}/widgets?create=true`);
   }
 
   async fillSaveWidgetName(name: string) {

@@ -29,7 +29,7 @@ export class AgentsPage {
 
   constructor(private page: Page) {
     this.agentTable = this.page.getByTestId(/custom-table-row-/);
-    this.customTable = this.page.getByTestId('custom-table');
+    this.customTable = this.page.getByTestId('custom-table').first();
     this.customTableSelectAll = this.page.getByTestId('custom-table-select-all');
     this.tableNoData = this.page.getByTestId('table-no-data');
     this.createAgentButton = this.page.getByTestId('create-new-agent-button');
@@ -71,10 +71,20 @@ export class AgentsPage {
   }
 
   async openAgentById(id: string): Promise<AgentPage> {
+    const row = this.page.getByTestId(`custom-table-row-${id}`);
+
+    // wait for table + row
+    await expect(this.customTable).toBeVisible();
+    await expect(row).toBeVisible();
+
+    // ensure it's actually clickable
+    await row.scrollIntoViewIfNeeded();
+
     await Promise.all([
-      this.page.waitForURL(/\/agents\//),
-      this.page.getByTestId(`custom-table-row-${id}`).click(),
+      this.page.waitForURL(/\/agents\/.+/), // expect navigation to detail page
+      row.click(),
     ]);
+
     return new AgentPage(this.page);
   }
 

@@ -21,6 +21,7 @@ export class AddNewModelPage {
     const orgId = process.env.ORG_ID;
     if (!orgId) throw new Error('ORG_ID env variable is not set');
     await this.page.goto(`/org/${orgId}/addNewModel`);
+    await this.page.waitForURL(`/org/${orgId}/addNewModel`);
   }
 
   async waitForPage() {

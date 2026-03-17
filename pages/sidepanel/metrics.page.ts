@@ -43,6 +43,7 @@ export class MetricsPage {
     const orgId = process.env.ORG_ID;
     if (!orgId) throw new Error('ORG_ID env variable is not set');
     await this.page.goto(`/org/${orgId}/metrics`);
+    await this.page.waitForURL(`/org/${orgId}/metrics`);
   }
 
   async waitForPage() {

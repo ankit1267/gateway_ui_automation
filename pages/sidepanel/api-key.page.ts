@@ -36,6 +36,7 @@ export class ApiKeysPage {
 
   async goto(orgId: string) {
     await this.page.goto(`/org/${process.env.ORG_ID}/apikeys`);
+    await this.page.waitForURL(`/org/${process.env.ORG_ID}/apikeys`);
   }
 
   async waitForPage() {

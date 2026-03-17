@@ -19,6 +19,7 @@ export class AlertsPage {
     const orgId = process.env.ORG_ID;
     if (!orgId) throw new Error('ORG_ID env variable is not set');
     await this.page.goto(`/org/${orgId}/alerts`);
+    await this.page.waitForURL(`/org/${orgId}/alerts`);
   }
 
   async waitForPage() {

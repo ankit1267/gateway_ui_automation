@@ -50,6 +50,7 @@ export class RAGEmbedDetailPage {
     const orgId = process.env.ORG_ID;
     if (!orgId) throw new Error('ORG_ID env variable is not set');
     await this.page.goto(`/org/${orgId}/RAG_embed/${folderId}`);
+    await this.page.waitForURL(`/org/${orgId}/RAG_embed/${folderId}`);
   }
 
   async waitForPage() {

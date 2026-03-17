@@ -18,6 +18,7 @@ export class KnowledgeBasePage {
   private readonly resourceChunkModal: Locator;
   private readonly queryKbTextarea: Locator;
   private readonly querySubmit: Locator;
+  private readonly chunkSizeInput: Locator;
 
   constructor(private page: Page) {
     this.createButton = page.getByRole('button', {
@@ -38,6 +39,19 @@ export class KnowledgeBasePage {
     this.resourceChunkModal = page.getByTestId('RESOURCE_CHUNKS_MODAL');
     this.queryKbTextarea = page.getByTestId('query-kb-textarea');
     this.querySubmit = page.getByTestId('query-kb-submit-button')
+    this.chunkSizeInput = page.locator('#knowledgebase-chunk-size-input');
+  }
+
+  async fillChunkSize(value: string) {
+    await this.chunkSizeInput.fill(value);
+  }
+
+  async blurChunkSize() {
+    await this.chunkSizeInput.blur();
+  }
+
+  async expectChunkSizeValue(value: string) {
+    await expect(this.chunkSizeInput).toHaveValue(value);
   }
 
   async clickQuerySubmit() {

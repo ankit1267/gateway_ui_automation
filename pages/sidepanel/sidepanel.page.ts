@@ -84,89 +84,104 @@ export class SidepanelPage {
     const orgId = process.env.ORG_ID;
     if (!orgId) throw new Error('ORG_ID env variable is not set');
     await this.page.goto(`/org/${orgId}/chatbotConfig`);
+    await this.page.waitForURL(`/org/${orgId}/chatbotConfig`);
   }
 
   async gotoKnowledgeBase() {
     const orgId = process.env.ORG_ID;
     if (!orgId) throw new Error('ORG_ID env variable is not set');
     await this.page.goto(`/org/${orgId}/knowledge_base`);
+    await this.page.waitForURL(`/org/${orgId}/knowledge_base`);
   }
 
   async gotoWidgets() {
     const orgId = process.env.ORG_ID;
     if (!orgId) throw new Error('ORG_ID env variable is not set');
     await this.page.goto(`/org/${orgId}/widgets`);
+    await this.page.waitForURL(`/org/${orgId}/widgets`);
   }
 
   async gotoPauthKey() {
     const orgId = process.env.ORG_ID;
     if (!orgId) throw new Error('ORG_ID env variable is not set');
     await this.page.goto(`/org/${orgId}/pauthkey`);
+    await this.page.waitForURL(`/org/${orgId}/pauthkey`);
   }
 
   async gotoApiKeys() {
     const orgId = process.env.ORG_ID;
     if (!orgId) throw new Error('ORG_ID env variable is not set');
     await this.page.goto(`/org/${orgId}/apikeys`);
+    await this.page.waitForURL(`/org/${orgId}/apikeys`);
   }
 
   async gotoAlerts() {
     const orgId = process.env.ORG_ID;
     if (!orgId) throw new Error('ORG_ID env variable is not set');
     await this.page.goto(`/org/${orgId}/alerts`);
+    await this.page.waitForURL(`/org/${orgId}/alerts`);
   }
 
   async gotoMetrics() {
     const orgId = process.env.ORG_ID;
     if (!orgId) throw new Error('ORG_ID env variable is not set');
     await this.page.goto(`/org/${orgId}/metrics`);
+    await this.page.waitForURL(`/org/${orgId}/metrics`);
   }
 
   async gotoIntegration() {
     const orgId = process.env.ORG_ID;
     if (!orgId) throw new Error('ORG_ID env variable is not set');
     await this.page.goto(`/org/${orgId}/integration`);
+    await this.page.waitForURL(`/org/${orgId}/integration`);
   }
 
   async gotoRAGEmbed() {
     const orgId = process.env.ORG_ID;
     if (!orgId) throw new Error('ORG_ID env variable is not set');
     await this.page.goto(`/org/${orgId}/RAG_embed`);
+    await this.page.waitForURL(`/org/${orgId}/RAG_embed`);
   }
 
   async gotoFeedback() {
     const orgId = process.env.ORG_ID;
     if (!orgId) throw new Error('ORG_ID env variable is not set');
     await this.page.goto(`/org/${orgId}/feedback`);
+    await this.page.waitForURL(`/org/${orgId}/feedback`);
   }
 
   async gotoWorkspaceSetting() {
     const orgId = process.env.ORG_ID;
     if (!orgId) throw new Error('ORG_ID env variable is not set');
     await this.page.goto(`/org/${orgId}/workspaceSetting`);
+    await this.page.waitForURL(`/org/${orgId}/workspaceSetting`);
   }
 
   async gotoPrebuiltPrompts() {
     const orgId = process.env.ORG_ID;
     if (!orgId) throw new Error('ORG_ID env variable is not set');
     await this.page.goto(`/org/${orgId}/prebuilt-prompts`);
+    await this.page.waitForURL(`/org/${orgId}/prebuilt-prompts`);
   }
 
   async gotoAddNewModel() {
     const orgId = process.env.ORG_ID;
     if (!orgId) throw new Error('ORG_ID env variable is not set');
     await this.page.goto(`/org/${orgId}/addNewModel`);
+    await this.page.waitForURL(`/org/${orgId}/addNewModel`);
   }
 
   async gotoAuthRoute() {
     const orgId = process.env.ORG_ID;
     if (!orgId) throw new Error('ORG_ID env variable is not set');
     await this.page.goto(`/org/${orgId}/auth_route`);
+    await this.page.waitForURL(`/org/${orgId}/auth_route`);
   }
 
   async gotoAgents() {
     const orgId = process.env.ORG_ID;
     if (!orgId) throw new Error('ORG_ID env variable is not set');
     await this.page.goto(`/org/${orgId}/agents`);
+    await this.page.waitForURL(`/org/${orgId}/agents`);
   }
 }

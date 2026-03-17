@@ -47,6 +47,7 @@ export class WorkspacePage {
     // ---------------- Navigation ----------
     async goto() {
         await this.page.goto('/org');
+        await this.page.waitForURL('/org');
     }
 
     async waitForPage() {

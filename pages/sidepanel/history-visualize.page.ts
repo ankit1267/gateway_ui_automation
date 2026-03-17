@@ -37,6 +37,7 @@ export class HistoryVisualizePage {
     await this.page.goto(
       `/org/${orgId}/agents/history/${agentId}/visualize?message_id=${messageId}&thread_id=${threadId}&subThread_id=${subThreadId}`
     );
+    await this.page.waitForURL(/\/agents\/history\/.*\/visualize/);
   }
 
   async waitForPage() {
