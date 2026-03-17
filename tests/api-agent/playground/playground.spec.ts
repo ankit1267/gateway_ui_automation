@@ -1,10 +1,10 @@
-import { test, expect } from "../../../fixtures/base.fixture";
+﻿import { test, expect } from "../../../fixtures/base.fixture";
 
-const AGENT_ID = process.env.AGENT_ID!;
+const AGENT_NAME = process.env.AGENT_NAME!;
 
 test('Playground strategy selection', async ({ agents }) => {
   await agents.goto('api');
-  const agent = await agents.openAgentById(AGENT_ID);
+  const agent = await agents.openAgent(AGENT_NAME);
 
   await agent.tabs.openModel();
   await agent.model.selectServiceProvider("Mistral");
@@ -23,7 +23,7 @@ test('Playground strategy selection', async ({ agents }) => {
 
 test('Playground add new test case click open new playground', async ({ agents }) => {
   await agents.goto('api');
-  const agent = await agents.openAgentById(AGENT_ID);
+  const agent = await agents.openAgent(AGENT_NAME);
 
   await agent.tabs.openModel();
   await agent.model.selectServiceProvider("Mistral");
@@ -44,7 +44,7 @@ test('Playground add new test case click open new playground', async ({ agents }
 
 test('Playground send message and verify response', async ({ agents }) => {
   await agents.goto('api');
-  const agent = await agents.openAgentById(AGENT_ID);
+  const agent = await agents.openAgent(AGENT_NAME);
 
   await agent.tabs.openModel();
   await agent.model.selectServiceProvider("Mistral");

@@ -1,12 +1,12 @@
-import { test, expect } from '../../../fixtures/base.fixture';
+﻿import { test, expect } from '../../../fixtures/base.fixture';
 
-const AGENT_ID = process.env.AGENT_ID!;
+const AGENT_NAME = process.env.AGENT_NAME!;
 
 test('compare published and current prompt', async ({ agents }) => {
   
   await agents.goto('api');
 
-  const agent = await agents.openAgentById(AGENT_ID);
+  const agent = await agents.openAgent(AGENT_NAME);
   
   await agent.prompt.fillPrompt(
     'You are a motivation coach',

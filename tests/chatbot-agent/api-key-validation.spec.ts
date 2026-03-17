@@ -1,6 +1,6 @@
-import { test, expect } from '../../fixtures/base.fixture';
+﻿import { test, expect } from '../../fixtures/base.fixture';
 
-const AGENT_ID = process.env.CHATBOT_AGENT_ID!;
+const AGENT_NAME = process.env.CHATBOT_AGENT!;
 
 test.describe('Model - API Key validation', () => {
    
@@ -10,7 +10,7 @@ test.describe('Model - API Key validation', () => {
     });
 
     test('TC-APIKEY-01: API key required error is shown', async ({ agents }) => {
-        const agent = await agents.openAgentById(AGENT_ID);
+        const agent = await agents.openAgent(AGENT_NAME);
         await agent.tabs.openModel();
         await agent.model.selectServiceProvider('Anthropic');
         await agent.model.expectNoApiKeysMessage();
@@ -21,7 +21,7 @@ test.describe('Model - API Key validation', () => {
     });
 
     test('TC-APIKEY-02: API key is added', async ({ agents }) => {
-        const agent = await agents.openAgentById(AGENT_ID);
+        const agent = await agents.openAgent(AGENT_NAME);
         await agent.tabs.openModel();
         await agent.model.selectServiceProvider('Mistral');
 

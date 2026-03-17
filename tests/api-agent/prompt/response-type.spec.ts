@@ -1,8 +1,8 @@
-import { test, expect } from '../../../fixtures/base.fixture';
+﻿import { test, expect } from '../../../fixtures/base.fixture';
 
 
 
-const AGENT_ID = process.env.AGENT_ID!;
+const AGENT_NAME = process.env.AGENT_NAME!;
 
 
 
@@ -20,7 +20,7 @@ test.describe('Prompt - Response Type', () => {
 
   test('TC-PROMPT-RESP-01: Change response type options', async ({ agents }) => {
 
-    const agent = await agents.openAgentById(AGENT_ID);
+    const agent = await agents.openAgent(AGENT_NAME);
 
 
 
@@ -42,22 +42,12 @@ test.describe('Prompt - Response Type', () => {
 
   test('TC-PROMPT-RESP-02: Set Default button resets response type to default', async ({ agents }) => {
 
-    const agent = await agents.openAgentById(AGENT_ID);
-
-
+    const agent = await agents.openAgent(AGENT_NAME);
 
     await agent.tabs.openPrompt();
-
     await agent.prompt.selectResponseType('text');
-
-
-
     await agent.prompt.expectResponseTypeSetDefaultVisible();
-
     await agent.prompt.clickResponseTypeSetDefault();
-
-
-
     await agent.prompt.expectResponseTypeIsDefault();
 
   });
@@ -66,7 +56,7 @@ test.describe('Prompt - Response Type', () => {
 
   test('TC-PROMPT-RESP-03: Select json_schema, add JSON schema, click Set Default, verify reset to default', async ({ agents }) => {
 
-    const agent = await agents.openAgentById(AGENT_ID);
+    const agent = await agents.openAgent(AGENT_NAME);
 
 
 
@@ -94,7 +84,7 @@ test.describe('Prompt - Response Type', () => {
 
   test('TC-PROMPT-RESP-04: JSON schema textarea accepts manually typed and pasted JSON', async ({ agents }) => {
 
-    const agent = await agents.openAgentById(AGENT_ID);
+    const agent = await agents.openAgent(AGENT_NAME);
 
 
 
@@ -124,7 +114,7 @@ test.describe('Prompt - Response Type', () => {
 
   test('TC-PROMPT-RESP-06: JSON schema textarea supports scrolling and manual resizing', async ({ agents }) => {
 
-    const agent = await agents.openAgentById(AGENT_ID);
+    const agent = await agents.openAgent(AGENT_NAME);
 
 
 
@@ -168,7 +158,7 @@ test.describe('Prompt - Response Type', () => {
 
   test('TC-PROMPT-RESP-07: Invalid JSON schema shows error, valid empty object clears it', async ({ agents }) => {
 
-    const agent = await agents.openAgentById(AGENT_ID);
+    const agent = await agents.openAgent(AGENT_NAME);
 
 
 
@@ -196,7 +186,7 @@ test.describe('Prompt - Response Type', () => {
 
   test('TC-PROMPT-RESP-08: JSON schema response type enforces schema fields in playground response', async ({ agents }) => {
 
-    const agent = await agents.openAgentById(AGENT_ID);
+    const agent = await agents.openAgent(AGENT_NAME);
 
 
 
@@ -254,7 +244,7 @@ test.describe('Prompt - Response Type', () => {
 
   test('TC-PROMPT-RESP-05: Keyboard shortcuts Ctrl+A, Ctrl+C, Ctrl+X, Ctrl+V work in JSON schema textarea', async ({ agents }) => {
 
-    const agent = await agents.openAgentById(AGENT_ID);
+    const agent = await agents.openAgent(AGENT_NAME);
 
 
 
@@ -272,7 +262,7 @@ test.describe('Prompt - Response Type', () => {
 
 
 
-    // Ctrl+A: select all → typing replaces entire content
+    // Ctrl+A: select all â†’ typing replaces entire content
 
     await agent.prompt.pressKeyInJsonSchema('Control+a');
 
@@ -282,7 +272,7 @@ test.describe('Prompt - Response Type', () => {
 
 
 
-    // Ctrl+C + Ctrl+V: copy all and paste at end → content doubles
+    // Ctrl+C + Ctrl+V: copy all and paste at end â†’ content doubles
 
     await agent.prompt.typeJsonSchema(json);
 
@@ -298,7 +288,7 @@ test.describe('Prompt - Response Type', () => {
 
 
 
-    // Ctrl+X: cut all → textarea empty
+    // Ctrl+X: cut all â†’ textarea empty
 
     await agent.prompt.pressKeyInJsonSchema('Control+a');
 
@@ -308,7 +298,7 @@ test.describe('Prompt - Response Type', () => {
 
 
 
-    // Ctrl+V: paste cut content → content restored
+    // Ctrl+V: paste cut content â†’ content restored
 
     await agent.prompt.pressKeyInJsonSchema('Control+v');
 

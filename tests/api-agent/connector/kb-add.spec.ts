@@ -1,6 +1,6 @@
-import { test } from '../../../fixtures/base.fixture';
+﻿import { test } from '../../../fixtures/base.fixture';
 
-const AGENT_ID = process.env.AGENT_ID!;
+const AGENT_NAME = process.env.AGENT_NAME!;
 const K_BASE = 'Resume';
 
 test('Knowledgebase renders inside embed container after selection',
@@ -9,7 +9,7 @@ test('Knowledgebase renders inside embed container after selection',
   }) => {
 
     await agents.goto('api');
-    const agent = await agents.openAgentById(AGENT_ID);
+    const agent = await agents.openAgent(AGENT_NAME);
     await agent.tabs.openConnectors();
 
     await agent.connectors.clickAddKB();

@@ -1,12 +1,12 @@
-import { test, expect } from '../../../fixtures/base.fixture';
+﻿import { test, expect } from '../../../fixtures/base.fixture';
 
-const AGENT_ID = process.env.AGENT_ID!;
+const AGENT_NAME = process.env.AGENT_NAME!;
 
 test.describe('Playground Test Case Sidebar', () => {
 
   test('TC-PG-TC-01: Playground test case sidebar full flow', async ({ agents }) => {
     await agents.goto('api');
-    const agent = await agents.openAgentById(AGENT_ID);
+    const agent = await agents.openAgent(AGENT_NAME);
 
     await agent.playground.typeMessage('testing');
     await agent.playground.expectChatMessageVisible(1);

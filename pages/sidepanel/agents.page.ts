@@ -94,6 +94,11 @@ export class AgentsPage {
   }
 
   async clickCreateNewAgent() {
+    const tutorialsDialog = this.page.getByRole('dialog').filter({ hasText: 'GTWY AI Tutorials' });
+    if (await tutorialsDialog.isVisible()) {
+      await this.page.getByRole('button', { name: 'Close Tutorials' }).click();
+      await tutorialsDialog.waitFor({ state: 'hidden' });
+    }
     await this.createAgentButton.click();
   }
 

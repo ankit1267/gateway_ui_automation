@@ -1,12 +1,12 @@
-import { test } from '../../../fixtures/base.fixture';
+﻿import { test } from '../../../fixtures/base.fixture';
 
-const AGENT_ID = process.env.AGENT_ID!;
+const AGENT_NAME = process.env.AGENT_NAME!;
 
 test.describe('Model - Hover Preview', () => {
 
   test('TC-MODEL-HOVER-01: hovering over a model option shows model information panel', async ({ agents }) => {
     await agents.goto('api');
-    const agent = await agents.openAgentById(AGENT_ID);
+    const agent = await agents.openAgent(AGENT_NAME);
     await agent.tabs.openModel();
 
     await agent.model.selectServiceProvider('Openai');
@@ -21,7 +21,7 @@ test.describe('Model - Hover Preview', () => {
 
   test('TC-MODEL-HOVER-02: model preview disappears when mouse leaves the dropdown', async ({ agents }) => {
     await agents.goto('api');
-    const agent = await agents.openAgentById(AGENT_ID);
+    const agent = await agents.openAgent(AGENT_NAME);
     await agent.tabs.openModel();
 
     await agent.model.selectServiceProvider('Openai');
@@ -36,7 +36,7 @@ test.describe('Model - Hover Preview', () => {
 
   test('TC-MODEL-HOVER-03: hovering different models updates the preview', async ({ agents }) => {
     await agents.goto('api');
-    const agent = await agents.openAgentById(AGENT_ID);
+    const agent = await agents.openAgent(AGENT_NAME);
     await agent.tabs.openModel();
 
     await agent.model.selectServiceProvider('Openai');

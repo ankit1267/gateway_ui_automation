@@ -1,9 +1,9 @@
-import { test, expect } from '../../../fixtures/base.fixture';
+﻿import { test, expect } from '../../../fixtures/base.fixture';
 
 
 
 const ORG_NAME = process.env.WORKSPACE_NAME;
-const AGENT_ID = process.env.TESTING_AGENT_ID!;
+const AGENT_NAME = process.env.TESTING_AGENT!;
 
 test.beforeEach(async ({ agents }) => {
     await agents.goto('api');
@@ -12,7 +12,7 @@ test.beforeEach(async ({ agents }) => {
 test(
     'TC-SET-01: Switching to Triggers shows ViaSocket embed in Settings',
     async ({ agents }) => {
-       const agent = await agents.openAgentById(AGENT_ID);
+       const agent = await agents.openAgent(AGENT_NAME);
        await agent.tabs.openSettings();
       
 
@@ -31,7 +31,7 @@ test(
 test(
     'TC-SET-02:Verify that user can select different tone options in Settings.',
     async ({ agents }) => {
-       const agent = await agents.openAgentById(AGENT_ID);
+       const agent = await agents.openAgent(AGENT_NAME);
        await agent.tabs.openSettings();
       
 
@@ -46,7 +46,7 @@ test(
 test(
     'TC-SET-03:Verify response style dropdown accepts valid values.',
     async ({ agents }) => {
-       const agent = await agents.openAgentById(AGENT_ID);
+       const agent = await agents.openAgent(AGENT_NAME);
        await agent.tabs.openSettings();
       
 
@@ -61,7 +61,7 @@ test(
 test(
     'TC-SET-04:Verify enabling and disable Guardrails configuration.',
     async ({ agents }) => {
-       const agent = await agents.openAgentById(AGENT_ID);
+       const agent = await agents.openAgent(AGENT_NAME);
        await agent.tabs.openSettings();
       
 
@@ -78,7 +78,7 @@ test(
 test(
     'TC-SET-05:Verify webhook validation when Custom mode is selected.',
     async ({ agents }) => {
-       const agent = await agents.openAgentById(AGENT_ID);
+       const agent = await agents.openAgent(AGENT_NAME);
        await agent.tabs.openSettings();
       
 
@@ -97,7 +97,7 @@ test(
 test(
     'TC-SET-06:Invalid headers JSON is rejected.',
     async ({ agents }) => {
-       const agent = await agents.openAgentById(AGENT_ID);
+       const agent = await agents.openAgent(AGENT_NAME);
        await agent.tabs.openSettings();
       
 
@@ -114,9 +114,9 @@ test(
 );
 
 test(
-    'TC-SET-07:Agent Settings – Guardrail Configuration.',
+    'TC-SET-07:Agent Settings â€“ Guardrail Configuration.',
     async ({ agents }) => {
-       const agent = await agents.openAgentById(AGENT_ID);
+       const agent = await agents.openAgent(AGENT_NAME);
        await agent.tabs.openSettings();
       
 

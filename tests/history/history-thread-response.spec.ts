@@ -1,6 +1,6 @@
-import { test, expect } from '../../fixtures/base.fixture';
+﻿import { test, expect } from '../../fixtures/base.fixture';
 
-const AGENT_ID = process.env.AGENT_ID!;
+const AGENT_NAME = process.env.AGENT_NAME!;
 
 test.describe('History - API Agent Thread Response', () => {
   test.beforeEach(async ({ agents }) => {
@@ -8,7 +8,7 @@ test.describe('History - API Agent Thread Response', () => {
   });
 
   test('TC-HISTORY-03: Open a history thread and verify thread response is shown', async ({ agents }) => {
-    const agent = await agents.openAgentById(AGENT_ID);
+    const agent = await agents.openAgent(AGENT_NAME);
     await agent.header.openHistory();
 
     const apiStatus = await agent.history.openFirstSidebarThreadAndGetApiStatus();

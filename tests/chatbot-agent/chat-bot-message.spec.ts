@@ -1,6 +1,6 @@
-import { test, expect } from "../../fixtures/base.fixture";
+﻿import { test, expect } from "../../fixtures/base.fixture";
 
-const AGENT_ID = process.env.CHATBOT_AGENT_ID!;
+const AGENT_NAME = process.env.CHATBOT_AGENT!;
 
 test.describe('Chatbot Message', () => {
     
@@ -9,7 +9,7 @@ test.describe('Chatbot Message', () => {
     });
 
     test('TC-CHAT-01: Verify Chatbot Message', async ({ agents }) => {
-        const agent = await agents.openAgentById(AGENT_ID);
+        const agent = await agents.openAgent(AGENT_NAME);
         await agent.chatbot.openNewThread();
         await agent.chatbot.isHomeVisible();
         await agent.chatbot.sendMessage('hi');

@@ -1,6 +1,6 @@
-import { test } from '../../fixtures/base.fixture';
+﻿import { test } from '../../fixtures/base.fixture';
 
-const AGENT_ID = process.env.AGENT_ID!;
+const AGENT_NAME = process.env.AGENT_NAME!;
 
 test.describe('History - API Agent Thread Actions', () => {
   test.beforeEach(async ({ agents }) => {
@@ -8,7 +8,7 @@ test.describe('History - API Agent Thread Actions', () => {
   });
 
   test('TC-HISTORY-08: Click and close all thread action buttons', async ({ agents }) => {
-    const agent = await agents.openAgentById(AGENT_ID);
+    const agent = await agents.openAgent(AGENT_NAME);
     await agent.header.openHistory();
 
     await agent.history.openFirstSidebarThread();

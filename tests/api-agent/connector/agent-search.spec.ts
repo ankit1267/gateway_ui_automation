@@ -1,7 +1,7 @@
 import { test } from '../../../fixtures/base.fixture';
 
-const AGENT_ID = process.env.TESTING_AGENT_ID!;
-const AGENT_RESULT = process.env.AGENT_NAME!;
+const TESTING_AGENT_NAME = process.env.TESTING_AGENT!;
+const AGENT_RESULT = process.env.AGENT_NAME!
 
 test.describe('Connectors - Agent Search - API Agent', () => {
 
@@ -10,7 +10,7 @@ test.describe('Connectors - Agent Search - API Agent', () => {
   });
 
   test('TC-CON-AGENT-01: Search for agent in Add Agent dropdown shows result', async ({ agents }) => {
-    const agent = await agents.openAgentById(AGENT_ID);
+    const agent = await agents.openAgent(TESTING_AGENT_NAME);
     await agent.tabs.openConnectors();
     await agent.connectors.clickAddAgent();
     await agent.connectors.a2aDropdown.expectVisible();
@@ -19,7 +19,7 @@ test.describe('Connectors - Agent Search - API Agent', () => {
   });
 
   test('TC-CON-AGENT-02: Search with spaced query in Add Agent dropdown shows matching result', async ({ agents }) => {
-    const agent = await agents.openAgentById(AGENT_ID);
+    const agent = await agents.openAgent(TESTING_AGENT_NAME);
     await agent.tabs.openConnectors();
     await agent.connectors.clickAddAgent();
     await agent.connectors.a2aDropdown.expectVisible();

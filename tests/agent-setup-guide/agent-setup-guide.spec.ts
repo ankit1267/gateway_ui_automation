@@ -1,11 +1,11 @@
-import { test, expect } from "../../fixtures/base.fixture";
+﻿import { test, expect } from "../../fixtures/base.fixture";
 
-const AGENT_ID = process.env.TESTING_AGENT_ID!
+const AGENT_NAME = process.env.TESTING_AGENT!
 //dependent on css class if css class change it will break
 
 test('Fill Prompt and api configured should not show agent guide', async ({ agents }) => {
   await agents.goto('api');
-  const agent = await agents.openAgentById(AGENT_ID);
+  const agent = await agents.openAgent(AGENT_NAME);
 
   await agent.prompt.fillPrompt(
     `Support agent${Date.now()}`,
@@ -26,7 +26,7 @@ test('Fill Prompt and api configured should not show agent guide', async ({ agen
 
 test('Agent setup card updates dynamically when prompt entered', async ({ agents }) => {
   await agents.goto('api');
-  const agent = await agents.openAgentById(AGENT_ID);
+  const agent = await agents.openAgent(AGENT_NAME);
 
   await agent.prompt.fillPrompt(
     '',
@@ -50,7 +50,7 @@ test('Prompt Empty and switch tab should results in setup card remain same', asy
   
 
   await agents.goto('api');
-  const agent = await agents.openAgentById(AGENT_ID);
+  const agent = await agents.openAgent(AGENT_NAME);
 
   await agent.prompt.fillPrompt(
     '',
@@ -72,7 +72,7 @@ test('Prompt Empty and switch tab should results in setup card remain same', asy
 
 test('Fill Prompt and api not configured should show agent guide', async ({ agents }) => {
   await agents.goto('api');
-  const agent = await agents.openAgentById(AGENT_ID);
+  const agent = await agents.openAgent(AGENT_NAME);
 
   await agent.prompt.fillPrompt(
     `Support agent${Date.now()}`,
@@ -91,7 +91,7 @@ test('Fill Prompt and api not configured should show agent guide', async ({ agen
 
 test('Only fill role and goal should results in setup card remain same', async ({ agents }) => {
   await agents.goto('api');
-  const agent = await agents.openAgentById(AGENT_ID);
+  const agent = await agents.openAgent(AGENT_NAME);
 
   await agent.prompt.fillPrompt(
     `Support agent${Date.now()}`,

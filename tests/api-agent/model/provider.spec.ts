@@ -1,11 +1,11 @@
-import { test } from '../../../fixtures/base.fixture';
+﻿import { test } from '../../../fixtures/base.fixture';
 
-const AGENT_ID = process.env.TESTING_AGENT_ID!;
+const AGENT_NAME = process.env.TESTING_AGENT!;
 
 test('TC-MODEL-01: Verify model list loads for Mistral', async ({ agents }) => {
 
   await agents.goto('api');
-  const agent = await agents.openAgentById(AGENT_ID);
+  const agent = await agents.openAgent(AGENT_NAME);
   await agent.tabs.openModel();
 
   await agent.model.selectServiceProvider('Mistral');
@@ -21,7 +21,7 @@ test('TC-MODEL-01: Verify model list loads for Mistral', async ({ agents }) => {
 
 test('TC-MODEL-02: Verify model list loads for OpenAI', async ({ agents }) => {
   await agents.goto('api');
-  const agent = await agents.openAgentById(AGENT_ID);
+  const agent = await agents.openAgent(AGENT_NAME);
   await agent.tabs.openModel();
 
   await agent.model.selectServiceProvider('Openai');
@@ -39,7 +39,7 @@ test('TC-MODEL-02: Verify model list loads for OpenAI', async ({ agents }) => {
 
 test('TC-MODEL-03: Verify model list loads for Anthropic', async ({ agents }) => {
   await agents.goto('api');
-  const agent = await agents.openAgentById(AGENT_ID);
+  const agent = await agents.openAgent(AGENT_NAME);
   await agent.tabs.openModel();
 
   await agent.model.selectServiceProvider('Anthropic');
@@ -51,7 +51,7 @@ test('TC-MODEL-03: Verify model list loads for Anthropic', async ({ agents }) =>
 
 test('TC-MODEL-04: Verify model list loads for Groq', async ({ agents }) => {
   await agents.goto('api');
-  const agent = await agents.openAgentById(AGENT_ID);
+  const agent = await agents.openAgent(AGENT_NAME);
   await agent.tabs.openModel();
 
   await agent.model.selectServiceProvider('Groq');
@@ -64,7 +64,7 @@ test('TC-MODEL-04: Verify model list loads for Groq', async ({ agents }) => {
 
 test('TC-MODEL-05: Verify model list loads for Gemini', async ({ agents }) => {
   await agents.goto('api');
-  const agent = await agents.openAgentById(AGENT_ID);
+  const agent = await agents.openAgent(AGENT_NAME);
   await agent.tabs.openModel();
 
   await agent.model.selectServiceProvider('Gemini');
@@ -77,7 +77,7 @@ test('TC-MODEL-05: Verify model list loads for Gemini', async ({ agents }) => {
 
 test('TC-MODEL-06: Verify model list loads for Ai-ml', async ({ agents }) => {
   await agents.goto('api');
-  const agent = await agents.openAgentById(AGENT_ID);
+  const agent = await agents.openAgent(AGENT_NAME);
   await agent.tabs.openModel();
 
   await agent.model.selectServiceProvider('Ai_ml');
@@ -90,7 +90,7 @@ test('TC-MODEL-06: Verify model list loads for Ai-ml', async ({ agents }) => {
 
 test('TC-MODEL-07: Verify model list loads for Grok', async ({ agents }) => {
   await agents.goto('api');
-  const agent = await agents.openAgentById(AGENT_ID);
+  const agent = await agents.openAgent(AGENT_NAME);
   await agent.tabs.openModel();
 
   await agent.model.selectServiceProvider('Grok');
