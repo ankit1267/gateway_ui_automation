@@ -9,6 +9,9 @@ jobs:
   test:
     timeout-minutes: 120
     runs-on: ubuntu-latest
+    outputs:
+      failed_summary: ${{ steps.summary.outputs.FAILED_SUMMARY }}
+      test_outcome: ${{ steps.summary.outputs.test_outcome }}
     env:
       PLAYWRIGHT_USER_DATA_DIR: ${{ secrets.PLAYWRIGHT_USER_DATA_DIR }}
       PLAYWRIGHT_LOGIN_URL: ${{ secrets.PLAYWRIGHT_LOGIN_URL }}
@@ -36,7 +39,46 @@ jobs:
     - name: Install Playwright Browsers
       run: npx playwright install --with-deps
     - name: Run Playwright tests
+      id: test-run
+      continue-on-error: true
       run: npx playwright test
+    - name: Extract failed test summary
+      if: always()
+      id: summary
+      run: |
+        if [ -f test-results.json ]; then
+          FAILED_SUMMARY=$(node -e "
+            const fs = require('fs');
+            const data = JSON.parse(fs.readFileSync('test-results.json', 'utf8'));
+            const failed = [];
+            function walk(suites) {
+              for (const suite of suites || []) {
+                for (const spec of suite.specs || []) {
+                  for (const test of spec.tests || []) {
+                    if (test.status === 'unexpected' || test.status === 'flaky') {
+                      const errors = test.results
+                        .filter(r => r.status === 'failed' || r.status === 'timedOut')
+                        .map(r => (r.error && r.error.message) ? r.error.message.split('\\n')[0] : r.status)
+                        .join('; ');
+                      failed.push(suite.title + ' > ' + spec.title + ' -- ' + errors);
+                    }
+                  }
+                }
+                walk(suite.suites);
+              }
+            }
+            walk(data.suites);
+            if (failed.length === 0) { console.log('All tests passed'); }
+            else { console.log('Failed (' + failed.length + '):\\n' + failed.join('\\n')); }
+          ")
+          echo "FAILED_SUMMARY<<EOF" >> $GITHUB_OUTPUT
+          echo "$FAILED_SUMMARY" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+          echo "test_outcome=${{ steps.test-run.outcome }}" >> $GITHUB_OUTPUT
+        else
+          echo "FAILED_SUMMARY=No test-results.json found" >> $GITHUB_OUTPUT
+          echo "test_outcome=${{ steps.test-run.outcome }}" >> $GITHUB_OUTPUT
+        fi
     - uses: actions/upload-artifact@v4
       if: ${{ !cancelled() }}
       with:
@@ -61,8 +103,19 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
-      - name: Send Report URL to Webhook
+      - name: Send Report URL and Summary to Webhook
+        if: always()
         run: |
+          SUMMARY=$(cat <<'ENDOFSUMMARY'
+          ${{ needs.test.outputs.failed_summary }}
+          ENDOFSUMMARY
+          )
+          OUTCOME="${{ needs.test.outputs.test_outcome }}"
+          PAYLOAD=$(jq -n \
+            --arg report_url "${{ steps.deployment.outputs.page_url }}" \
+            --arg status "$OUTCOME" \
+            --arg failed_summary "$SUMMARY" \
+            '{report_url: $report_url, status: $status, failed_summary: $failed_summary}')
           curl -X POST https://flow.sokt.io/func/scri8acRJpTe \
-          -H "Content-Type: application/json" \
-          -d "{\"report_url\":\"${{ steps.deployment.outputs.page_url }}\"}"
+            -H "Content-Type: application/json" \
+            -d "$PAYLOAD"
