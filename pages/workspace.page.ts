@@ -48,6 +48,11 @@ export class WorkspacePage {
     async goto() {
         await this.page.goto('/org');
         await this.page.waitForURL('/org');
+        const onboardingOverlay = this.page.getByTestId('org-page-guard-modal-overlay');
+        if (await onboardingOverlay.isVisible()) {
+            await this.page.getByRole('button', { name: 'Close onboarding' }).click();
+            await onboardingOverlay.waitFor({ state: 'hidden' });
+        }
     }
 
     async waitForPage() {

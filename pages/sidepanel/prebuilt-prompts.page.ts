@@ -27,11 +27,20 @@ export class PrebuiltPromptsPage {
     this.emptyStateHeading = page.getByRole('heading', { name: /no.*found/i });
   }
 
+  private async dismissOnboardingOverlay() {
+    const overlay = this.page.getByTestId('org-page-guard-modal-overlay');
+    if (await overlay.isVisible()) {
+      await this.page.getByRole('button', { name: 'Close onboarding' }).click();
+      await overlay.waitFor({ state: 'hidden' });
+    }
+  }
+
   async goto() {
     const orgId = process.env.ORG_ID;
     if (!orgId) throw new Error('ORG_ID env variable is not set');
     await this.page.goto(`/org/${orgId}/prebuilt-prompts`);
     await this.page.waitForURL(`/org/${orgId}/prebuilt-prompts`);
+    await this.dismissOnboardingOverlay();
   }
 
   async waitForPage() {

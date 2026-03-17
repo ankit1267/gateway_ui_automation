@@ -80,11 +80,20 @@ export class SidepanelPage {
     ).toBeVisible();
   }
 
+  private async dismissOnboardingOverlay() {
+    const overlay = this.page.getByTestId('org-page-guard-modal-overlay');
+    if (await overlay.isVisible()) {
+      await this.page.getByRole('button', { name: 'Close onboarding' }).click();
+      await overlay.waitFor({ state: 'hidden' });
+    }
+  }
+
   async gotoChatbotConfig() {
     const orgId = process.env.ORG_ID;
     if (!orgId) throw new Error('ORG_ID env variable is not set');
     await this.page.goto(`/org/${orgId}/chatbotConfig`);
     await this.page.waitForURL(`/org/${orgId}/chatbotConfig`);
+    await this.dismissOnboardingOverlay();
   }
 
   async gotoKnowledgeBase() {
@@ -92,6 +101,7 @@ export class SidepanelPage {
     if (!orgId) throw new Error('ORG_ID env variable is not set');
     await this.page.goto(`/org/${orgId}/knowledge_base`);
     await this.page.waitForURL(`/org/${orgId}/knowledge_base`);
+    await this.dismissOnboardingOverlay();
   }
 
   async gotoWidgets() {
@@ -99,6 +109,7 @@ export class SidepanelPage {
     if (!orgId) throw new Error('ORG_ID env variable is not set');
     await this.page.goto(`/org/${orgId}/widgets`);
     await this.page.waitForURL(`/org/${orgId}/widgets`);
+    await this.dismissOnboardingOverlay();
   }
 
   async gotoPauthKey() {
@@ -106,6 +117,7 @@ export class SidepanelPage {
     if (!orgId) throw new Error('ORG_ID env variable is not set');
     await this.page.goto(`/org/${orgId}/pauthkey`);
     await this.page.waitForURL(`/org/${orgId}/pauthkey`);
+    await this.dismissOnboardingOverlay();
   }
 
   async gotoApiKeys() {
@@ -113,6 +125,7 @@ export class SidepanelPage {
     if (!orgId) throw new Error('ORG_ID env variable is not set');
     await this.page.goto(`/org/${orgId}/apikeys`);
     await this.page.waitForURL(`/org/${orgId}/apikeys`);
+    await this.dismissOnboardingOverlay();
   }
 
   async gotoAlerts() {
@@ -120,6 +133,7 @@ export class SidepanelPage {
     if (!orgId) throw new Error('ORG_ID env variable is not set');
     await this.page.goto(`/org/${orgId}/alerts`);
     await this.page.waitForURL(`/org/${orgId}/alerts`);
+    await this.dismissOnboardingOverlay();
   }
 
   async gotoMetrics() {
@@ -127,6 +141,7 @@ export class SidepanelPage {
     if (!orgId) throw new Error('ORG_ID env variable is not set');
     await this.page.goto(`/org/${orgId}/metrics`);
     await this.page.waitForURL(`/org/${orgId}/metrics`);
+    await this.dismissOnboardingOverlay();
   }
 
   async gotoIntegration() {
@@ -134,6 +149,7 @@ export class SidepanelPage {
     if (!orgId) throw new Error('ORG_ID env variable is not set');
     await this.page.goto(`/org/${orgId}/integration`);
     await this.page.waitForURL(`/org/${orgId}/integration`);
+    await this.dismissOnboardingOverlay();
   }
 
   async gotoRAGEmbed() {
@@ -141,6 +157,7 @@ export class SidepanelPage {
     if (!orgId) throw new Error('ORG_ID env variable is not set');
     await this.page.goto(`/org/${orgId}/RAG_embed`);
     await this.page.waitForURL(`/org/${orgId}/RAG_embed`);
+    await this.dismissOnboardingOverlay();
   }
 
   async gotoFeedback() {
@@ -148,6 +165,7 @@ export class SidepanelPage {
     if (!orgId) throw new Error('ORG_ID env variable is not set');
     await this.page.goto(`/org/${orgId}/feedback`);
     await this.page.waitForURL(`/org/${orgId}/feedback`);
+    await this.dismissOnboardingOverlay();
   }
 
   async gotoWorkspaceSetting() {
@@ -155,6 +173,7 @@ export class SidepanelPage {
     if (!orgId) throw new Error('ORG_ID env variable is not set');
     await this.page.goto(`/org/${orgId}/workspaceSetting`);
     await this.page.waitForURL(`/org/${orgId}/workspaceSetting`);
+    await this.dismissOnboardingOverlay();
   }
 
   async gotoPrebuiltPrompts() {
@@ -162,6 +181,7 @@ export class SidepanelPage {
     if (!orgId) throw new Error('ORG_ID env variable is not set');
     await this.page.goto(`/org/${orgId}/prebuilt-prompts`);
     await this.page.waitForURL(`/org/${orgId}/prebuilt-prompts`);
+    await this.dismissOnboardingOverlay();
   }
 
   async gotoAddNewModel() {
@@ -169,6 +189,7 @@ export class SidepanelPage {
     if (!orgId) throw new Error('ORG_ID env variable is not set');
     await this.page.goto(`/org/${orgId}/addNewModel`);
     await this.page.waitForURL(`/org/${orgId}/addNewModel`);
+    await this.dismissOnboardingOverlay();
   }
 
   async gotoAuthRoute() {
@@ -176,6 +197,7 @@ export class SidepanelPage {
     if (!orgId) throw new Error('ORG_ID env variable is not set');
     await this.page.goto(`/org/${orgId}/auth_route`);
     await this.page.waitForURL(`/org/${orgId}/auth_route`);
+    await this.dismissOnboardingOverlay();
   }
 
   async gotoAgents() {
@@ -183,5 +205,6 @@ export class SidepanelPage {
     if (!orgId) throw new Error('ORG_ID env variable is not set');
     await this.page.goto(`/org/${orgId}/agents`);
     await this.page.waitForURL(`/org/${orgId}/agents`);
+    await this.dismissOnboardingOverlay();
   }
 }

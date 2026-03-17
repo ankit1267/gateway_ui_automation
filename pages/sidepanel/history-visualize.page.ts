@@ -31,6 +31,14 @@ export class HistoryVisualizePage {
     this.loadingIndicator = page.locator('.loading, .animate-spin');
   }
 
+  private async dismissOnboardingOverlay() {
+    const overlay = this.page.getByTestId('org-page-guard-modal-overlay');
+    if (await overlay.isVisible()) {
+      await this.page.getByRole('button', { name: 'Close onboarding' }).click();
+      await overlay.waitFor({ state: 'hidden' });
+    }
+  }
+
   async goto(agentId: string, messageId: string, threadId: string, subThreadId: string) {
     const orgId = process.env.ORG_ID;
     if (!orgId) throw new Error('ORG_ID env variable is not set');
@@ -38,6 +46,7 @@ export class HistoryVisualizePage {
       `/org/${orgId}/agents/history/${agentId}/visualize?message_id=${messageId}&thread_id=${threadId}&subThread_id=${subThreadId}`
     );
     await this.page.waitForURL(/\/agents\/history\/.*\/visualize/);
+    await this.dismissOnboardingOverlay();
   }
 
   async waitForPage() {
