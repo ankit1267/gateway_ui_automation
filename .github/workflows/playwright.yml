@@ -41,7 +41,7 @@ jobs:
     - name: Run Playwright tests
       id: test-run
       continue-on-error: true
-      run: npx playwright test tests/a2a/child-agent-trigger-variable.spec.ts
+      run: npx playwright test
     - name: Extract failed test summary
       if: always()
       id: summary
@@ -51,16 +51,39 @@ jobs:
             const fs = require('fs');
             const data = JSON.parse(fs.readFileSync('test-results.json', 'utf8'));
             const failed = [];
+            function extractLocation(stack) {
+              if (!stack) return '';
+              const lines = stack.split('\\n');
+              for (const line of lines) {
+                const m = line.match(/at.*?([\\/\\\\][\\w.-]+\\.spec\\.ts:\\d+:\\d+)/);
+                if (m) return m[1];
+              }
+              return '';
+            }
+            function extractSelector(msg) {
+              if (!msg) return '';
+              const m = msg.match(/waiting for (locator\\(.*?\\))/);
+              if (m) return m[1];
+              const m2 = msg.match(/locator\\(.*?\\)/);
+              if (m2) return m2[0];
+              return '';
+            }
             function walk(suites) {
               for (const suite of suites || []) {
                 for (const spec of suite.specs || []) {
                   for (const test of spec.tests || []) {
                     if (test.status === 'unexpected' || test.status === 'flaky') {
-                      const errors = test.results
-                        .filter(r => r.status === 'failed' || r.status === 'timedOut')
-                        .map(r => (r.error && r.error.message) ? r.error.message.split('\\n')[0] : r.status)
-                        .join('; ');
-                      failed.push(suite.title + ' > ' + spec.title + ' -- ' + errors);
+                      for (const r of test.results) {
+                        if (r.status === 'failed' || r.status === 'timedOut') {
+                          const msg = (r.error && r.error.message) ? r.error.message.split('\\n')[0] : r.status;
+                          const loc = extractLocation(r.error && r.error.stack);
+                          const sel = extractSelector(r.error && r.error.message);
+                          let detail = spec.file + ' > ' + spec.title + '\\n  Error: ' + msg;
+                          if (sel) detail += '\\n  Selector: ' + sel;
+                          if (loc) detail += '\\n  Location: ' + loc;
+                          failed.push(detail);
+                        }
+                      }
                     }
                   }
                 }
@@ -69,7 +92,7 @@ jobs:
             }
             walk(data.suites);
             if (failed.length === 0) { console.log('All tests passed'); }
-            else { console.log('Failed (' + failed.length + '):\\n' + failed.join('\\n')); }
+            else { console.log('Failed (' + failed.length + '):\\n\\n' + failed.join('\\n\\n')); }
           ")
           echo "FAILED_SUMMARY<<EOF" >> $GITHUB_OUTPUT
           echo "$FAILED_SUMMARY" >> $GITHUB_OUTPUT
