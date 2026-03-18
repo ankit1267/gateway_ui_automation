@@ -8,7 +8,7 @@ type Fixtures = {
 };
 
 export const test = base.extend<Fixtures>({
-  storageState: 'playwright/.auth/state.json',
+  storageState: 'auth.json',
 
   agents: async ({ page }, use) => {
     await use(new AgentsPage(page));

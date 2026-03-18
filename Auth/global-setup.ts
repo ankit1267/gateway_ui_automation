@@ -4,7 +4,7 @@ import path from 'path';
 import { chromium } from '@playwright/test';
 
 async function globalSetup() {
-  const authFile = process.env.PLAYWRIGHT_AUTH_STATE || 'playwright/.auth/state.json';
+  const authFile = process.env.PLAYWRIGHT_AUTH_STATE || 'auth.json';
   fs.mkdirSync('playwright/.auth', { recursive: true });
 
   //  If auth already exists, skip login

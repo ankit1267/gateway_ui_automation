@@ -15,7 +15,7 @@ export default defineConfig({
 
   use: {
     baseURL: process.env.BASE_URL!,
-    storageState: 'playwright/.auth/state.json',
+    storageState: 'auth.json',
 
     // 🐞 Debug helpers
     trace: 'on-first-retry',
