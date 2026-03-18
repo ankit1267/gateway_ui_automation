@@ -8,7 +8,7 @@ export default defineConfig({
     timeout: 30_000,
   },
 
-  workers: 5,
+  workers: 10,
 
   reporter: [['html', { open: 'on-failure' }]],
 
