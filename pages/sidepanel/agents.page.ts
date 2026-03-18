@@ -47,19 +47,24 @@ export class AgentsPage {
   }
 
   async goto(type?: 'chatbot' | 'api') {
-    const orgId = process.env.ORG_ID;
-    if (!orgId) throw new Error('ORG_ID env variable is not set');
+    await this.page.goto('/org');
 
-    let url = `/org/${orgId}/agents`;
-    if (type) {
-      url += `?type=${type}`;
+    const guard = this.page.getByTestId('org-page-guard-close-button');
+    for (let i = 0; i < 4; i++) {
+      if (await guard.isVisible()) {
+        await guard.click();
+        break;
+      }
+      await this.page.waitForTimeout(500);
     }
-    await this.page.goto(url);
-    await this.page.waitForURL(url);
-    const onboardingOverlay = this.page.getByTestId('org-page-guard-modal-overlay');
-    if (await onboardingOverlay.isVisible()) {
-      await this.page.getByRole('button', { name: 'Close onboarding' }).click();
-      await onboardingOverlay.waitFor({ state: 'hidden' });
+
+    await this.page.getByText('Test Space').click();
+    await this.page.waitForURL(/\/org\//);
+
+    if (type === 'api') {
+      await this.sidebar.openApi();
+    } else if (type === 'chatbot') {
+      await this.sidebar.openChatbot();
     }
   }
 

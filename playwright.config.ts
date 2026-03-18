@@ -1,33 +1,30 @@
 import { defineConfig } from '@playwright/test';
 import 'dotenv/config';
-export default defineConfig({
-  globalSetup: './Auth/global-setup.ts',
 
-  timeout: 120_000,           // per test
+export default defineConfig({
+  timeout: 120_000,
+
   expect: {
-    timeout: 30_000          // for expect()
+    timeout: 30_000,
   },
-  // 🔥 Smoke tests must be stable
+
   workers: 5,
 
-  // 📊 HTML Report
   reporter: [['html', { open: 'on-failure' }]],
 
   use: {
     baseURL: process.env.BASE_URL!,
-    storageState: 'auth.json',
+    headless: true,
 
-    // 🐞 Debug helpers
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',
-    launchOptions:{
-      slowMo:1000
-    },
-    actionTimeout: 15_000,   // click, fill, press
-    navigationTimeout: 30_000,
 
-    // Optional but good
-    headless: true
-  }
+    actionTimeout: 15_000,
+    navigationTimeout: 30_000,
+  },
+
+  projects: [
+    { name: 'tests' },
+  ],
 });

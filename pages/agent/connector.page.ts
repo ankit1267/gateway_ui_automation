@@ -81,10 +81,13 @@ export class ConnectersPage {
   }
 
   async clickAddAgent() {
-    if (await this.addAgentButton.isVisible()) {
-      await this.addAgentButton.click();
-    } else {
-      await this.addAgentButtonHasAgents.click();
+    for (let i = 0; i < 4; i++) {
+      if (await this.addAgentButton.isVisible()) {
+        await this.addAgentButton.click();
+      } else {
+        await this.addAgentButtonHasAgents.click();
+      }
+      if (await this.addAgentDropdown.isVisible()) break;
     }
   }
 
