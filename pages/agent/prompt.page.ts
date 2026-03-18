@@ -250,7 +250,7 @@ export class PromptPage {
   }
 
   async addJsonSchemaProperty() {
-    await this.jsonSchemaAddPropertyButton.click();
+    await this.jsonSchemaAddPropertyButton.click({ force: true });
   }
 
   async expectNewJsonSchemaPropertyVisible() {
@@ -324,7 +324,7 @@ export class PromptPage {
     const input = this.getPropertyNameInput(path);
     await input.clear();
     await input.fill(name);
-    await input.blur();
+    await this.page.keyboard.press('Tab');
   }
 
   async togglePropertyRequired(path: string) {

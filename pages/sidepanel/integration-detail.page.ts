@@ -682,6 +682,7 @@ export class IntegrationDetailPage {
       .locator('div.space-y-3')
       .filter({ has: this.page.locator('h5', { hasText: 'Tools Configuration' }) })
       .locator('button', { hasText: 'Add' })
+      .first()
       .click();
   }
 
