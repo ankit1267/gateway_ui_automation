@@ -61,9 +61,7 @@ export class AgentsPage {
     await this.page.getByText('Test Space').click();
     await this.page.waitForURL(/\/org\//);
 
-    if (type === 'api') {
-      await this.sidebar.openApi();
-    } else if (type === 'chatbot') {
+    if (type === 'chatbot') {
       await this.sidebar.openChatbot();
     }
   }
