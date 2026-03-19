@@ -6,24 +6,24 @@ test.describe('Metrics - Monitoring & Support', () => {
     await sidepanel.gotoMetrics();
   });
 
-  test('TC-MTR-01: Metrics filters and dashboard validation', async ({ metrics }) => {
+  test('TC-MTR-01: Metrics filters and dashboard validation', async ({ sidepanel }) => {
 
     // -------- Dashboard loads --------
-    await metrics.assertDashboardVisible();
+    await sidepanel.metricsPage.assertDashboardVisible();
 
     // -------- Group By filter --------
-    await metrics.openGroupByDropdown();
-    await metrics.assertGroupByDropdownVisible();
-    await metrics.openGroupByDropdown();
+    await sidepanel.metricsPage.openGroupByDropdown();
+    await sidepanel.metricsPage.assertGroupByDropdownVisible();
+    await sidepanel.metricsPage.openGroupByDropdown();
 
     // -------- Agent filter --------
-    await metrics.selectAllAgents();
+    await sidepanel.metricsPage.selectAllAgents();
 
     // -------- Time range filter - 30 days (index 8) --------
-    await metrics.selectTimeRange(8);
+    await sidepanel.metricsPage.selectTimeRange(8);
 
     // -------- Chart rendered --------
-    await metrics.assertChartVisible();
+    await sidepanel.metricsPage.assertChartVisible();
   });
 
 });
