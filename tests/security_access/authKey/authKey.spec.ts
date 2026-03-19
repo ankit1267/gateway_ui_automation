@@ -1,77 +1,36 @@
-import { test, expect } from '@playwright/test';
-import { navigateToAgents } from '../../../utils/navigation';
+import { test } from '../../../fixtures/base.fixture';
 
-test.use({ storageState: 'auth.json' });
+const AUTH_KEY_NAME = "my auth key";
 
+test.describe('Auth Key - Security & Access', () => {
 
+  test.beforeEach(async ({ sidepanel }) => {
+    await sidepanel.gotoPauthKey();
+  });
 
-test('Auth Key – validation, create, copy and delete', async ({ page }) => {
+  test('TC-AUTH-01: Validation error shown for name shorter than 3 characters', async ({ sidepanel }) => {
+    await sidepanel.authKeyPage.clickCreateNewKey();
+    await sidepanel.authKeyPage.clickCreateSubmit();
+    await sidepanel.authKeyPage.expectValidationErrorToast();
+  });
 
-  // Navigate to org page & workspace
-  await navigateToAgents(page, 'api');
-  
-  // -----------------------------
-  // Open Auth Key section
-  // -----------------------------
-  await page.getByRole('button', { name: 'Auth Key' }).click();
+  test('TC-AUTH-02: Create, copy and delete auth key', async ({ sidepanel }) => {
 
-  // -----------------------------
-  // TC-01: Validation – empty name
-  // -----------------------------
-  await page.getByRole('button', { name: '+ Create New Auth Key' }).click();
-  await page.getByRole('button', { name: '+ Create', exact: true }).click();
+    // -------- Create --------
+    await sidepanel.authKeyPage.clickCreateNewKey();
+    await sidepanel.authKeyPage.fillAuthKeyName(AUTH_KEY_NAME);
+    await sidepanel.authKeyPage.clickCreateSubmit();
+    await sidepanel.authKeyPage.expectCreateSuccessToast();
+    await sidepanel.authKeyPage.expectKeyListed(AUTH_KEY_NAME);
 
-  await expect(
-    page.getByText('The name must be at least 3')
-  ).toBeVisible();
+    // -------- Copy --------
+    await sidepanel.authKeyPage.copyKeyByName(AUTH_KEY_NAME);
+    await sidepanel.authKeyPage.expectCopySuccessToast();
 
-  // -----------------------------
-  // TC-02: Create Auth Key
-  // -----------------------------
-  await page.getByRole('button', { name: '+ Create New Auth Key' }).click();
+    // -------- Delete --------
+    await sidepanel.authKeyPage.clickDeleteIconByName(AUTH_KEY_NAME);
+    await sidepanel.authKeyPage.deleteModal.confirm();
+    await sidepanel.authKeyPage.expectDeleteSuccessToast();
+  });
 
-  const nameInput = page.getByRole('textbox', { name: 'Name* :' });
-  await nameInput.fill('new1');
-
-  await page.getByRole('button', { name: '+ Create', exact: true }).click();
-
-  await page
-    .locator('.Toastify__toast--success', {
-      hasText: 'Auth key created successfully'
-    })
-    .waitFor({ state: 'attached' });
-
-  // Confirm key appears in list
-  await expect(page.getByText('new1')).toBeVisible();
-
-  // -----------------------------
-  // TC-03: Copy Auth Key
-  // -----------------------------
-  const copyButton = page.locator('[data-tip="copy"]').first();
-
-  // Ensure tooltip is interactable
-  await copyButton.scrollIntoViewIfNeeded();
-  await copyButton.hover(); // important for tooltip-based actions
-  await copyButton.click();
-
-
-  await page
-    .locator('.Toastify__toast--success', {
-      hasText: 'Content copied to clipboard'
-    })
-    .waitFor({ state: 'attached' });
-
-  // -----------------------------
-  // TC-04: Delete Auth Key
-  // -----------------------------
-  const deleteTrigger = page.locator('.tooltip > a').first();
-  await deleteTrigger.click();
-
-  await page.getByRole('button', { name: 'Delete' }).click();
-
-  await page
-    .locator('.Toastify__toast--success', {
-      hasText: 'Auth Key Deleted Successfully'
-    })
-    .waitFor({ state: 'attached' });
 });

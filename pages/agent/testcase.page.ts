@@ -69,4 +69,8 @@ export class TestCasePage {
             this.page.getByRole('alert').filter({ hasText: 'Test case run successfully' })
         ).toBeVisible();
     }
+
+    async closeSuccessToast() {
+        await this.page.getByLabel('close', { exact: true }).click();
+    }
 }
