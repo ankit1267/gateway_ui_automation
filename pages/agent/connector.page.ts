@@ -81,15 +81,21 @@ export class ConnectersPage {
   }
 
   async clickAddAgent() {
-    if (await this.addAgentButton.isVisible()) {
-      await this.addAgentButton.click();
-    } else {
-      await this.addAgentButtonHasAgents.click();
+    for (let i = 0; i < 4; i++) {
+      if (await this.addAgentButton.isVisible()) {
+        await this.addAgentButton.click();
+      } else {
+        await this.addAgentButtonHasAgents.click();
+      }
+      if (await this.a2aDropdown.isVisible()) break;
     }
   }
 
   async clickAddKB() {
-    await this.addKBButton.click();
+    for (let i = 0; i < 4; i++) {
+      await this.addKBButton.click();
+      if (await this.knowledgeBaseDropdown.isVisible()) break;
+    }
   }
 
   async clickAgentConfig() {

@@ -49,9 +49,12 @@ export class WorkspacePage {
         await this.page.goto('/org');
         await this.page.waitForURL('/org');
         const onboardingOverlay = this.page.getByTestId('org-page-guard-modal-overlay');
-        if (await onboardingOverlay.isVisible()) {
+        try {
+            await onboardingOverlay.waitFor({ state: 'visible', timeout: 10000 });
             await this.page.getByRole('button', { name: 'Close onboarding' }).click();
             await onboardingOverlay.waitFor({ state: 'hidden' });
+        } catch {
+            // overlay did not appear
         }
     }
 

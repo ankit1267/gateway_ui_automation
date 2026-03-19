@@ -1,6 +1,6 @@
 import { test, expect } from '../../../fixtures/base.fixture';
 
-const AGENT_NAME = process.env.AGENT_FLOW_AGENT!;
+const AGENT_NAME = process.env.AGENT_NAME!;
 
 test.describe('Settings - Connected Agent Flow', () => {
 
@@ -8,8 +8,10 @@ test.describe('Settings - Connected Agent Flow', () => {
     await agents.goto('api');
 
     const agent = await agents.openAgent(AGENT_NAME);
+    await agent.tabs.openModel();
+    await agent.model.selectServiceProvider('Openai');
     await agent.tabs.openSettings();
-
+    await agent.settings.ensureApiMode();
     await agent.settings.checkAgentFlowToggle();
     await expect(agent.settings.agentFlowTestModelTextbox).toBeVisible();
 
