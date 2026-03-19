@@ -68,9 +68,7 @@ export class AgentsPage {
   }
 
   async openAgent(agentName: string): Promise<AgentPage> {
-    await this.agentTable
-      .filter({ hasText: agentName })
-      .click();
+    await this.agentTable.getByText(agentName, { exact: true }).click();
 
     return new AgentPage(this.page);
   }
