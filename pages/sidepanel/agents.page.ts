@@ -55,7 +55,7 @@ export class AgentsPage {
       url += `?type=${type}`;
     }
     await this.page.goto(url);
-    //await this.page.waitForURL(url);
+    // await this.page.waitForURL(url);
     const onboardingOverlay = this.page.getByTestId('org-page-guard-modal-overlay');
     for (let i = 0; i < 4; i++) {
       try {
