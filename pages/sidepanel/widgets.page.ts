@@ -21,6 +21,12 @@ export class WidgetsPage {
   readonly saveWidgetModalNameInput: Locator;
   readonly saveWidgetModalSaveButton: Locator;
   readonly saveWidgetModalCancelButton: Locator;
+  readonly searchInput: Locator;
+  readonly templatePreviewModal: Locator;
+  readonly commandPaletteBackdrop: Locator;
+  readonly commandPaletteSearchInput: Locator;
+  readonly commandPaletteCloseButton: Locator;
+  readonly commandPaletteModal: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -45,6 +51,14 @@ export class WidgetsPage {
     this.saveWidgetModalNameInput = this.saveWidgetModal.getByPlaceholder('Enter widget name');
     this.saveWidgetModalSaveButton = this.saveWidgetModal.getByRole('button', { name: 'Save Widget' });
     this.saveWidgetModalCancelButton = this.saveWidgetModal.getByRole('button', { name: 'Cancel' });
+
+    this.searchInput = page.getByRole('textbox', { name: /Search Widget/i });
+    this.templatePreviewModal = page.getByTestId('TEMPLATE_PLAYGROUND');
+
+    this.commandPaletteBackdrop = page.getByTestId('command-palette-backdrop');
+    this.commandPaletteModal = page.getByTestId('command-palette-modal');
+    this.commandPaletteSearchInput = page.getByTestId('command-palette-search-input');
+    this.commandPaletteCloseButton = page.getByTestId('command-palette-close-button');
   }
 
   private async dismissOnboardingOverlay() {
@@ -173,5 +187,97 @@ export class WidgetsPage {
 
   async expectSaveSuccessToast() {
     await expect(this.page.getByText('Widget saved successfully!')).toBeVisible({ timeout: 10000 });
+  }
+
+  async expectSearchInputVisible() {
+    await expect(this.searchInput).toBeVisible();
+  }
+
+  async clickSearchInput() {
+    await this.searchInput.click();
+  }
+
+  async expectCommandPaletteVisible() {
+    await expect(this.commandPaletteBackdrop).toBeVisible();
+  }
+
+  async fillCommandPaletteSearch(name: string) {
+    await this.commandPaletteSearchInput.fill(name);
+  }
+
+  async expectSearchResultVisible(name: string) {
+    await expect(this.commandPaletteModal.getByText(name).first()).toBeVisible();
+  }
+
+  async closeCommandPalette() {
+    await this.commandPaletteCloseButton.click();
+  }
+
+  async expectCommandPaletteNotVisible() {
+    await expect(this.commandPaletteBackdrop).not.toBeVisible();
+  }
+
+  getTemplateCardByName(name: string): Locator {
+    return this.widgetGrid.locator('.card').filter({ has: this.page.locator('.card-title', { hasText: name }) }).first();
+  }
+
+  async getFirstWidgetCardName(): Promise<string> {
+    return this.widgetGrid.locator('.card').first().locator('.card-title').innerText();
+  }
+
+  async expectCardPreviewAreaVisible(name: string) {
+    const card = this.getTemplateCardByName(name);
+    await expect(card.locator('.bg-base-200').first()).toBeVisible();
+  }
+
+  async expectCardNameVisible(name: string) {
+    const card = this.getTemplateCardByName(name);
+    await expect(card).toBeVisible();
+    await expect(card.locator('.card-title')).toContainText(name);
+  }
+
+  async expectCardDescriptionVisible(name: string) {
+    const card = this.getTemplateCardByName(name);
+    await expect(card.locator('.card-body p').first()).toBeVisible();
+  }
+
+  async expectCardRelativeTimeVisible(name: string) {
+    const card = this.getTemplateCardByName(name);
+    await expect(card.locator('.card-body').getByText(/\d+[dhmy]o?\s*ago|just now/i)).toBeVisible();
+  }
+
+  async hoverCardAndExpectPlayButtonVisible(name: string) {
+    const card = this.getTemplateCardByName(name);
+    await card.hover();
+    await expect(card.locator('button[title="Preview"]')).toBeVisible();
+  }
+
+  async hoverCardAndExpectDateFormat(name: string) {
+    const card = this.getTemplateCardByName(name);
+    await card.hover();
+    await expect(card.getByText(/\d{1,2}\s\w{3}\s\d{2},\s\d{2}:\d{2}/)).toBeVisible();
+  }
+
+  async clickCardPreviewButton(name: string) {
+    const card = this.getTemplateCardByName(name);
+    await card.hover();
+    await card.locator('button[title="Preview"]').click();
+  }
+
+  async expectTemplatePreviewModalVisible() {
+    await expect(this.templatePreviewModal).toBeVisible();
+    await expect(this.templatePreviewModal.getByText('Template Preview')).toBeVisible();
+  }
+
+  async expectTemplatePreviewCloseButtonVisible() {
+    await expect(this.templatePreviewModal.locator('button.btn-circle')).toBeVisible();
+  }
+
+  async clickTemplatePreviewClose() {
+    await this.templatePreviewModal.locator('button.btn-circle').click();
+  }
+
+  async expectTemplatePreviewModalNotVisible() {
+    await expect(this.templatePreviewModal).not.toHaveAttribute('open', '');
   }
 }
