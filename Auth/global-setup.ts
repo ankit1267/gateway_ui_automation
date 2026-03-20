@@ -1,9 +1,11 @@
 import 'dotenv/config';
 import fs from 'fs';
+import path from 'path';
 import { chromium } from '@playwright/test';
 
 async function globalSetup() {
   const authFile = process.env.PLAYWRIGHT_AUTH_STATE || 'auth.json';
+  fs.mkdirSync('playwright/.auth', { recursive: true });
 
   //  If auth already exists, skip login
   if (fs.existsSync(authFile)) {

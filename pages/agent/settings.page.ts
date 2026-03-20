@@ -170,7 +170,7 @@ export class SettingsPage {
     }
 
     async clickHiddenElement() {
-        await this.page.locator('.hidden').first().click();
+        await this.webhookUrl.press('Tab');
     }
 
     async checkPromptInjection() {

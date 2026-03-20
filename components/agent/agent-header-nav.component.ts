@@ -23,6 +23,11 @@ export class AgentHeaderNav {
   private readonly publishedButton: Locator;
   private readonly publishedDataBanner: Locator;
   private readonly versionTabs: Locator;
+  private readonly publishDialog: Locator;
+  private readonly publishVersionCheckbox: Locator;
+  private readonly summaryGenerateButton: Locator;
+  private readonly summarySaveButton: Locator;
+  private readonly confirmPublishButton: Locator;
 
   constructor(private readonly page: Page) {
     this.history = this.page.getByTestId('navbar-tab-history');
@@ -46,6 +51,11 @@ export class AgentHeaderNav {
     this.publishedButton = this.page.getByTestId('navbar-published-button');
     this.publishedDataBanner = this.page.getByTestId('published-data-banner');
     this.versionTabs = this.page.getByTestId('bridge-version-tabs');
+    this.publishDialog = this.page.getByRole('dialog').filter({ hasText: 'Publish Bridge Version' });
+    this.publishVersionCheckbox = this.publishDialog.locator('#publish-summary-accordion-toggle');
+    this.summaryGenerateButton = this.publishDialog.getByTestId('agent-summary-generate-button');
+    this.summarySaveButton = this.publishDialog.getByTestId('agent-summary-save-button');
+    this.confirmPublishButton = this.page.locator('#publish-confirm-button').first();
   }
 
   async openChatbotConfig() {
@@ -83,6 +93,16 @@ export class AgentHeaderNav {
   }
 
   async clickPublishButton() {
+    for (let i = 0; i < 4; i++) {
+      if (await this.publish.isVisible()) break;
+      await this.publishToggel.click();
+      try {
+        await this.publish.waitFor({ state: 'visible', timeout: 3000 });
+        break;
+      } catch {
+        // retry
+      }
+    }
     await this.publish.click();
   }
 
@@ -159,6 +179,30 @@ export class AgentHeaderNav {
     await this.clickEditName();
     await this.agentNameFill(newName);
     await this.submitAgentName();
+  }
+
+  async checkPublishVersionCheckbox() {
+    await this.publishVersionCheckbox.check();
+  }
+
+  async clickGenerateSummary() {
+    await this.summaryGenerateButton.click();
+  }
+
+  async clickSaveSummary() {
+    await this.summarySaveButton.click();
+  }
+
+  async expectSummarySaveDisabled() {
+    await expect(this.summarySaveButton).toBeDisabled({ timeout: 15000 });
+  }
+
+  async clickConfirmPublish() {
+    await this.confirmPublishButton.click();
+  }
+
+  async expectPublishSuccessToast() {
+    await expect(this.page.getByText('Agent Version published')).toBeVisible({ timeout: 15000 });
   }
 
   async publishAndCreateVersion(desc: string) {

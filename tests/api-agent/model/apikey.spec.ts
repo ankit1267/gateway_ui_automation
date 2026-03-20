@@ -11,7 +11,7 @@ test('TC-APIKEY-01: API key required error is shown', async ({ agents }) => {
   await agent.tabs.openModel();
 
   // Step 2: Ensure provider is selected (example: OpenAI)
-  await agent.model.selectServiceProvider('Openai');
+  await agent.model.selectServiceProvider('Anthropic');
 
   // Step 3: Ensure API key field is empty
   await agent.model.expectNoApiKeysMessage();

@@ -10,6 +10,5 @@ test('API Key modal - fill name, apikey, comment and submit', async ({ sidepanel
     await sidepanel.apiKeysPage.fillApiKeyName(API_KEY_NAME);
     await sidepanel.apiKeysPage.fillApiKey(API_KEY_VALUE);
     await sidepanel.apiKeysPage.fillApiKeyComment('test key');
-    await sidepanel.apiKeysPage.clickAddApiKey();
-    await sidepanel.apiKeysPage.deleteApiKeyByName(API_KEY_NAME);
+    await sidepanel.apiKeysPage.cancelApiKey();
 });

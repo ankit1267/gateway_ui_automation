@@ -17,6 +17,7 @@ export class ApiKeysPage {
   readonly guideTabs: Locator;
   readonly emptyState: Locator;
   readonly pageTitle: Locator;
+  readonly apiKeyModalCancel: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -32,6 +33,7 @@ export class ApiKeysPage {
     this.guideTabs = page.getByTestId('api-key-guide-tabs');
     this.emptyState = page.getByText('No API keys entries found');
     this.pageTitle = page.getByRole('heading', { name: 'API Keys' });
+    this.apiKeyModalCancel = page.getByTestId('apikey-modal-cancel-button');
   }
 
   async goto(orgId: string) {
@@ -207,5 +209,9 @@ export class ApiKeysPage {
     if (comment) await this.fillApiKeyComment(comment);
     if (limit) await this.fillApiKeyLimit(limit);
     await this.clickAddApiKey();
+  }
+  
+  async cancelApiKey() {
+    await this.apiKeyModalCancel.click();
   }
 }

@@ -10,6 +10,8 @@ test.describe('Test Cases - API Agent', () => {
 
   test('TC-TESTCASE-01: Open first test case row and verify elements, then run test case v1 and v2', async ({ agents }) => {
     const agent = await agents.openAgent(AGENT_NAME);
+    await agent.tabs.openModel();
+    await agent.model.selectServiceProvider('Openai');
     await agent.header.openTestCases();
 
     // Open the first row
@@ -26,6 +28,7 @@ test.describe('Test Cases - API Agent', () => {
     // Click run test case v1 button (index 0)
     await agent.testCasePage.clickRunTestCaseVersion(0);
     await agent.testCasePage.expectTestCaseRunSuccessToast();
+    await agent.testCasePage.closeSuccessToast();
 
     // Click run test case v2 button (index 1)
     await agent.testCasePage.clickRunTestCaseVersion(1);
