@@ -712,21 +712,21 @@ export class IntegrationDetailPage {
   async uncheckModelInSettings(modelName: string) {
     const row = this.page
       .locator('div.bg-base-100.rounded')
-      .filter({ has: this.page.locator('span', { hasText: modelName }) });
+      .filter({ has: this.page.getByText(modelName, { exact: true }) });
     await row.locator('input[type="checkbox"][title="Show/Hide model"]').uncheck();
   }
 
   async checkModelInSettings(modelName: string) {
     const row = this.page
       .locator('div.bg-base-100.rounded')
-      .filter({ has: this.page.locator('span', { hasText: modelName }) });
+      .filter({ has: this.page.getByText(modelName, { exact: true }) });
     await row.locator('input[type="checkbox"][title="Show/Hide model"]').check();
   }
 
   async changeModelDisplayName(modelName: string, newName: string) {
     const row = this.page
       .locator('div.bg-base-100.rounded')
-      .filter({ has: this.page.locator('span', { hasText: modelName }) });
+      .filter({ has: this.page.getByText(modelName, { exact: true }) });
     const input = row.locator('input[type="text"]');
     await input.clear();
     await input.fill(newName);

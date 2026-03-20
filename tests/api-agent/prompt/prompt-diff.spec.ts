@@ -7,6 +7,10 @@ test('compare published and current prompt', async ({ agents }) => {
   await agents.goto('api');
 
   const agent = await agents.openAgent(AGENT_NAME);
+
+  await agent.prompt.fillPrompt(
+    '','',''
+  );
   
   await agent.prompt.fillPrompt(
     'You are a motivation coach',
