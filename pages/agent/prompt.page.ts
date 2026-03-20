@@ -171,7 +171,14 @@ export class PromptPage {
   async fillJsonSchema(text: string) {
     await this.jsonSchemaTextarea.click();
     await this.jsonSchemaTextarea.press('Control+a');
-    await this.jsonSchemaTextarea.fill(text);
+    await this.jsonSchemaTextarea.evaluate((el: HTMLTextAreaElement, value: string) => {
+      const nativeInputValueSetter = Object.getOwnPropertyDescriptor(
+        window.HTMLTextAreaElement.prototype, 'value'
+      )!.set!;
+      nativeInputValueSetter.call(el, value);
+      el.dispatchEvent(new Event('input', { bubbles: true }));
+      el.dispatchEvent(new Event('change', { bubbles: true }));
+    }, text);
   }
 
   async typeJsonSchema(text: string) {
@@ -181,10 +188,11 @@ export class PromptPage {
   }
 
   async pasteJsonSchema(text: string) {
-    await this.page.evaluate((value) => navigator.clipboard.writeText(value), text);
     await this.jsonSchemaTextarea.click();
     await this.jsonSchemaTextarea.press('Control+a');
-    await this.jsonSchemaTextarea.press('Control+v');
+    await this.page.evaluate((value) => {
+      document.execCommand('insertText', false, value);
+    }, text);
   }
 
   async expectJsonSchemaTextareaValue(text: string) {
