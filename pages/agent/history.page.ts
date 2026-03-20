@@ -91,9 +91,7 @@ export class HistoryPage {
     }
     async verifyVariableVisible(message: string | RegExp) {
         await this.toolsDataModal.waitFor({ state: 'visible' });
-        await expect(
-            this.toolsDataModal.getByText(message)
-        ).toBeVisible();
+        await expect(this.toolsDataModal).toContainText(message, { timeout: 30000 });
     }
 
     async closeToolItem() {

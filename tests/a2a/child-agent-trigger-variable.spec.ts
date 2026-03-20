@@ -15,7 +15,7 @@ test('child agent is triggered', async ({ agents }) => {
     await chatbot.openNewThread();
     await chatbot.sendMessage('My name is tilakraj');
     
-
+    await chatbot.waitForResponseComplete(90000);   // A2A = 2 LLM calls, needs more time
     await chatbot.expectResponse(/Function executed/i);
     await chatbot.expectText('tilakraj');
 });
@@ -24,7 +24,7 @@ test('child agent is triggered with variable', async ({ agents }) => {
     const agent = await agents.openAgent(TESTING_AGENT);
     await agent.header.openHistory();
     await agent.history.openToolItem();
-    await agent.history.verifyVariableVisible(/"user_name"\s*:\s*"tilakraj"/);
+    await agent.history.verifyVariableVisible(/user_name=tilakraj/);
     await agent.history.closeToolItem();
 
 });
