@@ -175,8 +175,8 @@ export class RAGEmbedDetailPage {
   }
 
   async clickAddNewDocumentInFrame() {
-    const frame = this.getRagEmbedFrame();
-    await frame.getByText('Add New Document').click({ force: true });
+    const contentArea = this.page.locator('[data-testid="rag-embed-content-area"]');
+    await contentArea.getByText('Add New Document').click();
   }
 
   async fillKnowledgeBaseName(name: string) {
@@ -196,14 +196,20 @@ export class RAGEmbedDetailPage {
 
   async clickCreateInFrame() {
     const frame = this.getRagEmbedFrame();
-    await frame.getByText('Create', { exact: true }).click({ force: true });
+    await frame.getByText('Create', { exact: true }).dispatchEvent('click');
   }
 
   async expectResourceVisibleInFrame(name: string) {
     await expect(async () => {
-      const frame = this.page.frameLocator('#iframe-component-ragInterfaceEmbed');
-      await expect(frame.getByText(name).first()).toBeVisible();
+      const container = this.page.locator('[data-testid="rag-embed-content-area"]');
+      await expect(container.getByText(name).first()).toBeVisible();
     }).toPass({ timeout: 30000 });
+  }
+
+  async deleteLastResourceInFrame() {
+    const contentArea = this.page.locator('[data-testid="rag-embed-content-area"]');
+    await contentArea.locator('.ellipsis-btn').last().click();
+    await contentArea.locator('.delete-btn').last().click({ force: true });
   }
 
   async expectAllStepsHaveText() {

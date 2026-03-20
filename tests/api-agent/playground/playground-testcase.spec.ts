@@ -41,17 +41,14 @@ test.describe('Playground Test Case Sidebar', () => {
 
     await agent.playground.clickLastTestCaseRunButton();
 
-    const countBefore = await agent.playground.getTestCaseCardCount();
+    const lastTestCaseId = await agent.playground.getLastTestCaseId();
     await agent.playground.clickLastTestCaseDeleteButton();
 
     await expect(
       agent.playground.page.getByRole('alert').filter({ hasText: 'Test case deleted successfully' })
     ).toBeVisible({ timeout: 10000 });
 
-    await expect(async () => {
-      const countAfter = await agent.playground.getTestCaseCardCount();
-      expect(countAfter).toBeLessThan(countBefore);
-    }).toPass({ timeout: 10000 });
+    await expect(agent.playground.getTestCaseCard(lastTestCaseId)).not.toBeVisible({ timeout: 15000 });
   });
 
 });

@@ -62,7 +62,6 @@ test.describe('RAG Embed - Testing Tab', () => {
   });
 
   test('TC-RAG-TEST-08: Create document and verify resource in iframe', async ({ sidepanel }) => {
-    await sidepanel.ragEmbedDetailPage.clickCreateDocument();
     await sidepanel.ragEmbedDetailPage.clickAddNewDocumentInFrame();
 
     await sidepanel.ragEmbedDetailPage.fillKnowledgeBaseName('testing');
@@ -72,6 +71,8 @@ test.describe('RAG Embed - Testing Tab', () => {
     await sidepanel.ragEmbedDetailPage.clickCreateInFrame();
 
     await sidepanel.ragEmbedDetailPage.expectResourceVisibleInFrame('testing');
+
+    await sidepanel.ragEmbedDetailPage.deleteLastResourceInFrame();
   });
 
 });
