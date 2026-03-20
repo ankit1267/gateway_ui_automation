@@ -168,7 +168,7 @@ test.describe('Prompt - Response Type', () => {
 
 
 
-    await agent.prompt.fillJsonSchema('{');
+    await agent.prompt.typeJsonSchema('{');
 
     await agent.prompt.blurInput();
 
@@ -176,7 +176,7 @@ test.describe('Prompt - Response Type', () => {
 
 
 
-    await agent.prompt.fillJsonSchema('{}');
+    await agent.prompt.typeJsonSchema('{}');
 
     await agent.prompt.blurInput();
 
@@ -230,7 +230,7 @@ test.describe('Prompt - Response Type', () => {
 
     await agent.prompt.blurInput();
 
-
+    await agent.prompt.expectSavedVisible();
 
     await agent.playground.typeMessage('hii');
 

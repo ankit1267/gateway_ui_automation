@@ -14,10 +14,10 @@ export class ChatbotPage {
 
   constructor(public readonly page: Page) {
     this.frame = this.page.frameLocator(
-      'iframe[src*="chatbot"]'
+      '#iframe-component-interfaceEmbed'
     );
     this.scrollable = this.frame.locator('#scrollableDiv');
-    this.newThreadButton = this.frame.getByRole('button').nth(1);
+    this.newThreadButton = this.frame.locator('button:has(.lucide-square-pen)');
     this.input = this.frame.getByRole('textbox', {
       name: 'Message AI Assistant...'
     });

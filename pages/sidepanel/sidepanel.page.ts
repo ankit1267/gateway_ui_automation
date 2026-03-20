@@ -17,6 +17,7 @@ import { AddNewModelPage } from "./add-new-model.page";
 import { HistoryVisualizePage } from "./history-visualize.page";
 import { AuthRoutePage } from "./auth-route.page";
 import { TutorialModalPage } from "./tutorial-modal.page";
+import { MembersPage } from "./members.page";
 import { expect } from "@playwright/test";
 
 export class SidepanelPage {
@@ -39,7 +40,15 @@ export class SidepanelPage {
   readonly historyVisualizePage: HistoryVisualizePage;
   readonly authRoutePage: AuthRoutePage;
   readonly tutorialModalPage: TutorialModalPage;
+  readonly membersPage: MembersPage;
   readonly smartLinkExternal: Locator;
+  readonly adminSettingsToggle: Locator;
+  readonly adminSidebarHeading: Locator;
+  readonly adminMenuWorkspace: Locator;
+  readonly adminMenuMembers: Locator;
+  readonly adminMenuAuth: Locator;
+  readonly adminMenuAddModel: Locator;
+  readonly adminMenuGtwyTools: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -61,7 +70,15 @@ export class SidepanelPage {
     this.historyVisualizePage = new HistoryVisualizePage(page);
     this.authRoutePage = new AuthRoutePage(page);
     this.tutorialModalPage = new TutorialModalPage(page);
+    this.membersPage = new MembersPage(page);
     this.smartLinkExternal = page.getByTestId('smart-link-external-link');
+    this.adminSettingsToggle = page.locator('#main-slider-admin-settings-toggle');
+    this.adminSidebarHeading = page.locator('h3', { hasText: 'Admin Settings' });
+    this.adminMenuWorkspace = page.locator('#main-slider-admin-workspace');
+    this.adminMenuMembers = page.locator('#main-slider-admin-Members');
+    this.adminMenuAuth = page.locator('#main-slider-admin-auth');
+    this.adminMenuAddModel = page.locator('#main-slider-admin-addModel');
+    this.adminMenuGtwyTools = page.locator('#main-slider-admin-prebuiltPrompts');
   }
 
   async openExternalLink() {
@@ -198,6 +215,50 @@ export class SidepanelPage {
     await this.page.goto(`/org/${orgId}/auth_route`);
     await this.page.waitForURL(`/org/${orgId}/auth_route`);
     await this.dismissOnboardingOverlay();
+  }
+
+  async gotoInvite() {
+    const orgId = process.env.ORG_ID;
+    if (!orgId) throw new Error('ORG_ID env variable is not set');
+    await this.page.goto(`/org/${orgId}/invite`);
+    await this.page.waitForURL(`/org/${orgId}/invite`);
+    await this.dismissOnboardingOverlay();
+  }
+
+  async clickAdminSettingsToggle() {
+    await this.adminSettingsToggle.click();
+  }
+
+  async expectAdminSidebarVisible() {
+    await expect(this.adminSidebarHeading).toBeVisible();
+  }
+
+  async expectAdminMenuItemsVisible() {
+    await expect(this.adminMenuWorkspace).toBeVisible();
+    await expect(this.adminMenuMembers).toBeVisible();
+    await expect(this.adminMenuAuth).toBeVisible();
+    await expect(this.adminMenuAddModel).toBeVisible();
+    await expect(this.adminMenuGtwyTools).toBeVisible();
+  }
+
+  async clickAdminMenuWorkspace() {
+    await this.adminMenuWorkspace.click();
+  }
+
+  async clickAdminMenuMembers() {
+    await this.adminMenuMembers.click();
+  }
+
+  async clickAdminMenuAuth() {
+    await this.adminMenuAuth.click();
+  }
+
+  async clickAdminMenuAddModel() {
+    await this.adminMenuAddModel.click();
+  }
+
+  async clickAdminMenuGtwyTools() {
+    await this.adminMenuGtwyTools.click();
   }
 
   async gotoAgents() {

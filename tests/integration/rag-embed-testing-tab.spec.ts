@@ -62,16 +62,23 @@ test.describe('RAG Embed - Testing Tab', () => {
   });
 
   test('TC-RAG-TEST-08: Create document and verify resource in iframe', async ({ sidepanel }) => {
-    await sidepanel.ragEmbedDetailPage.clickCreateDocument();
+    const docName = `test-doc-${Date.now()}`;
+
     await sidepanel.ragEmbedDetailPage.clickAddNewDocumentInFrame();
 
-    await sidepanel.ragEmbedDetailPage.fillKnowledgeBaseName('testing');
+    await sidepanel.ragEmbedDetailPage.fillKnowledgeBaseName(docName);
     await sidepanel.ragEmbedDetailPage.fillDescription('test-description');
     await sidepanel.ragEmbedDetailPage.fillUrl('https://www.wikipedia.org/');
 
     await sidepanel.ragEmbedDetailPage.clickCreateInFrame();
 
-    await sidepanel.ragEmbedDetailPage.expectResourceVisibleInFrame('testing');
+    await sidepanel.ragEmbedDetailPage.expectResourceVisibleInFrame(docName);
+
+    await sidepanel.ragEmbedDetailPage.deleteLastResourceInFrame();
+
+    await sidepanel.ragEmbedDetailPage.clickRefreshInFrame();
+
+    await sidepanel.ragEmbedDetailPage.expectResourceNotVisibleInFrame(docName);
   });
 
 });

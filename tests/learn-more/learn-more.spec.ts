@@ -35,7 +35,7 @@ test('open widgets external link', async ({ sidepanel }) => {
 
   await sidepanel.expectExternalLinkVisible(
   kbPage,
-  'Widgets'
+  'Widget UI Documentation'
 );
 
 });
