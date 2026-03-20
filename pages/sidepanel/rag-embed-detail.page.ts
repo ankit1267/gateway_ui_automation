@@ -209,7 +209,22 @@ export class RAGEmbedDetailPage {
   async deleteLastResourceInFrame() {
     const contentArea = this.page.locator('[data-testid="rag-embed-content-area"]');
     await contentArea.locator('.ellipsis-btn').last().click();
+    this.page.once('dialog', async (dialog) => {
+      await dialog.accept();
+    });
     await contentArea.locator('.delete-btn').last().click({ force: true });
+  }
+
+  async clickRefreshInFrame() {
+    const contentArea = this.page.locator('[data-testid="rag-embed-content-area"]');
+    await contentArea.locator('.rag-refresh-btn').click();
+  }
+
+  async expectResourceNotVisibleInFrame(name: string) {
+    await expect(async () => {
+      const container = this.page.locator('[data-testid="rag-embed-content-area"]');
+      await expect(container.getByText(name, { exact: true })).toHaveCount(0);
+    }).toPass({ timeout: 30000 });
   }
 
   async expectAllStepsHaveText() {

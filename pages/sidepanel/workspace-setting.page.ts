@@ -38,8 +38,8 @@ export class WorkspaceSettingPage {
     this.timezoneEditorPanel = page.locator('.border.border-base-300.rounded-lg.p-4');
     this.timezoneSearchInput = page.getByPlaceholder('Search timezone...');
     this.timezoneList = page.locator('.h-48.overflow-y-auto');
-    this.saveButton = page.getByRole('button', { name: 'Save' });
-    this.cancelButton = page.getByRole('button', { name: 'Cancel' });
+    this.saveButton = this.timezoneEditorPanel.getByRole('button', { name: 'Save' });
+    this.cancelButton = this.timezoneEditorPanel.getByRole('button', { name: 'Cancel' });
   }
 
   private async dismissOnboardingOverlay() {
