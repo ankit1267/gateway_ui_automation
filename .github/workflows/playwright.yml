@@ -24,6 +24,7 @@ jobs:
       AGENT_ID: ${{ secrets.AGENT_ID }}
       CHATBOT_AGENT_ID: ${{ secrets.CHATBOT_AGENT_ID }}
       TESTING_AGENT_ID: ${{ secrets.TESTING_AGENT_ID }}
+      GTWY_AUTOMATION_TOKEN: ${{ secrets.GTWY_AUTOMATION_TOKEN }}
 
     steps:
     - uses: actions/checkout@v4
