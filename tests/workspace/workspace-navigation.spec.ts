@@ -1,10 +1,6 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from '../../fixtures/base.fixture';
 import { WorkspacePage } from '../../pages/workspace.page';
 
-
-test.use({
-  storageState: 'auth.json'
-});
 
 test('API Agents text is visible', async ({ page }) => {
   const workspacePage = new WorkspacePage(page);
@@ -20,7 +16,6 @@ test('Chatbot Agents text is visible', async ({ page }) => {
   await page.getByRole('button', { name: 'Chatbot', exact: true }).click();
   await expect(page.getByRole('heading', { name: 'Chatbot Agents' })).toBeVisible();
 });
-
 
 
 test('User Details page should not show 404', async ({ page }) => {
