@@ -16,23 +16,25 @@ test.describe('History - API Agent Thread Actions', () => {
 
     // Visualize
     await agent.history.clickVisualizeButton();
+    await agent.history.closeVisualize();
+    await agent.history.expectThreadResponseVisible();
 
-    // AI Config
+    // AI Config (opens detail view modal)
     await agent.history.clickAiConfig();
-    await agent.history.expectChatDetailsSliderVisible();
-    await agent.history.closeChatDetails();
+    await agent.history.expectChatDetailsModalVisible();
+    await agent.history.closeChatDetailsModal();
 
-    // Variables
+    // Variables (opens detail view modal)
     await agent.history.openThreadItemVar();
-    await agent.history.expectChatDetailsSliderVisible();
-    await agent.history.closeChatDetails();
+    await agent.history.expectChatDetailsModalVisible();
+    await agent.history.closeChatDetailsModal();
 
-    // System Prompt
+    // System Prompt (opens slider)
     await agent.history.clickSystemPrompt();
     await agent.history.expectChatDetailsSliderVisible();
     await agent.history.closeChatDetails();
 
-    // More (check AiConfig, latency, variables values)
+    // More (opens slider with AiConfig, latency, variables values)
     await agent.history.clickMore();
     await agent.history.expectChatDetailsSliderVisible();
     await agent.history.expectChatDetailsAiConfigValueVisible();

@@ -11,7 +11,7 @@ export class AuthRoutePage {
 
   constructor(page: Page) {
     this.page = page;
-    this.pageTitle = page.getByRole('heading', { name: 'Authentication' });
+    this.pageTitle = page.getByTestId('page-header-container').getByRole('heading', { name: 'Authentication', exact: true });
     this.authNameInput = page.getByPlaceholder('Enter Auth name');
     this.redirectUrlInput = page.getByPlaceholder('https://example.com/oauth/callback');
     this.addOAuthButton = page.getByRole('button', { name: 'Add OAuth Route' });

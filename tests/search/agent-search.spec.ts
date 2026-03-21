@@ -24,6 +24,7 @@ test('TC-SEARCH-02: Deleted agent is no longer visible in search results', async
   await agents.commandPalette.close();
 
   await agents.deleteAgentByName(TESTING_AGENT);
+  // await agents.deleteModal.waitForHidden();
 
   await agents.commandPalette.open();
   await agents.commandPalette.search(SEARCH_QUERY);
