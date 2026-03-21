@@ -2,6 +2,7 @@ import type { Page, Locator } from '@playwright/test';
 import { expect } from '@playwright/test';
 import { PromptHelperPanel } from '../../components/prompt/prompt-helper.panel';
 import { PreToolDropdown } from '../../components/prompt/pre-tool.panel';
+import { PrebuiltPreToolConfigModal } from '../../modals/prebuilt-pre-tool-config.modal';
 
 export class PromptPage {
   private readonly page: Page;
@@ -16,17 +17,20 @@ export class PromptPage {
   private readonly diffModal: Locator;
   private readonly instructionsSection: Locator;
   private readonly manageVariablesButton: Locator;
+  private readonly variableSlider: Locator;
+  private readonly promptHelper: PromptHelperPanel;
   private readonly responseTypeSelect: Locator;
   private readonly responseTypeSetDefaultButton: Locator;
-  private readonly variableSlider: Locator;
+  private readonly promptTextarea: Locator;
   private readonly migrateButton: Locator;
   private readonly simpleModeButton: Locator;
   private readonly advancedModeButton: Locator;
   private readonly addPreTool: Locator;
-  readonly promptHelper: PromptHelperPanel;
   readonly preToolDropdown: PreToolDropdown;
   readonly deleteButton: Locator;
   readonly deleteModal: Locator;
+  readonly queryRefinerConfigModal: PrebuiltPreToolConfigModal;
+  private readonly preEmbedFunctionsContainer: Locator;
   private readonly migrateModal: Locator;
   private readonly promptHeaderDefault: Locator;
   private readonly promptHeaderHelperOpen: Locator;
@@ -42,7 +46,6 @@ export class PromptPage {
   private readonly promptResizeHandle: Locator;
   private readonly defaultVariablesCollapse: Locator;
   private readonly defaultVariablesToggle: Locator;
-  private readonly promptTextarea: Locator;
   private readonly advancedParamsWrapper: Locator;
   private readonly buildWithAiButton: Locator;
   private readonly jsonSchemaTextarea: Locator;
@@ -81,8 +84,9 @@ export class PromptPage {
     this.simpleModeButton = page.getByRole('button', { name: 'simple' });
     this.advancedModeButton = page.getByRole('button', { name: 'advanced' });
     this.addPreTool = page.getByTestId('pre-embed-add-button');
-    this.promptHelper = new PromptHelperPanel(page);
     this.preToolDropdown = new PreToolDropdown(page);
+    this.queryRefinerConfigModal = new PrebuiltPreToolConfigModal(page);
+    this.preEmbedFunctionsContainer = page.getByTestId('pre-embed-functions-container');
     this.deleteButton = page.getByTestId(/^render-embed-delete-button-/);
     this.deleteModal = page.getByTestId('DELETE_PRE_TOOL_MODAL').getByTestId('delete-modal-confirm-button');
     this.migrateModal = page.locator('dialog').filter({ hasText: 'Migrate Prompt to Structured Format' });
@@ -171,7 +175,14 @@ export class PromptPage {
   async fillJsonSchema(text: string) {
     await this.jsonSchemaTextarea.click();
     await this.jsonSchemaTextarea.press('Control+a');
-    await this.jsonSchemaTextarea.fill(text);
+    await this.jsonSchemaTextarea.evaluate((el: HTMLTextAreaElement, value: string) => {
+      const nativeInputValueSetter = Object.getOwnPropertyDescriptor(
+        window.HTMLTextAreaElement.prototype, 'value'
+      )!.set!;
+      nativeInputValueSetter.call(el, value);
+      el.dispatchEvent(new Event('input', { bubbles: true }));
+      el.dispatchEvent(new Event('change', { bubbles: true }));
+    }, text);
   }
 
   async typeJsonSchema(text: string) {
@@ -181,10 +192,11 @@ export class PromptPage {
   }
 
   async pasteJsonSchema(text: string) {
-    await this.page.evaluate((value) => navigator.clipboard.writeText(value), text);
     await this.jsonSchemaTextarea.click();
     await this.jsonSchemaTextarea.press('Control+a');
-    await this.jsonSchemaTextarea.press('Control+v');
+    await this.page.evaluate((value) => {
+      document.execCommand('insertText', false, value);
+    }, text);
   }
 
   async expectJsonSchemaTextareaValue(text: string) {
@@ -250,7 +262,7 @@ export class PromptPage {
   }
 
   async addJsonSchemaProperty() {
-    await this.jsonSchemaAddPropertyButton.click();
+    await this.jsonSchemaAddPropertyButton.click({ force: true });
   }
 
   async expectNewJsonSchemaPropertyVisible() {
@@ -324,7 +336,7 @@ export class PromptPage {
     const input = this.getPropertyNameInput(path);
     await input.clear();
     await input.fill(name);
-    await input.blur();
+    await this.page.keyboard.press('Tab');
   }
 
   async togglePropertyRequired(path: string) {
@@ -427,6 +439,84 @@ export class PromptPage {
 
   async addPreToolClick() {
     await this.addPreTool.click();
+  }
+
+  async expectPreToolContainerVisible() {
+    await expect(this.preEmbedFunctionsContainer).toBeVisible();
+  }
+
+  async expectPreToolAddedByName(name: string) {
+    await expect(this.preEmbedFunctionsContainer).toContainText(name);
+  }
+
+  async isPreToolDeleteButtonVisible(): Promise<boolean> {
+    return this.deleteButton.isVisible();
+  }
+
+  async closeQueryRefinerConfigModalIfVisible() {
+    if (await this.queryRefinerConfigModal.isVisible()) {
+      await this.queryRefinerConfigModal.close();
+    }
+  }
+
+  async fillQueryRefinerPrompt(text: string) {
+    await this.queryRefinerConfigModal.fillRefinementPrompt(text);
+  }
+
+  async expectQueryRefinerSaveButtonEnabled() {
+    await this.queryRefinerConfigModal.isSaveButtonEnabled();
+  }
+
+  async isQueryRefinerConfigModalVisible() {
+    await this.queryRefinerConfigModal.isQueryRefinerConfigModalVisible();
+  }
+
+  async expectPreToolContainerNotVisible() {
+    await expect(this.preEmbedFunctionsContainer).not.toBeVisible();
+  }
+
+  async openPreToolConfig() {
+    const preToolItem = this.preEmbedFunctionsContainer
+      .locator('[data-testid^="render-embed-item-"]')
+      .first();
+    await preToolItem.hover();
+    await preToolItem.getByTitle('Config').click();
+  }
+
+  async searchAndSelectKnowledgeBase(name: string) {
+    await this.queryRefinerConfigModal.searchAndSelectKnowledgeBase(name);
+  }
+
+  async expectKnowledgeBaseSelected(name: string) {
+    await this.queryRefinerConfigModal.expectKnowledgeBaseSelected(name);
+  }
+
+  async expectRagSaveButtonEnabled() {
+    await this.queryRefinerConfigModal.isSaveButtonEnabled();
+  }
+
+  async closeRagConfigModalIfVisible() {
+    if (await this.queryRefinerConfigModal.isVisible()) {
+      await this.queryRefinerConfigModal.close();
+    }
+  }
+
+  async fillWebSearchUrl(url: string) {
+    await this.queryRefinerConfigModal.fillUrl(url);
+  }
+
+  async checkWebSearchOutputFormat(format: string) {
+    await this.queryRefinerConfigModal.checkOutputFormat(format);
+  }
+
+  async expectWebSearchSaveButtonEnabled() {
+    await this.queryRefinerConfigModal.isSaveButtonEnabled();
+  }
+
+  async closeWebSearchConfigModalIfVisible() {
+    if (await this.queryRefinerConfigModal.isVisible()) {
+      await this.queryRefinerConfigModal.close();
+    }
   }
 
   async diffModalVisible() {

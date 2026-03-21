@@ -14,6 +14,7 @@ export class WorkspacePage {
     readonly loginButton: Locator;
     readonly workspaceButton: Locator;
     readonly userDetailsButton: Locator;
+    readonly editUserDetailsButton: Locator;
     readonly nameInputUserDetails: Locator;
     readonly updateButton: Locator;
     
@@ -21,7 +22,7 @@ export class WorkspacePage {
         this.page = page;
 
         this.createWorkspaceButton = page.getByRole('button', { name: '+ Create New Workspace' });
-        this.userMenuButton = page.locator('#org-header-user-menu-button-alt');
+        this.userMenuButton = page.locator('#org-header-user-menu-button');
         this.nameInput = page.getByTestId('create-org-name-input');
         this.descriptionInput = page.getByTestId('create-org-description-input');
         this.timezoneTrigger = page.getByTestId('create-org-timezone-trigger');
@@ -31,8 +32,9 @@ export class WorkspacePage {
         this.loginButton = page.getByTestId('login-button');
         this.workspaceButton = page.getByRole('button', { name: 'T Test Space Organization' });// on agent list page
         this.userDetailsButton = page.getByRole('button', { name: 'User Details' });
-        this.nameInputUserDetails = page.getByRole('textbox', { name: 'Name', exact: true });// on user detial page
-        this.updateButton = page.getByRole('button', { name: 'Update' });// on user detial page
+        this.editUserDetailsButton = page.getByRole('button', { name: 'Edit', exact: true });// on user detail page
+        this.nameInputUserDetails = page.getByRole('textbox', { name: 'Full Name', exact: true });// on user detial page
+        this.updateButton = page.getByRole('button', { name: 'Save Changes' });// on user detail page
 
     }
 
@@ -44,14 +46,25 @@ export class WorkspacePage {
         await this.updateButton.click();
     }
 
+    async clickEditUserDetails() {
+        await this.editUserDetailsButton.click();
+    }
+
+    async getDisplayedName(): Promise<string> {
+        return this.page.getByTestId('user-details-full-name').innerText();
+    }
+
     // ---------------- Navigation ----------
     async goto() {
         await this.page.goto('/org');
         await this.page.waitForURL('/org');
         const onboardingOverlay = this.page.getByTestId('org-page-guard-modal-overlay');
-        if (await onboardingOverlay.isVisible()) {
+        try {
+            await onboardingOverlay.waitFor({ state: 'visible', timeout: 10000 });
             await this.page.getByRole('button', { name: 'Close onboarding' }).click();
             await onboardingOverlay.waitFor({ state: 'hidden' });
+        } catch {
+            // overlay did not appear
         }
     }
 

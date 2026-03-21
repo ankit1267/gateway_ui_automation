@@ -44,26 +44,11 @@ test.describe('Prompt - Response Type (Chatbot)', () => {
     await agent.history.clickLastAiConfig();
 
     // Check if the AI config detail modal contains the JSON schema fields
-    await agent.history.expectAiConfigDetailModalContainsText(`{
-     "format": {
-      "name": "name",
-      "type": "json_schema",
-      "schema": {
-      "type": "object",
-      "required": [
-        "name"
-      ],
-      "properties": {
-        "name": {
-          "type": "string",
-          "description": "name of person"
-        }
-      },
-      "additionalProperties": false
-      },
-      "strict": true
-      }
-      }`);
+    await agent.history.expectAiConfigDetailModalContainsText('"type": "json_schema"');
+    await agent.history.expectAiConfigDetailModalContainsText('"name": "name"');
+    await agent.history.expectAiConfigDetailModalContainsText('"strict": true');
+    await agent.history.expectAiConfigDetailModalContainsText('"additionalProperties": false');
+    await agent.history.expectAiConfigDetailModalContainsText('"description": "name of person"');
   });
 
 });

@@ -39,9 +39,10 @@ test('update org name',async({page})=>{
   await workspacePage.selectWorkspace(process.env.WORKSPACE_NAME!);
   await workspacePage.clickWorkspaceButton();
   await workspacePage.clickUserDetails();
+  await workspacePage.clickEditUserDetails();
   await workspacePage.fillNameUserDetails(newName);
   await workspacePage.clickUpdateButton();
   await page.reload();
-  // Verify name persisted
-  await expect(workspacePage.nameInputUserDetails).toHaveValue(newName);
+  // Verify name persisted (page returns to read-only view after reload)
+  await expect(page.getByText(newName).first()).toBeVisible();
 })

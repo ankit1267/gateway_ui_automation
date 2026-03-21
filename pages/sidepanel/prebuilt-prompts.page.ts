@@ -16,11 +16,11 @@ export class PrebuiltPromptsPage {
   constructor(page: Page) {
     this.page = page;
     this.pageTitle = page.getByRole('heading', { level: 1 });
-    this.pageDescription = page.locator('.text-sm.text-base-content\\/60');
+    this.pageDescription = page.locator('.bg-base-200.border-b.border-base-300').locator('p.text-sm').first();
     this.agentTabsContainer = page.locator('.flex.flex-wrap.gap-2');
     this.selectedAgentHeading = page.locator('h2.text-lg.font-semibold');
     this.tokenCountBadge = page.locator('.text-xs.text-base-content\\/60.bg-base-300');
-    this.promptTextarea = page.locator('textarea.textarea');
+    this.promptTextarea = page.getByPlaceholder('Enter the system prompt that defines how this agent should behave and respond to user requests');
     this.saveButton = page.getByRole('button', { name: /save/i });
     this.defaultButton = page.getByRole('button', { name: /default/i });
     this.loadingSpinner = page.locator('.loading-spinner');

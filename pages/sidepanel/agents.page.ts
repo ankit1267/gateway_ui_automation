@@ -47,22 +47,26 @@ export class AgentsPage {
   }
 
   async goto(type?: 'chatbot' | 'api') {
-    await this.page.goto('/org');
+     await this.page.goto('/org');
 
-    const guard = this.page.getByTestId('org-page-guard-close-button');
+     const onboardingOverlay = this.page.getByTestId('org-page-guard-modal-overlay');
     for (let i = 0; i < 4; i++) {
-      if (await guard.isVisible()) {
-        await guard.click();
+      try {
+        await onboardingOverlay.waitFor({ state: 'visible', timeout: 500 });
+      } catch {
         break;
       }
-      await this.page.waitForTimeout(500);
+      await this.page.getByRole('button', { name: 'Close onboarding' }).click();
+      await onboardingOverlay.waitFor({ state: 'hidden' });
     }
-
-    await this.page.getByText('Test Space').click();
-    await this.page.waitForURL(/\/org\//);
-
+ 
+    await this.page.getByText('Test Space', { exact: true }).click();
+    await this.page.waitForURL(/\/agents/);
+ 
     if (type === 'chatbot') {
       await this.sidebar.openChatbot();
+    } else if (type === 'api') {
+      await this.sidebar.openApi();
     }
   }
 
@@ -71,9 +75,7 @@ export class AgentsPage {
   }
 
   async openAgent(agentName: string): Promise<AgentPage> {
-    await this.agentTable
-      .filter({ hasText: agentName })
-      .click();
+    await this.agentTable.getByText(agentName, { exact: true }).click();
 
     return new AgentPage(this.page);
   }
@@ -98,9 +100,14 @@ export class AgentsPage {
 
   async clickCreateNewAgent() {
     const tutorialsDialog = this.page.getByRole('dialog').filter({ hasText: 'GTWY AI Tutorials' });
-    if (await tutorialsDialog.isVisible()) {
-      await this.page.getByRole('button', { name: 'Close Tutorials' }).click();
-      await tutorialsDialog.waitFor({ state: 'hidden' });
+    for (let i = 0; i < 4; i++) {
+      try {
+        await tutorialsDialog.waitFor({ state: 'visible', timeout: 5000 });
+      } catch {
+        break;
+      }
+      await this.page.getByTestId('tutorial-close-button').dispatchEvent('click');
+      //await tutorialsDialog.waitFor({ state: 'hidden' });
     }
     await this.createAgentButton.click();
   }
@@ -122,10 +129,16 @@ export class AgentsPage {
     await expect(agentRow).toBeVisible();
 
     const rowMenuBtn = agentRow.locator('[role="button"]').last();
-    await rowMenuBtn.click();
-
     const deleteAgentBtn = this.page.getByRole('button', { name: 'Delete Agent' });
-    await expect(deleteAgentBtn).toBeVisible();
+    for (let i = 0; i < 4; i++) {
+      await rowMenuBtn.click();
+      try {
+        await deleteAgentBtn.waitFor({ state: 'visible', timeout: 3000 });
+        break;
+      } catch {
+        // retry
+      }
+    }
     await deleteAgentBtn.click();
 
     await this.deleteModal.waitForVisible();
@@ -144,10 +157,16 @@ export class AgentsPage {
     await expect(agentRow).toBeVisible();
 
     const rowMenuBtn = agentRow.locator('[role="button"]').last();
-    await rowMenuBtn.click();
-
     const deleteAgentBtn = this.page.getByRole('button', { name: 'Delete Agent' });
-    await expect(deleteAgentBtn).toBeVisible();
+    for (let i = 0; i < 4; i++) {
+      await rowMenuBtn.click();
+      try {
+        await deleteAgentBtn.waitFor({ state: 'visible', timeout: 3000 });
+        break;
+      } catch {
+        // retry
+      }
+    }
     await deleteAgentBtn.click();
 
     await this.deleteModal.waitForVisible();

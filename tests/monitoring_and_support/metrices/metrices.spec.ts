@@ -1,62 +1,29 @@
-import { test, expect } from '@playwright/test';
-import { navigateToAgents } from '../../../utils/navigation';
+import { test } from '../../../fixtures/base.fixture';
 
-test.use({ storageState: 'auth.json' });
+test.describe('Metrics - Monitoring & Support', () => {
 
+  test.beforeEach(async ({ sidepanel }) => {
+    await sidepanel.gotoMetrics();
+  });
 
+  test('TC-MTR-01: Metrics filters and dashboard validation', async ({ sidepanel }) => {
 
-test('Metrics - filters and dashboard validation', async ({ page }) => {
-  // Navigate to org page & workspace
-  await navigateToAgents(page, 'api');
-  
- 
-  // -----------------------------
-  // Open Metrics
-  // -----------------------------
-  await page.getByRole('button', { name: /metrics/i }).click();
+    // -------- Dashboard loads --------
+    await sidepanel.metricsPage.assertDashboardVisible();
 
-  // Metrics dashboard should load
-  await expect(
-    page.getByText('Metrics Dashboard', { exact: false })
-  ).toBeVisible();
+    // -------- Group By filter --------
+    await sidepanel.metricsPage.openGroupByDropdown();
+    await sidepanel.metricsPage.assertGroupByDropdownVisible();
+    await sidepanel.metricsPage.openGroupByDropdown();
 
-  // -----------------------------
-  // Group By filter
-  // -----------------------------
-  const groupByButton = page.locator('#metrics-filter-group-by-button');
-  await expect(groupByButton).toBeVisible();
-  await groupByButton.click();
+    // -------- Agent filter --------
+    await sidepanel.metricsPage.selectAllAgents();
 
-  // Assert dropdown opened
-  await expect(page.getByText(/agent/i)).toBeVisible();
+    // -------- Time range filter - 30 days (index 8) --------
+    await sidepanel.metricsPage.selectTimeRange(8);
 
-  // Close dropdown
-  await groupByButton.click();
+    // -------- Chart rendered --------
+    await sidepanel.metricsPage.assertChartVisible();
+  });
 
-  // -----------------------------
-  // Agent filter
-  // -----------------------------
-  const agentFilterButton = page.locator('#metrics-filter-agent-button');
-  await expect(agentFilterButton).toBeVisible();
-  await agentFilterButton.click();
-
-  // Select "All Agents"
-  await page.getByText('All Agents', { exact: false }).click();
-
-  // -----------------------------
-  // Time range filter
-  // -----------------------------
-  const timeRangeButton = page.locator('#metrics-filter-time-range-button');
-  await expect(timeRangeButton).toBeVisible();
-  await timeRangeButton.click();
-
-  await page.getByText('30 days', { exact: true }).click();
-
-  // -----------------------------
-  // Metrics data / chart validation
-  // -----------------------------
-  // At least one chart or SVG should be rendered
-  await expect(
-    page.locator('svg').first()
-  ).toBeVisible();
 });

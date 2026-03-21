@@ -299,4 +299,32 @@ async expectParameterNotVisible(paramName: string) {
 async fillAdvancedParameterText(paramName: string, value: string) {
     await this.page.getByTestId(`advanced-param-text-${paramName}`).fill(value);
 }
+
+    // -------------------------
+    // AUTO SELECT MODEL
+    // -------------------------
+
+    async checkAutoSelectModelToggle() {
+        await this.page.getByTestId('auto-select-model-toggle').check();
+    }
+
+    async uncheckAutoSelectModelToggle() {
+        await this.page.getByTestId('auto-select-model-toggle').uncheck();
+    }
+
+    async isAutoSelectModelToggleChecked(): Promise<boolean> {
+        return this.page.getByTestId('auto-select-model-toggle').isChecked();
+    }
+
+    async getSelectedModelText(): Promise<string> {
+        return (await this.model.textContent()) ?? '';
+    }
+
+    async expectModelAutoSelected() {
+        await expect(this.model).not.toContainText('Select model');
+    }
+
+    async expectModelNotAutoSelected() {
+        await expect(this.model).toContainText('Select model');
+    }
 }

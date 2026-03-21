@@ -87,12 +87,15 @@ export class ConnectersPage {
       } else {
         await this.addAgentButtonHasAgents.click();
       }
-      if (await this.addAgentDropdown.isVisible()) break;
+      if (await this.a2aDropdown.isVisible()) break;
     }
   }
 
   async clickAddKB() {
-    await this.addKBButton.click();
+    for (let i = 0; i < 4; i++) {
+      await this.addKBButton.click();
+      if (await this.knowledgeBaseDropdown.isVisible()) break;
+    }
   }
 
   async clickAgentConfig() {

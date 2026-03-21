@@ -33,7 +33,16 @@ export class CommandPalette {
   }
 
   async open() {
-    await this.page.keyboard.press('Control+k');
+    for (let i = 0; i < 3; i++) {
+      await this.page.keyboard.press('Escape');
+      await this.page.keyboard.press('Control+k');
+      try {
+        await this.searchInput.waitFor({ state: 'visible', timeout: 5000 });
+        return;
+      } catch {
+        // retry
+      }
+    }
     await this.searchInput.waitFor({ state: 'visible' });
   }
 

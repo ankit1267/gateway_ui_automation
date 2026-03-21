@@ -1,4 +1,5 @@
 import type { Page, Locator } from '@playwright/test';
+import { expect } from '@playwright/test';
 
 export class MetricsPage {
   readonly page: Page;
@@ -141,5 +142,17 @@ export class MetricsPage {
 
   async isChartVisible(): Promise<boolean> {
     return this.chartContainer.isVisible();
+  }
+
+  async assertDashboardVisible() {
+    await expect(this.pageTitle).toBeVisible({ timeout: 15000 });
+  }
+
+  async assertGroupByDropdownVisible() {
+    await expect(this.page.locator('#metrics-filter-group-by-option-0')).toBeVisible({ timeout: 5000 });
+  }
+
+  async assertChartVisible() {
+    await expect(this.page.locator('svg').first()).toBeVisible({ timeout: 15000 });
   }
 }

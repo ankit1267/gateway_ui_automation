@@ -3,16 +3,20 @@
 const AGENT_NAME = process.env.TESTING_AGENT!
 //dependent on css class if css class change it will break
 
+
+
 test('Fill Prompt and api configured should not show agent guide', async ({ agents }) => {
   await agents.goto('api');
   const agent = await agents.openAgent(AGENT_NAME);
-
+  await agent.tabs.openModel();
+  await agent.model.selectServiceProvider("Grok");
+  await agent.prompt.expectAgentSetupGuideVisible();
+  await agent.tabs.openPrompt();
   await agent.prompt.fillPrompt(
     `Support agent${Date.now()}`,
     `Help users${Date.now()}`,
     `Be polite${Date.now()}`
   );
-
   await agent.prompt.expectStepState(1, 'completed');
 
   await agent.tabs.openModel();
@@ -20,13 +24,18 @@ test('Fill Prompt and api configured should not show agent guide', async ({ agen
   await agent.model.clickConfigureApiKey();
   await agent.model.selectApiKey("Mistral api key");
   await agent.prompt.expectAgentSetupGuideNotVisible();
-  await agent.model.selectServiceProvider("Openai");
-  await agent.prompt.expectAgentSetupGuideVisible();
+  
+  
 });
 
 test('Agent setup card updates dynamically when prompt entered', async ({ agents }) => {
   await agents.goto('api');
   const agent = await agents.openAgent(AGENT_NAME);
+
+  await agent.tabs.openModel();
+  await agent.model.selectServiceProvider("Grok");
+  await agent.prompt.expectAgentSetupGuideVisible();
+  await agent.tabs.openPrompt();
 
   await agent.prompt.fillPrompt(
     '',
@@ -81,7 +90,7 @@ test('Fill Prompt and api not configured should show agent guide', async ({ agen
   );
 
   await agent.tabs.openModel();
-  await agent.model.selectServiceProvider("Openai");
+  await agent.model.selectServiceProvider("Grok");
   await agent.prompt.expectAgentSetupGuideVisible();
   await agent.prompt.expectStepState(1, 'completed');
   await agent.prompt.expectStepState(2, 'incomplete'); 

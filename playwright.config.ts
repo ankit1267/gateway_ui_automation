@@ -7,8 +7,8 @@ export default defineConfig({
   expect: {
     timeout: 30_000,
   },
-
-  workers: 10,
+  // 🔥 Smoke tests must be stable
+  workers: 1,
 
   reporter: [['html', { open: 'on-failure' }]],
 

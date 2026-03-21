@@ -91,9 +91,7 @@ export class HistoryPage {
     }
     async verifyVariableVisible(message: string | RegExp) {
         await this.toolsDataModal.waitFor({ state: 'visible' });
-        await expect(
-            this.toolsDataModal.getByText(message)
-        ).toBeVisible();
+        await expect(this.toolsDataModal).toContainText(message, { timeout: 30000 });
     }
 
     async closeToolItem() {
@@ -212,8 +210,14 @@ export class HistoryPage {
         await visualizeButton.click();
     }
 
+    async closeVisualize() {
+        const goBackButton = this.page.getByTestId('visualize-go-back');
+        await expect(goBackButton).toBeVisible();
+        await goBackButton.click();
+    }
+
     async expectChatDetailsSliderVisible() {
-        await expect(this.page.getByTestId('chat-details-slider')).toBeVisible();
+        await expect(this.page.getByRole('main').getByTestId('chat-details-slider')).toBeVisible();
     }
 
     async expectChatDetailsAiConfigValueVisible() {
@@ -375,7 +379,14 @@ async selectVersionAndGetHistoryResponse(value: string): Promise<any> {
         if (await fallback.count()) {
             const fallbackValue = (await fallback.getAttribute('value')) || '';
             if (fallbackValue && fallbackValue !== selectedOption.value) {
+                const fallbackResponsePromise = this.page.waitForResponse((response) =>
+                    response.status() === 200
+                    && response.request().method() === 'GET'
+                    && response.url().includes('/api/history/')
+                    && decodeURIComponent(response.url()).includes('page=1')
+                );
                 await this.versionSelect.selectOption({ value: fallbackValue });
+                await fallbackResponsePromise;
             }
         }
     }
@@ -386,6 +397,7 @@ async selectVersionAndGetHistoryResponse(value: string): Promise<any> {
         && response.url().includes('/api/history/')
         && decodeURIComponent(response.url()).includes('page=1')
         && decodeURIComponent(response.url()).includes('limit=40')
+        && decodeURIComponent(response.url()).includes(`version_id=${selectedOption.value}`)
         && !decodeURIComponent(response.url()).includes('thread_id=')
         && !decodeURIComponent(response.url()).includes('message_id=')
     );
@@ -422,11 +434,11 @@ async isErrorToggleChecked(): Promise<boolean> {
 }
 
 private get chatDetailsSlider(): Locator {
-    return this.page.getByTestId('chat-details-slider');
+    return this.page.getByRole('main').getByTestId('chat-details-slider');
 }
 
 private get chatDetailsCloseButton(): Locator {
-    return this.page.getByTestId('chat-details-close-button');
+    return this.page.getByRole('main').getByTestId('chat-details-close-button').first();
 }
 
 private get chatDetailsCopyDropdown(): Locator {
@@ -450,7 +462,19 @@ async isChatDetailsVisible(): Promise<boolean> {
 }
 
 async closeChatDetails() {
-    await this.chatDetailsCloseButton.click();
+    await this.chatDetailsCloseButton.click({ force: true });
+}
+
+private get chatDetailsViewModal(): Locator {
+    return this.page.getByRole('main').locator('dialog[data-testid="chat_details_view"]');
+}
+
+async expectChatDetailsModalVisible() {
+    await expect(this.chatDetailsViewModal).toBeVisible();
+}
+
+async closeChatDetailsModal() {
+    await this.chatDetailsViewModal.getByTestId('chat-details-close-button').click();
 }
 
 async openCopyDropdown() {
@@ -567,15 +591,19 @@ private collectThreadIdsFromApi(payload: unknown): string[] {
         const record = value as Record<string, unknown>;
         for (const [key, entry] of Object.entries(record)) {
             if (typeof entry === 'string') {
-                const isThreadLikeKey =
+                const isThreadKey =
                     key === 'thread_id'
                     || key === 'threadId'
                     || key === 'subThread_id'
-                    || key === 'subThreadId'
-                    || key === 'id'
+                    || key === 'subThreadId';
+
+                const isGenericIdKey =
+                    key === 'id'
                     || key === '_id';
 
-                if (isThreadLikeKey && maybeUuid.test(entry)) {
+                if (isThreadKey && entry.length > 0) {
+                    result.add(entry);
+                } else if (isGenericIdKey && maybeUuid.test(entry)) {
                     result.add(entry);
                 }
             }
@@ -698,7 +726,7 @@ async clickDebugAgentButton() {
 }
 
 async expectIframeParentContainerVisible() {
-    await expect(this.page.locator('#iframe-parent-container')).toBeVisible();
+    await expect(this.page.locator('#iframe-parent-container').first()).toBeVisible();
 }
 
 // --- Add Test Case Modal ---
@@ -752,20 +780,18 @@ async expectTestCaseCreatedToastVisible() {
 }
 
 async expectAiConfigDetailModalContainsText(text: string) {
-    const modal = this.page.locator('#chat-details-modal-container').first();
-    const contentContainer = modal.getByTestId('chat-details-content-container').first();
+    
+    const contentContainer = this.page.getByRole('main').getByTestId('chat_details_view');
     await expect(contentContainer).toBeVisible();
-    await expect(contentContainer.locator('pre').filter({ hasText: text })).toBeVisible();
+    await expect(contentContainer).toContainText(text);
 }
 
 async verifyHistoryMatchesAPI(apiResponse: any) {
     const apiIds = this.collectThreadIdsFromApi(apiResponse);
 
-    if (apiIds.length > 0) {
-        await expect(this.page.getByTestId(`history-sidebar-thread-${apiIds[0]}`).first()).toBeVisible();
-    }
-
-    const uiIds = await this.getUIThreadIds();
-    expect([...uiIds].sort()).toEqual([...apiIds].sort());
+    await expect(async () => {
+        const uiIds = await this.getUIThreadIds();
+        expect([...uiIds].sort()).toEqual([...apiIds].sort());
+    }).toPass({ timeout: 15000 });
 }
 }

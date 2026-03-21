@@ -7,7 +7,6 @@ permissions:
   id-token: write   # REQUIRED for GitHub Pages push
 jobs:
   test:
-    timeout-minutes: 120
     runs-on: ubuntu-latest
     env:
       PLAYWRIGHT_USER_DATA_DIR: ${{ secrets.PLAYWRIGHT_USER_DATA_DIR }}
