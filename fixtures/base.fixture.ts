@@ -18,10 +18,10 @@ export const test = base.extend<Fixtures>({
       if (!fs.existsSync(AUTH_FILE)) {
         const api = await apiRequest.newContext();
         const res = await api.post(
-          'https://dev-db.gtwy.ai/api/auth/generate-token',
+          'https://db.gtwy.ai/api/auth/generate-token',
           {
             headers: { 'automation-token': process.env.GTWY_AUTOMATION_TOKEN! },
-            data: { env: 'dev' },
+            data: { env: 'prod' },
           }
         );
 
@@ -35,14 +35,14 @@ export const test = base.extend<Fixtures>({
         const ctx = await browser.newContext();
         const p = await ctx.newPage();
         await p.goto(
-          `https://dev.gtwy.ai/login?proxy_auth_token=${data.proxy_auth_token}`
+          `https://app.gtwy.ai/login?proxy_auth_token=${data.proxy_auth_token}`
         );
         await p.waitForURL(/\/org\/\d+/, { timeout: 30_000 });
 
         fs.mkdirSync(path.dirname(AUTH_FILE), { recursive: true });
         await ctx.storageState({ path: AUTH_FILE });
         await ctx.close();
-        console.log(data.proxy_auth_token);
+        //console.log(data.proxy_auth_token);
       }
       
 
