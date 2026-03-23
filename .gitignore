@@ -9,5 +9,7 @@ node_modules/
 auth.json
 notes.md
 .env
+.env.prod
+.env.dev
 Usersanshpchrome-playwright-profile
 tests/test.spec.ts

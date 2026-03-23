@@ -1,6 +1,16 @@
 name: Playwright Tests
 on:
   workflow_dispatch:
+
+    inputs:
+      environment:
+        description: 'Target environment'
+        required: true
+        default: 'dev'
+        type: choice
+        options:
+          - prod
+          - dev
 permissions:
   contents: read
   pages: write
@@ -9,21 +19,19 @@ jobs:
   test:
     runs-on: ubuntu-latest
     env:
+      TEST_ENV: ${{ inputs.environment }}
       PLAYWRIGHT_USER_DATA_DIR: ${{ secrets.PLAYWRIGHT_USER_DATA_DIR }}
       PLAYWRIGHT_LOGIN_URL: ${{ secrets.PLAYWRIGHT_LOGIN_URL }}
       PLAYWRIGHT_SUCCESS_URL: ${{ secrets.PLAYWRIGHT_SUCCESS_URL }}
       PLAYWRIGHT_BROWSER_CHANNEL: ${{ secrets.PLAYWRIGHT_BROWSER_CHANNEL }}
       PLAYWRIGHT_HEADLESS: ${{ secrets.PLAYWRIGHT_HEADLESS }}
       PLAYWRIGHT_AUTH_STATE: ${{ secrets.PLAYWRIGHT_AUTH_STATE }}
-      WORKSPACE_NAME: ${{ secrets.WORKSPACE_NAME }}
-      AGENT_NAME: ${{ secrets.AGENT_NAME }}
-      ORG_ID: ${{ secrets.ORG_ID }}
-      BASE_URL: ${{ secrets.BASE_URL }}
-      CHATBOT_AGENT: ${{ secrets.CHATBOT_AGENT }}
-      TESTING_AGENT: ${{ secrets.TESTING_AGENT }}
-      AGENT_ID: ${{ secrets.AGENT_ID }}
-      CHATBOT_AGENT_ID: ${{ secrets.CHATBOT_AGENT_ID }}
-      TESTING_AGENT_ID: ${{ secrets.TESTING_AGENT_ID }}
+      WORKSPACE_NAME: ${{ vars[format('{0}_WORKSPACE_NAME', inputs.environment)] || secrets.WORKSPACE_NAME }}
+      AGENT_NAME: ${{ vars[format('{0}_AGENT_NAME', inputs.environment)] || secrets.AGENT_NAME }}
+      ORG_ID: ${{ vars[format('{0}_ORG_ID', inputs.environment)] || secrets.ORG_ID }}
+      BASE_URL: ${{ vars[format('{0}_BASE_URL', inputs.environment)] || secrets.BASE_URL }}
+      CHATBOT_AGENT: ${{ vars[format('{0}_CHATBOT_AGENT', inputs.environment)] || secrets.CHATBOT_AGENT }}
+      TESTING_AGENT: ${{ vars[format('{0}_TESTING_AGENT', inputs.environment)] || secrets.TESTING_AGENT }}
       GTWY_AUTOMATION_TOKEN: ${{ secrets.GTWY_AUTOMATION_TOKEN }}
 
     steps:

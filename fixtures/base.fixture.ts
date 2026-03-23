@@ -4,8 +4,10 @@ import path from 'path';
 import { test as base, request as apiRequest } from '@playwright/test';
 import { AgentsPage } from '../pages/sidepanel/agents.page';
 import { SidepanelPage } from '../pages/sidepanel/sidepanel.page';
+import { getEnvConfig } from '../env.config';
 
-const AUTH_FILE = 'playwright/.auth/state.json';
+const testEnv = process.env.TEST_ENV || 'dev';
+const AUTH_FILE = `playwright/.auth/state-${testEnv}.json`;
 
 type Fixtures = {
   agents: AgentsPage;
@@ -16,12 +18,13 @@ export const test = base.extend<Fixtures>({
   storageState: [
     async ({ browser }, use) => {
       if (!fs.existsSync(AUTH_FILE)) {
+        const envConfig = getEnvConfig();
         const api = await apiRequest.newContext();
         const res = await api.post(
-          'https://db.gtwy.ai/api/auth/generate-token',
+          envConfig.authApiUrl,
           {
             headers: { 'automation-token': process.env.GTWY_AUTOMATION_TOKEN! },
-            data: { env: 'prod' },
+            data: { env: envConfig.envParam },
           }
         );
 
@@ -35,7 +38,7 @@ export const test = base.extend<Fixtures>({
         const ctx = await browser.newContext();
         const p = await ctx.newPage();
         await p.goto(
-          `https://app.gtwy.ai/login?proxy_auth_token=${data.proxy_auth_token}`
+          `${envConfig.appUrl}/login?proxy_auth_token=${data.proxy_auth_token}`
         );
         await p.waitForURL(/\/org\/\d+/, { timeout: 30_000 });
 
