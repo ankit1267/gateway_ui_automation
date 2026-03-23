@@ -5,7 +5,7 @@ const GTWY_WEB_SEARCH = 'Gtwy Web Search';
 const VALID_DOMAIN = 'dev.gtwy.ai';
 const INVALID_DOMAIN = 'invalidurl';
 
-test.describe('Pre-Tool - Gtwy Web Search', () => {
+test.describe.serial('Pre-Tool - Gtwy Web Search', () => {
 
   test.beforeEach(async ({ agents }) => {
     await agents.goto('api');

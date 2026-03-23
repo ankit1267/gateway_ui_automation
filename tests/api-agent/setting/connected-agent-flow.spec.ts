@@ -2,7 +2,7 @@ import { test, expect } from '../../../fixtures/base.fixture';
 
 const AGENT_NAME = process.env.AGENT_NAME!;
 
-test.describe('Settings - Connected Agent Flow', () => {
+test.describe.serial('Settings - Connected Agent Flow', () => {
 
   test('TC-FLOW-02: Test model via connected agent flow sends message and opens chat', async ({ agents }) => {
     await agents.goto('api');

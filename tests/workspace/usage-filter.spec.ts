@@ -1,6 +1,6 @@
 import { test } from '../../fixtures/base.fixture';
 
-test.describe('Workspace - Usage Filter', () => {
+test.describe.serial('Workspace - Usage Filter', () => {
 
   test('TC-USAGE-01: Usage filter presets, custom range, and reset work correctly', async ({ agents }) => {
     await agents.goto('api');

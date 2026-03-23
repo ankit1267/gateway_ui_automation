@@ -2,7 +2,7 @@ import { test } from '../../../fixtures/base.fixture';
 
 const AGENT_NAME = process.env.MODEL_STOP_AGENT!;
 
-test.describe('Model - Stop parameter', () => {
+test.describe.serial('Model - Stop parameter', () => {
 
   test('TC-MODEL-09: Fill stop parameter and verify set default resets it', async ({ agents }) => {
     await agents.goto('api');

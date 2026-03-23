@@ -1,9 +1,9 @@
-﻿import { expect, test } from '../../../fixtures/base.fixture';
+import { expect, test } from '../../../fixtures/base.fixture';
 import { AuthKeyPage } from '../../../pages/sidepanel/auth-key.page';
 
 const AGENT_NAME = process.env.AGENT_NAME!;
 
-test.describe('Integration Guide - API Agent', () => {
+test.describe.serial('Integration Guide - API Agent', () => {
 
   test('TC-IG-01: API tab - every copy button should work', async ({ agents }) => {
     await agents.goto('api');

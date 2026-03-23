@@ -1,8 +1,8 @@
-﻿import { test, expect } from '../../../fixtures/base.fixture';
+import { test, expect } from '../../../fixtures/base.fixture';
 
 const AGENT_NAME = process.env.CHATBOT_AGENT!;
 
-test.describe('Prompt - Response Type (Chatbot)', () => {
+test.describe.serial('Prompt - Response Type (Chatbot)', () => {
 
   test.beforeEach(async ({ agents }) => {
     await agents.goto('chatbot');

@@ -15,8 +15,10 @@ export default defineConfig({
   expect: {
     timeout: 30_000,
   },
-  // 🔥 Smoke tests must be stable
-  workers: 1,
+  // Workers > 1 enables parallel file execution.
+  // Files sharing the same agent use test.describe.serial to avoid conflicts.
+  workers: 2,
+  retries: 1,
 
   reporter: [['html', { open: 'on-failure' }]],
 

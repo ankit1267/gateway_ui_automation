@@ -1,6 +1,6 @@
 import { test, expect } from '../../fixtures/base.fixture';
 
-test.describe('Members Page - Navigation', () => {
+test.describe.serial('Members Page - Navigation', () => {
 
   test('TC-MEM-01: Navigate to Members page via direct URL', async ({ sidepanel }) => {
     await sidepanel.gotoInvite();
@@ -26,7 +26,7 @@ test.describe('Members Page - Navigation', () => {
 
 });
 
-test.describe('Members Page - Container', () => {
+test.describe.serial('Members Page - Container', () => {
 
   test.beforeEach(async ({ sidepanel }) => {
     await sidepanel.gotoInvite();
@@ -45,7 +45,7 @@ test.describe('Members Page - Container', () => {
 
 });
 
-test.describe('Members Page - Invite User Modal', () => {
+test.describe.serial('Members Page - Invite User Modal', () => {
 
   test.beforeEach(async ({ sidepanel }) => {
     await sidepanel.gotoInvite();
