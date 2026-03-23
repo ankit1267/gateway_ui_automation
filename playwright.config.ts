@@ -1,5 +1,13 @@
 import { defineConfig } from '@playwright/test';
-import 'dotenv/config';
+import dotenv from 'dotenv';
+import path from 'path';
+
+// Load environment-specific .env file based on TEST_ENV (default: prod)
+// Usage: TEST_ENV=dev npx playwright test
+const testEnv = process.env.TEST_ENV || 'dev';
+dotenv.config({ path: path.resolve(__dirname, `.env.${testEnv}`), override: true });
+// Fallback to .env for any missing vars
+dotenv.config({ path: path.resolve(__dirname, '.env') });
 
 export default defineConfig({
   timeout: 120_000,
