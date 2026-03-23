@@ -1,4 +1,4 @@
-﻿import { test, expect } from "../../fixtures/base.fixture";
+import { test, expect } from "../../fixtures/base.fixture";
 
 const AGENT_NAME = process.env.TESTING_AGENT!
 //dependent on css class if css class change it will break

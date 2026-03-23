@@ -2,7 +2,7 @@ import { test } from '../../fixtures/base.fixture';
 
 const TESTING_AGENT = process.env.TESTING_AGENT!;
 
-test.describe('Agent - Delete', () => {
+test.describe.serial('Agent - Delete', () => {
 
   test.beforeEach(async ({ agents }) => {
     await agents.goto('api');

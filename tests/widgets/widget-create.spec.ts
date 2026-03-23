@@ -1,6 +1,6 @@
 import { test } from '../../fixtures/base.fixture';
 
-test.describe('Widgets - Create Widget', () => {
+test.describe.serial('Widgets - Create Widget', () => {
 
   test('TC-WIDGET-CREATE-01: Create widget and verify it is saved', async ({ sidepanel }) => {
     await sidepanel.gotoWidgets();

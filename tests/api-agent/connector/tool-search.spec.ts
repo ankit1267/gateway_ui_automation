@@ -1,9 +1,9 @@
-﻿import { test } from '../../../fixtures/base.fixture';
+import { test } from '../../../fixtures/base.fixture';
 
 const AGENT_NAME = process.env.TESTING_AGENT!;
 const TOOL_RESULT = 'Gtwy web search';
 
-test.describe('Connectors - Tool Search - API Agent', () => {
+test.describe.serial('Connectors - Tool Search - API Agent', () => {
 
   test.beforeEach(async ({ agents }) => {
     await agents.goto('api');

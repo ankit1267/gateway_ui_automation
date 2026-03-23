@@ -1,8 +1,8 @@
-﻿import { test } from '../../fixtures/base.fixture';
+import { test } from '../../fixtures/base.fixture';
 
 const AGENT_NAME = process.env.TESTING_AGENT!;
 
-test.describe('Tool - Info Tooltip Demo Video', () => {
+test.describe.serial('Tool - Info Tooltip Demo Video', () => {
 
   test.beforeEach(async ({ agents }) => {
     await agents.goto('api');

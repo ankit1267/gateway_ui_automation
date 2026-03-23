@@ -1,6 +1,6 @@
 import { test } from '../../fixtures/base.fixture';
 
-test.describe('Configure Chatbot - Integration Guide', () => {
+test.describe.serial('Configure Chatbot - Integration Guide', () => {
 
   test.beforeEach(async ({ sidepanel }) => {
     await sidepanel.gotoChatbotConfig();

@@ -1,6 +1,6 @@
 import { test } from '../../fixtures/base.fixture';
 
-test.describe('RAG Embed - Testing Tab', () => {
+test.describe.serial('RAG Embed - Testing Tab', () => {
 
   test.beforeEach(async ({ sidepanel }) => {
     await sidepanel.gotoRAGEmbed();

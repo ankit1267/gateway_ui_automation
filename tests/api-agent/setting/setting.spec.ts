@@ -1,4 +1,4 @@
-﻿import { test, expect } from '../../../fixtures/base.fixture';
+import { test, expect } from '../../../fixtures/base.fixture';
 
 
 
@@ -114,7 +114,7 @@ test(
 );
 
 test(
-    'TC-SET-07:Agent Settings â€“ Guardrail Configuration.',
+    'TC-SET-07:Agent Settings – Guardrail Configuration.',
     async ({ agents }) => {
        const agent = await agents.openAgent(AGENT_NAME);
        await agent.tabs.openSettings();
