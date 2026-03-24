@@ -439,6 +439,10 @@ export class PromptPage {
     await this.deleteModal.click();
   }
 
+  async waitForPageLoad() {
+    await this.page.waitForLoadState('domcontentloaded');
+  }
+
   async addPreToolClick() {
     const input = this.page.getByTestId('embed-suggestion-search-input');
 

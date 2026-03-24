@@ -280,4 +280,10 @@ export class AgentHeaderNav {
     const btn = this.versionTabs.locator('button[data-testid^="version-button-"]').nth(1);
     return (await btn.getAttribute('data-testid')) || '';
   }
+
+  async expectSavedVisible() {
+    await expect(
+      this.page.locator('div.text-base-content', { hasText: 'Saved' })
+    ).toBeVisible();
+  }
 }

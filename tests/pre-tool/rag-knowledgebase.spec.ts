@@ -14,6 +14,7 @@ test.describe('Pre-Tool - RAG Knowledgebase', () => {
     await agents.goto('api');
     const agent = await agents.openAgent(AGENT_NAME);
     await agent.tabs.openPrompt();
+    await agent.prompt.waitForPageLoad();
     await agent.prompt.deletePreTool();
     await agent.prompt.expectPreToolContainerNotVisible();
   });
