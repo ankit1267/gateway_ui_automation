@@ -1,6 +1,6 @@
 import { test } from '../../../fixtures/base.fixture';
 
-const AGENT_NAME = process.env.AGENT_FLOW_AGENT!;
+const AGENT_NAME = 'IntelligentAssistant_1';
 
 test.describe.serial('Settings - Response Format', () => {
 

@@ -1,6 +1,6 @@
 import { test } from '../../../fixtures/base.fixture';
 
-const AGENT_NAME = process.env.MODEL_STOP_AGENT!;
+const AGENT_NAME = 'Model Stop Testing';
 
 test.describe.serial('Model - Stop parameter', () => {
 
