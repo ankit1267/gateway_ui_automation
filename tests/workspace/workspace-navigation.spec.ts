@@ -44,6 +44,9 @@ test('update org name',async({page})=>{
   await workspacePage.clickUpdateButton();
   await workspacePage.expectSnackBarVisible();
   await page.reload();
-  // Verify name persisted (page returns to read-only view after reload)
+  // Navigate back to User Details after reload (reload goes to dashboard, not User Details)
+  await workspacePage.clickWorkspaceButton();
+  await workspacePage.clickUserDetails();
+  // Verify name persisted
   await expect(page.getByText(newName).first()).toBeVisible();
 })

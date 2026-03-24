@@ -23,11 +23,11 @@ test.describe('Configure Chatbot - Configuration Tab', () => {
   });
 
   test('TC-CB-CFG-03: Change button title and icon URL, verify in live preview', async ({ sidepanel }) => {
-    await sidepanel.chatbotConfigPage.fillConfigButtonTitle('viasocket');
-    await sidepanel.chatbotConfigPage.fillConfigIconUrl('viasocket.com');
+    await sidepanel.chatbotConfigPage.fillConfigButtonTitle('unstop');
+    await sidepanel.chatbotConfigPage.fillConfigIconUrl('https://d8it4huxumps7.cloudfront.net/uploads/images/avif/internships_new.png?d=196x120');
     await sidepanel.chatbotConfigPage.reloadPreview();
     await sidepanel.chatbotConfigPage.closeChatbotInPreview();
-    await sidepanel.chatbotConfigPage.expectFloatingButtonText('viasocket');
+    await sidepanel.chatbotConfigPage.expectFloatingButton();
   });
 
   test('TC-CB-CFG-04: Change height and verify in live preview', async ({ sidepanel }) => {

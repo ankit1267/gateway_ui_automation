@@ -36,8 +36,8 @@ export class CommandPalette {
     await expect(async () => {
       await this.page.keyboard.press('Escape');
       await this.page.keyboard.press('Control+k');
-      await expect(this.searchInput).toBeVisible();
-    }).toPass();
+      await expect(this.searchInput).toBeVisible({ timeout: 2000 });
+    }).toPass({ timeout: 30000 });
   }
 
   async close() {

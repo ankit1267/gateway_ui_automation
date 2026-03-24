@@ -46,7 +46,7 @@ export class AgentsPage {
     this.usageSummaryPopover = new UsageSummaryPopover(page);
   }
 
-  async goto(type?: 'chatbot' | 'api') {
+ async goto(type?: 'chatbot' | 'api') {
      await this.page.goto('/org');
 
      const onboardingOverlay = this.page.getByTestId('org-page-guard-modal-overlay');

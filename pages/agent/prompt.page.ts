@@ -367,7 +367,13 @@ export class PromptPage {
   }
 
   async clickObjectAddChildProperty(path: string) {
-    await this.getPropertyAddChildButton(path).click();
+    const childPath = `${path}.new0`;
+    await expect(async () => {
+      if (!(await this.getPropertyNameInput(childPath).isVisible())) {
+        await this.getPropertyAddChildButton(path).click({ force: true });
+      }
+      await expect(this.getPropertyNameInput(childPath)).toBeVisible({ timeout: 2000 });
+    }).toPass({ timeout: 30000 });
   }
 
   async expectObjectAddChildPropertyVisible(path: string) {

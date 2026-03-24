@@ -1,6 +1,6 @@
 import { test } from '../../../fixtures/base.fixture';
 
-const AUTH_KEY_NAME = "my auth key";
+const AUTH_KEY_NAME = `my auth key ${Date.now()}`;
 
 test.describe('Auth Key - Security & Access', () => {
 
@@ -21,16 +21,19 @@ test.describe('Auth Key - Security & Access', () => {
     await sidepanel.authKeyPage.fillAuthKeyName(AUTH_KEY_NAME);
     await sidepanel.authKeyPage.clickCreateSubmit();
     await sidepanel.authKeyPage.expectCreateSuccessToast();
+    await sidepanel.authKeyPage.closeToast();
     await sidepanel.authKeyPage.expectKeyListed(AUTH_KEY_NAME);
 
     // -------- Copy --------
     await sidepanel.authKeyPage.copyKeyByName(AUTH_KEY_NAME);
     await sidepanel.authKeyPage.expectCopySuccessToast();
+    await sidepanel.authKeyPage.closeToast();
 
     // -------- Delete --------
     await sidepanel.authKeyPage.clickDeleteIconByName(AUTH_KEY_NAME);
     await sidepanel.authKeyPage.deleteModal.confirm();
     await sidepanel.authKeyPage.expectDeleteSuccessToast();
+    await sidepanel.authKeyPage.closeToast();
   });
 
 });

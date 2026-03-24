@@ -13,9 +13,9 @@ export class ChatbotPage {
   private readonly sendButton: Locator;
 
   constructor(public readonly page: Page) {
-    this.frame = this.page.frameLocator(
+    this.frame = this.page.locator(
       '#iframe-component-interfaceEmbed'
-    );
+    ).first().contentFrame();
     this.scrollable = this.frame.locator('#scrollableDiv');
     this.newThreadButton = this.frame.locator('button:has(.lucide-square-pen)');
     this.input = this.frame.getByRole('textbox', {

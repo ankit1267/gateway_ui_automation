@@ -162,11 +162,16 @@ export class SettingsPage {
     }
 
     async fillWebhookUrl(url: string) {
+        await this.webhookUrl.clear();
         await this.webhookUrl.fill(url);
+        await this.webhookUrl.press('Tab');
     }
 
     async fillHeaders(headers: string) {
-        await this.page.getByRole('textbox', { name: 'Headers (JSON format)' }).fill(headers);
+        const headersInput = this.page.getByRole('textbox', { name: 'Headers (JSON format)' });
+        await headersInput.clear();
+        await headersInput.fill(headers);
+        await headersInput.press('Tab');
     }
 
     async clickHiddenElement() {

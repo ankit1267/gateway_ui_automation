@@ -1,4 +1,4 @@
-import { test } from '../../fixtures/base.fixture';
+import { test, expect } from '../../fixtures/base.fixture';
 
 const AGENT_PURPOSE = 'Sales agent that can answer questions about our products and pricing.';
 
@@ -25,7 +25,9 @@ test.describe('Publish - Chatbot Agent', () => {
     await agents.createAgentModal.fillPurpose(AGENT_PURPOSE);
     const agent = await agents.clickCreateNewAgentSubmit();
 
+
     createdAgentName = await agent.header.getAgentNameText();
+    await agent.getPage.waitForTimeout(3000);
 
     // -------- Publish Agent --------
     await agent.header.clickPublish();
