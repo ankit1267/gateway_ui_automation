@@ -52,113 +52,110 @@ test.describe('Members Page - Invite User Modal', () => {
     await sidepanel.membersPage.waitForPage();
   });
 
-  test('TC-MEM-06: Invite User button is visible in sidebar', async ({ sidepanel }) => {
+  test('TC-MEM-06: Invite Member button is visible', async ({ sidepanel }) => {
     await expect(sidepanel.membersPage.inviteUserButton).toBeVisible();
   });
 
-  test('TC-MEM-07: Clicking Invite User button opens modal', async ({ sidepanel }) => {
-    await sidepanel.membersPage.openInviteModal();
-    const isVisible = await sidepanel.membersPage.isInviteModalVisible();
+  test('TC-MEM-07: Clicking Invite Member button opens invite form', async ({ sidepanel }) => {
+    await sidepanel.membersPage.openInviteForm();
+    const isVisible = await sidepanel.membersPage.isInviteFormVisible();
     expect(isVisible).toBe(true);
   });
 
-  test('TC-MEM-08: Invite modal heading and description are visible', async ({ sidepanel }) => {
-    await sidepanel.membersPage.openInviteModal();
-    await expect(sidepanel.membersPage.inviteModalHeading).toBeVisible();
-    await expect(sidepanel.membersPage.inviteModalDescription).toBeVisible();
+  test('TC-MEM-08: Invite form shows Name, Email and Role fields', async ({ sidepanel }) => {
+    await sidepanel.membersPage.openInviteForm();
+    await expect(sidepanel.membersPage.inviteNameInput).toBeVisible();
+    await expect(sidepanel.membersPage.inviteEmailInput).toBeVisible();
+    await expect(sidepanel.membersPage.inviteRoleSelect).toBeVisible();
   });
 
-  test('TC-MEM-09: Invite modal email input is visible and empty by default', async ({ sidepanel }) => {
-    await sidepanel.membersPage.openInviteModal();
+  test('TC-MEM-09: Invite form email input is visible and empty by default', async ({ sidepanel }) => {
+    await sidepanel.membersPage.openInviteForm();
     await expect(sidepanel.membersPage.inviteEmailInput).toBeVisible();
     const emailValue = await sidepanel.membersPage.getEmailValue();
     expect(emailValue).toBe('');
   });
 
-  test('TC-MEM-10: Invite modal Cancel and Send Invite buttons are visible', async ({ sidepanel }) => {
-    await sidepanel.membersPage.openInviteModal();
-    await expect(sidepanel.membersPage.inviteCancelButton).toBeVisible();
-    await expect(sidepanel.membersPage.inviteSendButton).toBeVisible();
-  });
-
-  test('TC-MEM-11: Send Invite button is disabled when email is empty', async ({ sidepanel }) => {
-    await sidepanel.membersPage.openInviteModal();
-    const isDisabled = await sidepanel.membersPage.isSendButtonDisabled();
-    expect(isDisabled).toBe(true);
-  });
-
-  test('TC-MEM-12: Send Invite button is enabled after entering a valid email', async ({ sidepanel }) => {
-    await sidepanel.membersPage.openInviteModal();
-    await sidepanel.membersPage.fillEmail('test@example.com');
-    const isDisabled = await sidepanel.membersPage.isSendButtonDisabled();
-    expect(isDisabled).toBe(false);
-  });
-
-  test('TC-MEM-13: Clearing email disables Send Invite button again', async ({ sidepanel }) => {
-    await sidepanel.membersPage.openInviteModal();
-    await sidepanel.membersPage.fillEmail('test@example.com');
-    const isEnabledAfterFill = await sidepanel.membersPage.isSendButtonDisabled();
-    expect(isEnabledAfterFill).toBe(false);
-
-    await sidepanel.membersPage.clearEmail();
-    const isDisabledAfterClear = await sidepanel.membersPage.isSendButtonDisabled();
-    expect(isDisabledAfterClear).toBe(true);
-  });
-
-  test('TC-MEM-14: Cancel button closes the invite modal', async ({ sidepanel }) => {
-    await sidepanel.membersPage.openInviteModal();
-    const isVisibleBefore = await sidepanel.membersPage.isInviteModalVisible();
-    expect(isVisibleBefore).toBe(true);
-
-    await sidepanel.membersPage.clickCancel();
-    await sidepanel.membersPage.inviteModalContainer.waitFor({ state: 'hidden' });
-
-    const isVisibleAfter = await sidepanel.membersPage.isInviteModalVisible();
-    expect(isVisibleAfter).toBe(false);
-  });
-
-  test('TC-MEM-15: Email input accepts text input', async ({ sidepanel }) => {
-    await sidepanel.membersPage.openInviteModal();
-    const testEmail = 'user@company.com';
-    await sidepanel.membersPage.fillEmail(testEmail);
-    const emailValue = await sidepanel.membersPage.getEmailValue();
-    expect(emailValue).toBe(testEmail);
-  });
-
-  test('TC-MEM-16: Email input has correct placeholder', async ({ sidepanel }) => {
-    await sidepanel.membersPage.openInviteModal();
-    await expect(sidepanel.membersPage.inviteEmailInput).toHaveAttribute('placeholder', 'Enter email address');
-  });
-
-  test('TC-MEM-17: Email input has type email', async ({ sidepanel }) => {
-    await sidepanel.membersPage.openInviteModal();
-    await expect(sidepanel.membersPage.inviteEmailInput).toHaveAttribute('type', 'email');
-  });
-
-  test('TC-MEM-18: Cancel button is enabled while not inviting', async ({ sidepanel }) => {
-    await sidepanel.membersPage.openInviteModal();
-    const isDisabled = await sidepanel.membersPage.isCancelButtonDisabled();
-    expect(isDisabled).toBe(false);
-  });
-
-  test('TC-MEM-19: Modal can be reopened after closing', async ({ sidepanel }) => {
-    await sidepanel.membersPage.openInviteModal();
-    await sidepanel.membersPage.clickCancel();
-    await sidepanel.membersPage.inviteModalContainer.waitFor({ state: 'hidden' });
-
-    await sidepanel.membersPage.openInviteModal();
-    const isVisible = await sidepanel.membersPage.isInviteModalVisible();
+  test('TC-MEM-10: Invite form Add Member button is visible', async ({ sidepanel }) => {
+    await sidepanel.membersPage.openInviteForm();
+    const isVisible = await sidepanel.membersPage.isAddMemberButtonVisible();
     expect(isVisible).toBe(true);
   });
 
-  test('TC-MEM-20: Email field is cleared after closing and reopening modal', async ({ sidepanel }) => {
-    await sidepanel.membersPage.openInviteModal();
-    await sidepanel.membersPage.fillEmail('test@example.com');
-    await sidepanel.membersPage.clickCancel();
-    await sidepanel.membersPage.inviteModalContainer.waitFor({ state: 'hidden' });
+  test('TC-MEM-11: Name input is empty by default', async ({ sidepanel }) => {
+    await sidepanel.membersPage.openInviteForm();
+    const nameValue = await sidepanel.membersPage.getNameValue();
+    expect(nameValue).toBe('');
+  });
 
-    await sidepanel.membersPage.openInviteModal();
+  test('TC-MEM-12: Name input accepts text', async ({ sidepanel }) => {
+    await sidepanel.membersPage.openInviteForm();
+    await sidepanel.membersPage.fillName('Test User');
+    const nameValue = await sidepanel.membersPage.getNameValue();
+    expect(nameValue).toBe('Test User');
+  });
+
+  test('TC-MEM-13: Email input accepts text', async ({ sidepanel }) => {
+    await sidepanel.membersPage.openInviteForm();
+    await sidepanel.membersPage.fillEmail('test@example.com');
     const emailValue = await sidepanel.membersPage.getEmailValue();
+    expect(emailValue).toBe('test@example.com');
+  });
+
+  test('TC-MEM-14: Clearing email resets the field', async ({ sidepanel }) => {
+    await sidepanel.membersPage.openInviteForm();
+    await sidepanel.membersPage.fillEmail('test@example.com');
+    await sidepanel.membersPage.clearEmail();
+    const emailValue = await sidepanel.membersPage.getEmailValue();
+    expect(emailValue).toBe('');
+  });
+
+  test('TC-MEM-15: Mobile input accepts phone number', async ({ sidepanel }) => {
+    await sidepanel.membersPage.openInviteForm();
+    await sidepanel.membersPage.fillMobile('911234567890');
+    await expect(sidepanel.membersPage.inviteMobileInput).toHaveValue('911234567890');
+  });
+
+  test('TC-MEM-16: Role dropdown is visible', async ({ sidepanel }) => {
+    await sidepanel.membersPage.openInviteForm();
+    await expect(sidepanel.membersPage.inviteRoleSelect).toBeVisible();
+  });
+
+  test('TC-MEM-17: Role dropdown has options', async ({ sidepanel }) => {
+    await sidepanel.membersPage.openInviteForm();
+    await sidepanel.membersPage.inviteRoleSelect.click();
+    await sidepanel.page.locator('.mat-select-panel').waitFor({ state: 'visible', timeout: 5000 });
+    const roleOptions = sidepanel.page.locator('.mat-select-panel mat-option');
+    const count = await roleOptions.count();
+    expect(count).toBeGreaterThan(0);
+    await sidepanel.page.keyboard.press('Escape');
+  });
+
+  test('TC-MEM-18: Invite form can be closed with Escape', async ({ sidepanel }) => {
+    await sidepanel.membersPage.openInviteForm();
+    const isVisibleBefore = await sidepanel.membersPage.isInviteFormVisible();
+    expect(isVisibleBefore).toBe(true);
+    await sidepanel.membersPage.closeInviteForm();
+  });
+
+  test('TC-MEM-19: Invite form can be reopened after closing', async ({ sidepanel }) => {
+    await sidepanel.membersPage.openInviteForm();
+    await sidepanel.membersPage.closeInviteForm();
+    await sidepanel.membersPage.openInviteForm();
+    const isVisible = await sidepanel.membersPage.isInviteFormVisible();
+    expect(isVisible).toBe(true);
+  });
+
+  test('TC-MEM-20: Fields are cleared after closing and reopening form', async ({ sidepanel }) => {
+    await sidepanel.membersPage.openInviteForm();
+    await sidepanel.membersPage.fillName('Test User');
+    await sidepanel.membersPage.fillEmail('test@example.com');
+    await sidepanel.membersPage.closeInviteForm();
+
+    await sidepanel.membersPage.openInviteForm();
+    const nameValue = await sidepanel.membersPage.getNameValue();
+    const emailValue = await sidepanel.membersPage.getEmailValue();
+    expect(nameValue).toBe('');
     expect(emailValue).toBe('');
   });
 

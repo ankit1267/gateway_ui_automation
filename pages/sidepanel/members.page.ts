@@ -3,26 +3,24 @@ import type { Page, Locator } from '@playwright/test';
 export class MembersPage {
   readonly page: Page;
   readonly userProxyContainer: Locator;
+  readonly proxyComponent: Locator;
   readonly inviteUserButton: Locator;
-  readonly inviteModalContainer: Locator;
-  readonly inviteModalHeading: Locator;
-  readonly inviteModalDescription: Locator;
+  readonly inviteNameInput: Locator;
   readonly inviteEmailInput: Locator;
-  readonly inviteCancelButton: Locator;
-  readonly inviteSendButton: Locator;
-  readonly inviteLoadingSpinner: Locator;
+  readonly inviteMobileInput: Locator;
+  readonly inviteRoleSelect: Locator;
+  readonly addMemberButton: Locator;
 
   constructor(page: Page) {
     this.page = page;
     this.userProxyContainer = page.locator('#userProxyContainer');
-    this.inviteUserButton = page.locator('#main-slider-invite-user-button');
-    this.inviteModalContainer = page.locator('#invite-user-modal-container');
-    this.inviteModalHeading = page.getByRole('heading', { name: 'Invite Team Member' });
-    this.inviteModalDescription = page.getByText('Send an invitation to join your organization');
-    this.inviteEmailInput = page.getByTestId('invite-user-email-input');
-    this.inviteCancelButton = page.getByTestId('invite-user-cancel-button');
-    this.inviteSendButton = page.getByTestId('invite-user-send-button');
-    this.inviteLoadingSpinner = page.locator('#invite-user-modal-container .loading-spinner');
+    this.proxyComponent = this.userProxyContainer.locator('proxy-user-management').first();
+    this.inviteUserButton = this.userProxyContainer.locator('button:has-text("Invite Member")').first();
+    this.inviteNameInput = page.locator('mat-form-field').filter({ has: page.locator('mat-label', { hasText: 'Name' }) }).locator('input').first();
+    this.inviteEmailInput = page.locator('mat-form-field').filter({ has: page.locator('mat-label', { hasText: 'Email' }) }).locator('input').first();
+    this.inviteMobileInput = page.locator('input[type="tel"]').first();
+    this.inviteRoleSelect = page.locator('mat-form-field').filter({ has: page.locator('mat-label', { hasText: 'Role' }) }).locator('mat-select').first();
+    this.addMemberButton = page.locator('button:has-text("Add Member")').first();
   }
 
   async goto() {
@@ -33,16 +31,25 @@ export class MembersPage {
   }
 
   async waitForPage() {
-    await this.userProxyContainer.waitFor({ state: 'attached' });
+    await this.proxyComponent.waitFor({ state: 'attached', timeout: 30000 });
+    await this.inviteUserButton.waitFor({ state: 'visible', timeout: 30000 });
   }
 
   async isContainerAttached(): Promise<boolean> {
     return (await this.userProxyContainer.count()) > 0;
   }
 
-  async openInviteModal() {
+  async openInviteForm() {
     await this.inviteUserButton.click();
-    await this.inviteModalContainer.waitFor({ state: 'visible' });
+    await this.page.waitForTimeout(1500);
+  }
+
+  async isInviteFormVisible(): Promise<boolean> {
+    return this.inviteNameInput.isVisible();
+  }
+
+  async fillName(name: string) {
+    await this.inviteNameInput.fill(name);
   }
 
   async fillEmail(email: string) {
@@ -57,23 +64,31 @@ export class MembersPage {
     return this.inviteEmailInput.inputValue();
   }
 
-  async clickCancel() {
-    await this.inviteCancelButton.click();
+  async getNameValue(): Promise<string> {
+    return this.inviteNameInput.inputValue();
   }
 
-  async clickSendInvite() {
-    await this.inviteSendButton.click();
+  async fillMobile(mobile: string) {
+    await this.inviteMobileInput.fill(mobile);
   }
 
-  async isInviteModalVisible(): Promise<boolean> {
-    return this.inviteModalContainer.isVisible();
+  async selectRole(roleName: string) {
+    await this.inviteRoleSelect.click();
+    await this.page.locator('.mat-select-panel').waitFor({ state: 'visible', timeout: 5000 });
+    await this.page.locator('.mat-select-panel mat-option').filter({ hasText: roleName }).click();
+    await this.page.waitForTimeout(500);
   }
 
-  async isSendButtonDisabled(): Promise<boolean> {
-    return this.inviteSendButton.isDisabled();
+  async clickAddMember() {
+    await this.addMemberButton.click();
   }
 
-  async isCancelButtonDisabled(): Promise<boolean> {
-    return this.inviteCancelButton.isDisabled();
+  async closeInviteForm() {
+    await this.page.keyboard.press('Escape');
+    await this.page.waitForTimeout(500);
+  }
+
+  async isAddMemberButtonVisible(): Promise<boolean> {
+    return this.addMemberButton.isVisible();
   }
 }
