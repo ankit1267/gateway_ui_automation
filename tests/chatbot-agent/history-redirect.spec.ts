@@ -2,7 +2,7 @@ import { test } from '../../fixtures/base.fixture';
 
 const CHATBOT_AGENT = process.env.CHATBOT_AGENT!;
 
-test.describe.serial('Agents - History Button Redirect - Chatbot Agent', () => {
+test.describe('Agents - History Button Redirect - Chatbot Agent', () => {
 
   test.beforeEach(async ({ agents }) => {
     await agents.goto('chatbot');

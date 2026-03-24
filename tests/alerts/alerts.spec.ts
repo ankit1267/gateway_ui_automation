@@ -1,6 +1,6 @@
 import { test } from '../../fixtures/base.fixture';
 
-test.describe.serial('Alerts - Sidepanel', () => {
+test.describe('Alerts - Sidepanel', () => {
 
   test.beforeEach(async ({ sidepanel }) => {
     await sidepanel.gotoAlerts();

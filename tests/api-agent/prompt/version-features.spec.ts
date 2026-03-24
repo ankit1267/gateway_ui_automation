@@ -2,7 +2,7 @@ import { test, expect } from '../../../fixtures/base.fixture';
 
 const AGENT_NAME = process.env.AGENT_NAME!;
 
-test.describe.serial('Version Features - API Agent', () => {
+test.describe('Version Features - API Agent', () => {
 
   test.beforeEach(async ({ agents }) => {
     await agents.goto('api');

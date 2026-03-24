@@ -2,7 +2,7 @@ import { test } from '../../../fixtures/base.fixture';
 
 const AGENT_NAME = process.env.AGENT_NAME!;
 
-test.describe.serial('Prompt - Build with AI', () => {
+test.describe('Prompt - Build with AI', () => {
   test('TC-PROMPT-BAI-01: generate and apply instruction from Build with AI panel', async ({ agents }) => {
     await agents.goto('api');
 

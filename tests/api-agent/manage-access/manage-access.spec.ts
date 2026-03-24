@@ -3,7 +3,7 @@ import { test, expect } from '../../../fixtures/base.fixture';
 const TESTING_AGENT = process.env.TESTING_AGENT!;
 const TEST_EMAIL = 'tilakraj.ranawat09@gmail.com';
 
-test.describe.serial('Agent - Manage Access', () => {
+test.describe('Agent - Manage Access', () => {
 
   test.beforeEach(async ({ agents }) => {
     await agents.goto('api');

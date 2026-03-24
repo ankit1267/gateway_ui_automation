@@ -3,7 +3,7 @@ import { test, expect } from '../../../fixtures/base.fixture';
 const TESTING_AGENT_NAME = process.env.TESTING_AGENT!;
 const AGENT_NAME = process.env.AGENT_NAME!
 
-test.describe.serial('Connectors - A2A Agent Navigation - API Agent', () => {
+test.describe('Connectors - A2A Agent Navigation - API Agent', () => {
 
   test.beforeEach(async ({ agents }) => {
     await agents.goto('api');

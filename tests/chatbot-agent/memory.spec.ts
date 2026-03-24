@@ -3,7 +3,7 @@ import { test } from '../../fixtures/base.fixture';
 const CHATBOT_AGENT = process.env.CHATBOT_AGENT!;
 const memoryText = 'remember my conversation';
 
-test.describe.serial('Memory - Chatbot Agent', () => {
+test.describe('Memory - Chatbot Agent', () => {
 
   test.beforeEach(async ({ agents }) => {
     await agents.goto('chatbot');

@@ -1,6 +1,6 @@
 import { test } from '../../../fixtures/base.fixture';
 
-test.describe.serial('API Key Guide - Button Visibility', () => {
+test.describe('API Key Guide - Button Visibility', () => {
 
   test.beforeEach(async ({ sidepanel }) => {
     await sidepanel.gotoApiKeys();

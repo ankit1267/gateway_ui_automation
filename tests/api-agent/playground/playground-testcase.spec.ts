@@ -2,7 +2,7 @@ import { test, expect } from '../../../fixtures/base.fixture';
 
 const AGENT_NAME = process.env.AGENT_NAME!;
 
-test.describe.serial('Playground Test Case Sidebar', () => {
+test.describe('Playground Test Case Sidebar', () => {
 
   test('TC-PG-TC-01: Playground test case sidebar full flow', async ({ agents }) => {
     await agents.goto('api');

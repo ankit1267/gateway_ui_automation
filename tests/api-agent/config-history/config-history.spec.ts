@@ -2,7 +2,7 @@ import { test } from '../../../fixtures/base.fixture';
 
 const TESTING_AGENT = process.env.TESTING_AGENT!
 
-test.describe.serial('Agent - Config History Panel', () => {
+test.describe('Agent - Config History Panel', () => {
 
   test.beforeEach(async ({ agents }) => {
     await agents.goto('api');

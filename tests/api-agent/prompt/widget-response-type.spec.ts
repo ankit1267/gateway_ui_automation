@@ -2,7 +2,7 @@ import { test } from '../../../fixtures/base.fixture';
 
 const AGENT_NAME = process.env.AGENT_NAME!;
 
-test.describe.serial('Widget Response Type', () => {
+test.describe('Widget Response Type', () => {
 
   test('TC-WIDGET-01: Select widgets and verify selection count updates', async ({ agents }) => {
     await agents.goto('api');

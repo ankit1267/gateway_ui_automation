@@ -2,7 +2,7 @@ import { test } from '../../../fixtures/base.fixture';
 
 const TESTING_AGENT = process.env.TESTING_AGENT!;
 
-test.describe.serial('Agents - History Button Redirect - API Agent', () => {
+test.describe('Agents - History Button Redirect - API Agent', () => {
 
   test.beforeEach(async ({ agents }) => {
     await agents.goto('api');

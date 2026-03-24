@@ -1,6 +1,6 @@
 import { test } from '../../../fixtures/base.fixture';
 
-test.describe.serial('Model - Parameters change per model', () => {
+test.describe('Model - Parameters change per model', () => {
 
   test('TC-MODEL-08: Parameters update when switching between models', async ({ agents }) => {
     await agents.goto('api');

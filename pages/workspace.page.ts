@@ -187,4 +187,8 @@ export class WorkspacePage {
     async expectSearchBarVisible() {
         await expect(this.page.getByTestId('search-items-input')).toBeVisible();
     }
+
+    async expectSnackBarVisible() {
+        await expect(this.page.locator('snack-bar-container')).toBeVisible();
+    }
 }

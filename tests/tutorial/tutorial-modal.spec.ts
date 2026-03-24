@@ -1,6 +1,6 @@
 import { test, expect } from '../../fixtures/base.fixture';
 
-test.describe.serial('GTWY Tutorial Modal', () => {
+test.describe('GTWY Tutorial Modal', () => {
 
   test.beforeEach(async ({ sidepanel }) => {
     await sidepanel.gotoAgents();

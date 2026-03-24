@@ -2,7 +2,7 @@ import { test, expect } from '../../fixtures/base.fixture';
 
 const AGENT_NAME = process.env.AGENT_NAME!;
 
-test.describe.serial('History - API Agent Thread Response', () => {
+test.describe('History - API Agent Thread Response', () => {
   test.beforeEach(async ({ agents }) => {
     await agents.goto('api');
   });

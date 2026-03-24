@@ -15,7 +15,7 @@ async function submitAndOpenPrompt(agents: AgentsPage): Promise<AgentPage> {
   return agent;
 }
 
-test.describe.serial('Prompt tab - API Agent', () => {
+test.describe('Prompt tab - API Agent', () => {
 
   // ─────────────────────────────────────────────────────────────────────────
   // Test 1 (from recorded codegen)

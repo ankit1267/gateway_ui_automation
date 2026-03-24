@@ -1,6 +1,6 @@
 import { test, expect } from '../../fixtures/base.fixture';
 
-test.describe.serial('Command Palette - No Results on API Page', () => {
+test.describe('Command Palette - No Results on API Page', () => {
 
   test.beforeEach(async ({ agents }) => {
     await agents.goto('api');

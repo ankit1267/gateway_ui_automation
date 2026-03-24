@@ -2,7 +2,7 @@ import { test } from '../../fixtures/base.fixture';
 
 const AGENT_NAME = process.env.AGENT_NAME!;
 
-test.describe.serial('History - API Agent Better Prompt', () => {
+test.describe('History - API Agent Better Prompt', () => {
   test.beforeEach(async ({ agents }) => {
     await agents.goto('api');
   });

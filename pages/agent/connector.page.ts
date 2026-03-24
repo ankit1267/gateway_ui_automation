@@ -8,6 +8,7 @@ import { KnowledgeBaseModal } from '../../modals/knowledge-base.modal';
 import { PrebuiltToolsConfigModal } from '../../modals/prebuilt-tools-config.modal';
 import { AgentDescriptionModal } from '../../modals/agent-description.modal';
 import { ToolConfigModal } from '../../modals/tool-config.modal';
+import { lockDaisyDropdown } from '../../utils/daisy-ui';
 
 
 export class ConnectersPage {
@@ -70,32 +71,35 @@ export class ConnectersPage {
 
  
   async clickAddTool() {
-    for (let i = 0; i < 4; i++) {
+    await expect(async () => {
       if (await this.addToolButton.isVisible()) {
         await this.addToolButton.click();
       } else {
         await this.addToolButtonHasTools.click();
       }
-      if (await this.toolDropdown.isVisible()) break;
-    }
+      expect(await this.toolDropdown.isVisible()).toBe(true);
+    }).toPass();
+    await lockDaisyDropdown(this.page, 'embed-suggestion-dropdown-menu');
   }
 
   async clickAddAgent() {
-    for (let i = 0; i < 4; i++) {
+    await expect(async () => {
       if (await this.addAgentButton.isVisible()) {
         await this.addAgentButton.click();
       } else {
         await this.addAgentButtonHasAgents.click();
       }
-      if (await this.a2aDropdown.isVisible()) break;
-    }
+      expect(await this.a2aDropdown.isVisible()).toBe(true);
+    }).toPass();
+    await lockDaisyDropdown(this.page, 'connect-agent-suggestion-dropdown');
   }
 
   async clickAddKB() {
-    for (let i = 0; i < 4; i++) {
+    await expect(async () => {
       await this.addKBButton.click();
-      if (await this.knowledgeBaseDropdown.isVisible()) break;
-    }
+      expect(await this.knowledgeBaseDropdown.isVisible()).toBe(true);
+    }).toPass();
+    await lockDaisyDropdown(this.page, 'knowledgebase-dropdown');
   }
 
   async clickAgentConfig() {
@@ -172,12 +176,21 @@ export class ConnectersPage {
 
     async removeKB() {
         const removeIcon = this.page.getByTitle('Remove');
-        const removeKBBtn = this.page.getByText('Remove', { exact: true });
+        const removeKBBtn = this.page.getByTestId('DELETE_KNOWLEDGE_BASE_MODAL').getByRole('button', { name: 'Remove' });
         await expect(removeIcon).toBeVisible();
         await removeIcon.click();
         await expect(removeKBBtn).toBeVisible();
         await removeKBBtn.click();
    }
+
+    async removeKBIfExists() {
+        const removeIcon = this.page.getByTitle('Remove');
+        if (!(await removeIcon.isVisible())) return;
+        await removeIcon.click();
+        const removeKBBtn = this.page.getByTestId('DELETE_KNOWLEDGE_BASE_MODAL').getByRole('button', { name: 'Remove' });
+        if (!(await removeKBBtn.isVisible())) return;
+        await removeKBBtn.click();
+    }
 
    // --- Agent items by bridge ID ---
 

@@ -5,7 +5,7 @@ const TOOL_NAME = 'Gtwy web search';
 const TOOL_KEY = 'Gtwy_Web_Search';
 const DOMAIN = 'dev.gtwy.ai';
 
-test.describe.serial('Tool - Prebuilt Tool Domain Config', () => {
+test.describe('Tool - Prebuilt Tool Domain Config', () => {
 
   test.beforeEach(async ({ agents }) => {
     await agents.goto('api');
