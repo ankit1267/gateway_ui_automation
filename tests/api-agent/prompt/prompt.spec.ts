@@ -1,4 +1,5 @@
 import { test, expect } from '../../../fixtures/base.fixture';
+import { deleteAgentApi, captureAgentIdFromUrl } from '../../../utils/api-cleanup';
 import { AgentsPage } from '../../../pages/sidepanel/agents.page';
 import { AgentPage } from '../../../pages/agent/agent.page';
 
@@ -15,26 +16,34 @@ async function submitAndOpenPrompt(agents: AgentsPage): Promise<AgentPage> {
   return agent;
 }
 
+
 test.describe('Prompt tab - API Agent', () => {
+  let capturedAuthHeader: string | null = null;
+
+  test.beforeEach(async ({ page }) => {
+    capturedAuthHeader = null;
+    page.on('request', (req) => {
+      const auth = req.headers()['authorization'];
+      if (auth) capturedAuthHeader = auth;
+    });
+  });
 
   // ─────────────────────────────────────────────────────────────────────────
   // Test 1 (from recorded codegen)
   // Verifies that all three prompt fields (role, goal, instructions) are
   // visible immediately after creating a new agent and opening the Prompt tab.
   // ─────────────────────────────────────────────────────────────────────────
-  test('Prompt fields are visible after creating a new agent', async ({ agents }) => {
+  test('Prompt fields are visible after creating a new agent', async ({ agents, page }) => {
     await openCreateAgentDialog(agents);
     const agent = await submitAndOpenPrompt(agents);
+    const agentId = captureAgentIdFromUrl(page);
 
     // All three prompt fields should be visible (POM methods)
     await agent.prompt.expectRoleVisible();
     await agent.prompt.clickGoal();
     await agent.prompt.expectInstructionsVisible();
 
-    // Cleanup
-    const agentName = await agent.header.getAgentNameText();
-    await agents.goto('api');
-    await agents.deleteAgentByName(agentName);
+    await deleteAgentApi(page, agentId, capturedAuthHeader);
   });
 
   // ─────────────────────────────────────────────────────────────────────────
@@ -42,7 +51,7 @@ test.describe('Prompt tab - API Agent', () => {
   // Verifies that filling the "Goal" (agent purpose) auto-generates
   // a non-empty Instructions field.
   // ─────────────────────────────────────────────────────────────────────────
-  test('System prompt auto-generates when agent purpose is entered', async ({ agents }) => {
+  test('System prompt auto-generates when agent purpose is entered', async ({ agents, page }) => {
     await openCreateAgentDialog(agents);
 
     // Fill purpose in the modal before submitting
@@ -50,15 +59,13 @@ test.describe('Prompt tab - API Agent', () => {
       'You are an intelligent, reliable AI agent designed to assist users efficiently.'
     );
     const agent = await submitAndOpenPrompt(agents);
+    const agentId = captureAgentIdFromUrl(page);
 
     // Instructions should now be non-empty
     const systemPrompt = await agent.prompt.getSystemPromptValue();
     expect(systemPrompt.trim()).not.toBe('');
 
-    // Cleanup
-    const agentName = await agent.header.getAgentNameText();
-    await agents.goto('api');
-    await agents.deleteAgentByName(agentName);
+    await deleteAgentApi(page, agentId, capturedAuthHeader);
   });
 
   // ─────────────────────────────────────────────────────────────────────────
@@ -66,9 +73,10 @@ test.describe('Prompt tab - API Agent', () => {
   // Verifies that when no agent purpose is entered, the prompt fields
   // contain sensible default values.
   // ─────────────────────────────────────────────────────────────────────────
-  test('System prompt defaults when no agent purpose is added', async ({ agents }) => {
+  test('System prompt defaults when no agent purpose is added', async ({ agents, page }) => {
     await openCreateAgentDialog(agents);
     const agent = await submitAndOpenPrompt(agents);
+    const agentId = captureAgentIdFromUrl(page);
 
     // Read default values without filling anything
     const role = await agent.prompt.getRoleValue();
@@ -79,10 +87,7 @@ test.describe('Prompt tab - API Agent', () => {
     expect(goal).toBe('Respond logically and clearly, maintaining a neutral, automated tone.');
     expect(instructions).toContain('Guidelines:');
 
-    // Cleanup
-    const agentName = await agent.header.getAgentNameText();
-    await agents.goto('api');
-    await agents.deleteAgentByName(agentName);
+    await deleteAgentApi(page, agentId, capturedAuthHeader);
   });
 
   // ─────────────────────────────────────────────────────────────────────────
@@ -90,21 +95,19 @@ test.describe('Prompt tab - API Agent', () => {
   // Verifies that entering junk / nonsense characters in the goal field
   // causes the instructions to reset back to the default value.
   // ─────────────────────────────────────────────────────────────────────────
-  test('System prompt resets when junk characters are used', async ({ agents }) => {
+  test('System prompt resets when junk characters are used', async ({ agents, page }) => {
     await openCreateAgentDialog(agents);
 
     // Fill modal purpose with junk characters before submitting
     await agents.createAgentModal.fillPurpose('@@@###$$$%%%^^^&&&***((()))');
     const agent = await submitAndOpenPrompt(agents);
+    const agentId = captureAgentIdFromUrl(page);
 
     // System prompt should fall back to the default content
     const systemPrompt = await agent.prompt.getSystemPromptValue();
     expect(systemPrompt).toMatch(/Guidelines:|Act like a chatbot/);
 
-    // Cleanup
-    const agentName = await agent.header.getAgentNameText();
-    await agents.goto('api');
-    await agents.deleteAgentByName(agentName);
+    await deleteAgentApi(page, agentId, capturedAuthHeader);
   });
 
 });

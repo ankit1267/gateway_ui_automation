@@ -138,7 +138,7 @@ export class KnowledgeBasePage {
   private getRowByName(name: string) {
     return this.page.getByRole('row', {
       name: new RegExp(name)
-    });
+    }).first();
   }
 
   async deleteKnowledgeBaseByName(name: string) {

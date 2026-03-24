@@ -455,13 +455,13 @@ export class PromptPage {
     await this.addPreTool.click();
 
     await expect(input).toBeVisible();
+    await lockDaisyDropdown(this.page, 'embed-suggestion-dropdown-menu');
 
     // retry-safe focus
     await expect(async () => {
       await input.click();
       await expect(input).toBeFocused();
     }).toPass();
-    await lockDaisyDropdown(this.page, 'embed-suggestion-dropdown-menu');
   }
 
   async expectPreToolContainerVisible() {

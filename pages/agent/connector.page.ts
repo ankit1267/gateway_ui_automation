@@ -175,7 +175,7 @@ export class ConnectersPage {
     }
 
     async removeKB() {
-        const removeIcon = this.page.getByTitle('Remove');
+        const removeIcon = this.page.locator('[data-testid^="knowledgebase-delete-button-"]').first();
         const removeKBBtn = this.page.getByTestId('DELETE_KNOWLEDGE_BASE_MODAL').getByRole('button', { name: 'Remove' });
         await expect(removeIcon).toBeVisible();
         await removeIcon.click();
@@ -184,7 +184,7 @@ export class ConnectersPage {
    }
 
     async removeKBIfExists() {
-        const removeIcon = this.page.getByTitle('Remove');
+        const removeIcon = this.page.locator('[data-testid^="knowledgebase-delete-button-"]').first();
         if (!(await removeIcon.isVisible())) return;
         await removeIcon.click();
         const removeKBBtn = this.page.getByTestId('DELETE_KNOWLEDGE_BASE_MODAL').getByRole('button', { name: 'Remove' });
