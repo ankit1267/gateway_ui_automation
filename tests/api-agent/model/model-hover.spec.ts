@@ -1,8 +1,8 @@
-﻿import { test } from '../../../fixtures/base.fixture';
+import { test } from '../../../fixtures/base.fixture';
 
 const AGENT_NAME = process.env.AGENT_NAME!;
 
-test.describe('Model - Hover Preview', () => {
+test.describe.serial('Model - Hover Preview', () => {
 
   test('TC-MODEL-HOVER-01: hovering over a model option shows model information panel', async ({ agents }) => {
     await agents.goto('api');

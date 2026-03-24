@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { WorkspacePage } from '../../pages/workspace.page';
 
-test.describe('Create Workspace - Negative Test Cases (POM)', () => {
+test.describe.serial('Create Workspace - Negative Test Cases (POM)', () => {
     let workspacePage: WorkspacePage;
 
     test.beforeEach(async ({ page }) => {

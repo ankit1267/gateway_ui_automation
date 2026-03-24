@@ -1,6 +1,6 @@
 import { test } from '../../fixtures/base.fixture';
 
-test.describe('Chunking Configuration', () => {
+test.describe.serial('Chunking Configuration', () => {
 
   test.beforeEach(async ({ sidepanel }) => {
     await sidepanel.gotoKnowledgeBase();

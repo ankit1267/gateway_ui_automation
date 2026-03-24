@@ -1,10 +1,10 @@
-﻿import { expect, test } from '../../../fixtures/base.fixture';
+import { expect, test } from '../../../fixtures/base.fixture';
 import { AuthKeyPage } from '../../../pages/sidepanel/auth-key.page';
 
 
 const AGENT_NAME = process.env.AGENT_NAME!;
 
-test('@regression Integration Guide â†’ Create Auth Key navigates correctly in api key tab', async ({ agents, context }) => {
+test('@regression Integration Guide → Create Auth Key navigates correctly in api key tab', async ({ agents, context }) => {
 
   await agents.goto('api');
   const agent = await agents.openAgent(AGENT_NAME);
@@ -23,7 +23,7 @@ test('@regression Integration Guide â†’ Create Auth Key navigates correctly
   await authKeyPage.expectPageVisible();
 });
 
-test('@regression Integration Guide â†’ Create Auth Key navigates correctly in batch api tab', async ({ agents, context }) => {
+test('@regression Integration Guide → Create Auth Key navigates correctly in batch api tab', async ({ agents, context }) => {
 
   await agents.goto('api');
   const agent = await agents.openAgent(AGENT_NAME);
@@ -42,7 +42,7 @@ test('@regression Integration Guide â†’ Create Auth Key navigates correctly
   await authKeyPage.expectPageVisible();
 });
 
-test('@regression Integration Guide â†’ Copy buttons work in API and Batch tabs', async ({ agents }) => {
+test('@regression Integration Guide → Copy buttons work in API and Batch tabs', async ({ agents }) => {
   await agents.goto('api');
   const agent = await agents.openAgent(AGENT_NAME);
   await agent.tabs.openIntegrationGuide();

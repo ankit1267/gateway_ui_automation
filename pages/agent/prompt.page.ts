@@ -18,7 +18,7 @@ export class PromptPage {
   private readonly instructionsSection: Locator;
   private readonly manageVariablesButton: Locator;
   private readonly variableSlider: Locator;
-  private readonly promptHelper: PromptHelperPanel;
+  readonly promptHelper: PromptHelperPanel;
   private readonly responseTypeSelect: Locator;
   private readonly responseTypeSetDefaultButton: Locator;
   private readonly promptTextarea: Locator;

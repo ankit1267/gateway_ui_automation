@@ -4,7 +4,7 @@ const AGENT_NAME = process.env.AGENT_NAME!;
 const RAG_KNOWLEDGEBASE = 'RAG Knowledgebase';
 const KB_NAME = 'Resume';
 
-test.describe('Pre-Tool - RAG Knowledgebase', () => {
+test.describe.serial('Pre-Tool - RAG Knowledgebase', () => {
 
   test.beforeEach(async ({ agents }) => {
     await agents.goto('api');

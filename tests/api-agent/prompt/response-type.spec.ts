@@ -1,4 +1,4 @@
-﻿import { test, expect } from '../../../fixtures/base.fixture';
+import { test, expect } from '../../../fixtures/base.fixture';
 
 
 
@@ -6,7 +6,7 @@ const AGENT_NAME = process.env.AGENT_NAME!;
 
 
 
-test.describe('Prompt - Response Type', () => {
+test.describe.serial('Prompt - Response Type', () => {
 
 
 
@@ -262,7 +262,7 @@ test.describe('Prompt - Response Type', () => {
 
 
 
-    // Ctrl+A: select all â†’ typing replaces entire content
+    // Ctrl+A: select all → typing replaces entire content
 
     await agent.prompt.pressKeyInJsonSchema('Control+a');
 
@@ -272,7 +272,7 @@ test.describe('Prompt - Response Type', () => {
 
 
 
-    // Ctrl+C + Ctrl+V: copy all and paste at end â†’ content doubles
+    // Ctrl+C + Ctrl+V: copy all and paste at end → content doubles
 
     await agent.prompt.typeJsonSchema(json);
 
@@ -288,7 +288,7 @@ test.describe('Prompt - Response Type', () => {
 
 
 
-    // Ctrl+X: cut all â†’ textarea empty
+    // Ctrl+X: cut all → textarea empty
 
     await agent.prompt.pressKeyInJsonSchema('Control+a');
 
@@ -298,7 +298,7 @@ test.describe('Prompt - Response Type', () => {
 
 
 
-    // Ctrl+V: paste cut content â†’ content restored
+    // Ctrl+V: paste cut content → content restored
 
     await agent.prompt.pressKeyInJsonSchema('Control+v');
 

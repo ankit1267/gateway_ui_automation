@@ -1,8 +1,8 @@
-﻿import { test } from '../../fixtures/base.fixture';
+import { test } from '../../fixtures/base.fixture';
 
 const AGENT_NAME = process.env.AGENT_NAME!;
 
-test.describe('History - API Agent Hover Actions', () => {
+test.describe.serial('History - API Agent Hover Actions', () => {
   test.beforeEach(async ({ agents }) => {
     await agents.goto('api');
   });

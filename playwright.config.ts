@@ -1,33 +1,40 @@
 import { defineConfig } from '@playwright/test';
-import 'dotenv/config';
+import dotenv from 'dotenv';
+import path from 'path';
+
+// Load environment-specific .env file based on TEST_ENV (default: prod)
+// Usage: TEST_ENV=dev npx playwright test
+const testEnv = process.env.TEST_ENV || 'dev';
+dotenv.config({ path: path.resolve(__dirname, `.env.${testEnv}`), override: true });
+// Fallback to .env for any missing vars
+dotenv.config({ path: path.resolve(__dirname, '.env') });
+
 export default defineConfig({
-  globalSetup: './Auth/global-setup.ts',
+  timeout: 120_000,
 
-  timeout: 120_000,           // per test
   expect: {
-    timeout: 30_000          // for expect()
+    timeout: 30_000,
   },
-  // 🔥 Smoke tests must be stable
-  workers: 1,
+  // Workers > 1 enables parallel file execution.
+  // Files sharing the same agent use test.describe.serial to avoid conflicts.
+  workers: 2,
+  retries: 1,
 
-  // 📊 HTML Report
   reporter: [['html', { open: 'on-failure' }]],
 
   use: {
     baseURL: process.env.BASE_URL!,
-    storageState: 'auth.json',
+    headless: true,
 
-    // 🐞 Debug helpers
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',
-    launchOptions:{
-      slowMo:1000
-    },
-    actionTimeout: 15_000,   // click, fill, press
-    navigationTimeout: 30_000,
 
-    // Optional but good
-    headless: true
-  }
+    actionTimeout: 15_000,
+    navigationTimeout: 30_000,
+  },
+
+  projects: [
+    { name: 'tests' },
+  ],
 });

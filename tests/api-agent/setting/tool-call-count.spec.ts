@@ -1,8 +1,8 @@
-﻿import { test, expect } from '../../../fixtures/base.fixture';
+import { test, expect } from '../../../fixtures/base.fixture';
 
 const AGENT_NAME = process.env.TESTING_AGENT!;
 
-test.describe('Tool Call Count - API Agent', () => {
+test.describe.serial('Tool Call Count - API Agent', () => {
 
   test.beforeEach(async ({ agents }) => {
     await agents.goto('api');

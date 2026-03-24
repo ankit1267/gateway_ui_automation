@@ -1,11 +1,11 @@
-﻿import { test } from '../../fixtures/base.fixture';
+import { test } from '../../fixtures/base.fixture';
 
 const AGENT_NAME = process.env.AGENT_NAME!;
 const TOOL_NAME = 'Gtwy web search';
 const TOOL_KEY = 'Gtwy_Web_Search';
 const DOMAIN = 'dev.gtwy.ai';
 
-test.describe('Tool - Prebuilt Tool Domain Config', () => {
+test.describe.serial('Tool - Prebuilt Tool Domain Config', () => {
 
   test.beforeEach(async ({ agents }) => {
     await agents.goto('api');
@@ -21,7 +21,7 @@ test.describe('Tool - Prebuilt Tool Domain Config', () => {
     await agent.connectors.prebuiltToolsConfigModal.addDomain(DOMAIN);
     await agent.connectors.prebuiltToolsConfigModal.expectDomainItemVisible(0);
 
-    // invalid edit â€” no TLD
+    // invalid edit — no TLD
     await agent.connectors.prebuiltToolsConfigModal.clickEditDomain(0);
     await agent.connectors.prebuiltToolsConfigModal.getEditInput(0).fill('invalidomain');
     await agent.connectors.prebuiltToolsConfigModal.clickSaveEdit(0);
@@ -36,7 +36,7 @@ test.describe('Tool - Prebuilt Tool Domain Config', () => {
     await agent.connectors.prebuiltToolsConfigModal.close();
   });
 
-  test('TC-TOOL-02: Domain format validation â€” full URL rejected, no TLD rejected, www prefix accepted, duplicate rejected', async ({ agents }) => {
+  test('TC-TOOL-02: Domain format validation — full URL rejected, no TLD rejected, www prefix accepted, duplicate rejected', async ({ agents }) => {
     const agent = await agents.openAgent(AGENT_NAME);
     await agent.tabs.openConnectors();
     await agent.connectors.clickAddTool();

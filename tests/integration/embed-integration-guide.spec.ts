@@ -1,6 +1,6 @@
 import { test, expect } from '../../fixtures/base.fixture';
 
-test.describe('GTWY Embed - Integration Guide', () => {
+test.describe.serial('GTWY Embed - Integration Guide', () => {
 
   test('TC-EMBED-IG-01: steps have text and all copy buttons work', async ({ sidepanel }) => {
     await sidepanel.gotoIntegration();
