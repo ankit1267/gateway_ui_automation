@@ -12,9 +12,12 @@ test.describe('Settings - Response Format', () => {
 
     await agent.settings.ensureApiMode();
 
+    
+
     await agent.settings.selectCustomMode();
-    await agent.settings.fillWebhookUrl('https://www.webhook.com');
-    await agent.settings.fillHeaders('{"content-type": "application/json"}');
+    const timestamp = Date.now();
+    await agent.settings.fillWebhookUrl(`https://www.webhook.com/${timestamp}`);
+    await agent.settings.fillHeaders(`{"content-type": "application/json", "x-ts": "${timestamp}"}`);
     await agent.settings.clickHiddenElement();
     await agent.settings.clickResponseFormatApply();
 

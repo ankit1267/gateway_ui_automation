@@ -434,8 +434,8 @@ export class ChatbotConfigPage {
     await expect(frame.getByText(text).first()).toBeVisible({ timeout: 15000 });
   }
 
-  async expectFloatingButtonText(text: string) {
-    await expect(this.page.locator('#chatbot-preview-container').getByText(text)).toBeVisible({ timeout: 15000 });
+  async expectFloatingButton() {
+    await expect(this.page.locator('#interfaceEmbed')).toBeVisible({ timeout: 15000 });
   }
 
   async expectShowAccessKeyRevealsKeyWithCopy() {

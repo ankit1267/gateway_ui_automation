@@ -13,6 +13,7 @@ test('Query chatbot and check pre-tool is called', async ({ agents }) => {
     await chatbot.isHomeVisible()
     await chatbot.sendMessage('What is 1+1?');
     await chatbot.expectResponse(/2/);
+    await chatbot.page.waitForTimeout(5000);
 
     await agent.header.openHistory();
     await agent.history.waitForJustNowVisible();

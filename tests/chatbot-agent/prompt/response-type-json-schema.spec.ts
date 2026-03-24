@@ -1,4 +1,4 @@
-import { test, expect } from '../../../fixtures/base.fixture';
+﻿import { test, expect } from '../../../fixtures/base.fixture';
 
 const AGENT_NAME = process.env.CHATBOT_AGENT!;
 
@@ -10,6 +10,9 @@ test.describe('Prompt - Response Type (Chatbot)', () => {
 
   test('TC-PROMPT-RESP-08: JSON schema response type enforces schema fields in playground response', async ({ agents }) => {
     const agent = await agents.openAgent(AGENT_NAME);
+
+    await agent.tabs.openModel();
+    await agent.model.selectServiceProvider('Openai');
 
     await agent.tabs.openPrompt();
     await agent.prompt.selectResponseType('json_schema');

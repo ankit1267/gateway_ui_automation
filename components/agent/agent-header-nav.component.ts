@@ -196,11 +196,12 @@ export class AgentHeaderNav {
   }
 
   async clickConfirmPublish() {
+    await this.page.pause();
     await this.confirmPublishButton.click();
   }
 
   async expectPublishSuccessToast() {
-    await expect(this.page.getByText('Agent Version published')).toBeVisible({ timeout: 15000 });
+    await expect(this.page.getByText('Agent Version published successfully')).toBeVisible({ timeout: 15000 });
   }
 
   async publishAndCreateVersion(desc: string) {

@@ -116,4 +116,8 @@ export class AuthKeyPage {
       this.page.getByRole('alert').filter({ hasText: 'Auth Key Deleted Successfully' })
     ).toBeVisible({ timeout: 10000 });
   }
+
+  async closeToast() {
+    await this.page.locator('.Toastify__close-button').first().click();
+  }
 }
