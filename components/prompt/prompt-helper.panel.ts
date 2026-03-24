@@ -76,13 +76,11 @@ export class PromptHelperPanel {
   }
 
   async open() {
-    for(let i=0 ;i<5 ;i++){
+    await expect(async () => {
       await this.page.getByRole('textbox', { name: 'e.g. Always be polite. Never' }).click();
-      if((await this.openHelperButton.isVisible())) {
-        await this.openHelperButton.click();
-        break;
-      }
-    }
+      await expect(this.openHelperButton).toBeVisible();
+    }).toPass();
+    await this.openHelperButton.click();
   }
 
   async close() {

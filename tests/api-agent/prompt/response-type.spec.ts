@@ -6,7 +6,7 @@ const AGENT_NAME = process.env.AGENT_NAME!;
 
 
 
-test.describe.serial('Prompt - Response Type', () => {
+test.describe('Prompt - Response Type', () => {
 
 
 
@@ -109,6 +109,71 @@ test.describe.serial('Prompt - Response Type', () => {
     await agent.prompt.expectJsonSchemaTextareaValue(pastedJson);
 
   });
+
+   test('TC-PROMPT-RESP-05: Keyboard shortcuts Ctrl+A, Ctrl+C, Ctrl+X, Ctrl+V work in JSON schema textarea', async ({ agents }) => {
+
+    const agent = await agents.openAgent(AGENT_NAME);
+
+
+
+    await agent.tabs.openPrompt();
+
+    await agent.prompt.selectResponseType('json_schema');
+
+
+
+    const json = '{"a":1}';
+
+    await agent.prompt.typeJsonSchema(json);
+
+    await agent.prompt.expectJsonSchemaTextareaValue(json);
+
+
+
+    // Ctrl+A: select all → typing replaces entire content
+
+    await agent.prompt.pressKeyInJsonSchema('Control+a');
+
+    await agent.prompt.pressKeyInJsonSchema('Delete');
+
+    await agent.prompt.expectJsonSchemaTextareaValue('');
+
+
+
+    // Ctrl+C + Ctrl+V: copy all and paste at end → content doubles
+
+    await agent.prompt.typeJsonSchema(json);
+
+    await agent.prompt.pressKeyInJsonSchema('Control+a');
+
+    await agent.prompt.pressKeyInJsonSchema('Control+c');
+
+    await agent.prompt.pressKeyInJsonSchema('End');
+
+    await agent.prompt.pressKeyInJsonSchema('Control+v');
+
+    await agent.prompt.expectJsonSchemaTextareaValue(json + json);
+
+
+
+    // Ctrl+X: cut all → textarea empty
+
+    await agent.prompt.pressKeyInJsonSchema('Control+a');
+
+    await agent.prompt.pressKeyInJsonSchema('Control+x');
+
+    await agent.prompt.expectJsonSchemaTextareaValue('');
+
+
+
+    // Ctrl+V: paste cut content → content restored
+
+    await agent.prompt.pressKeyInJsonSchema('Control+v');
+
+    await agent.prompt.expectJsonSchemaTextareaValue(json + json);
+
+  });
+
 
 
 
@@ -242,70 +307,7 @@ test.describe.serial('Prompt - Response Type', () => {
 
 
 
-  test('TC-PROMPT-RESP-05: Keyboard shortcuts Ctrl+A, Ctrl+C, Ctrl+X, Ctrl+V work in JSON schema textarea', async ({ agents }) => {
-
-    const agent = await agents.openAgent(AGENT_NAME);
-
-
-
-    await agent.tabs.openPrompt();
-
-    await agent.prompt.selectResponseType('json_schema');
-
-
-
-    const json = '{"a":1}';
-
-    await agent.prompt.typeJsonSchema(json);
-
-    await agent.prompt.expectJsonSchemaTextareaValue(json);
-
-
-
-    // Ctrl+A: select all → typing replaces entire content
-
-    await agent.prompt.pressKeyInJsonSchema('Control+a');
-
-    await agent.prompt.pressKeyInJsonSchema('Delete');
-
-    await agent.prompt.expectJsonSchemaTextareaValue('');
-
-
-
-    // Ctrl+C + Ctrl+V: copy all and paste at end → content doubles
-
-    await agent.prompt.typeJsonSchema(json);
-
-    await agent.prompt.pressKeyInJsonSchema('Control+a');
-
-    await agent.prompt.pressKeyInJsonSchema('Control+c');
-
-    await agent.prompt.pressKeyInJsonSchema('End');
-
-    await agent.prompt.pressKeyInJsonSchema('Control+v');
-
-    await agent.prompt.expectJsonSchemaTextareaValue(json + json);
-
-
-
-    // Ctrl+X: cut all → textarea empty
-
-    await agent.prompt.pressKeyInJsonSchema('Control+a');
-
-    await agent.prompt.pressKeyInJsonSchema('Control+x');
-
-    await agent.prompt.expectJsonSchemaTextareaValue('');
-
-
-
-    // Ctrl+V: paste cut content → content restored
-
-    await agent.prompt.pressKeyInJsonSchema('Control+v');
-
-    await agent.prompt.expectJsonSchemaTextareaValue(json + json);
-
-  });
-
+ 
 
 
 });

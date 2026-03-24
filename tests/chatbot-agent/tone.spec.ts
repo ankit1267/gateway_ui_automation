@@ -9,7 +9,7 @@ const ORG_ID = process.env.ORG_ID!;
 const WORKSPACE_NAME = process.env.WORKSPACE_NAME!;
 const CHATBOT_AGENT = process.env.CHATBOT_AGENT!;
 
-test.describe.serial('Chatbot Settings – History & System Prompt Tone', () => {
+test.describe('Chatbot Settings – History & System Prompt Tone', () => {
 
     test('Verify chat history and authoritative system prompt tone', async ({ page }) => {
 

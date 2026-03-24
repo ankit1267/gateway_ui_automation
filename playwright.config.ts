@@ -15,9 +15,7 @@ export default defineConfig({
   expect: {
     timeout: 30_000,
   },
-  // Workers > 1 enables parallel file execution.
-  // Files sharing the same agent use test.describe.serial to avoid conflicts.
-  workers: 2,
+  workers: 1,
   retries: 1,
 
   reporter: [['html', { open: 'on-failure' }]],
@@ -32,6 +30,8 @@ export default defineConfig({
 
     actionTimeout: 15_000,
     navigationTimeout: 30_000,
+
+    permissions: ['clipboard-read', 'clipboard-write'],
   },
 
   projects: [

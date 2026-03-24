@@ -2,7 +2,7 @@ import { test } from '../../fixtures/base.fixture';
 
 const AGENT_NAME = process.env.CHATBOT_AGENT!;
 
-test.describe.serial('Model Configuration - Service Provider & Model List', () => {
+test.describe('Model Configuration - Service Provider & Model List', () => {
     
 
     test.beforeEach(async ({ agents }) => {

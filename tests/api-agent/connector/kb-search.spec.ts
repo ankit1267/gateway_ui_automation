@@ -3,7 +3,7 @@ import { test, expect } from '../../../fixtures/base.fixture';
 const AGENT_NAME = process.env.TESTING_AGENT!;
 const KB_RESULT = 'Wikipedia';
 
-test.describe.serial('Connectors - KB Search - API Agent', () => {
+test.describe('Connectors - KB Search - API Agent', () => {
 
   test.beforeEach(async ({ agents }) => {
     await agents.goto('api');

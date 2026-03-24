@@ -125,8 +125,14 @@ export class IntegrationGuidePage {
   }
 
   async selectLanguage(langId: string) {
-    await this.clickLanguageDropdown();
+    // Ensure dropdown is open before selecting
+    if (!(await this.languageDropdownMenu.isVisible())) {
+      await this.languageDropdownTrigger.click();
+    }
+    await expect(this.languageDropdownMenu).toBeVisible();
     await this.page.getByTestId(`language-option-${langId}`).click();
+    // Wait for DaisyUI dropdown to close after selection
+    await expect(this.languageDropdownMenu).not.toBeVisible();
   }
 
   async expectLanguageDropdownVisible() {

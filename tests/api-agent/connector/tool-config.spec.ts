@@ -3,7 +3,7 @@ import { test } from '../../../fixtures/base.fixture';
 const AGENT_NAME = process.env.TESTING_AGENT!;
 const TOOL_NAME = 'factorial_of_a_numbe...';
 
-test.describe.serial('Connectors - Tool Config - API Agent', () => {
+test.describe('Connectors - Tool Config - API Agent', () => {
 
   test.beforeEach(async ({ agents }) => {
     await agents.goto('api');

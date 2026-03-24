@@ -1,16 +1,8 @@
-import { test, expect } from '@playwright/test';
-import { navigateToAgents } from '../../utils/navigation';
+import { test, expect } from '../../fixtures/base.fixture';
 
-test.use({
-  storageState: 'auth.json',
-});
-
-const ORG_NAME = process.env.WORKSPACE_NAME!;
-const ORG_ID = process.env.ORG_ID!;
-
-test('Create chatbot with purpose and verify generated prompt', async ({ page }) => {
+test('Create chatbot with purpose and verify generated prompt', async ({ agents, page }) => {
   // Open agents page
-  await navigateToAgents(page, 'chatbot');
+  await agents.goto('chatbot');
 
   // Create new chatbot
   await page.getByRole('button', { name: '+ Create New Chatbot Agent' }).click();

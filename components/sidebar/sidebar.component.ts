@@ -28,63 +28,63 @@ export class Sidebar {
   }
 
   async openApi() {
-    await this.getSidebarItem('API').click();
+    await this.page.locator('#main-slider-nav-api').click();
   }
 
   async openChatbot() {
-    await this.getSidebarItem('Chatbot').click();
+    await this.page.locator('#main-slider-nav-chatbot').click();
   }
 
   async openKnowledgeBase() {
-    await this.getSidebarItem('Knowledge Base').click();
+    await this.page.locator('#main-slider-nav-knowledge_base').click();
   }
 
   async openWidgets() {
-    await this.getSidebarItem('Widgets').click();
+    await this.page.locator('#main-slider-nav-widgets').click();
   }
 
   async openAuthKey() {
-    await this.getSidebarItem('Auth Key').click();
+    await this.page.locator('#main-slider-nav-pauthkey').click();
   }
 
   async openApiKeys() {
-    await this.getSidebarItem('API Keys').click();
+    await this.page.locator('#main-slider-nav-apikeys').click();
   }
 
   async openAlerts() {
-    await this.getSidebarItem('Alerts').click();
+    await this.page.locator('#main-slider-nav-alerts').click();
   }
 
   async openMetrics() {
-    await this.getSidebarItem('Metrics').click();
+    await this.page.locator('#main-slider-nav-metrics').click();
   }
 
   async openIntegration() {
-    await this.getSidebarItem('Integration').click();
+    await this.page.locator('#main-slider-nav-integration').click();
   }
 
   async openFeedback() {
-    await this.getSidebarItem('Feedback').click();
+    await this.page.locator('#main-slider-nav-feedback').click();
   }
 
   async openPrebuiltPrompts() {
-    await this.getSidebarItem('Prebuilt Prompts').click();
+    await this.page.locator('#main-slider-nav-prebuilt-prompts').click();
   }
 
   async openWorkspaceSettings() {
-    await this.getSidebarItem('Workspace Settings').click();
+    await this.page.locator('#main-slider-nav-workspace-settings').click();
   }
 
   async openAddNewModel() {
-    await this.getSidebarItem('Add New Model').click();
+    await this.page.locator('#main-slider-nav-add-new-model').click();
   }
 
   async openAuthRoute() {
-    await this.getSidebarItem('Auth Route').click();
+    await this.page.locator('#main-slider-nav-auth-route').click();
   }
 
   async openChatbotConfig() {
-    await this.getSidebarItem('Chatbot Config').click();
+    await this.page.locator('#main-slider-nav-chatbotConfig').click();
   }
 
   async isSidebarItemVisible(name: string): Promise<boolean> {

@@ -243,7 +243,10 @@ export class PlaygroundPage {
   }
 
   async expectChatMessageContainsText(index: number, text: string) {
-    await expect(this.getChatMessage(index)).toContainText(text, { timeout: 30000 });
+    const msg = this.getChatMessage(index);
+    // Wait for the AI response to actually load (not just the empty bubble)
+    await expect.poll(async () => (await msg.textContent())?.trim().length ?? 0, { timeout: 60000 }).toBeGreaterThan(20);
+    await expect(msg).toContainText(text, { timeout: 10000 });
   }
 
   // --- File link ---

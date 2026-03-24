@@ -2,7 +2,7 @@ import { test, expect } from '../../../fixtures/base.fixture';
 
 const AGENT_NAME = process.env.AGENT_NAME!;
 
-test.describe.serial('Prompt - JSON Schema Builder', () => {
+test.describe('Prompt - JSON Schema Builder', () => {
 
   test('TC-PROMPT-JS-01: enter valid schema name', async ({ agents }) => {
     await agents.goto('api');

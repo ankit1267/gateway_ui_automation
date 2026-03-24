@@ -3,7 +3,7 @@ import { test, expect } from '../../fixtures/base.fixture';
 const AGENT_NAME = process.env.AGENT_NAME!;
 const QUERY_REFINER = 'Query Refiner';
 
-test.describe.serial('Pre-Tool - Query Refiner', () => {
+test.describe('Pre-Tool - Query Refiner', () => {
 
   test.beforeEach(async ({ agents }) => {
     await agents.goto('api');

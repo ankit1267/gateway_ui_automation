@@ -1,5 +1,6 @@
 import type { Page, Locator } from '@playwright/test';
 import { expect } from '@playwright/test';
+import { lockDaisyDropdown } from '../../utils/daisy-ui';
 
 export class AgentHeaderNav {
   private readonly history: Locator;
@@ -75,13 +76,13 @@ export class AgentHeaderNav {
   }
 
   async clickPublish() {
-    for (let i = 1; i < 3; i++) {
+    await expect(async () => {
       if (!(await this.publish.isVisible())) {
         await this.publishToggel.click();
-      } else {
-        break;
       }
-    }
+      await expect(this.publish).toBeVisible();
+    }).toPass();
+    await lockDaisyDropdown(this.page, 'navbar-publish-dropdown-toggle');
   }
 
   async clickDiscardChangesButton() {
@@ -93,16 +94,13 @@ export class AgentHeaderNav {
   }
 
   async clickPublishButton() {
-    for (let i = 0; i < 4; i++) {
-      if (await this.publish.isVisible()) break;
-      await this.publishToggel.click();
-      try {
-        await this.publish.waitFor({ state: 'visible', timeout: 3000 });
-        break;
-      } catch {
-        // retry
+    await expect(async () => {
+      if (!(await this.publish.isVisible())) {
+        await this.publishToggel.click();
       }
-    }
+      await expect(this.publish).toBeVisible();
+    }).toPass();
+    await lockDaisyDropdown(this.page, 'navbar-publish-dropdown-toggle');
     await this.publish.click();
   }
 

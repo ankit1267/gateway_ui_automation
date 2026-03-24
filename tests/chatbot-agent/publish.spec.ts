@@ -2,7 +2,7 @@ import { test } from '../../fixtures/base.fixture';
 
 const AGENT_PURPOSE = 'Sales agent that can answer questions about our products and pricing.';
 
-test.describe.serial('Publish - Chatbot Agent', () => {
+test.describe('Publish - Chatbot Agent', () => {
 
   let createdAgentName: string;
 

@@ -1,6 +1,6 @@
 import { test, expect } from '../../fixtures/base.fixture';
 
-test.describe.serial('Widgets - Template Card', () => {
+test.describe('Widgets - Template Card', () => {
 
   test.beforeEach(async ({ sidepanel }) => {
     await sidepanel.gotoWidgets();

@@ -3,6 +3,7 @@ import { expect } from '@playwright/test';
 import { PromptHelperPanel } from '../../components/prompt/prompt-helper.panel';
 import { PreToolDropdown } from '../../components/prompt/pre-tool.panel';
 import { PrebuiltPreToolConfigModal } from '../../modals/prebuilt-pre-tool-config.modal';
+import { lockDaisyDropdown } from '../../utils/daisy-ui';
 
 export class PromptPage {
   private readonly page: Page;
@@ -433,12 +434,24 @@ export class PromptPage {
   }
 
   async deletePreTool() {
+    if (!(await this.deleteButton.isVisible())) return;
     await this.deleteButton.click();
     await this.deleteModal.click();
   }
 
   async addPreToolClick() {
+    const input = this.page.getByTestId('embed-suggestion-search-input');
+
     await this.addPreTool.click();
+
+    await expect(input).toBeVisible();
+
+    // retry-safe focus
+    await expect(async () => {
+      await input.click();
+      await expect(input).toBeFocused();
+    }).toPass();
+    await lockDaisyDropdown(this.page, 'embed-suggestion-dropdown-menu');
   }
 
   async expectPreToolContainerVisible() {

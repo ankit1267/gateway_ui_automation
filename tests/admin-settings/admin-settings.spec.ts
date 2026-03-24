@@ -1,6 +1,6 @@
 import { test, expect } from '../../fixtures/base.fixture';
 
-test.describe.serial('Admin Settings - Sidebar Navigation', () => {
+test.describe('Admin Settings - Sidebar Navigation', () => {
 
   test.beforeEach(async ({ sidepanel }) => {
     await sidepanel.gotoAgents();
@@ -44,7 +44,7 @@ test.describe.serial('Admin Settings - Sidebar Navigation', () => {
 
 });
 
-test.describe.serial('Admin Settings - Workspace Settings', () => {
+test.describe('Admin Settings - Workspace Settings', () => {
 
   test.beforeEach(async ({ sidepanel }) => {
     await sidepanel.gotoWorkspaceSetting();
@@ -154,7 +154,7 @@ test.describe.serial('Admin Settings - Workspace Settings', () => {
 
 });
 
-test.describe.serial('Admin Settings - Auth 2.0', () => {
+test.describe('Admin Settings - Auth 2.0', () => {
 
   test.beforeEach(async ({ sidepanel }) => {
     await sidepanel.gotoAuthRoute();
@@ -244,7 +244,7 @@ test.describe.serial('Admin Settings - Auth 2.0', () => {
 
 });
 
-test.describe.serial('Admin Settings - Add New Model', () => {
+test.describe('Admin Settings - Add New Model', () => {
 
   test.beforeEach(async ({ sidepanel }) => {
     await sidepanel.gotoAddNewModel();
@@ -299,7 +299,7 @@ test.describe.serial('Admin Settings - Add New Model', () => {
 
 });
 
-test.describe.serial('Admin Settings - GTWY Tools', () => {
+test.describe('Admin Settings - GTWY Tools', () => {
 
   test.beforeEach(async ({ sidepanel }) => {
     await sidepanel.gotoPrebuiltPrompts();

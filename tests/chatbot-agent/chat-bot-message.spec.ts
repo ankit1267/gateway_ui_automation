@@ -2,7 +2,7 @@ import { test, expect } from "../../fixtures/base.fixture";
 
 const AGENT_NAME = process.env.CHATBOT_AGENT!;
 
-test.describe.serial('Chatbot Message', () => {
+test.describe('Chatbot Message', () => {
     
     test.beforeEach(async ({ agents }) => {
         await agents.goto('chatbot');

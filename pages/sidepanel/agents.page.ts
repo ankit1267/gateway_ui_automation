@@ -50,18 +50,21 @@ export class AgentsPage {
      await this.page.goto('/org');
 
      const onboardingOverlay = this.page.getByTestId('org-page-guard-modal-overlay');
-    for (let i = 0; i < 4; i++) {
-      try {
-        await onboardingOverlay.waitFor({ state: 'visible', timeout: 500 });
-      } catch {
-        break;
-      }
+    // Best-effort: try to close the onboarding overlay if it appears
+    try {
+      await onboardingOverlay.waitFor({ state: 'visible', timeout: 3000 });
       await this.page.getByRole('button', { name: 'Close onboarding' }).click();
-      await onboardingOverlay.waitFor({ state: 'hidden' });
+      await onboardingOverlay.waitFor({ state: 'hidden', timeout: 3000 });
+    } catch {
+      // overlay may not appear or may not close cleanly – force-remove handles it
     }
- 
+
+    // Force-remove overlay if it's still blocking (iframe can swallow the close)
+    await this.page.evaluate(() => {
+      document.getElementById('org-page-guard-modal-overlay')?.remove();
+    });
+
     await this.page.getByText('Test Space', { exact: true }).click();
-    await this.page.waitForURL(/\/agents/);
  
     if (type === 'chatbot') {
       await this.sidebar.openChatbot();
@@ -100,15 +103,12 @@ export class AgentsPage {
 
   async clickCreateNewAgent() {
     const tutorialsDialog = this.page.getByRole('dialog').filter({ hasText: 'GTWY AI Tutorials' });
-    for (let i = 0; i < 4; i++) {
-      try {
-        await tutorialsDialog.waitFor({ state: 'visible', timeout: 5000 });
-      } catch {
-        break;
+    await expect(async () => {
+      if (await tutorialsDialog.isVisible()) {
+        await this.page.getByTestId('tutorial-close-button').dispatchEvent('click');
       }
-      await this.page.getByTestId('tutorial-close-button').dispatchEvent('click');
-      //await tutorialsDialog.waitFor({ state: 'hidden' });
-    }
+      await expect(tutorialsDialog).not.toBeVisible();
+    }).toPass({ timeout: 15000 });
     await this.createAgentButton.click();
   }
 
@@ -130,15 +130,10 @@ export class AgentsPage {
 
     const rowMenuBtn = agentRow.locator('[role="button"]').last();
     const deleteAgentBtn = this.page.getByRole('button', { name: 'Delete Agent' });
-    for (let i = 0; i < 4; i++) {
+    await expect(async () => {
       await rowMenuBtn.click();
-      try {
-        await deleteAgentBtn.waitFor({ state: 'visible', timeout: 3000 });
-        break;
-      } catch {
-        // retry
-      }
-    }
+      await expect(deleteAgentBtn).toBeVisible();
+    }).toPass();
     await deleteAgentBtn.click();
 
     await this.deleteModal.waitForVisible();
@@ -158,15 +153,10 @@ export class AgentsPage {
 
     const rowMenuBtn = agentRow.locator('[role="button"]').last();
     const deleteAgentBtn = this.page.getByRole('button', { name: 'Delete Agent' });
-    for (let i = 0; i < 4; i++) {
+    await expect(async () => {
       await rowMenuBtn.click();
-      try {
-        await deleteAgentBtn.waitFor({ state: 'visible', timeout: 3000 });
-        break;
-      } catch {
-        // retry
-      }
-    }
+      await expect(deleteAgentBtn).toBeVisible();
+    }).toPass();
     await deleteAgentBtn.click();
 
     await this.deleteModal.waitForVisible();

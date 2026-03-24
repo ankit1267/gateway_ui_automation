@@ -2,7 +2,7 @@ import { test, expect } from '../../../fixtures/base.fixture';
 
 
 
-test.describe.serial('@regression Agent name validation', () => {
+test.describe('@regression Agent name validation', () => {
     let createdAgentNames: string[] = [];
 
     test.beforeEach(async ({ agents }) => {

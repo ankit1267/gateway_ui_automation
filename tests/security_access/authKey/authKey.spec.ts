@@ -2,7 +2,7 @@ import { test } from '../../../fixtures/base.fixture';
 
 const AUTH_KEY_NAME = "my auth key";
 
-test.describe.serial('Auth Key - Security & Access', () => {
+test.describe('Auth Key - Security & Access', () => {
 
   test.beforeEach(async ({ sidepanel }) => {
     await sidepanel.gotoPauthKey();

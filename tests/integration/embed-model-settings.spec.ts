@@ -1,6 +1,6 @@
 import { test } from '../../fixtures/base.fixture';
 
-test.describe.serial('GTWY Embed - Model Settings', () => {
+test.describe('GTWY Embed - Model Settings', () => {
 
   test.beforeEach(async ({ sidepanel }) => {
     await sidepanel.gotoIntegration();

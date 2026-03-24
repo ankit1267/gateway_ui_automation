@@ -2,7 +2,7 @@ import { test } from '../../../fixtures/base.fixture';
 
 const TESTING_AGENT = process.env.TESTING_AGENT!;
 
-test.describe.serial('Agents - Pause & Resume - API Agent', () => {
+test.describe('Agents - Pause & Resume - API Agent', () => {
 
   test.beforeEach(async ({ agents }) => {
     await agents.goto('api');

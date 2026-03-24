@@ -1,6 +1,6 @@
 import { test } from '../../../fixtures/base.fixture';
 
-test.describe.serial('Metrics - Monitoring & Support', () => {
+test.describe('Metrics - Monitoring & Support', () => {
 
   test.beforeEach(async ({ sidepanel }) => {
     await sidepanel.gotoMetrics();
