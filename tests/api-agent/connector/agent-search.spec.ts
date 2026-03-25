@@ -1,7 +1,7 @@
 import { test } from '../../../fixtures/base.fixture';
 
 const TESTING_AGENT_NAME = process.env.TESTING_AGENT!;
-const AGENT_RESULT = process.env.AGENT_NAME!
+const AGENT_RESULT = "ChildAgent"
 
 test.describe('Connectors - Agent Search - API Agent', () => {
 
@@ -16,6 +16,7 @@ test.describe('Connectors - Agent Search - API Agent', () => {
     await agent.connectors.a2aDropdown.expectVisible();
     await agent.connectors.a2aDropdown.search(AGENT_RESULT);
     await agent.connectors.a2aDropdown.expectItemVisible(AGENT_RESULT);
+  
   });
 
   test('TC-CON-AGENT-02: Search with spaced query in Add Agent dropdown shows matching result', async ({ agents }) => {

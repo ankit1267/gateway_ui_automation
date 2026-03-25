@@ -1,7 +1,7 @@
 import { test, expect } from '../../../fixtures/base.fixture';
 
 const AGENT_NAME = process.env.TESTING_AGENT!;
-const KB_RESULT = 'Wikipedia';
+const KB_RESULT = 'Resume';
 
 test.describe('Connectors - KB Search - API Agent', () => {
 
@@ -13,7 +13,7 @@ test.describe('Connectors - KB Search - API Agent', () => {
     const agent = await agents.openAgent(AGENT_NAME);
     await agent.tabs.openConnectors();
     await agent.connectors.clickAddKB();
-    await agent.connectors.knowledgeBaseDropdown.search('wikipedia');
+    await agent.connectors.knowledgeBaseDropdown.search(KB_RESULT);
     await agent.connectors.knowledgeBaseDropdown.expectItemVisible(KB_RESULT);
   });
 
@@ -21,7 +21,7 @@ test.describe('Connectors - KB Search - API Agent', () => {
     const agent = await agents.openAgent(AGENT_NAME);
     await agent.tabs.openConnectors();
     await agent.connectors.clickAddKB();
-    await agent.connectors.knowledgeBaseDropdown.search('wikipedia   ');//spaced text
+    await agent.connectors.knowledgeBaseDropdown.search(KB_RESULT + '   ');//spaced text
     await agent.connectors.knowledgeBaseDropdown.expectItemVisible(KB_RESULT);
   });
 

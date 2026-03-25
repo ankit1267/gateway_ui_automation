@@ -117,6 +117,7 @@ export class WorkspaceSettingPage {
 
   async clickSave() {
     await this.saveButton.click();
+    await this.timezoneEditorPanel.waitFor({ state: 'hidden', timeout: 10000 });
   }
 
   async clickCancel() {

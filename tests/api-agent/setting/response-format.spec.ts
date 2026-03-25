@@ -1,6 +1,6 @@
 import { test } from '../../../fixtures/base.fixture';
 
-const AGENT_NAME = 'IntelligentAssistant_1';
+const AGENT_NAME = 'AI Assistant';
 
 test.describe('Settings - Response Format', () => {
 
