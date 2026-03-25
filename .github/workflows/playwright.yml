@@ -145,4 +145,3 @@ jobs:
           curl -X POST https://flow.sokt.io/func/scri8acRJpTe \
             -H "Content-Type: application/json" \
             -d "$PAYLOAD"
-```
