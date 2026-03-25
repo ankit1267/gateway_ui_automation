@@ -31,6 +31,7 @@ test('migrated values should match structured fields', async ({ agents }) => {
   const instructionValue = await oldAgent.prompt.getInstructionsValue();
   expect(instructionValue).toBe(expectedInstruction);
 
+  await oldAgent.getPage.waitForTimeout(3000);
   await oldAgent.header.clickPublish();
   await oldAgent.header.clickRevertButton();
   await oldAgent.header.clickDiscardChangesButton();

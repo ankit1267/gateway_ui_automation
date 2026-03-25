@@ -1,4 +1,4 @@
-import { test, expect } from '../../../fixtures/base.fixture';
+﻿import { test, expect } from '../../../fixtures/base.fixture';
 
 const AGENT_NAME = process.env.AGENT_NAME!;
 
@@ -24,31 +24,37 @@ test.describe('Playground Test Case Sidebar', () => {
       expect(count).toBeGreaterThan(0);
     }).toPass({ timeout: 10000 });
 
+    // Capture the test case ID while sidebar is still open
+    const testCaseId = await agent.playground.getLastTestCaseId();
+
     await agent.playground.expectLastTestCaseExpandButtonVisible();
     await agent.playground.expectLastTestCaseRunButtonVisible();
     await agent.playground.expectLastTestCaseDeleteButtonVisible();
 
     await agent.playground.clickLastTestCaseCard();
 
+    // Wait for sidebar to close (handleTestCaseClick has a 500ms async delay before closing)
+    await expect(agent.playground.page.getByTestId('chat-testcase-sidebar')).not.toBeAttached({ timeout: 5000 });
+
+    // Re-open sidebar
     await agent.playground.toggleTestCases();
     await agent.playground.expectTestCaseSidebarVisible();
 
-    await agent.playground.clickLastTestCaseExpandButton();
-    await agent.playground.expectLastTestCaseDetailsVisible();
+    await agent.playground.getTestCaseExpandButton(testCaseId).click();
+    await expect(agent.playground.getTestCaseDetails(testCaseId)).toBeVisible();
 
-    await agent.playground.clickLastTestCaseExpandButton();
-    await agent.playground.expectLastTestCaseDetailsNotVisible();
+    await agent.playground.getTestCaseExpandButton(testCaseId).click();
+    await expect(agent.playground.getTestCaseDetails(testCaseId)).not.toBeVisible();
 
-    await agent.playground.clickLastTestCaseRunButton();
+    await agent.playground.getTestCaseRunButton(testCaseId).click();
 
-    const lastTestCaseId = await agent.playground.getLastTestCaseId();
-    await agent.playground.clickLastTestCaseDeleteButton();
+    await agent.playground.getTestCaseDeleteButton(testCaseId).click();
 
     await expect(
       agent.playground.page.getByRole('alert').filter({ hasText: 'Test case deleted successfully' })
     ).toBeVisible({ timeout: 10000 });
 
-    await expect(agent.playground.getTestCaseCard(lastTestCaseId)).not.toBeVisible({ timeout: 15000 });
+    await expect(agent.playground.getTestCaseCard(testCaseId)).not.toBeVisible({ timeout: 15000 });
   });
 
 });
