@@ -7,7 +7,6 @@ test('migrate modal validation', async ({ agents }) => {
   // Open old agent
   const oldAgent = await agents.openAgent('for testing the old agent');
 
-
   await oldAgent.prompt.openMigrateModal();
   await oldAgent.prompt.expectMigrateModalFieldsVisible();
 

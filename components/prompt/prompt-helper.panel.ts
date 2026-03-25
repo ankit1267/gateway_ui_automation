@@ -23,7 +23,7 @@ export class PromptHelperPanel {
     this.closeHelperButton = page.getByTestId('prompt-header-close-helper-button');
     this.messagesPanel = this.promptHelperContainer.locator('#messages');
     this.configScrollContainer = page.locator('#config-scroll-container');
-    this.canvasInstructionTextarea = page.getByTestId('canvas-instruction-textarea');
+    this.canvasInstructionTextarea = this.promptHelperContainer.getByTestId('canvas-instruction-textarea');
     this.techDocFrame = page.frameLocator('#iframe-component-techdocEmbed');
     this.mainContent = page.getByRole('main');
     this.applyButton = page.locator('[data-testid^="canvas-apply-button-"]');
