@@ -390,7 +390,9 @@ export class PromptPage {
 
   //deleteVariable
   async deleteVariable(index: number) {
-    await this.page.locator(`#variable-delete-button-${index}`).click();
+    const btn = this.page.locator(`#variable-delete-button-${index}`);
+    await btn.scrollIntoViewIfNeeded();
+    await btn.click();
   }
 
   async openInstructionsSection() {
