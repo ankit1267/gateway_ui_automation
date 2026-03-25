@@ -119,6 +119,10 @@ export class HistoryPage {
         return this.threadContainer.isVisible();
     }
 
+    async expectThreadContainerVisible() {
+        await expect(this.threadContainer).toBeVisible();
+    }
+
     async openFirstSidebarThread() {
         await expect(this.firstSidebarThread).toBeVisible();
         await this.firstSidebarThread.click();

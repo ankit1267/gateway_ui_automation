@@ -106,7 +106,10 @@ test.describe('Pre-Tool - Gtwy Web Search', () => {
     await agent.prompt.closeWebSearchConfigModalIfVisible();
   });
 
+});
+
   test('TC-PRETOOL-GWS-07: Adding and then deleting the Gtwy Web Search pre-tool removes it', async ({ agents }) => {
+    await agents.goto('api');
     const agent = await agents.openAgent(AGENT_NAME);
     await agent.tabs.openPrompt();
     await agent.prompt.addPreToolClick();
@@ -117,5 +120,3 @@ test.describe('Pre-Tool - Gtwy Web Search', () => {
     await agent.prompt.deletePreTool();
     await agent.prompt.expectPreToolContainerNotVisible();
   });
-
-});

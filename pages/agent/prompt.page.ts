@@ -625,6 +625,12 @@ export class PromptPage {
     await expect(this.instructions).toBeVisible();
   }
 
+  async expectPromptFieldsDisabled() {
+    await expect(this.role).toBeDisabled();
+    await expect(this.goal).toBeDisabled();
+    await expect(this.instructions).toBeDisabled();
+  }
+
   private async getDiffTexts(sectionName: string) {
     const card = this.diffModal
       .locator('h4', { hasText: sectionName })
