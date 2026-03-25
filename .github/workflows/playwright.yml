@@ -57,7 +57,7 @@ jobs:
       - name: Run Playwright tests
         id: test-run
         continue-on-error: true
-        run: npx playwright test tests/api-agent/connector/tool-search.spec.ts
+        run: npx playwright test --reporter=json
 
       - name: Extract failed test summary
         if: always()
@@ -68,28 +68,16 @@ jobs:
               const fs = require('fs');
               const data = JSON.parse(fs.readFileSync('test-results.json', 'utf8'));
               const failed = [];
-              let total = 0, passed = 0, failedCount = 0, skipped = 0, flaky = 0;
 
               function walk(suites) {
                 for (const suite of suites || []) {
                   for (const spec of suite.specs || []) {
                     for (const test of spec.tests || []) {
-                      total++;
-                      if (test.status === 'expected') passed++;
-                      else if (test.status === 'skipped') skipped++;
-                      else if (test.status === 'flaky') flaky++;
-                      else if (test.status === 'unexpected') {
-                        failedCount++;
+                      if (test.status === 'unexpected' || test.status === 'flaky') {
                         for (const r of test.results) {
                           if (r.status === 'failed' || r.status === 'timedOut') {
-                            const loc = spec.file + ':' + spec.line;
-                            const title = [...(suite.title ? [suite.title] : []), spec.title].join(' > ');
-                            const errLines = (r.error?.message || r.status).split('\\\\n').slice(0, 5).join('\\\\n');
-                            const snippet = r.error?.snippet ? r.error.snippet.split('\\\\n').slice(0, 4).join('\\\\n') : '';
-                            let entry = '--- FAILED: ' + title + '\\\\n    File: ' + loc + '\\\\n    Error: ' + errLines;
-                            if (snippet) entry += '\\\\n    Snippet: ' + snippet;
-                            failed.push(entry);
-                            break;
+                            const msg = r.error?.message?.split('\\n')[0] || r.status;
+                            failed.push(spec.title + ' → ' + msg);
                           }
                         }
                       }
@@ -101,10 +89,8 @@ jobs:
 
               walk(data.suites);
 
-              const stats = 'Total: ' + total + ' | Passed: ' + passed + ' | Failed: ' + failedCount + ' | Skipped: ' + skipped + ' | Flaky: ' + flaky;
-
-              if (failed.length === 0) console.log(stats + '\\\\nAll tests passed');
-              else console.log(stats + '\\\\n\\\\n' + failed.join('\\\\n\\\\n'));
+              if (failed.length === 0) console.log('All tests passed');
+              else console.log('Failed (' + failed.length + '):\\n' + failed.join('\\n'));
             ")
 
             echo "FAILED_SUMMARY<<EOF" >> $GITHUB_OUTPUT
@@ -153,9 +139,8 @@ jobs:
           PAYLOAD=$(jq -n \
             --arg report_url "${{ steps.deployment.outputs.page_url }}" \
             --arg status "${{ needs.test.outputs.test_outcome }}" \
-            --arg environment "${{ inputs.environment }}" \
             --arg failed_summary "$SUMMARY" \
-            '{report_url: $report_url, status: $status, environment: $environment, failed_summary: $failed_summary}')
+            '{report_url: $report_url, status: $status, failed_summary: $failed_summary}')
 
           curl -X POST https://flow.sokt.io/func/scri8acRJpTe \
             -H "Content-Type: application/json" \
