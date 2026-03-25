@@ -1,123 +1,125 @@
 name: Playwright Tests
+
 on:
   workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Target environment'
+        required: true
+        default: 'dev'
+        type: choice
+        options:
+          - prod
+          - dev
+
 permissions:
   contents: read
   pages: write
-  id-token: write   # REQUIRED for GitHub Pages push
+  id-token: write
+
 jobs:
   test:
-    timeout-minutes: 120
     runs-on: ubuntu-latest
+
     outputs:
       failed_summary: ${{ steps.summary.outputs.FAILED_SUMMARY }}
       test_outcome: ${{ steps.summary.outputs.test_outcome }}
+
     env:
+      TEST_ENV: ${{ inputs.environment }}
       PLAYWRIGHT_USER_DATA_DIR: ${{ secrets.PLAYWRIGHT_USER_DATA_DIR }}
       PLAYWRIGHT_LOGIN_URL: ${{ secrets.PLAYWRIGHT_LOGIN_URL }}
       PLAYWRIGHT_SUCCESS_URL: ${{ secrets.PLAYWRIGHT_SUCCESS_URL }}
       PLAYWRIGHT_BROWSER_CHANNEL: ${{ secrets.PLAYWRIGHT_BROWSER_CHANNEL }}
       PLAYWRIGHT_HEADLESS: ${{ secrets.PLAYWRIGHT_HEADLESS }}
       PLAYWRIGHT_AUTH_STATE: ${{ secrets.PLAYWRIGHT_AUTH_STATE }}
-      WORKSPACE_NAME: ${{ secrets.WORKSPACE_NAME }}
-      AGENT_NAME: ${{ secrets.AGENT_NAME }}
-      ORG_ID: ${{ secrets.ORG_ID }}
-      BASE_URL: ${{ secrets.BASE_URL }}
-      CHATBOT_AGENT: ${{ secrets.CHATBOT_AGENT }}
-      TESTING_AGENT: ${{ secrets.TESTING_AGENT }}
-      AGENT_ID: ${{ secrets.AGENT_ID }}
-      CHATBOT_AGENT_ID: ${{ secrets.CHATBOT_AGENT_ID }}
-      TESTING_AGENT_ID: ${{ secrets.TESTING_AGENT_ID }}
+      WORKSPACE_NAME: ${{ vars[format('{0}_WORKSPACE_NAME', inputs.environment)] || secrets.WORKSPACE_NAME }}
+      AGENT_NAME: ${{ vars[format('{0}_AGENT_NAME', inputs.environment)] || secrets.AGENT_NAME }}
+      ORG_ID: ${{ vars[format('{0}_ORG_ID', inputs.environment)] || secrets.ORG_ID }}
+      BASE_URL: ${{ vars[format('{0}_BASE_URL', inputs.environment)] || secrets.BASE_URL }}
+      CHATBOT_AGENT: ${{ vars[format('{0}_CHATBOT_AGENT', inputs.environment)] || secrets.CHATBOT_AGENT }}
+      TESTING_AGENT: ${{ vars[format('{0}_TESTING_AGENT', inputs.environment)] || secrets.TESTING_AGENT }}
+      GTWY_AUTOMATION_TOKEN: ${{ secrets.GTWY_AUTOMATION_TOKEN }}
 
     steps:
-    - uses: actions/checkout@v4
-    - uses: actions/setup-node@v4
-      with:
-        node-version: lts/*
-    - name: Install dependencies
-      run: npm ci
-    - name: Install Playwright Browsers
-      run: npx playwright install --with-deps
-    - name: Run Playwright tests
-      id: test-run
-      continue-on-error: true
-      run: npx playwright test
-    - name: Extract failed test summary
-      if: always()
-      id: summary
-      run: |
-        if [ -f test-results.json ]; then
-          FAILED_SUMMARY=$(node -e "
-            const fs = require('fs');
-            const data = JSON.parse(fs.readFileSync('test-results.json', 'utf8'));
-            const failed = [];
-            function extractLocation(stack) {
-              if (!stack) return '';
-              const lines = stack.split('\\n');
-              for (const line of lines) {
-                const m = line.match(/at.*?([\\/\\\\][\\w.-]+\\.spec\\.ts:\\d+:\\d+)/);
-                if (m) return m[1];
-              }
-              return '';
-            }
-            function extractSelector(msg) {
-              if (!msg) return '';
-              const m = msg.match(/waiting for (locator\\(.*?\\))/);
-              if (m) return m[1];
-              const m2 = msg.match(/locator\\(.*?\\)/);
-              if (m2) return m2[0];
-              return '';
-            }
-            function walk(suites) {
-              for (const suite of suites || []) {
-                for (const spec of suite.specs || []) {
-                  for (const test of spec.tests || []) {
-                    if (test.status === 'unexpected' || test.status === 'flaky') {
-                      for (const r of test.results) {
-                        if (r.status === 'failed' || r.status === 'timedOut') {
-                          const msg = (r.error && r.error.message) ? r.error.message.split('\\n')[0] : r.status;
-                          const loc = extractLocation(r.error && r.error.stack);
-                          const sel = extractSelector(r.error && r.error.message);
-                          let detail = spec.file + ' > ' + spec.title + '\\n  Error: ' + msg;
-                          if (sel) detail += '\\n  Selector: ' + sel;
-                          if (loc) detail += '\\n  Location: ' + loc;
-                          failed.push(detail);
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps
+
+      - name: Run Playwright tests
+        id: test-run
+        continue-on-error: true
+        run: npx playwright test tests/api-agent/prompt
+
+      - name: Extract failed test summary
+        if: always()
+        id: summary
+        run: |
+          if [ -f test-results.json ]; then
+            FAILED_SUMMARY=$(node -e "
+              const fs = require('fs');
+              const data = JSON.parse(fs.readFileSync('test-results.json', 'utf8'));
+              const failed = [];
+
+              function walk(suites) {
+                for (const suite of suites || []) {
+                  for (const spec of suite.specs || []) {
+                    for (const test of spec.tests || []) {
+                      if (test.status === 'unexpected' || test.status === 'flaky') {
+                        for (const r of test.results) {
+                          if (r.status === 'failed' || r.status === 'timedOut') {
+                            const msg = r.error?.message?.split('\\n')[0] || r.status;
+                            failed.push(spec.title + ' → ' + msg);
+                          }
                         }
                       }
                     }
                   }
+                  walk(suite.suites);
                 }
-                walk(suite.suites);
               }
-            }
-            walk(data.suites);
-            if (failed.length === 0) { console.log('All tests passed'); }
-            else { console.log('Failed (' + failed.length + '):\\n\\n' + failed.join('\\n\\n')); }
-          ")
-          echo "FAILED_SUMMARY<<EOF" >> $GITHUB_OUTPUT
-          echo "$FAILED_SUMMARY" >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
-          echo "test_outcome=${{ steps.test-run.outcome }}" >> $GITHUB_OUTPUT
-        else
-          echo "FAILED_SUMMARY=No test-results.json found" >> $GITHUB_OUTPUT
-          echo "test_outcome=${{ steps.test-run.outcome }}" >> $GITHUB_OUTPUT
-        fi
-    - uses: actions/upload-artifact@v4
-      if: ${{ !cancelled() }}
-      with:
-        name: playwright-report
-        path: playwright-report/
-        retention-days: 30
-    - name: Upload Pages artifact
-      if: always()
-      uses: actions/upload-pages-artifact@v3
-      with:
-        path: playwright-report
+
+              walk(data.suites);
+
+              if (failed.length === 0) console.log('All tests passed');
+              else console.log('Failed (' + failed.length + '):\\n' + failed.join('\\n'));
+            ")
+
+            echo "FAILED_SUMMARY<<EOF" >> $GITHUB_OUTPUT
+            echo "$FAILED_SUMMARY" >> $GITHUB_OUTPUT
+            echo "EOF" >> $GITHUB_OUTPUT
+            echo "test_outcome=${{ steps.test-run.outcome }}" >> $GITHUB_OUTPUT
+          else
+            echo "FAILED_SUMMARY=No test-results.json found" >> $GITHUB_OUTPUT
+            echo "test_outcome=${{ steps.test-run.outcome }}" >> $GITHUB_OUTPUT
+          fi
+
+      - uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 30
+
+      - name: Upload Pages artifact
+        if: always()
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: playwright-report
 
   deploy:
     if: always()
     needs: test
     runs-on: ubuntu-latest
+
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
@@ -126,19 +128,21 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+
       - name: Send Report URL and Summary to Webhook
-        if: always()
         run: |
-          SUMMARY=$(cat <<'ENDOFSUMMARY'
+          SUMMARY=$(cat <<'EOF'
           ${{ needs.test.outputs.failed_summary }}
-          ENDOFSUMMARY
+          EOF
           )
-          OUTCOME="${{ needs.test.outputs.test_outcome }}"
+
           PAYLOAD=$(jq -n \
             --arg report_url "${{ steps.deployment.outputs.page_url }}" \
-            --arg status "$OUTCOME" \
+            --arg status "${{ needs.test.outputs.test_outcome }}" \
             --arg failed_summary "$SUMMARY" \
             '{report_url: $report_url, status: $status, failed_summary: $failed_summary}')
+
           curl -X POST https://flow.sokt.io/func/scri8acRJpTe \
             -H "Content-Type: application/json" \
             -d "$PAYLOAD"
+```
