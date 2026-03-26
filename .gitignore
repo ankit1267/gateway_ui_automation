@@ -13,3 +13,4 @@ notes.md
 .env.dev
 Usersanshpchrome-playwright-profile
 tests/test.spec.ts
+test-results.json
