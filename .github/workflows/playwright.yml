@@ -130,6 +130,7 @@ jobs:
         uses: actions/deploy-pages@v4
 
       - name: Send Report URL and Summary to Webhook
+        if: always()
         run: |
           SUMMARY=$(cat <<'EOF'
           ${{ needs.test.outputs.failed_summary }}
