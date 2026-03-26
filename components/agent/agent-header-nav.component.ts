@@ -287,4 +287,12 @@ export class AgentHeaderNav {
       this.page.locator('div.text-base-content', { hasText: 'Saved' })
     ).toBeVisible();
   }
+
+  async expectPublishButtonNotVisible() {
+    await expect(this.publish).not.toBeVisible();
+  }
+
+  async expectRevertButtonNotVisible() {
+    await expect(this.revert).not.toBeVisible();
+  }
 }

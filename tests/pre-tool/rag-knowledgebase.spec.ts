@@ -95,7 +95,10 @@ test.describe('Pre-Tool - RAG Knowledgebase', () => {
     await agent.prompt.closeRagConfigModalIfVisible();
   });
 
-  test('TC-PRETOOL-RAG-06: Adding and then deleting the RAG Knowledgebase pre-tool removes it', async ({ agents }) => {
+});
+
+test('TC-PRETOOL-RAG-06: Adding and then deleting the RAG Knowledgebase pre-tool removes it', async ({ agents }) => {
+    await agents.goto('api');
     const agent = await agents.openAgent(AGENT_NAME);
     await agent.tabs.openPrompt();
     await agent.prompt.addPreToolClick();
@@ -106,5 +109,3 @@ test.describe('Pre-Tool - RAG Knowledgebase', () => {
     await agent.prompt.deletePreTool();
     await agent.prompt.expectPreToolContainerNotVisible();
   });
-
-});

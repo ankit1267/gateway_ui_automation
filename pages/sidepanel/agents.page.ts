@@ -46,32 +46,45 @@ export class AgentsPage {
     this.usageSummaryPopover = new UsageSummaryPopover(page);
   }
 
- async goto(type?: 'chatbot' | 'api') {
-     await this.page.goto('/org');
+//  async goto(type?: 'chatbot' | 'api') {
+//      await this.page.goto('/org');
 
-     const onboardingOverlay = this.page.getByTestId('org-page-guard-modal-overlay');
-    // Best-effort: try to close the onboarding overlay if it appears
-    try {
-      await onboardingOverlay.waitFor({ state: 'visible', timeout: 3000 });
-      await this.page.getByRole('button', { name: 'Close onboarding' }).click();
-      await onboardingOverlay.waitFor({ state: 'hidden', timeout: 3000 });
-    } catch {
-      // overlay may not appear or may not close cleanly – force-remove handles it
-    }
+//      const onboardingOverlay = this.page.getByTestId('org-page-guard-modal-overlay');
+//     // Best-effort: try to close the onboarding overlay if it appears
+//     try {
+//       await onboardingOverlay.waitFor({ state: 'visible', timeout: 3000 });
+//       await this.page.getByRole('button', { name: 'Close onboarding' }).click();
+//       await onboardingOverlay.waitFor({ state: 'hidden', timeout: 3000 });
+//     } catch {
+//       // overlay may not appear or may not close cleanly – force-remove handles it
+//     }
 
-    // Force-remove overlay if it's still blocking (iframe can swallow the close)
-    await this.page.evaluate(() => {
-      document.getElementById('org-page-guard-modal-overlay')?.remove();
-    });
+//     // Force-remove overlay if it's still blocking (iframe can swallow the close)
+//     await this.page.evaluate(() => {
+//       document.getElementById('org-page-guard-modal-overlay')?.remove();
+//     });
 
-    await this.page.getByText('Test Space', { exact: true }).click();
+//     await this.page.getByText('Test Space', { exact: true }).click();
  
-    if (type === 'chatbot') {
-      await this.sidebar.openChatbot();
-    } else if (type === 'api') {
-      await this.sidebar.openApi();
+//     if (type === 'chatbot') {
+//       await this.sidebar.openChatbot();
+//     } else if (type === 'api') {
+//       await this.sidebar.openApi();
+//     }
+//   }
+
+  async goto(type?: 'chatbot' | 'api') {
+    const orgId = process.env.ORG_ID;
+    if (!orgId) throw new Error('ORG_ID env variable is not set');
+
+    let url = `/org/${orgId}/agents`;
+    if (type) {
+      url += `?type=${type}`;
     }
+    await this.page.goto(url);
   }
+
+  
 
   async search() {
 

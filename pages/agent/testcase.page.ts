@@ -73,4 +73,8 @@ export class TestCasePage {
     async closeSuccessToast() {
         await this.page.getByLabel('close', { exact: true }).click();
     }
+
+    async expectTableVisible() {
+        await expect(this.table).toBeVisible();
+    }
 }
