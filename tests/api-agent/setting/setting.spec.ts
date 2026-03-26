@@ -68,10 +68,12 @@ test(
         await agent.settings.ensureApiMode();
 
         await agent.settings.toggleGuardrails();
-        await expect(agent.settings.addGuardrailBtn).toBeVisible({ timeout: 10_000 });
+        await expect(agent.settings.guardrailsToggle).toBeChecked({ timeout: 5_000 });
+        await expect(agent.settings.addGuardrailBtn).toBeVisible({ timeout: 5_000 });
 
         await agent.settings.toggleGuardrails();
-        await expect(agent.settings.addGuardrailBtn).toBeHidden({ timeout: 10_000 });
+        await expect(agent.settings.guardrailsToggle).not.toBeChecked({ timeout: 5_000 });
+        await expect(agent.settings.addGuardrailBtn).toBeHidden({ timeout: 5_000 });
     }
 );
 

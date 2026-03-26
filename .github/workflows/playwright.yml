@@ -76,8 +76,9 @@ jobs:
                       if (test.status === 'unexpected') {
                         for (const r of test.results) {
                           if (r.status === 'failed' || r.status === 'timedOut') {
-                            const lines = (r.error?.message || '').split('\\n');
-                            const msg = lines[0] || r.status;
+                            const errText = (r.error?.message || '') + '\\n' + (r.error?.stack || '') + '\\n' + (r.error?.snippet || '');
+                            const lines = errText.split('\\n');
+                            const msg = (r.error?.message || '').split('\\n')[0] || r.status;
                             const srcLine = lines.find(l => l.trimStart().startsWith('>'));
                             failed.push(spec.title + ' → ' + msg + (srcLine ? '\\n   ' + srcLine.trim() : ''));
                           }
