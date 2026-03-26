@@ -57,7 +57,7 @@ jobs:
       - name: Run Playwright tests
         id: test-run
         continue-on-error: true
-        run: npx playwright test tests/api-agent/setting/setting.spec.ts
+        run: npx playwright test
 
       - name: Extract failed test summary
         if: always()
