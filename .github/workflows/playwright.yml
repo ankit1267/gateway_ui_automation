@@ -68,20 +68,22 @@ jobs:
               const fs = require('fs');
               const data = JSON.parse(fs.readFileSync('test-results.json', 'utf8'));
               const failed = [];
+              const seen = new Set();
 
               function walk(suites) {
                 for (const suite of suites || []) {
                   for (const spec of suite.specs || []) {
+                    if (seen.has(spec.title)) continue;
                     for (const test of spec.tests || []) {
                       if (test.status === 'unexpected') {
-                        for (const r of test.results) {
-                          if (r.status === 'failed' || r.status === 'timedOut') {
-                            const errText = (r.error?.message || '') + '\\n' + (r.error?.stack || '') + '\\n' + (r.error?.snippet || '');
-                            const lines = errText.split('\\n');
-                            const msg = (r.error?.message || '').split('\\n')[0] || r.status;
-                            const srcLine = lines.find(l => l.trimStart().startsWith('>'));
-                            failed.push(spec.title + ' → ' + msg + (srcLine ? '\\n   ' + srcLine.trim() : ''));
-                          }
+                        const r = test.results.find(r => r.status === 'failed' || r.status === 'timedOut');
+                        if (r) {
+                          seen.add(spec.title);
+                          const errText = (r.error?.message || '') + '\\n' + (r.error?.stack || '') + '\\n' + (r.error?.snippet || '');
+                          const lines = errText.split('\\n');
+                          const msg = (r.error?.message || '').split('\\n')[0] || r.status;
+                          const srcLine = lines.find(l => l.trimStart().startsWith('>'));
+                          failed.push(spec.title + ' → ' + msg + (srcLine ? '\\n   ' + srcLine.trim() : ''));
                         }
                       }
                     }
