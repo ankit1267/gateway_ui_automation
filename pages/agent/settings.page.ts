@@ -19,6 +19,7 @@ export class SettingsPage {
     readonly bridgeTypeTrigger: Locator;
     readonly bridgeTypeToggleContainer: Locator;
     readonly embedHeader: Locator;
+    readonly embedCloseButton: Locator;
 
     // Starter question
     readonly starterQuestionContainer: Locator;
@@ -71,6 +72,7 @@ export class SettingsPage {
         this.bridgeTypeTrigger = page.getByTestId('bridge-type-trigger-radio');
         this.bridgeTypeToggleContainer = page.getByTestId('bridge-type-toggle-container');
         this.embedHeader = page.locator('#viasocket-embed-header');
+        this.embedCloseButton = page.locator('#viasocket-embed-close-button');
 
         // Starter question
         this.starterQuestionContainer = page.getByTestId('starter-question-container');
@@ -116,7 +118,9 @@ export class SettingsPage {
 
     async ensureApiMode() {
         if (!await this.bridgeTypeApi.isChecked()) {
-            await this.page.locator('#viasocket-embed-close-button').click();
+            if (await this.embedCloseButton.isVisible()) {
+                await this.embedCloseButton.click();
+            }
             await this.bridgeTypeApi.click();
         }
     }
@@ -129,7 +133,7 @@ export class SettingsPage {
 
     async closeEmbedIfVisible() {
         if (await this.embedHeader.isVisible()) {
-            await this.page.locator('#viasocket-embed-close-button').click();
+            await this.embedCloseButton.click();
         }
     }
 
@@ -159,12 +163,12 @@ export class SettingsPage {
 
     async clickAddGuardrailTypes() {
         await this.addGuardrailBtn.click();
+        await this.guardrailsCloseButton.waitFor({ state: 'visible' });
     }
 
     async fillWebhookUrl(url: string) {
         await this.webhookUrl.clear();
         await this.webhookUrl.fill(url);
-        await this.webhookUrl.press('Tab');
     }
 
     async fillHeaders(headers: string) {
