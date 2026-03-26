@@ -73,11 +73,13 @@ jobs:
                 for (const suite of suites || []) {
                   for (const spec of suite.specs || []) {
                     for (const test of spec.tests || []) {
-                      if (test.status === 'unexpected' || test.status === 'flaky') {
+                      if (test.status === 'unexpected') {
                         for (const r of test.results) {
                           if (r.status === 'failed' || r.status === 'timedOut') {
-                            const msg = r.error?.message?.split('\\n')[0] || r.status;
-                            failed.push(spec.title + ' → ' + msg);
+                            const lines = (r.error?.message || '').split('\\n');
+                            const msg = lines[0] || r.status;
+                            const srcLine = lines.find(l => l.trimStart().startsWith('>'));
+                            failed.push(spec.title + ' → ' + msg + (srcLine ? '\\n   ' + srcLine.trim() : ''));
                           }
                         }
                       }
