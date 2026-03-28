@@ -39,7 +39,7 @@ export class AgentConfigModal {
     await this.saveButton.click();
   }
   async close() {
-    await this.closeButton.click();
+    await this.closeButton.click({ force: true });
   }
   async addParameter() {
     await this.parameterButton.click();

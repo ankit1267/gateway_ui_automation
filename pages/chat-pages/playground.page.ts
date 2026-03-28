@@ -143,7 +143,20 @@ export class PlaygroundPage {
   }
 
   async selectStrategy(strategy: 'cosine' | 'ai' | 'exact') {
-    await this.strategySelect.selectOption(strategy);
+    // Wait for the strategy select to be stable before interacting
+    await this.strategySelect.waitFor({ state: 'attached', timeout: 5000 });
+    await this.strategySelect.waitFor({ state: 'visible', timeout: 5000 });
+    
+    try {
+      await this.strategySelect.selectOption(strategy);
+    } catch (error) {
+      // If element is detached, wait and retry with fresh locator
+      await this.page.waitForTimeout(1000);
+      const freshStrategySelect = this.page.getByTestId('chat-strategy-select');
+      await freshStrategySelect.waitFor({ state: 'attached', timeout: 5000 });
+      await freshStrategySelect.waitFor({ state: 'visible', timeout: 5000 });
+      await freshStrategySelect.selectOption(strategy);
+    }
   }
 
   async clickAddNewTestCase() {
@@ -370,5 +383,109 @@ export class PlaygroundPage {
 
   async getTestCaseCardCount(): Promise<number> {
     return this.testcaseListContainer.locator('[data-testid^="testcase-card-"]').count();
+  }
+
+  // --- API Response Verification Methods ---
+
+  /**
+   * Sends a message and returns the intercepted chat completion API response.
+   * Sets up the listener before sending so we never miss the response.
+   */
+  async typeMessageAndWaitForApi(message: string, options?: { timeout?: number }) {
+    const timeout = options?.timeout ?? 30000;
+
+    const responsePromise = this.page.waitForResponse(
+      (resp) =>
+        resp.url().includes('/api/v2/model/playground/chat/completion/') &&
+        resp.request().method() === 'POST' &&
+        resp.status() === 200,
+      { timeout }
+    );
+
+    await this.messageTextarea.fill(message);
+    await this.page.keyboard.press('Enter');
+
+    const response = await responsePromise;
+    const requestBody = JSON.parse(response.request().postData() || '{}');
+    const responseBody = await response.json();
+
+    return { requestBody, responseBody, response };
+  }
+
+  /**
+   * Verifies the chat completion API request body contains expected fields.
+   */
+  verifyChatRequestBody(requestBody: any, expectedMessage: string) {
+    expect(requestBody).toHaveProperty('version_id');
+    expect(requestBody).toHaveProperty('user', expectedMessage);
+    expect(requestBody).toHaveProperty('configuration');
+    expect(requestBody.configuration).toHaveProperty('type', 'chat');
+  }
+
+  /**
+   * Verifies the chat completion API response indicates success.
+   */
+  verifyChatResponseBody(responseBody: any) {
+    expect(responseBody).toHaveProperty('success', true);
+    expect(responseBody).toHaveProperty('message_id');
+  }
+
+  /**
+   * Runs a test case by ID and returns the intercepted API response.
+   */
+  async runTestCaseAndWaitForApi(testId: string, options?: { timeout?: number }) {
+    const timeout = options?.timeout ?? 30000;
+
+    const responsePromise = this.page.waitForResponse(
+      (resp) =>
+        resp.url().includes('/api/v2/model/testcases') &&
+        resp.request().method() === 'POST' &&
+        resp.status() === 200,
+      { timeout }
+    );
+
+    await this.getTestCaseRunButton(testId).click();
+
+    const response = await responsePromise;
+    const requestBody = JSON.parse(response.request().postData() || '{}');
+
+    return { requestBody, response };
+  }
+
+  /**
+   * Verifies the run-test-case API request body contains expected fields.
+   */
+  verifyRunTestCaseRequestBody(requestBody: any) {
+    expect(requestBody).toHaveProperty('version_id');
+    expect(requestBody).toHaveProperty('testcase_id');
+    expect(requestBody).toHaveProperty('bridge_id');
+    expect(requestBody.testcases).toBe(true);
+  }
+
+  /**
+   * Deletes a test case by ID and returns the intercepted API response.
+   */
+  async deleteTestCaseAndWaitForApi(testId: string, options?: { timeout?: number }) {
+    const timeout = options?.timeout ?? 15000;
+
+    const responsePromise = this.page.waitForResponse(
+      (resp) =>
+        resp.url().includes('/api/testcases/') &&
+        resp.request().method() === 'DELETE',
+      { timeout }
+    );
+
+    await this.getTestCaseDeleteButton(testId).click();
+
+    const response = await responsePromise;
+
+    return { response, status: response.status() };
+  }
+
+  /**
+   * Verifies the matching_type sent in the chat request matches the selected strategy.
+   */
+  verifyChatStrategy(requestBody: any, expectedStrategy: string) {
+    expect(requestBody?.testcase_data?.matching_type).toBe(expectedStrategy);
   }
 }

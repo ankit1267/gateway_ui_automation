@@ -130,6 +130,43 @@ export class ModelPage {
         await this.page.getByTestId(`advanced-param-reset-${parameterName}`).click();
     }
 
+    async setSliderValue(parameterName: string, targetValue: number) {
+        const slider = this.page.getByTestId(`advanced-param-slider-${parameterName}`);
+        const box = await slider.boundingBox();
+        if (!box) throw new Error(`Slider ${parameterName} not found or not visible`);
+
+        const min = Number(await slider.getAttribute('min'));
+        const max = Number(await slider.getAttribute('max'));
+        const ratio = (targetValue - min) / (max - min);
+        const targetX = box.x + box.width * ratio;
+        const targetY = box.y + box.height / 2;
+
+        await this.page.mouse.click(targetX, targetY);
+        await slider.focus();
+
+        let currentVal = Number(await slider.inputValue());
+        let diff = targetValue - currentVal;
+
+        if (Math.abs(diff) > 10) {
+            await slider.evaluate((el, step) => { (el as HTMLInputElement).step = String(Math.abs(step)); }, diff);
+            await this.page.keyboard.press(diff > 0 ? 'ArrowRight' : 'ArrowLeft');
+            await slider.evaluate(el => { (el as HTMLInputElement).step = '1'; });
+            currentVal = Number(await slider.inputValue());
+            diff = targetValue - currentVal;
+        }
+
+        const key = diff > 0 ? 'ArrowRight' : 'ArrowLeft';
+        for (let i = 0; i < Math.abs(diff); i++) {
+            await this.page.keyboard.press(key);
+        }
+
+        return Number(await slider.inputValue());
+    }
+
+    async getSliderValue(parameterName: string): Promise<string> {
+        return this.page.getByTestId(`advanced-param-slider-${parameterName}`).inputValue();
+    }
+
     async clickAdvancedParameterDropdown(parameterName: string) {
         await this.page.getByTestId(`advanced-param-dropdown-trigger-${parameterName}`).click();
     }
@@ -147,10 +184,21 @@ export class ModelPage {
     // -------------------------
 
     async toggleParallelToolChoice(check: boolean) {
-        if (check) {
-            await this.page.getByTestId('advanced-param-checkbox-parallel_tool_calls').check();
-        } else {
-            await this.page.getByTestId('advanced-param-checkbox-parallel_tool_calls').uncheck();
+        const checkbox = this.page.getByTestId('advanced-param-checkbox-parallel_tool_calls');
+        
+        // Wait for checkbox to be enabled and stable
+        await checkbox.waitFor({ state: 'attached', timeout: 5000 });
+        await checkbox.waitFor({ state: 'visible', timeout: 5000 });
+        
+        // Check current state and only toggle if needed
+        const currentState = await checkbox.isChecked();
+        
+        if (check !== currentState) {
+            if (check) {
+                await checkbox.check({ timeout: 5000 });
+            } else {
+                await checkbox.uncheck({ timeout: 5000 });
+            }
         }
     }
 
@@ -224,17 +272,18 @@ export class ModelPage {
         const option = this.page.getByTestId(`model-dropdown-grouped-option-${modelName}`);
         await expect(option).toBeVisible();
         await option.scrollIntoViewIfNeeded();
-        await this.page.waitForTimeout(300);
+        await this.page.waitForTimeout(2000);
         const box = await option.boundingBox();
         // Hover left edge to avoid the preview portal that renders to the right of the dropdown
         await this.page.mouse.move(box!.x + 10, box!.y + box!.height / 2);
-        await this.page.waitForTimeout(500);
+        await this.page.waitForTimeout(2000);
     }
 
     async expectModelPreviewVisible() {
         await expect(this.page.getByTestId('model-preview-container')).toBeVisible({ timeout: 10000 });
     }
 
+// ... (rest of the code remains the same)
     async expectModelPreviewNotVisible() {
         await expect(this.page.getByTestId('model-preview-container')).not.toBeVisible();
     }

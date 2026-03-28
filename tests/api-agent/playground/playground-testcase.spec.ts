@@ -8,7 +8,9 @@ test.describe('Playground Test Case Sidebar', () => {
     await agents.goto('api');
     const agent = await agents.openAgent(AGENT_NAME);
 
-    await agent.playground.typeMessage('testing');
+    const { requestBody, responseBody } = await agent.playground.typeMessageAndWaitForApi('testing');
+    agent.playground.verifyChatRequestBody(requestBody, 'testing');
+    agent.playground.verifyChatResponseBody(responseBody);
     await agent.playground.expectChatMessageVisible(1);
 
     await agent.playground.expectChatControlsVisible();
@@ -46,9 +48,11 @@ test.describe('Playground Test Case Sidebar', () => {
     await agent.playground.getTestCaseExpandButton(testCaseId).click();
     await expect(agent.playground.getTestCaseDetails(testCaseId)).not.toBeVisible();
 
-    await agent.playground.getTestCaseRunButton(testCaseId).click();
+    const { requestBody: runReq } = await agent.playground.runTestCaseAndWaitForApi(testCaseId);
+    agent.playground.verifyRunTestCaseRequestBody(runReq);
 
-    await agent.playground.getTestCaseDeleteButton(testCaseId).click();
+    const { status } = await agent.playground.deleteTestCaseAndWaitForApi(testCaseId);
+    expect(status).toBe(200);
 
     await expect(
       agent.playground.page.getByRole('alert').filter({ hasText: 'Test case deleted successfully' })
