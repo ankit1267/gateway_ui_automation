@@ -19,6 +19,9 @@ export class AgentsPage {
   private readonly emptyStateContainer: Locator;
   private readonly emptyStateCreateButton: Locator;
   private readonly emptyStateSpeakButton: Locator;
+  private readonly pageHeaderContainer: Locator;
+  private readonly searchInput: Locator;
+  private readonly customTableView: Locator;
   readonly sidebar: Sidebar;
   readonly knowledgeBasePage: KnowledgeBasePage;
   readonly createAgentModal: CreateNewBridgeModal;
@@ -37,6 +40,9 @@ export class AgentsPage {
     this.emptyStateContainer = this.page.getByTestId('agent-empty-state-container');
     this.emptyStateCreateButton = this.page.getByTestId('agent-empty-create-agent-button');
     this.emptyStateSpeakButton = this.page.getByTestId('agent-empty-speak-to-us-button');
+    this.pageHeaderContainer = this.page.getByTestId('page-header-container');
+    this.searchInput = this.page.getByTestId('search-items-input').last();
+    this.customTableView = this.page.getByTestId('custom-table-view').first();
     this.sidebar = new Sidebar(page);
     this.knowledgeBasePage = new KnowledgeBasePage(page);
     this.createAgentModal = new CreateNewBridgeModal(page);
@@ -45,33 +51,6 @@ export class AgentsPage {
     this.accessManagementModal = new AccessManagementModal(page);
     this.usageSummaryPopover = new UsageSummaryPopover(page);
   }
-
-//  async goto(type?: 'chatbot' | 'api') {
-//      await this.page.goto('/org');
-
-//      const onboardingOverlay = this.page.getByTestId('org-page-guard-modal-overlay');
-//     // Best-effort: try to close the onboarding overlay if it appears
-//     try {
-//       await onboardingOverlay.waitFor({ state: 'visible', timeout: 3000 });
-//       await this.page.getByRole('button', { name: 'Close onboarding' }).click();
-//       await onboardingOverlay.waitFor({ state: 'hidden', timeout: 3000 });
-//     } catch {
-//       // overlay may not appear or may not close cleanly – force-remove handles it
-//     }
-
-//     // Force-remove overlay if it's still blocking (iframe can swallow the close)
-//     await this.page.evaluate(() => {
-//       document.getElementById('org-page-guard-modal-overlay')?.remove();
-//     });
-
-//     await this.page.getByText('Test Space', { exact: true }).click();
- 
-//     if (type === 'chatbot') {
-//       await this.sidebar.openChatbot();
-//     } else if (type === 'api') {
-//       await this.sidebar.openApi();
-//     }
-//   }
 
   async goto(type?: 'chatbot' | 'api') {
     const orgId = process.env.ORG_ID;
@@ -84,10 +63,16 @@ export class AgentsPage {
     await this.page.goto(url);
   }
 
-  
+  async fillSearch(value: string) {
+    await this.searchInput.fill(value);
+  }
 
-  async search() {
+  async clearSearch() {
+    await this.searchInput.clear();
+  }
 
+  async getSearchValue(): Promise<string> {
+    return this.searchInput.inputValue();
   }
 
   async openAgent(agentName: string): Promise<AgentPage> {
@@ -268,6 +253,59 @@ export class AgentsPage {
 
   async expectHistoryPageUrl() {
     await expect(this.page).toHaveURL(/\/agents\/history\//, { timeout: 10000 });
+  }
+
+  // --- Page Header ---
+
+  async expectPageHeaderVisible() {
+    await expect(this.pageHeaderContainer).toBeVisible();
+  }
+
+  async expectCreateAgentButtonVisible() {
+    await expect(this.createAgentButton).toBeVisible();
+  }
+
+  async expectSearchInputVisible() {
+    await expect(this.searchInput).toBeVisible();
+  }
+
+  // --- Table Assertions ---
+
+  async expectTableVisible() {
+    await expect(this.customTable).toBeVisible();
+  }
+
+  async expectTableViewVisible() {
+    await expect(this.customTableView).toBeVisible();
+  }
+
+  async expectColumnHeaderVisible(column: string) {
+    await expect(
+      this.page.getByTestId(`custom-table-header-${column}`).first()
+    ).toBeVisible();
+  }
+
+  async clickSortByColumn(column: string) {
+    await this.page.getByTestId(`custom-table-sort-icon-${column}`).first().click();
+  }
+
+  async getFirstAgentName(): Promise<string> {
+    const firstRow = this.page.getByTestId(/custom-table-row-/).first();
+    await expect(firstRow).toBeVisible();
+    const nameCell = firstRow.locator('td').first();
+    return (await nameCell.textContent()) ?? '';
+  }
+
+  async expectAgentNotVisible(agentName: string) {
+    await expect(this.getAgentRow(agentName)).not.toBeVisible();
+  }
+
+  async expectUsageFilterButtonVisible() {
+    await expect(this.usageFilterButton).toBeVisible();
+  }
+
+  async expectAgentTableUrl() {
+    await expect(this.page).toHaveURL(/\/agents\//, { timeout: 10000 });
   }
 
   // --- Usage Filter ---

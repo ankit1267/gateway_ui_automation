@@ -679,11 +679,11 @@ export class PromptPage {
   }
 
   async expectAgentSetupGuideVisible() {
-    await expect(this.agentSetupCard).toBeVisible();
+    await expect(this.agentSetupCard).toBeVisible({ timeout: 5000 });
   }
 
   async expectAgentSetupGuideNotVisible() {
-    await expect(this.agentSetupCard).not.toBeVisible();
+    await expect(this.agentSetupCard).not.toBeVisible({ timeout: 5000 });
   }
 
   // --- Prompt header actions ---

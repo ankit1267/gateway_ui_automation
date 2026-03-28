@@ -1,21 +1,40 @@
-import { test, expect } from '../../../fixtures/base.fixture';
+﻿import { test } from '../../../fixtures/base.fixture';
+import { fillPromptAndVerifyApi } from '../../../utils/fill-prompt-api';
 
 const AGENT_NAME = process.env.AGENT_NAME!;
 
-test('compare published and current prompt', async ({ agents }) => {
+test('compare published and current prompt', async ({ agents, page }) => {
   
   await agents.goto('api');
 
   const agent = await agents.openAgent(AGENT_NAME);
 
-  await agent.prompt.fillPrompt(
-    '','',''
+  await fillPromptAndVerifyApi(
+    page,
+    async () => {
+      await agent.prompt.fillPrompt('', '', '');
+    },
+    {
+      role: '',
+      goal: '',
+      instruction: '',
+    }
   );
   
-  await agent.prompt.fillPrompt(
-    'You are a motivation coach',
-    'Help users with motivation',
-    'Always respond clearly and professionally'
+  const role = `You are a motivation coach${Date.now()}`;
+  const goal = `Help users with motivation${Date.now()}`;
+  const instruction = `Always respond clearly and professionally${Date.now()}`;
+  
+  await fillPromptAndVerifyApi(
+    page,
+    async () => {
+      await agent.prompt.fillPrompt(role, goal, instruction);
+    },
+    {
+      role,
+      goal,
+      instruction,
+    }
   );
 
   await agent.prompt.clickInstructions();
