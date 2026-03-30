@@ -24,7 +24,7 @@ test('child agent is triggered with variable', async ({ agents }) => {
     const agent = await agents.openAgent(TESTING_AGENT);
     await agent.header.openHistory();
     await agent.history.openToolItem();
-    await agent.history.verifyVariableVisible(/user_name=tilakraj/);
+    await agent.history.verifyVariableVisible(/user_name:tilakraj/);
     await agent.history.closeToolItem();
 
 });

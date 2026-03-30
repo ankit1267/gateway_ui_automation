@@ -305,4 +305,8 @@ export class ConnectersPage {
                .getByRole('region', { name: 'Interactive demo' })
        ).toBeVisible();
    }
+
+   async expectAlert(alertText: string){
+    await expect(this.page.getByRole('alert').filter({ hasText: alertText })).toBeVisible();
+   }
 }

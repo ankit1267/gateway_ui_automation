@@ -9,6 +9,11 @@ export class TestCasePage {
     readonly expectedOutputHeading: Locator;
     readonly editButton: Locator;
     readonly deleteButton: Locator;
+    readonly pageHeader: Locator;
+    readonly columnHeaderUserInput: Locator;
+    readonly columnHeaderExpectedOutput: Locator;
+    readonly columnHeaderModelAnswer: Locator;
+    readonly columnHeaderMatchingType: Locator;
 
     constructor(page: Page) {
         this.page = page;
@@ -18,6 +23,11 @@ export class TestCasePage {
         this.expectedOutputHeading = page.getByRole('heading', { name: 'Expected Output' });
         this.editButton = this.table.getByRole('button', { name: 'Edit', exact: true });
         this.deleteButton = this.table.getByRole('button', { name: 'Delete', exact: true });
+        this.pageHeader = page.getByTestId('page-header-container');
+        this.columnHeaderUserInput = page.getByRole('columnheader', { name: 'User Input' });
+        this.columnHeaderExpectedOutput = page.getByRole('columnheader', { name: 'Expected Output' });
+        this.columnHeaderModelAnswer = page.getByRole('columnheader', { name: 'Model Answer' });
+        this.columnHeaderMatchingType = page.getByRole('columnheader', { name: 'Matching Type' });
     }
 
     getRow(index: number): Locator {
@@ -76,5 +86,16 @@ export class TestCasePage {
 
     async expectTableVisible() {
         await expect(this.table).toBeVisible();
+    }
+
+    async expectPageHeaderVisible() {
+        await expect(this.pageHeader).toBeVisible();
+    }
+
+    async expectColumnHeadersVisible() {
+        await expect(this.columnHeaderUserInput).toBeVisible();
+        await expect(this.columnHeaderExpectedOutput).toBeVisible();
+        await expect(this.columnHeaderModelAnswer).toBeVisible();
+        await expect(this.columnHeaderMatchingType).toBeVisible();
     }
 }
