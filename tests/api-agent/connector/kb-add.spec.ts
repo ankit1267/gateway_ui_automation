@@ -1,7 +1,7 @@
-import { test } from '../../../fixtures/base.fixture';
+import { test, expect } from '../../../fixtures/base.fixture';
 import { removeKBFromVersion } from '../../../utils/api-cleanup';
 
-const AGENT_NAME = process.env.AGENT_NAME!;
+const AGENT_NAME = process.env.TESTING_AGENT!;
 const K_BASE = 'Resume';
 
 test.describe('Connectors - KB Add - API Agent', () => {
@@ -35,13 +35,28 @@ test.describe('Connectors - KB Add - API Agent', () => {
     capturedVersionId = null;
   });
 
-  test('Knowledgebase renders inside embed container after selection', async ({ agents }) => {
+  test('Knowledgebase renders inside embed container after selection', async ({ agents, page }) => {
     const agent = await agents.openAgent(AGENT_NAME);
     await agent.tabs.openConnectors();
+
+    const responsePromise = page.waitForResponse(
+      resp =>
+        /\/api\/versions\/[a-f0-9]+$/.test(resp.url()) &&
+        resp.request().method() === 'PUT' &&
+        resp.status() === 200
+    );
 
     await agent.connectors.clickAddKB();
     await agent.connectors.knowledgeBaseDropdown.selectKB(K_BASE);
 
+    const response = await responsePromise;
+    const json = await response.json();
+
+    const kbExists = (json.agent.doc_ids || []).some(
+      (doc: any) => doc.name === K_BASE
+    );
+
+    expect(kbExists).toBe(true);
     await agent.connectors.expectKBVisible(K_BASE);
   });
 });

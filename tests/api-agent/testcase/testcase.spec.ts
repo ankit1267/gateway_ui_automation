@@ -35,4 +35,31 @@ test.describe('Test Cases - API Agent', () => {
     await agent.testCasePage.expectTestCaseRunSuccessToast();
   });
 
+  test('TC-TESTCASE-02: Test Cases page header is visible on navigation', async ({ agents }) => {
+    const agent = await agents.openAgent(AGENT_NAME);
+    await agent.header.openTestCases();
+    await agent.testCasePage.expectPageHeaderVisible();
+  });
+
+  test('TC-TESTCASE-03: URL changes to /testcase path when navigating to Test Cases tab', async ({ agents, page }) => {
+    const agent = await agents.openAgent(AGENT_NAME);
+    await agent.header.openTestCases();
+    await expect(page).toHaveURL(/\/agents\/testcase\//);
+  });
+
+  test('TC-TESTCASE-04: Test Cases table and all column headers are visible', async ({ agents }) => {
+    const agent = await agents.openAgent(AGENT_NAME);
+    await agent.header.openTestCases();
+    await agent.testCasePage.expectTableVisible();
+    await agent.testCasePage.expectColumnHeadersVisible();
+  });
+
+  test('TC-TESTCASE-05: Navigate back to Agent Config from Test Cases restores configure URL', async ({ agents, page }) => {
+    const agent = await agents.openAgent(AGENT_NAME);
+    await agent.header.openTestCases();
+    await expect(page).toHaveURL(/\/agents\/testcase\//);
+    await agent.header.openChatbotConfig();
+    await expect(page).toHaveURL(/\/agents\/configure\//);
+  });
+
 });

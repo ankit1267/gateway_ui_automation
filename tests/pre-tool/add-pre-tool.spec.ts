@@ -11,8 +11,8 @@ test('Add a pre-tool', async ({ agents }) => {
     await agentPage.tabs.openPrompt();
     await agentPage.prompt.addPreToolClick();
 
-    // select factorial of anumber
+    // select factorial of a number
     await agentPage.prompt.preToolDropdown.selectTool('factorial_of_a_numbe...');
+    await agentPage.prompt.expectPreToolContainerVisible();
     await agentPage.prompt.deletePreTool();
-    
 });

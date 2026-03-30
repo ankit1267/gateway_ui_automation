@@ -34,7 +34,7 @@ test('TC-APIKEY-02: API key is added', async ({ agents }) => {
   await agent.model.selectServiceProvider('Mistral');
 
   // Step 3: Select API key field is selected
-  await agent.model.selectApiKey('Mistral api key');
+  await agent.model.selectApiKey('Mistral');
 
   // Assertion: Chat is visible
   await agent.model.expectChatTextareaVisible();
