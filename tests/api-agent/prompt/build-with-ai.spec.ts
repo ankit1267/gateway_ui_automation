@@ -1,12 +1,24 @@
 import { test } from '../../../fixtures/base.fixture';
+import { verifyJsonSchemaResponseApiUpdate } from '../../../utils/json-schema-response-api';
 
 const AGENT_NAME = process.env.AGENT_NAME!;
 
 test.describe('Prompt - Build with AI', () => {
-  test('TC-PROMPT-BAI-01: generate and apply instruction from Build with AI panel', async ({ agents }) => {
+  test('TC-PROMPT-BAI-01: generate and apply instruction from Build with AI panel', async ({ agents, page }) => {
     await agents.goto('api');
 
     const agent = await agents.openAgent(AGENT_NAME);
+
+    const selectCapture = await verifyJsonSchemaResponseApiUpdate(
+      page,
+      async () => {
+        await agent.prompt.selectResponseType('json_schema');
+      },
+    );
+    console.log(
+      `[json-schema-api] action=select-json_schema requests=${selectCapture.requestCount}`,
+      JSON.stringify((selectCapture.requestBody as { configuration?: { response_type?: unknown } }).configuration?.response_type ?? {}, null, 2),
+    );
 
     await agent.prompt.openBuildWithAI();
     await agent.prompt.closeBuildWithAI();
@@ -26,7 +38,19 @@ test.describe('Prompt - Build with AI', () => {
 
     await agent.prompt.expectBuildWithAIScrollable();
 
-    await agent.prompt.promptHelper.clickApplyButton();
+    const applyCapture = await verifyJsonSchemaResponseApiUpdate(
+      page,
+      async () => {
+        await agent.prompt.promptHelper.clickApplyButton();
+      },
+      {
+        requireJsonSchema: true,
+      },
+    );
+    console.log(
+      `[json-schema-api] action=apply-build-with-ai requests=${applyCapture.requestCount}`,
+      JSON.stringify((applyCapture.requestBody as { configuration?: { response_type?: unknown } }).configuration?.response_type ?? {}, null, 2),
+    );
 
     await agent.prompt.promptHelper.expectMainVisible();
 
