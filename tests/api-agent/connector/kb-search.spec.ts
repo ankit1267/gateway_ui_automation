@@ -11,6 +11,7 @@ test.describe('Connectors - KB Search - API Agent', () => {
 
   test('TC-CON-KB-01: Search for Resume in Add Knowledge Base dropdown shows result', async ({ agents }) => {
     const agent = await agents.openAgent(AGENT_NAME);
+    await agent.header.expectSavedVisible();
     await agent.tabs.openConnectors();
 
     await agent.connectors.clickAddKB();
@@ -21,6 +22,7 @@ test.describe('Connectors - KB Search - API Agent', () => {
 
   test('TC-CON-KB-02: Search with spaced query in Add Knowledge Base dropdown shows matching result', async ({ agents }) => {
     const agent = await agents.openAgent(AGENT_NAME);
+    await agent.header.expectSavedVisible();
     await agent.tabs.openConnectors();
 
     await agent.connectors.clickAddKB();

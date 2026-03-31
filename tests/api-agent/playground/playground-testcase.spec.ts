@@ -7,6 +7,7 @@ test.describe('Playground Test Case Sidebar', () => {
   test('TC-PG-TC-01: Playground test case sidebar full flow', async ({ agents }) => {
     await agents.goto('api');
     const agent = await agents.openAgent(AGENT_NAME);
+    await agent.header.expectSavedVisible();
 
     const { requestBody, responseBody } = await agent.playground.typeMessageAndWaitForApi('testing');
     agent.playground.verifyChatRequestBody(requestBody, 'testing');

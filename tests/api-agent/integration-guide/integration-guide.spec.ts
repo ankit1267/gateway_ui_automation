@@ -8,6 +8,7 @@ test.describe('Integration Guide - API Agent', () => {
   test('TC-IG-01: API tab - every copy button should work', async ({ agents }) => {
     await agents.goto('api');
     const agent = await agents.openAgent(AGENT_NAME);
+    await agent.header.expectSavedVisible();
     await agent.tabs.openIntegrationGuide();
     await agent.integrationGuide.expectPageVisible();
 
@@ -23,6 +24,7 @@ test.describe('Integration Guide - API Agent', () => {
   test('TC-IG-02: Batch API tab - every copy button should work', async ({ agents }) => {
     await agents.goto('api');
     const agent = await agents.openAgent(AGENT_NAME);
+    await agent.header.expectSavedVisible();
     await agent.tabs.openIntegrationGuide();
     await agent.integrationGuide.expectPageVisible();
 
@@ -40,6 +42,7 @@ test.describe('Integration Guide - API Agent', () => {
   test('TC-IG-03: clicking create auth key redirects to auth key page', async ({ agents, context }) => {
     await agents.goto('api');
     const agent = await agents.openAgent(AGENT_NAME);
+    await agent.header.expectSavedVisible();
     await agent.tabs.openIntegrationGuide();
     await agent.integrationGuide.expectPageVisible();
 
@@ -69,6 +72,7 @@ test.describe('Integration Guide - API Agent', () => {
   test('TC-IG-04: step 2 language dropdown shows curl, js, java, go', async ({ agents }) => {
     await agents.goto('api');
     const agent = await agents.openAgent(AGENT_NAME);
+    await agent.header.expectSavedVisible();
     await agent.tabs.openIntegrationGuide();
     await agent.integrationGuide.expectPageVisible();
 
@@ -93,6 +97,7 @@ test.describe('Integration Guide - API Agent', () => {
   test('TC-IG-05: API tab - steps should not be empty', async ({ agents }) => {
     await agents.goto('api');
     const agent = await agents.openAgent(AGENT_NAME);
+    await agent.header.expectSavedVisible();
     await agent.tabs.openIntegrationGuide();
     await agent.integrationGuide.expectPageVisible();
 
@@ -104,6 +109,7 @@ test.describe('Integration Guide - API Agent', () => {
   test('TC-IG-06: Batch API tab - steps should not be empty', async ({ agents }) => {
     await agents.goto('api');
     const agent = await agents.openAgent(AGENT_NAME);
+    await agent.header.expectSavedVisible();
     await agent.tabs.openIntegrationGuide();
     await agent.integrationGuide.expectPageVisible();
 

@@ -5,6 +5,7 @@ const AGENT_NAME = process.env.AGENT_NAME!;
 test('Playground strategy selection', async ({ agents }) => {
   await agents.goto('api');
   const agent = await agents.openAgent(AGENT_NAME);
+  await agent.header.expectSavedVisible();
 
   await agent.tabs.openModel();
   await agent.model.selectServiceProvider("Openai");
@@ -34,6 +35,7 @@ test('Playground strategy selection', async ({ agents }) => {
 test('Playground add new test case click open new playground', async ({ agents }) => {
   await agents.goto('api');
   const agent = await agents.openAgent(AGENT_NAME);
+  await agent.header.expectSavedVisible();
 
   await agent.tabs.openModel();
   await agent.model.selectServiceProvider("Openai");
@@ -55,6 +57,7 @@ test('Playground add new test case click open new playground', async ({ agents }
 test('Playground send message and verify response', async ({ agents }) => {
   await agents.goto('api');
   const agent = await agents.openAgent(AGENT_NAME);
+  await agent.header.expectSavedVisible();
 
   await agent.tabs.openModel();
   await agent.model.selectServiceProvider("Openai");

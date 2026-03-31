@@ -6,6 +6,7 @@ test('TC-FLOW-01: Enable agent flow, verify playground visible, navigate back', 
   await agents.goto('api');
 
   const agent = await agents.openAgent(AGENT_NAME);
+  await agent.header.expectSavedVisible();
   await agent.tabs.openSettings();
 
   await agent.settings.checkAgentFlowToggle();

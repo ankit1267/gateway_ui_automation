@@ -12,6 +12,7 @@ test.describe('Model Configuration - Service Provider & Model List', () => {
 
     test('TC-MODEL-01: Verify Model List Loads for Mistral', async ({ agents }) => {
         const agent = await agents.openAgent(AGENT_NAME);
+        await agent.header.expectSavedVisible();
         await agent.tabs.openModel();
         await agent.model.selectServiceProvider('Mistral');
 
@@ -28,6 +29,7 @@ test.describe('Model Configuration - Service Provider & Model List', () => {
 
     test('TC-MODEL-03: Verify Model List Loads for Openai', async ({ agents }) => {
         const agent = await agents.openAgent(AGENT_NAME);
+        await agent.header.expectSavedVisible();
         await agent.tabs.openModel();
         await agent.model.selectServiceProvider('Openai');
 
@@ -45,6 +47,7 @@ test.describe('Model Configuration - Service Provider & Model List', () => {
 
     test('TC-MODEL-04: Verify Model List Loads for Anthropic', async ({ agents }) => {
         const agent = await agents.openAgent(AGENT_NAME);
+        await agent.header.expectSavedVisible();
         await agent.tabs.openModel();
         await agent.model.selectServiceProvider('Anthropic');
 
@@ -58,6 +61,7 @@ test.describe('Model Configuration - Service Provider & Model List', () => {
 
     test('TC-MODEL-05: Verify Model List Loads for Groq', async ({ agents }) => {
         const agent = await agents.openAgent(AGENT_NAME);
+        await agent.header.expectSavedVisible();
         await agent.tabs.openModel();
         await agent.model.selectServiceProvider('Groq');
 
@@ -71,6 +75,7 @@ test.describe('Model Configuration - Service Provider & Model List', () => {
 
     test('TC-MODEL-06: Verify Model List Loads for Gemini', async ({ agents }) => {
         const agent = await agents.openAgent(AGENT_NAME);
+        await agent.header.expectSavedVisible();
         await agent.tabs.openModel();
         await agent.model.selectServiceProvider('Gemini');
 
@@ -84,6 +89,7 @@ test.describe('Model Configuration - Service Provider & Model List', () => {
 
     test('TC-MODEL-07: Verify Model List Loads for Ai-ml', async ({ agents }) => {
         const agent = await agents.openAgent(AGENT_NAME);
+        await agent.header.expectSavedVisible();
         await agent.tabs.openModel();
         await agent.model.selectServiceProvider('Ai_ml');
 
@@ -97,6 +103,7 @@ test.describe('Model Configuration - Service Provider & Model List', () => {
 
     test('TC-MODEL-08: Verify Model List Loads for Grok', async ({ agents }) => {
         const agent = await agents.openAgent(AGENT_NAME);
+        await agent.header.expectSavedVisible();
         await agent.tabs.openModel();
         await agent.model.selectServiceProvider('Grok');
 

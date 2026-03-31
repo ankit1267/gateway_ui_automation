@@ -42,6 +42,7 @@ test.describe('Connectors - Create New KB Added - API Agent', () => {
     async ({ agents }) => {
       await agents.goto('api');
       const agent = await agents.openAgent(AGENT_NAME);
+      await agent.header.expectSavedVisible();
       await agent.tabs.openConnectors();
       await agent.connectors.clickAddKB();
       await agent.connectors.knowledgeBaseDropdown.addNewKnowledgeBase();

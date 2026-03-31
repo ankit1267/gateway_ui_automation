@@ -18,6 +18,7 @@ test.describe('Agent Name - API vs Frontend Match', () => {
     );
 
     const agent = await agents.openAgent(AGENT_NAME);
+    await agent.header.expectSavedVisible();
 
     // Wait for single-agent API response
     const response = await responsePromise;
