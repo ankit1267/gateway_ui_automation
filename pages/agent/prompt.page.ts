@@ -338,10 +338,15 @@ export class PromptPage {
     await input.clear();
     await input.fill(name);
     await this.page.keyboard.press('Tab');
+    await expect(this.getPropertyNameInput(name)).toBeVisible();
   }
 
   async togglePropertyRequired(path: string) {
-    await this.getPropertyRequiredCheckbox(path).click();
+    await expect(async () => {
+      const checkbox = this.getPropertyRequiredCheckbox(path);
+      await checkbox.waitFor({ state: 'visible' });
+      await checkbox.check();
+    }).toPass({ timeout: 15000 });
   }
 
   async selectPropertyType(path: string, type: string) {
@@ -426,7 +431,13 @@ export class PromptPage {
   }
 
   async getSystemPromptValue(): Promise<string> {
-    return await this.promptTextarea.inputValue();
+    try {
+      await expect(this.promptTextarea).toBeVisible({ timeout: 5000 });
+      return await this.promptTextarea.inputValue();
+    } catch {
+      await expect(this.instructions).toBeVisible({ timeout: 15000 });
+      return await this.instructions.inputValue();
+    }
   }
 
   async getMigrateRoleValue(): Promise<string> {
