@@ -60,6 +60,7 @@ test.describe('Prompt tab - API Agent', () => {
     );
     const agent = await submitAndOpenPrompt(agents);
     const agentId = captureAgentIdFromUrl(page);
+    await page.waitForTimeout(2000);
 
     // Instructions should now be non-empty
     const systemPrompt = await agent.prompt.getSystemPromptValue();

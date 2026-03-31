@@ -1,14 +1,18 @@
 import { test, expect } from '../../../fixtures/base.fixture';
-
-
+import { selectResponseTypeAndVerifyApi } from '../../../utils/response-type-api';
 
 const AGENT_NAME = process.env.AGENT_NAME!;
 
+function logResponseTypeApiCapture(selectedType: string, captured: { requestCount: number; responseType: string; requestBody: Record<string, unknown> }) {
+  const body = captured.requestBody as { configuration?: unknown };
 
+  console.log(
+    `[response-type-api] selected=${selectedType} parsed=${captured.responseType} requests=${captured.requestCount}`,
+    JSON.stringify(body.configuration ?? {}, null, 2),
+  );
+}
 
 test.describe('Prompt - Response Type', () => {
-
-
 
   test.beforeEach(async ({ agents }) => {
 
@@ -16,29 +20,58 @@ test.describe('Prompt - Response Type', () => {
 
   });
 
-
-
-  test('TC-PROMPT-RESP-01: Change response type options', async ({ agents }) => {
+  test('TC-PROMPT-RESP-01: Change response type options', async ({ agents, page }) => {
 
     const agent = await agents.openAgent(AGENT_NAME);
 
-
-
     await agent.tabs.openPrompt();
 
-    await agent.prompt.selectResponseType('default');
+    const defaultCapture = await selectResponseTypeAndVerifyApi(
+      page,
+      async () => {
+        await agent.prompt.selectResponseType('default');
+      },
+      'default',
+    );
+    logResponseTypeApiCapture('default', defaultCapture);
 
-    await agent.prompt.selectResponseType('text');
+    const textCapture = await selectResponseTypeAndVerifyApi(
+      page,
+      async () => {
+        await agent.prompt.selectResponseType('text');
+      },
+      'text',
+    );
+    logResponseTypeApiCapture('text', textCapture);
 
-    await agent.prompt.selectResponseType('json_object');
+    const jsonObjectCapture = await selectResponseTypeAndVerifyApi(
+      page,
+      async () => {
+        await agent.prompt.selectResponseType('json_object');
+      },
+      'json_object',
+    );
+    logResponseTypeApiCapture('json_object', jsonObjectCapture);
 
-    await agent.prompt.selectResponseType('json_schema');
+    const jsonSchemaCapture = await selectResponseTypeAndVerifyApi(
+      page,
+      async () => {
+        await agent.prompt.selectResponseType('json_schema');
+      },
+      'json_schema',
+    );
+    logResponseTypeApiCapture('json_schema', jsonSchemaCapture);
 
-    await agent.prompt.selectResponseType('widget');
+    const widgetCapture = await selectResponseTypeAndVerifyApi(
+      page,
+      async () => {
+        await agent.prompt.selectResponseType('widget');
+      },
+      'widget',
+    );
+    logResponseTypeApiCapture('widget', widgetCapture);
 
   });
-
-
 
   test('TC-PROMPT-RESP-02: Set Default button resets response type to default', async ({ agents }) => {
 
