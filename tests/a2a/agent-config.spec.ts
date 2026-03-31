@@ -12,6 +12,7 @@ test.beforeEach(async ({ agents }) => {
 
 test('modal open, close, save-disabled, and close-without-saving', async ({ agents }) => {
     const agent = await agents.openAgent(TESTING_AGENT);
+    await agent.header.expectSavedVisible();
     await agent.tabs.openConnectors();
     await agent.connectors.clickAgentConfig();
 
@@ -47,6 +48,7 @@ test('modal open, close, save-disabled, and close-without-saving', async ({ agen
 
 test('parameter CRUD: add single, add multiple, delete specific', async ({ agents }) => {
     const agent = await agents.openAgent(TESTING_AGENT);
+    await agent.header.expectSavedVisible();
     await agent.tabs.openConnectors();
     await agent.connectors.clickAgentConfig();
 
@@ -102,6 +104,7 @@ test('parameter CRUD: add single, add multiple, delete specific', async ({ agent
 
 test('change parameter type to number, boolean, and array', async ({ agents }) => {
     const agent = await agents.openAgent(TESTING_AGENT);
+    await agent.header.expectSavedVisible();
     await agent.tabs.openConnectors();
     await agent.connectors.clickAgentConfig();
 
@@ -135,6 +138,7 @@ test('change parameter type to number, boolean, and array', async ({ agents }) =
 
 test('set and unset required on a parameter', async ({ agents }) => {
     const agent = await agents.openAgent(TESTING_AGENT);
+    await agent.header.expectSavedVisible();
     await agent.tabs.openConnectors();
     await agent.connectors.clickAgentConfig();
 
@@ -174,6 +178,7 @@ test('set and unset required on a parameter', async ({ agents }) => {
 
 test('add parameter with name, type, required, and value path', async ({ agents }) => {
     const agent = await agents.openAgent(TESTING_AGENT);
+    await agent.header.expectSavedVisible();
     await agent.tabs.openConnectors();
     await agent.connectors.clickAgentConfig();
 
@@ -209,6 +214,7 @@ test('add parameter with name, type, required, and value path', async ({ agents 
 
 test('enable enum and set allowed values on a parameter', async ({ agents }) => {
     const agent = await agents.openAgent(TESTING_AGENT);
+    await agent.header.expectSavedVisible();
     await agent.tabs.openConnectors();
     await agent.connectors.clickAgentConfig();
 
@@ -238,6 +244,7 @@ test('enable enum and set allowed values on a parameter', async ({ agents }) => 
 
 test('change type to object and add child property', async ({ agents }) => {
     const agent = await agents.openAgent(TESTING_AGENT);
+    await agent.header.expectSavedVisible();
     await agent.tabs.openConnectors();
     await agent.connectors.clickAgentConfig();
 
@@ -268,6 +275,7 @@ test('change type to object and add child property', async ({ agents }) => {
 
 test('toggle thread ID on and verify it persists', async ({ agents }) => {
     const agent = await agents.openAgent(TESTING_AGENT);
+    await agent.header.expectSavedVisible();
     await agent.tabs.openConnectors();
     await agent.connectors.clickAgentConfig();
 
@@ -303,6 +311,7 @@ test('toggle thread ID on and verify it persists', async ({ agents }) => {
 
 test('simple/advanced mode toggle and version select', async ({ agents }) => {
     const agent = await agents.openAgent(TESTING_AGENT);
+    await agent.header.expectSavedVisible();
     await agent.tabs.openConnectors();
     await agent.connectors.clickAgentConfig();
 

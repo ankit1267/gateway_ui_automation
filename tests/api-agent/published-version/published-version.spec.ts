@@ -12,6 +12,7 @@ test.describe('Agent - Published Version', () => {
     await agents.assertAgentVisible(TESTING_AGENT);
 
     const agent = await agents.openAgent(TESTING_AGENT);
+    await agent.header.expectSavedVisible();
 
     await agent.header.expectPublishedButtonVisible();
     await agent.header.clickPublishedButton();
@@ -23,6 +24,7 @@ test.describe('Agent - Published Version', () => {
     await agents.assertAgentVisible(TESTING_AGENT);
 
     const agent = await agents.openAgent(TESTING_AGENT);
+    await agent.header.expectSavedVisible();
 
     await agent.header.clickPublishedButton();
 
@@ -34,6 +36,7 @@ test.describe('Agent - Published Version', () => {
     await agents.assertAgentVisible(TESTING_AGENT);
 
     const agent = await agents.openAgent(TESTING_AGENT);
+    await agent.header.expectSavedVisible();
 
     await agent.header.clickPublishedButton();
 

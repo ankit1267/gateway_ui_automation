@@ -10,12 +10,14 @@ test.describe('Tool - Prebuilt Tool Domain Config', () => {
   test.beforeEach(async ({ agents }) => {
     await agents.goto('api');
     const agent = await agents.openAgent(AGENT_NAME);
+    await agent.header.expectSavedVisible();
     await agent.tabs.openConnectors();
     await agent.connectors.deletePrebuiltToolIfExists(TOOL_KEY);
   });
 
   test('TC-TOOL-01: Add domain, edit with invalid then valid value, and delete', async ({ agents }) => {
     const agent = await agents.openAgent(AGENT_NAME);
+    await agent.header.expectSavedVisible();
     await agent.tabs.openConnectors();
     await agent.connectors.clickAddTool();
     await agent.connectors.toolDropdown.selectTool(TOOL_NAME);
@@ -41,6 +43,7 @@ test.describe('Tool - Prebuilt Tool Domain Config', () => {
 
   test('TC-TOOL-02: Domain format validation — full URL rejected, no TLD rejected, www prefix accepted, duplicate rejected', async ({ agents }) => {
     const agent = await agents.openAgent(AGENT_NAME);
+    await agent.header.expectSavedVisible();
     await agent.tabs.openConnectors();
     await agent.connectors.clickAddTool();
     await agent.connectors.toolDropdown.selectTool(TOOL_NAME);
@@ -72,6 +75,7 @@ test.describe('Tool - Prebuilt Tool Domain Config', () => {
   test.afterEach(async ({ agents }) => {
     await agents.goto('api');
     const agent = await agents.openAgent(AGENT_NAME);
+    await agent.header.expectSavedVisible();
     await agent.tabs.openConnectors();
     await agent.connectors.deletePrebuiltToolIfExists(TOOL_KEY);
   });

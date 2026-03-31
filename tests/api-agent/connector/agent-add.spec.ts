@@ -36,42 +36,17 @@ test('Agent renders inside embed container after selection', async ({
   const versionRes = await versionApiPromise;
   const agentRes = await agentApiPromise;
 
-  console.log('[CAPTURED] Version API:', {
-    url: versionRes.url(),
-    method: versionRes.request().method(),
-    status: versionRes.status()
-  });
-
-  console.log('[CAPTURED] Agent API:', {
-    url: agentRes.url(),
-    method: agentRes.request().method(),
-    status: agentRes.status()
-  });
-
   const versionData = await versionRes.json();
   const agentData = await agentRes.json();
-
-  // logs
-  console.log('===== VERSION API RESPONSE =====');
-  console.log(JSON.stringify(versionData, null, 2));
-
-  console.log('===== AGENT API RESPONSE =====');
-  console.log(JSON.stringify(agentData, null, 2));
-
-  console.log('Version API URL:', versionRes.url());
-  console.log('Agent API URL:', agentRes.url());
 
   // basic validation
   expect(versionData.message).toBe('Agent Updated successfully');
   expect(agentData.message).toBe('Agent Updated successfully');
 
-  // ===== 🔥 REQUEST → RESPONSE VALIDATION =====
+  // =====  REQUEST → RESPONSE VALIDATION =====
 
   // extract request payload
   const requestPayload = versionRes.request().postDataJSON();
-
-  console.log('===== VERSION REQUEST PAYLOAD =====');
-  console.log(JSON.stringify(requestPayload, null, 2));
 
   const connectedAgents = versionData.agent.connected_agents;
 

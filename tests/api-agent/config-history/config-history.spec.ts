@@ -12,6 +12,7 @@ test.describe('Agent - Config History Panel', () => {
     await agents.assertAgentVisible(TESTING_AGENT);
 
     const agent = await agents.openAgent(TESTING_AGENT);
+    await agent.header.expectSavedVisible();
 
     await agent.header.openUpdatesHistory();
 

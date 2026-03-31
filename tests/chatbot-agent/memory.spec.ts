@@ -11,6 +11,7 @@ test.describe('Memory - Chatbot Agent', () => {
 
   test('TC-MEM-01: Memory feature should enable, save context, and persist', async ({ agents }) => {
     const agent = await agents.openAgent(CHATBOT_AGENT);
+    await agent.header.expectSavedVisible();
 
     await agent.tabs.openMemory();
 
