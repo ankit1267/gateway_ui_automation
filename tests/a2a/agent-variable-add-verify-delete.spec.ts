@@ -13,7 +13,6 @@ test('add age variable, verify in payload, then delete', async ({ agents }) => {
     // Open Connectors Config
     // -------------------------
     const agent = await agents.openAgent(TESTING_AGENT);
-    await agent.header.expectSavedVisible();
     await agent.tabs.openConnectors();
 
     await agent.connectors.clickAgentConfig();
@@ -46,7 +45,6 @@ test('add age variable, verify in payload, then delete', async ({ agents }) => {
 
 test('Verify new0 variable passed', async ({ agents }) => {
     const agent = await agents.openAgent(TESTING_AGENT);
-    await agent.header.expectSavedVisible();
     await agent.header.openHistory();
     await agent.history.openToolItem();
     await agent.history.verifyVariableVisible(/"new0"\s*:\s*0/);

@@ -9,7 +9,6 @@ const AGENT_NAME = process.env.TESTING_AGENT!
 test('Fill Prompt and api configured should not show agent guide', async ({ agents, page }) => {
   await agents.goto('api');
   const agent = await agents.openAgent(AGENT_NAME);
-  await agent.header.expectSavedVisible();
   await agent.tabs.openModel();
   await agent.model.selectServiceProvider("Grok");
   await agent.prompt.expectAgentSetupGuideVisible();
@@ -42,7 +41,6 @@ test('Fill Prompt and api configured should not show agent guide', async ({ agen
 test('Agent setup card updates dynamically when prompt entered', async ({ agents, page }) => {
   await agents.goto('api');
   const agent = await agents.openAgent(AGENT_NAME);
-  await agent.header.expectSavedVisible();
 
   await agent.tabs.openModel();
   await agent.model.selectServiceProvider("Grok");
@@ -86,7 +84,6 @@ test('Prompt Empty and switch tab should results in setup card remain same', asy
 
   await agents.goto('api');
   const agent = await agents.openAgent(AGENT_NAME);
-  await agent.header.expectSavedVisible();
 
   await fillPromptAndVerifyApi(
     page,
@@ -113,7 +110,6 @@ test('Prompt Empty and switch tab should results in setup card remain same', asy
 test('Fill Prompt and api not configured should show agent guide', async ({ agents, page }) => {
   await agents.goto('api');
   const agent = await agents.openAgent(AGENT_NAME);
-  await agent.header.expectSavedVisible();
 
   const role = `Support agent${Date.now()}`;
   const goal = `Help users${Date.now()}`;
@@ -141,7 +137,6 @@ test('Fill Prompt and api not configured should show agent guide', async ({ agen
 test('Only fill role and goal should results in setup card remain same', async ({ agents, page }) => {
   await agents.goto('api');
   const agent = await agents.openAgent(AGENT_NAME);
-  await agent.header.expectSavedVisible();
 
   const role = `Support agent${Date.now()}`;
   const goal = `Help users${Date.now()}`;

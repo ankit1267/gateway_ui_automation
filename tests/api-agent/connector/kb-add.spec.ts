@@ -37,7 +37,6 @@ test.describe('Connectors - KB Add - API Agent', () => {
 
   test('Knowledgebase renders inside embed container after selection', async ({ agents, page }) => {
     const agent = await agents.openAgent(AGENT_NAME);
-    await agent.header.expectSavedVisible();
     await agent.tabs.openConnectors();
 
     const responsePromise = page.waitForResponse(

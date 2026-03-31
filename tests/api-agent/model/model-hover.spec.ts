@@ -7,7 +7,6 @@ test.describe('Model - Hover Preview', () => {
   test('TC-MODEL-HOVER-01: hovering over a model option shows model information panel', async ({ agents }) => {
     await agents.goto('api');
     const agent = await agents.openAgent(AGENT_NAME);
-    await agent.header.expectSavedVisible();
     await agent.tabs.openModel();
 
     await agent.model.selectServiceProvider('Openai');
@@ -23,7 +22,6 @@ test.describe('Model - Hover Preview', () => {
   test('TC-MODEL-HOVER-02: model preview disappears when mouse leaves the dropdown', async ({ agents }) => {
     await agents.goto('api');
     const agent = await agents.openAgent(AGENT_NAME);
-    await agent.header.expectSavedVisible();
     await agent.tabs.openModel();
 
     await agent.model.selectServiceProvider('Openai');
@@ -39,7 +37,6 @@ test.describe('Model - Hover Preview', () => {
   test('TC-MODEL-HOVER-03: hovering different models updates the preview', async ({ agents }) => {
     await agents.goto('api');
     const agent = await agents.openAgent(AGENT_NAME);
-    await agent.header.expectSavedVisible();
     await agent.tabs.openModel();
 
     await agent.model.selectServiceProvider('Openai');

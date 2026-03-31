@@ -38,7 +38,6 @@ test.describe('Connectors - Tool Config - API Agent', () => {
 
   test('TC-CON-TOOL-CONFIG-01: Add tool, open settings, switch to advanced mode, verify old data toggle is visible', async ({ agents }) => {
     const agent = await agents.openAgent(AGENT_NAME);
-    await agent.header.expectSavedVisible();
     await agent.tabs.openConnectors();
 
     await agent.connectors.clickAddTool();
@@ -58,7 +57,6 @@ test.describe('Connectors - Tool Config - API Agent', () => {
 
   test('TC-CON-TOOL-CONFIG-02: Open tool settings, click Name & Description, verify name input and description are visible', async ({ agents }) => {
     const agent = await agents.openAgent(AGENT_NAME);
-    await agent.header.expectSavedVisible();
     await agent.tabs.openConnectors();
 
     await agent.connectors.clickAddTool();

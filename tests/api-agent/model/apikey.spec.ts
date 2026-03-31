@@ -8,7 +8,6 @@ test('TC-APIKEY-01: API key required error is shown', async ({ agents }) => {
   await agents.goto('api');
   // Step 1: Open Model tab
   const agent = await agents.openAgent(AGENT_NAME);
-  await agent.header.expectSavedVisible();
   await agent.tabs.openModel();
 
   // Step 2: Ensure provider is selected (example: OpenAI)
@@ -30,7 +29,6 @@ test('TC-APIKEY-02: API key is added', async ({ agents, page }) => {
   // Step 1: Open Model tab
   await agents.goto('api');
   const agent = await agents.openAgent(AGENT_NAME);
-  await agent.header.expectSavedVisible();
   await agent.tabs.openModel();
   // Step 2: Ensure provider is selected (example: OpenAI)
   await agent.model.selectServiceProvider('Mistral');

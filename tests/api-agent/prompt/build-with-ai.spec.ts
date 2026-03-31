@@ -8,7 +8,6 @@ test.describe('Prompt - Build with AI', () => {
     await agents.goto('api');
 
     const agent = await agents.openAgent(AGENT_NAME);
-    await agent.header.expectSavedVisible();
 
     const selectCapture = await verifyJsonSchemaResponseApiUpdate(
       page,

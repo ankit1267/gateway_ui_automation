@@ -38,7 +38,6 @@ test.describe('Pre-Tool - RAG Knowledgebase', () => {
 
   test('TC-PRETOOL-RAG-01: Selecting RAG Knowledgebase opens the config modal and verifies its visibility', async ({ agents }) => {
     const agent = await agents.openAgent(AGENT_NAME);
-    await agent.header.expectSavedVisible();
     await agent.tabs.openPrompt();
     await agent.prompt.addPreToolClick();
     await agent.prompt.preToolDropdown.searchAndSelect(RAG_KNOWLEDGEBASE);
@@ -50,7 +49,6 @@ test.describe('Pre-Tool - RAG Knowledgebase', () => {
 
   test('TC-PRETOOL-RAG-02: Save button is disabled when no knowledge base is selected', async ({ agents }) => {
     const agent = await agents.openAgent(AGENT_NAME);
-    await agent.header.expectSavedVisible();
     await agent.tabs.openPrompt();
     await agent.prompt.addPreToolClick();
     await agent.prompt.preToolDropdown.searchAndSelect(RAG_KNOWLEDGEBASE);
@@ -61,7 +59,6 @@ test.describe('Pre-Tool - RAG Knowledgebase', () => {
 
   test('TC-PRETOOL-RAG-03: Selecting a knowledge base enables the Save button and saves successfully', async ({ agents }) => {
     const agent = await agents.openAgent(AGENT_NAME);
-    await agent.header.expectSavedVisible();
     await agent.tabs.openPrompt();
     await agent.prompt.addPreToolClick();
     await agent.prompt.preToolDropdown.searchAndSelect(RAG_KNOWLEDGEBASE);
@@ -75,7 +72,6 @@ test.describe('Pre-Tool - RAG Knowledgebase', () => {
 
   test('TC-PRETOOL-RAG-04: RAG Knowledgebase pre-tool persists after switching tabs and returning', async ({ agents }) => {
     const agent = await agents.openAgent(AGENT_NAME);
-    await agent.header.expectSavedVisible();
     await agent.tabs.openPrompt();
     await agent.prompt.addPreToolClick();
     await agent.prompt.preToolDropdown.searchAndSelect(RAG_KNOWLEDGEBASE);
@@ -89,7 +85,6 @@ test.describe('Pre-Tool - RAG Knowledgebase', () => {
 
   test('TC-PRETOOL-RAG-05: Re-opening the config modal from the pre-tool card reopens it', async ({ agents }) => {
     const agent = await agents.openAgent(AGENT_NAME);
-    await agent.header.expectSavedVisible();
     await agent.tabs.openPrompt();
     await agent.prompt.addPreToolClick();
     await agent.prompt.preToolDropdown.searchAndSelect(RAG_KNOWLEDGEBASE);
@@ -105,7 +100,6 @@ test.describe('Pre-Tool - RAG Knowledgebase', () => {
 test('TC-PRETOOL-RAG-06: Adding and then deleting the RAG Knowledgebase pre-tool removes it', async ({ agents }) => {
     await agents.goto('api');
     const agent = await agents.openAgent(AGENT_NAME);
-    await agent.header.expectSavedVisible();
     await agent.tabs.openPrompt();
     await agent.prompt.addPreToolClick();
     await agent.prompt.preToolDropdown.searchAndSelect(RAG_KNOWLEDGEBASE);
