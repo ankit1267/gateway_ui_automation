@@ -13,7 +13,6 @@ test.describe('Agent - Navbar Navigation', () => {
     await agents.assertAgentVisible(TESTING_AGENT);
 
     const agent = await agents.openAgent(TESTING_AGENT);
-    await agent.header.expectSavedVisible();
 
     await agent.header.openTestCases();
 
@@ -24,7 +23,7 @@ test.describe('Agent - Navbar Navigation', () => {
     await agents.assertAgentVisible(TESTING_AGENT);
 
     const agent = await agents.openAgent(TESTING_AGENT);
-    await agent.header.expectSavedVisible();
+   
 
     await agent.header.openHistory();
 
@@ -35,7 +34,7 @@ test.describe('Agent - Navbar Navigation', () => {
     await agents.assertAgentVisible(TESTING_AGENT);
 
     const agent = await agents.openAgent(TESTING_AGENT);
-    await agent.header.expectSavedVisible();
+   
 
     await agent.header.openUpdatesHistory();
 

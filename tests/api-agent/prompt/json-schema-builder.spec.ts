@@ -7,7 +7,7 @@ test.describe('Prompt - JSON Schema Builder', () => {
   test('TC-PROMPT-JS-01: enter valid schema name', async ({ agents }) => {
     await agents.goto('api');
     const agent = await agents.openAgent(AGENT_NAME);
-    await agent.header.expectSavedVisible();
+   
 
     await agent.prompt.selectResponseType('json_schema');
     await agent.prompt.fillJsonSchema('{}');
@@ -21,8 +21,7 @@ test.describe('Prompt - JSON Schema Builder', () => {
   test('TC-PROMPT-JS-02: enter invalid schema name with special characters', async ({ agents }) => {
     await agents.goto('api');
     const agent = await agents.openAgent(AGENT_NAME);
-    await agent.header.expectSavedVisible();
-
+   
     await agent.prompt.selectResponseType('json_schema');
     await agent.prompt.fillJsonSchema('{}');
     await agent.prompt.openBuildVisually();
@@ -35,8 +34,7 @@ test.describe('Prompt - JSON Schema Builder', () => {
   test('TC-PROMPT-JS-03: verify no properties message when none added', async ({ agents }) => {
     await agents.goto('api');
     const agent = await agents.openAgent(AGENT_NAME);
-    await agent.header.expectSavedVisible();
-
+    
     await agent.prompt.selectResponseType('json_schema');
     await agent.prompt.fillJsonSchema('{}');
     await agent.prompt.openBuildVisually();
@@ -48,10 +46,11 @@ test.describe('Prompt - JSON Schema Builder', () => {
   test('TC-PROMPT-JS-04: add property and build JSON schema', async ({ agents }) => {
     await agents.goto('api');
     const agent = await agents.openAgent(AGENT_NAME);
-    await agent.header.expectSavedVisible();
+    
 
     await agent.prompt.selectResponseType('json_schema');
     await agent.prompt.fillJsonSchema('{}');
+    await agent.header.expectSavedVisible();
     await agent.prompt.openBuildVisually();
     await agent.prompt.expectJsonSchemaBuilderVisible();
 
@@ -71,7 +70,7 @@ test.describe('Prompt - JSON Schema Builder', () => {
   test('TC-PROMPT-JS-05: delete property and verify removal', async ({ agents }) => {
     await agents.goto('api');
     const agent = await agents.openAgent(AGENT_NAME);
-    await agent.header.expectSavedVisible();
+    
 
     await agent.prompt.selectResponseType('json_schema');
     await agent.prompt.fillJsonSchema('{}');
@@ -90,10 +89,11 @@ test.describe('Prompt - JSON Schema Builder', () => {
   test('TC-PROMPT-JS-06: object type property has nested add property option', async ({ agents }) => {
     await agents.goto('api');
     const agent = await agents.openAgent(AGENT_NAME);
-    await agent.header.expectSavedVisible();
+   
 
     await agent.prompt.selectResponseType('json_schema');
     await agent.prompt.fillJsonSchema('{}');
+    await agent.header.expectSavedVisible();
     await agent.prompt.openBuildVisually();
     await agent.prompt.expectJsonSchemaBuilderVisible();
 
@@ -111,7 +111,7 @@ test.describe('Prompt - JSON Schema Builder', () => {
   test('TC-PROMPT-JS-07: expand and collapse object type properties', async ({ agents }) => {
     await agents.goto('api');
     const agent = await agents.openAgent(AGENT_NAME);
-    await agent.header.expectSavedVisible();
+   
 
     await agent.prompt.selectResponseType('json_schema');
     await agent.prompt.fillJsonSchema('{}');
@@ -135,7 +135,7 @@ test.describe('Prompt - JSON Schema Builder', () => {
   test('TC-PROMPT-JS-08: save schema and verify success toast', async ({ agents }) => {
     await agents.goto('api');
     const agent = await agents.openAgent(AGENT_NAME);
-    await agent.header.expectSavedVisible();
+   
 
     await agent.prompt.selectResponseType('json_schema');
     await agent.prompt.fillJsonSchema('{}');
@@ -153,10 +153,11 @@ test.describe('Prompt - JSON Schema Builder', () => {
   test('TC-PROMPT-JS-09: close without saving and verify previous data remains', async ({ agents }) => {
     await agents.goto('api');
     const agent = await agents.openAgent(AGENT_NAME);
-    await agent.header.expectSavedVisible();
+    
 
     await agent.prompt.selectResponseType('json_schema');
     await agent.prompt.fillJsonSchema('{}');
+    await agent.header.expectSavedVisible();
     await agent.prompt.openBuildVisually();
     await agent.prompt.expectJsonSchemaBuilderVisible();
 

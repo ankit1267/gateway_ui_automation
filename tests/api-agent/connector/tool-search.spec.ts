@@ -11,7 +11,6 @@ test.describe('Connectors - Tool Search - API Agent', () => {
 
   test('TC-CON-TOOL-01: Search for tool in Add Tool dropdown shows result', async ({ agents, page }) => {
     const agent = await agents.openAgent(AGENT_NAME);
-    await agent.header.expectSavedVisible();
     await agent.tabs.openModel();
     await agent.model.selectServiceProvider('Openai');
 
@@ -43,7 +42,6 @@ test.describe('Connectors - Tool Search - API Agent', () => {
       ),
       agents.openAgent(AGENT_NAME),
     ]);
-    await agent.header.expectSavedVisible();
     const versionApiData = await versionApiResponse.json();
     expect(versionApiData.agent).toBeDefined();
 

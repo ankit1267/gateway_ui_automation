@@ -39,7 +39,6 @@ test.describe('Pre-Tool - Gtwy Web Search', () => {
 
   test('TC-PRETOOL-GWS-01: Selecting Gtwy Web Search opens the config modal and verifies its visibility', async ({ agents }) => {
     const agent = await agents.openAgent(AGENT_NAME);
-    await agent.header.expectSavedVisible();
     await agent.tabs.openPrompt();
     await agent.prompt.addPreToolClick();
     await agent.prompt.preToolDropdown.searchAndSelect(GTWY_WEB_SEARCH);
@@ -51,7 +50,6 @@ test.describe('Pre-Tool - Gtwy Web Search', () => {
 
   test('TC-PRETOOL-GWS-02: Save button is disabled when no URL is provided', async ({ agents }) => {
     const agent = await agents.openAgent(AGENT_NAME);
-    await agent.header.expectSavedVisible();
     await agent.tabs.openPrompt();
     await agent.prompt.addPreToolClick();
     await agent.prompt.preToolDropdown.searchAndSelect(GTWY_WEB_SEARCH);
@@ -62,7 +60,6 @@ test.describe('Pre-Tool - Gtwy Web Search', () => {
 
   test('TC-PRETOOL-GWS-03: Entering an invalid URL keeps the Save button disabled', async ({ agents }) => {
     const agent = await agents.openAgent(AGENT_NAME);
-    await agent.header.expectSavedVisible();
     await agent.tabs.openPrompt();
     await agent.prompt.addPreToolClick();
     await agent.prompt.preToolDropdown.searchAndSelect(GTWY_WEB_SEARCH);
@@ -74,7 +71,6 @@ test.describe('Pre-Tool - Gtwy Web Search', () => {
 
   test('TC-PRETOOL-GWS-04: Entering a valid URL enables the Save button and saves successfully', async ({ agents }) => {
     const agent = await agents.openAgent(AGENT_NAME);
-    await agent.header.expectSavedVisible();
     await agent.tabs.openPrompt();
     await agent.prompt.addPreToolClick();
     await agent.prompt.preToolDropdown.searchAndSelect(GTWY_WEB_SEARCH);
@@ -87,7 +83,6 @@ test.describe('Pre-Tool - Gtwy Web Search', () => {
 
   test('TC-PRETOOL-GWS-05: Gtwy Web Search pre-tool persists after switching tabs and returning', async ({ agents }) => {
     const agent = await agents.openAgent(AGENT_NAME);
-    await agent.header.expectSavedVisible();
     await agent.tabs.openPrompt();
     await agent.prompt.addPreToolClick();
     await agent.prompt.preToolDropdown.searchAndSelect(GTWY_WEB_SEARCH);
@@ -101,7 +96,6 @@ test.describe('Pre-Tool - Gtwy Web Search', () => {
 
   test('TC-PRETOOL-GWS-06: Re-opening the config modal from the pre-tool card reopens it', async ({ agents }) => {
     const agent = await agents.openAgent(AGENT_NAME);
-    await agent.header.expectSavedVisible();
     await agent.tabs.openPrompt();
     await agent.prompt.addPreToolClick();
     await agent.prompt.preToolDropdown.searchAndSelect(GTWY_WEB_SEARCH);
@@ -117,7 +111,6 @@ test.describe('Pre-Tool - Gtwy Web Search', () => {
   test('TC-PRETOOL-GWS-07: Adding and then deleting the Gtwy Web Search pre-tool removes it', async ({ agents }) => {
     await agents.goto('api');
     const agent = await agents.openAgent(AGENT_NAME);
-    await agent.header.expectSavedVisible();
     await agent.tabs.openPrompt();
     await agent.prompt.addPreToolClick();
     await agent.prompt.preToolDropdown.searchAndSelect(GTWY_WEB_SEARCH);

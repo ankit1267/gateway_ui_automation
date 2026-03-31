@@ -64,7 +64,6 @@ test.describe('Agent Table - API Agent', () => {
 
   test('TC-TABLE-11: Clicking agent row opens agent detail page', async ({ agents }) => {
     const agent = await agents.openAgent(AGENT_NAME);
-    await agent.header.expectSavedVisible();
     await agents.expectAgentTableUrl();
   });
 

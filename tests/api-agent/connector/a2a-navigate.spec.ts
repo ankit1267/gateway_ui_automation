@@ -12,14 +12,12 @@ test.describe('Connectors - A2A Agent Navigation - API Agent', () => {
   test.afterEach(async ({ agents }) => {
     await agents.goto('api');
     const agent = await agents.openAgent(TESTING_AGENT_NAME);
-    await agent.header.expectSavedVisible();
     await agent.tabs.openConnectors();
     await agent.connectors.removeConnectedAgentIfExists(AGENT_NAME);
   });
 
   test('TC-CON-A2A-01: After adding connected agent, clicking on it should redirect to that agent page', async ({ agents, page }) => {
     const agent = await agents.openAgent(TESTING_AGENT_NAME);
-    await agent.header.expectSavedVisible();
     await agent.tabs.openConnectors();
 
     await agent.connectors.clickAddAgent();

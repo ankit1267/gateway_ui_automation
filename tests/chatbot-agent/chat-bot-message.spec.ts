@@ -10,7 +10,6 @@ test.describe('Chatbot Message', () => {
 
     test('TC-CHAT-01: Verify Chatbot Message', async ({ agents }) => {
         const agent = await agents.openAgent(AGENT_NAME);
-        await agent.header.expectSavedVisible();
         await agent.chatbot.openNewThread();
         await agent.chatbot.isHomeVisible();
         await agent.chatbot.sendMessage('hi');

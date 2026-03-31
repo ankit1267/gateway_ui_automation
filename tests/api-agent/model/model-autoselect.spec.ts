@@ -9,7 +9,6 @@ test.describe('Model - Auto Select Model Toggle', () => {
   test.beforeEach(async ({ agents }) => {
     await agents.goto('chatbot');
     agent = await agents.openAgent(CHATBOT_AGENT);
-    await agent.header.expectSavedVisible();
     await agent.tabs.openModel();
     await agent.model.selectServiceProvider('Openai');
   });

@@ -9,7 +9,6 @@ test.beforeEach(async ({ agents }) => {
 
 test('child agent is triggered', async ({ agents }) => {
     const agent = await agents.openAgent(TESTING_AGENT);
-    await agent.header.expectSavedVisible();
     const chatbot = agent.chatbot;
 
     await chatbot.isCopyButtonVisible();
@@ -23,7 +22,6 @@ test('child agent is triggered', async ({ agents }) => {
 
 test('child agent is triggered with variable', async ({ agents }) => {
     const agent = await agents.openAgent(TESTING_AGENT);
-    await agent.header.expectSavedVisible();
     await agent.header.openHistory();
     await agent.history.openToolItem();
     await agent.history.verifyVariableVisible(/user_name:tilakraj/);

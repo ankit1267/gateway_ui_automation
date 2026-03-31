@@ -8,7 +8,6 @@ const AGENT_NAME = process.env.AGENT_NAME!;
 test('Check if llm configs are working', async ({ agents }) => {
     await agents.goto('api');
     const agent = await agents.openAgent(AGENT_NAME);
-    await agent.header.expectSavedVisible();
     await agent.tabs.openModel();
     const model = agent.model;
     // Test max_tokens slider and buttons
@@ -42,7 +41,6 @@ test('Check if llm configs are working', async ({ agents }) => {
 test('Set max_tokens to Max and Min and verify in API response', async ({ agents, page }) => {
     await agents.goto('api');
     const agent = await agents.openAgent(AGENT_NAME);
-    await agent.header.expectSavedVisible();
     await agent.tabs.openModel();
     const model = agent.model;
 

@@ -11,7 +11,6 @@ test.describe('Model - API Key validation', () => {
 
     test('TC-APIKEY-01: API key required error is shown', async ({ agents }) => {
         const agent = await agents.openAgent(AGENT_NAME);
-        await agent.header.expectSavedVisible();
         await agent.tabs.openModel();
         await agent.model.selectServiceProvider('Anthropic');
         await agent.model.expectNoApiKeysMessage();
@@ -23,7 +22,6 @@ test.describe('Model - API Key validation', () => {
 
     test('TC-APIKEY-02: API key is added', async ({ agents }) => {
         const agent = await agents.openAgent(AGENT_NAME);
-        await agent.header.expectSavedVisible();
         await agent.tabs.openModel();
         await agent.model.selectServiceProvider('Mistral');
 

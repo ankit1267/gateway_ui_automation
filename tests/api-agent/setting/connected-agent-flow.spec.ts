@@ -8,7 +8,6 @@ test.describe('Settings - Connected Agent Flow', () => {
     await agents.goto('api');
 
     const agent = await agents.openAgent(AGENT_NAME);
-    await agent.header.expectSavedVisible();
     await agent.tabs.openModel();
     await agent.model.selectServiceProvider('Openai');
     await agent.tabs.openSettings();

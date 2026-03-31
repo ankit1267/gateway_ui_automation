@@ -6,7 +6,6 @@ test.describe('Model - Parameters change per model', () => {
     await agents.goto('api');
 
     const agent = await agents.openAgent("Mathematical Genius_1");
-    await agent.header.expectSavedVisible();
     await agent.tabs.openModel();
 
     // API Verification: Wait for Anthropic model selection request

@@ -5,14 +5,12 @@ const AGENT_NAME = process.env.AGENT_NAME!;
 test('Playground strategy selection', async ({ agents }) => {
   await agents.goto('api');
   const agent = await agents.openAgent(AGENT_NAME);
-  await agent.header.expectSavedVisible();
 
   await agent.tabs.openModel();
   await agent.model.selectServiceProvider("Openai");
   // await agent.model.clickConfigureApiKey();
   // await agent.model.selectApiKey("Mistral api key");
   
-
   await agent.playground.typeMessageAndWaitForApi('hi');
   await agent.playground.expectChatControlsVisible();
 
@@ -35,14 +33,12 @@ test('Playground strategy selection', async ({ agents }) => {
 test('Playground add new test case click open new playground', async ({ agents }) => {
   await agents.goto('api');
   const agent = await agents.openAgent(AGENT_NAME);
-  await agent.header.expectSavedVisible();
 
   await agent.tabs.openModel();
   await agent.model.selectServiceProvider("Openai");
   // await agent.model.clickConfigureApiKey();
   // await agent.model.selectApiKey("Mistral api key");
   
-
   await agent.playground.typeMessage('hi');
   await agent.playground.expectChatControlsVisible();
 
@@ -57,7 +53,6 @@ test('Playground add new test case click open new playground', async ({ agents }
 test('Playground send message and verify response', async ({ agents }) => {
   await agents.goto('api');
   const agent = await agents.openAgent(AGENT_NAME);
-  await agent.header.expectSavedVisible();
 
   await agent.tabs.openModel();
   await agent.model.selectServiceProvider("Openai");

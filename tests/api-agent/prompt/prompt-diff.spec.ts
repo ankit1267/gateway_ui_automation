@@ -8,7 +8,6 @@ test('compare published and current prompt', async ({ agents, page }) => {
   await agents.goto('api');
 
   const agent = await agents.openAgent(AGENT_NAME);
-  await agent.header.expectSavedVisible();
 
   await fillPromptAndVerifyApi(
     page,

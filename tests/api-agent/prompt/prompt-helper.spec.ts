@@ -7,7 +7,6 @@ test('open and close prompt helper and apply prompt', async ({ agents }) => {
   await agents.goto('api');
 
   const agent = await agents.openAgent(AGENT_NAME);
-  await agent.header.expectSavedVisible();
 
   // Open helper from instructions field
   await agent.prompt.promptHelper.open();

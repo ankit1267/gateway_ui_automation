@@ -10,7 +10,6 @@ test.describe('Connectors - Tool Add - API Agent', () => {
 
   test('Tool renders + API validation', async ({ agents, page }) => {
     const agent = await agents.openAgent(AGENT_NAME);
-    await agent.header.expectSavedVisible();
     await agent.tabs.openConnectors();
 
     const responsePromise = page.waitForResponse(

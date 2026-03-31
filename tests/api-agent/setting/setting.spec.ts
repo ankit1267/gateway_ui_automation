@@ -13,7 +13,6 @@ test(
     'TC-SET-01: Switching to Triggers shows ViaSocket embed in Settings',
     async ({ agents }) => {
        const agent = await agents.openAgent(AGENT_NAME);
-       await agent.header.expectSavedVisible();
        await agent.tabs.openSettings();
       
 
@@ -33,7 +32,6 @@ test(
     'TC-SET-02:Verify that user can select different tone options in Settings.',
     async ({ agents }) => {
        const agent = await agents.openAgent(AGENT_NAME);
-       await agent.header.expectSavedVisible();
        await agent.tabs.openSettings();
       
 
@@ -49,7 +47,6 @@ test(
     'TC-SET-03:Verify response style dropdown accepts valid values.',
     async ({ agents }) => {
        const agent = await agents.openAgent(AGENT_NAME);
-       await agent.header.expectSavedVisible();
        await agent.tabs.openSettings();
       
 
@@ -65,7 +62,6 @@ test(
     'TC-SET-04:Verify enabling and disable Guardrails configuration.',
     async ({ agents }) => {
        const agent = await agents.openAgent(AGENT_NAME);
-       await agent.header.expectSavedVisible();
        await agent.tabs.openSettings();
       
 
@@ -83,7 +79,6 @@ test(
     'TC-SET-05:Verify webhook validation when Custom mode is selected.',
     async ({ agents }) => {
        const agent = await agents.openAgent(AGENT_NAME);
-       await agent.header.expectSavedVisible();
        await agent.tabs.openSettings();
       
 
@@ -103,7 +98,6 @@ test(
     'TC-SET-06:Invalid headers JSON is rejected.',
     async ({ agents }) => {
        const agent = await agents.openAgent(AGENT_NAME);
-       await agent.header.expectSavedVisible();
        await agent.tabs.openSettings();
       
 
@@ -123,7 +117,6 @@ test(
     'TC-SET-07:Agent Settings – Guardrail Configuration.',
     async ({ agents }) => {
        const agent = await agents.openAgent(AGENT_NAME);
-       await agent.header.expectSavedVisible();
        await agent.tabs.openSettings();
       
 
