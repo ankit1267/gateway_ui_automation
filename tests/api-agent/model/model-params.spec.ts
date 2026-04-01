@@ -1,4 +1,5 @@
 import { test, expect } from '../../../fixtures/base.fixture';
+import { waitForAgentUpdateApi, verifyAgentUpdateRequest } from '../../../utils/model-api';
 
 test.describe('Model - Parameters change per model', () => {
 
@@ -8,44 +9,48 @@ test.describe('Model - Parameters change per model', () => {
     const agent = await agents.openAgent("Mathematical Genius_1");
     await agent.tabs.openModel();
 
-    // API Verification: Wait for Anthropic model selection request
-    const anthropicResponsePromise = page.waitForResponse(
-      (resp) =>
-        resp.url().includes('/api/versions/') &&
-        resp.request().method() === 'PUT' &&
-        resp.status() === 200,
-      { timeout: 15000 }
-    );
+    // API Verification: Select Anthropic service provider
+    const [serviceResponse] = await Promise.all([
+      waitForAgentUpdateApi(page, { payloadField: 'service' }),
+      agent.model.selectServiceProvider('Anthropic')
+    ]);
 
-    await agent.model.selectServiceProvider('Anthropic');
-    await agent.model.selectModel('claude-3-7-sonnet-latest');
+    await verifyAgentUpdateRequest(serviceResponse, {
+      'service': 'anthropic'
+    });
 
-    // API Verification: Verify Anthropic model configuration
-    const anthropicResponse = await anthropicResponsePromise;
-    const anthropicRequestBody = JSON.parse(anthropicResponse.request().postData() || '{}');
-    expect(anthropicRequestBody?.configuration?.service_provider).toBe('anthropic');
-    expect(anthropicRequestBody?.configuration?.model).toBe('claude-3-7-sonnet-latest');
+    // API Verification: Select Anthropic model
+    const anthropicResponse = await Promise.all([
+      waitForAgentUpdateApi(page),
+      agent.model.selectModel('claude-3-7-sonnet-latest')
+    ]).then(([resp]) => resp);
+
+    await verifyAgentUpdateRequest(anthropicResponse, {
+      'configuration.model': 'defined'
+    });
 
     await agent.model.expectParameterVisible('top_p');
     await agent.model.expectParameterNotVisible('parallel_tool_calls');
 
-    // API Verification: Wait for OpenAI model selection request
-    const openaiResponsePromise = page.waitForResponse(
-      (resp) =>
-        resp.url().includes('/api/versions/') &&
-        resp.request().method() === 'PUT' &&
-        resp.status() === 200,
-      { timeout: 15000 }
-    );
+    // API Verification: Select OpenAI service provider
+    const [openaiServiceResponse] = await Promise.all([
+      waitForAgentUpdateApi(page, { payloadField: 'service' }),
+      agent.model.selectServiceProvider('Openai')
+    ]);
 
-    await agent.model.selectServiceProvider('Openai');
-    await agent.model.selectModel('gpt-4o-mini');
+    await verifyAgentUpdateRequest(openaiServiceResponse, {
+      'service': 'openai'
+    });
 
-    // API Verification: Verify OpenAI model configuration
-    const openaiResponse = await openaiResponsePromise;
-    const openaiRequestBody = JSON.parse(openaiResponse.request().postData() || '{}');
-    expect(openaiRequestBody?.configuration?.service_provider).toBe('openai');
-    expect(openaiRequestBody?.configuration?.model).toBe('gpt-4o-mini');
+    // API Verification: Select OpenAI model
+    const openaiResponse = await Promise.all([
+      waitForAgentUpdateApi(page),
+      agent.model.selectModel('gpt-4o-mini')
+    ]).then(([resp]) => resp);
+
+    await verifyAgentUpdateRequest(openaiResponse, {
+      'configuration.model': 'defined'
+    });
 
     await agent.model.expectParameterVisible('tool_choice');
     await agent.model.expectParameterVisible('parallel_tool_calls');

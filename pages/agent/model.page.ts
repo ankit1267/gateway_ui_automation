@@ -346,7 +346,14 @@ async expectParameterNotVisible(paramName: string) {
 }
 
 async fillAdvancedParameterText(paramName: string, value: string) {
-    await this.page.getByTestId(`advanced-param-text-${paramName}`).fill(value);
+    const input = this.page.getByTestId(`advanced-param-text-${paramName}`);
+    await input.clear();
+    await input.pressSequentially(value, { delay: 50 });
+    await expect(input).toHaveValue(value);
+}
+
+async clickOutsideToSave() {
+    await this.page.getByTestId('model-tab-container').click();
 }
 
     // -------------------------

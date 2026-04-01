@@ -22,7 +22,7 @@ export async function getAuthToken(): Promise<string> {
   });
   if (!res.ok()) throw new Error(`Auth API failed: ${res.status()}`);
   const data = await res.json();
-  console.log('[Auth API response]', data);
+  //console.log('[Auth API response]', data);
   if (!data.proxy_auth_token) throw new Error('No proxy_auth_token in response');
   _cachedToken = data.token;
   _cachedProxyToken = data.proxy_auth_token;

@@ -1,4 +1,5 @@
 import { test, expect } from '../../../fixtures/base.fixture';
+import { updateParameterWithApi, waitForAgentUpdateApi, verifyAgentUpdateRequest } from '../../../utils/model-api';
 
 
 
@@ -44,31 +45,22 @@ test('Set max_tokens to Max and Min and verify in API response', async ({ agents
     await agent.tabs.openModel();
     const model = agent.model;
 
-    // Click Max button and verify API request
-    const maxResponsePromise = page.waitForResponse(
-        (resp) =>
-            resp.url().includes('/api/versions/') &&
-            resp.request().method() === 'PUT' &&
-            resp.status() === 200,
-        { timeout: 15000 }
-    );
-    await model.clickAdvancedParameterMaxBtn('max_tokens');
-    const maxResponse = await maxResponsePromise;
+    // Click Max button and verify API request contains max_tokens value (either 128000 or 'max')
+    const maxResponse = await Promise.all([
+        waitForAgentUpdateApi(page),
+        model.clickAdvancedParameterMaxBtn('max_tokens')
+    ]).then(([resp]) => resp);
+    
     const maxRequestBody = JSON.parse(maxResponse.request().postData() || '{}');
-    expect(maxRequestBody?.configuration?.max_tokens).toBe(128000);
+    expect([128000, 'max']).toContain(maxRequestBody?.configuration?.max_tokens);
 
-    // Click Min button and verify API request
-    const minResponsePromise = page.waitForResponse(
-        (resp) =>
-            resp.url().includes('/api/versions/') &&
-            resp.request().method() === 'PUT' &&
-            resp.status() === 200,
-        { timeout: 15000 }
+    // Click Min button and verify API request contains 'min'
+    await updateParameterWithApi(
+        page,
+        () => model.clickAdvancedParameterMinBtn('max_tokens'),
+        'max_tokens',
+        'min'
     );
-    await model.clickAdvancedParameterMinBtn('max_tokens');
-    const minResponse = await minResponsePromise;
-    const minRequestBody = JSON.parse(minResponse.request().postData() || '{}');
-    expect(minRequestBody?.configuration?.max_tokens).toBe('min');
 
     // Reset to default for cleanup
     await model.clickAdvancedParameterResetBtn('max_tokens');

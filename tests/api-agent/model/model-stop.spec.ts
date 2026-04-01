@@ -1,4 +1,5 @@
-import { test, expect } from '../../../fixtures/base.fixture';
+import { test } from '../../../fixtures/base.fixture';
+import { waitForAgentUpdateApi, verifyAgentUpdateRequest } from '../../../utils/model-api';
 
 const AGENT_NAME = "Model Stop Testing";
 
@@ -11,38 +12,34 @@ test.describe('Model - Stop parameter', () => {
     await agent.tabs.openModel();
 
     await agent.model.expectParameterVisible('stop');
+    
+    // API Verification: Fill stop parameter and verify API request
+    const [fillResponse] = await Promise.all([
+      waitForAgentUpdateApi(page, { 
+        payloadField: 'configuration.stop', 
+        payloadValue: 'you' 
+      }),
+      (async () => {
+        await agent.model.fillAdvancedParameterText('stop', 'you');
+        await agent.model.clickOutsideToSave();
+      })()
+    ]);
+    
+    await verifyAgentUpdateRequest(fillResponse, {
+      'configuration.stop': 'you'
+    });
 
-    // API Verification: Wait for stop parameter update request
-    const fillResponsePromise = page.waitForResponse(
-      (resp) =>
-        resp.url().includes('/api/versions/') &&
-        resp.request().method() === 'PUT' &&
-        resp.status() === 200,
-      { timeout: 15000 }
-    );
-
-    await agent.model.fillAdvancedParameterText('stop', 'you');
-
-    // API Verification: Verify stop parameter in request
-    const fillResponse = await fillResponsePromise;
-    const fillRequestBody = JSON.parse(fillResponse.request().postData() || '{}');
-    expect(fillRequestBody?.configuration?.stop).toBe('you');
-
-    // API Verification: Wait for reset request
-    const resetResponsePromise = page.waitForResponse(
-      (resp) =>
-        resp.url().includes('/api/versions/') &&
-        resp.request().method() === 'PUT' &&
-        resp.status() === 200,
-      { timeout: 15000 }
-    );
-
-    await agent.model.clickAdvancedParameterResetBtn('stop');
-
-    // API Verification: Verify stop parameter is reset
-    const resetResponse = await resetResponsePromise;
-    const resetRequestBody = JSON.parse(resetResponse.request().postData() || '{}');
-    expect(resetRequestBody?.configuration?.stop).toBeUndefined();
+    // API Verification: Reset stop parameter and verify API request
+    const [resetResponse] = await Promise.all([
+      waitForAgentUpdateApi(page),
+      agent.model.clickAdvancedParameterResetBtn('stop')
+    ]);
+    
+    await verifyAgentUpdateRequest(resetResponse, {
+      'configuration.stop': 'default'
+    });
+    
+    await agent.header.expectSavedVisible();
   });
 
 });

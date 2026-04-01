@@ -1,4 +1,5 @@
-import { test } from '../../../fixtures/base.fixture';
+import { test, expect } from '../../../fixtures/base.fixture';
+import { waitForAgentUpdateApi } from '../../../utils/model-api';
 
 
 const AGENT_NAME = process.env.AGENT_NAME!;
@@ -33,22 +34,14 @@ test('TC-APIKEY-02: API key is added', async ({ agents, page }) => {
   // Step 2: Ensure provider is selected (example: OpenAI)
   await agent.model.selectServiceProvider('Mistral');
 
-  // API Verification: Wait for API key selection request
-  const apiKeyResponsePromise = page.waitForResponse(
-    (resp) =>
-      resp.url().includes('/api/versions/') &&
-      resp.request().method() === 'PUT' &&
-      resp.status() === 200,
-    { timeout: 15000 }
-  );
-  
-  // Step 3: Select API key field is selected
-  await agent.model.selectApiKey('Mistral');
+  // Step 3: Select API key and verify API request
+  const [apiKeyResponse] = await Promise.all([
+    waitForAgentUpdateApi(page),
+    agent.model.selectApiKey('Mistral')
+  ]);
 
-  // API Verification: Verify request includes credential_id
-  const apiKeyResponse = await apiKeyResponsePromise;
+  // API Verification: Verify request includes apikey_object_id
   const requestBody = JSON.parse(apiKeyResponse.request().postData() || '{}');
-  console.log(apiKeyResponse.request().postData());
   // Assertion: Chat is visible
   await agent.model.expectChatTextareaVisible();
 });
