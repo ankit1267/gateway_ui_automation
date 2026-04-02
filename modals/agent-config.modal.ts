@@ -57,7 +57,10 @@ export class AgentConfigModal {
     await this.modal.getByTestId(`param-type-select-${paramName}`).selectOption(type);
   }
   async fillValuePath(paramName: string, path: string) {
-    await this.modal.getByTestId(`param-value-path-input-${paramName}`).fill(path);
+    const input = this.modal.getByTestId(`param-value-path-input-${paramName}`);
+    await input.click();
+    await input.pressSequentially(path);
+    await input.blur();
   }
   async deleteParameter(paramName: string) {
     await this.modal.getByTestId(`param-delete-button-${paramName}`).click();

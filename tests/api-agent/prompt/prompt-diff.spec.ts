@@ -1,11 +1,11 @@
 ﻿import { test } from '../../../fixtures/base.fixture';
 import { fillPromptAndVerifyApi } from '../../../utils/fill-prompt-api';
 
-const AGENT_NAME = process.env.AGENT_NAME!;
+const AGENT_NAME = 'Prompt';
 
 test('compare published and current prompt', async ({ agents, page }) => {
   
-  await agents.goto('api');
+  await agents.goto('chatbot');
 
   const agent = await agents.openAgent(AGENT_NAME);
 

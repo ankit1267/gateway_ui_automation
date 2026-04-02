@@ -53,6 +53,11 @@ export class PlaygroundPage {
   // YouTube link
   readonly chatYoutubeLink: Locator;
 
+  // Tool choice (model-tab advanced parameter)
+  readonly toolChoiceDropdownTrigger: Locator;
+  readonly toolChoiceToolLabels: Locator;
+  readonly toolChoiceAgentLabels: Locator;
+
   constructor(page: Page) {
     this.page = page;
 
@@ -105,6 +110,31 @@ export class PlaygroundPage {
     this.testcaseSidebar = page.getByTestId('testcase-sidebar');
     this.testcaseRunAllButton = page.getByTestId('testcase-run-all-button');
     this.testcaseListContainer = page.getByTestId('testcase-list-container');
+
+    // Tool choice
+    this.toolChoiceDropdownTrigger = page.getByTestId('advanced-param-dropdown-trigger-tool_choice');
+    this.toolChoiceToolLabels = page.locator('[id^="advanced-param-dropdown-tool-label-tool_choice-"]');
+    this.toolChoiceAgentLabels = page.locator('[id^="advanced-param-dropdown-agent-label-tool_choice-"]');
+  }
+
+  // --- Tool choice ---
+
+  async selectToolChoiceFunction(toolName: string) {
+    await this.toolChoiceDropdownTrigger.click();
+    await this.toolChoiceToolLabels
+      .filter({ hasText: new RegExp(toolName, 'i') })
+      .click();
+  }
+
+  async selectToolChoiceAgent(agentName: string) {
+    await this.toolChoiceDropdownTrigger.click();
+    await this.toolChoiceAgentLabels
+      .filter({ hasText: new RegExp(agentName, 'i') })
+      .click();
+  }
+
+  async expectToolChoiceSelected(toolName: string | RegExp) {
+    await expect(this.toolChoiceDropdownTrigger).toContainText(toolName);
   }
 
   // --- Basic chat actions ---

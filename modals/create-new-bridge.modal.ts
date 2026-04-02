@@ -26,7 +26,7 @@ export class CreateNewBridgeModal {
 
   constructor(private readonly page: Page) {
 
-    this.modal = page.getByTestId('CREATE_BRIDGE_MODAL');
+    this.modal = page.locator('#default-agent-sidebar').getByTestId('CREATE_BRIDGE_MODAL');
 
     this.container = page.getByTestId('create-new-bridge-modal-container');
 

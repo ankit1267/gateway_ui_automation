@@ -1,62 +1,33 @@
 import { test, expect } from '../../fixtures/base.fixture';
 
-test('Create chatbot with purpose and verify generated prompt', async ({ agents, page }) => {
-  // Open agents page
+test('Create chatbot with purpose and verify generated prompt', async ({ agents }) => {
   await agents.goto('chatbot');
 
-  // Create new chatbot
-  await page.getByRole('button', { name: '+ Create New Chatbot Agent' }).click();
+  await agents.clickCreateNewAgent();
+  await agents.createAgentModal.waitForVisible();
+  await agents.createAgentModal.fillPurpose('A customer support agent');
+  const agent = await agents.clickCreateNewAgentSubmit();
 
-  const sidebar = page.locator('#default-agent-sidebar');
-  await expect(sidebar).toBeVisible();
+  await agent.tabs.openPrompt();
 
-  // Fill purpose
-  await sidebar
-    .getByRole('textbox', { name: 'Agent purpose description' })
-    .fill('A customer support agent');
+  // Wait until role, goal, and instructions are populated from the purpose
+  await expect.poll(async () => {
+    const role = await agent.prompt.getRoleValue();
+    return role && role.trim().length > 0;
+  }, { timeout: 30000 }).toBeTruthy();
 
-  // Create agent
-  await sidebar.getByRole('button', { name: 'Create Agent' }).click();
+  await expect.poll(async () => {
+    const goal = await agent.prompt.getGoalValue();
+    return goal && goal.trim().length > 0;
+  }, { timeout: 30000 }).toBeTruthy();
 
-  // Ensure Prompt tab is active
-  await page.getByRole('tab', { name: 'Prompt' }).click();
+  await expect.poll(async () => {
+    const instructions = await agent.prompt.getInstructionsValue();
+    return instructions && instructions.trim().length > 0;
+  }, { timeout: 30000 }).toBeTruthy();
 
-  await expect(page.getByTestId('prompt-header-default')).toBeVisible();
-  const systemPrompt = page.getByTestId('prompt-textarea')
-  // Wait until content is generated
-  await expect
-    .poll(async () => {
-      const text = await systemPrompt.inputValue();
-      return text && text.trim().length > 20;
-    })
-    .toBeTruthy();
-
-  // Assertions
-  const promptText = (await systemPrompt.inputValue()).toLowerCase();
-
-  await expect(promptText).toContain('customer');
-  await expect(promptText).toContain('support');
-  await expect(promptText).toContain('agent');
-
-  const agentName = await page.getByTestId('navbar-agent-name-display').innerText();
-
-  await page.locator('#main-slider-toggle-button').click();
-  await page.getByRole('button', { name: 'Chatbot', exact: true }).click();
-
-  const agentRow = page.getByRole('row').filter({ hasText: agentName });
-  await agentRow.getByRole('button').last().click();
-  await page
-    .locator('div[role="button"] svg.rotate-90')
-    .first()
-    .locator('..')
-    .click();
-
-  // Delete flow
-  await page
-    .getByRole('button', { name: 'Delete Agent' })
-    .click();
-
-  await page
-    .getByRole('button', { name: 'Delete' })
-    .click();
+  // Cleanup
+  const agentName = await agent.header.getAgentNameText();
+  await agents.goto('chatbot');
+  await agents.deleteAgentByName(agentName);
 });

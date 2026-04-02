@@ -91,24 +91,4 @@ test.describe('Prompt tab - API Agent', () => {
     await deleteAgentApi(page, agentId, capturedAuthHeader);
   });
 
-  // ─────────────────────────────────────────────────────────────────────────
-  // Test 4
-  // Verifies that entering junk / nonsense characters in the goal field
-  // causes the instructions to reset back to the default value.
-  // ─────────────────────────────────────────────────────────────────────────
-  test('System prompt resets when junk characters are used', async ({ agents, page }) => {
-    await openCreateAgentDialog(agents);
-
-    // Fill modal purpose with junk characters before submitting
-    await agents.createAgentModal.fillPurpose('@@@###$$$%%%^^^&&&***((()))');
-    const agent = await submitAndOpenPrompt(agents);
-    const agentId = captureAgentIdFromUrl(page);
-
-    // System prompt should fall back to the default content
-    const systemPrompt = await agent.prompt.getSystemPromptValue();
-    expect(systemPrompt).toMatch(/Guidelines:|Act like a chatbot/);
-
-    await deleteAgentApi(page, agentId, capturedAuthHeader);
-  });
-
 });

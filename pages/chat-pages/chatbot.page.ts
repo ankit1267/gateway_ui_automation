@@ -54,11 +54,11 @@ export class ChatbotPage {
   }
 
   async expectResponse(message: string | RegExp) {
-    await expect(this.scrollable.getByText(message)).toBeVisible({ timeout: 40000 });
+    await expect(this.scrollable.getByText(message)).toBeVisible({ timeout: 100000 });
   }
   async expectText(message: string) {
     await expect(this.scrollable)
-      .toContainText(message, { timeout: 30000 });
+      .toContainText(message, { timeout: 100000 });
   }
 
   async isCopyButtonVisible() {

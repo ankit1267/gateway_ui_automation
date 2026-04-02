@@ -2,7 +2,7 @@ import { test, expect } from '../../fixtures/base.fixture';
 
 const AGENT_NAME = process.env.TESTING_AGENT!;
 
-test('Add a pre-tool', async ({ agents }) => {
+test('Add a pre-tool', async ({ agents, page }) => {
     // open api page
     await agents.goto('api');
 
@@ -14,5 +14,7 @@ test('Add a pre-tool', async ({ agents }) => {
     // select factorial of a number
     await agentPage.prompt.preToolDropdown.selectTool('factorial_of_a_numbe...');
     await agentPage.prompt.expectPreToolContainerVisible();
+    await page.waitForTimeout(2000);
     await agentPage.prompt.deletePreTool();
+    await page.waitForTimeout(2000);
 });
