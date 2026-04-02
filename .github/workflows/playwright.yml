@@ -39,6 +39,7 @@ jobs:
       BASE_URL: ${{ vars[format('{0}_BASE_URL', inputs.environment)] || secrets.BASE_URL }}
       CHATBOT_AGENT: ${{ vars[format('{0}_CHATBOT_AGENT', inputs.environment)] || secrets.CHATBOT_AGENT }}
       TESTING_AGENT: ${{ vars[format('{0}_TESTING_AGENT', inputs.environment)] || secrets.TESTING_AGENT }}
+      DELETE_AGENT_ID: ${{ vars[format('{0}_DELETE_AGENT_ID', inputs.environment)] }}
       GTWY_AUTOMATION_TOKEN: ${{ secrets.GTWY_AUTOMATION_TOKEN }}
 
     steps:

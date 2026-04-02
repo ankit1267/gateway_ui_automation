@@ -14,6 +14,7 @@ function logJsonSchemaApiCapture(action: string, captured: { requestCount: numbe
 }
 
 type AgentWithPrompt = {
+  header: any;
   prompt: {
     selectResponseType: (value: string) => Promise<void>;
     fillJsonSchema: (text: string) => Promise<void>;
@@ -27,13 +28,16 @@ async function openJsonSchemaBuilderWithApiVerification(agent: AgentWithPrompt, 
     page,
     async () => {
       await agent.prompt.selectResponseType('json_schema');
+
     },
   );
   logJsonSchemaApiCapture('select-json_schema', selectCapture);
-
+ 
   await agent.prompt.fillJsonSchema('{}');
+  await page.waitForTimeout(5000);
   await agent.prompt.openBuildVisually();
   await agent.prompt.expectJsonSchemaBuilderVisible();
+  
 }
 
 test.describe('Prompt - JSON Schema Builder', () => {
