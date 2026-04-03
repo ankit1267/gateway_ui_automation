@@ -2,7 +2,7 @@ import { test } from '../../fixtures/base.fixture';
 
 test.describe('Alerts - Sidepanel', () => {
 
-  test.beforeEach(async ({ sidepanel }) => {
+  test.beforeEach(async ({ sidepanel}) => {
     await sidepanel.gotoAlerts();
   });
 

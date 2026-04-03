@@ -57,13 +57,13 @@ export class AlertsPage {
   async expectAlertsHeadingVisible() {
     const frame = this.page.frameLocator('#viasocket-embed-iframe-component');
     await expect(frame.locator('[role="progressbar"]')).toBeHidden();
-    await expect(frame.getByRole('heading', { name: 'Alerts' })).toBeVisible();
+    await expect(frame.getByRole('button', { name: 'Alerts' })).toBeVisible();
   }
 
   async clickAddApps() {
     await this.alertEmbedIframe.scrollIntoViewIfNeeded();
     const frame = this.page.frameLocator('#viasocket-embed-iframe-component');
-    await frame.getByText('Add apps from 2500+ apps').click();
+    await frame.getByTestId('preview-section-browse-integrations-btn').click();
   }
 
   async expectAlertTypeButtonsVisible() {
