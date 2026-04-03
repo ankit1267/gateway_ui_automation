@@ -8,7 +8,7 @@ test.describe('Prompt - Response Type (Chatbot)', () => {
     await agents.goto('chatbot');
   });
 
-  test('TC-PROMPT-RESP-08: JSON schema response type enforces schema fields in playground response', async ({ agents }) => {
+  test('TC-PROMPT-RESP-08: JSON schema response type enforces schema fields in playground response', async ({ agents,page }) => {
     const agent = await agents.openAgent(AGENT_NAME);
 
     await agent.tabs.openModel();
@@ -37,9 +37,11 @@ test.describe('Prompt - Response Type (Chatbot)', () => {
 
     await agent.chatbot.sendMessage('hii');
     await agent.chatbot.waitForResponseComplete();
+    await page.waitForTimeout(40000); // wait for response to render
 
     // Go to history
     await agent.header.openHistory();
+    await page.waitForTimeout(2000);
     await agent.history.openFirstSidebarThread();
     await agent.history.expectThreadResponseVisible();
 
