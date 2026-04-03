@@ -60,6 +60,20 @@ export class ModelPage {
     async selectServiceProvider(provider: ServiceProvider) {
         await this.serviceProvider.click();
         await this.page.getByTestId(`service-dropdown-option-${provider.toLowerCase()}`).click();
+
+    }
+
+    async getSelectedServiceProvider(): Promise<string> {
+        return (await this.serviceProvider.textContent() ?? '').trim();
+    }
+
+    async selectServiceProviderIfNeeded(provider: ServiceProvider): Promise<boolean> {
+        const current = await this.getSelectedServiceProvider();
+        if (current.toLowerCase() !== provider.toLowerCase()) {
+            await this.selectServiceProvider(provider);
+            return true;
+        }
+        return false;
     }
 
     // -------------------------

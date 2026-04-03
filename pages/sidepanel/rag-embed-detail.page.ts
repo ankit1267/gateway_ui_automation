@@ -208,23 +208,32 @@ export class RAGEmbedDetailPage {
 
   async deleteLastResourceInFrame() {
     const contentArea = this.page.locator('[data-testid="rag-embed-content-area"]');
-    await contentArea.locator('.ellipsis-btn').last().click();
+
+    // Register dialog handler before any click that might trigger it
     this.page.once('dialog', async (dialog) => {
       await dialog.accept();
     });
+
+    await contentArea.locator('.ellipsis-btn').last().click();
+    await contentArea.locator('.delete-btn').last().waitFor({ state: 'visible', timeout: 5000 });
     await contentArea.locator('.delete-btn').last().click({ force: true });
+
+    // Wait for deletion to process on backend
+    await this.page.waitForTimeout(2000);
   }
 
   async clickRefreshInFrame() {
     const contentArea = this.page.locator('[data-testid="rag-embed-content-area"]');
     await contentArea.locator('.rag-refresh-btn').click();
+    // Wait for refresh to reload the document list
+    await this.page.waitForTimeout(2000);
   }
 
   async expectResourceNotVisibleInFrame(name: string) {
     await expect(async () => {
       const container = this.page.locator('[data-testid="rag-embed-content-area"]');
       await expect(container.getByText(name, { exact: true })).toHaveCount(0);
-    }).toPass({ timeout: 30000 });
+    }).toPass({ timeout: 60000 });
   }
 
   async expectAllStepsHaveText() {

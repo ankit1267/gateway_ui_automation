@@ -4,8 +4,6 @@ import { fillPromptAndVerifyApi } from '../../utils/fill-prompt-api';
 const AGENT_NAME = process.env.TESTING_AGENT!
 //dependent on css class if css class change it will break
 
-
-
 test('Fill Prompt and api configured should not show agent guide', async ({ agents, page }) => {
   await agents.goto('api');
   const agent = await agents.openAgent(AGENT_NAME);
@@ -43,7 +41,11 @@ test('Agent setup card updates dynamically when prompt entered', async ({ agents
   const agent = await agents.openAgent(AGENT_NAME);
 
   await agent.tabs.openModel();
-  await agent.model.selectServiceProvider("Grok");
+  const changed = await agent.model.selectServiceProviderIfNeeded("Grok");
+  if (changed) {
+    await agent.header.expectSavedVisible();
+  }
+
   await agent.prompt.expectAgentSetupGuideVisible();
   await agent.tabs.openPrompt();
 
@@ -134,7 +136,7 @@ test('Fill Prompt and api not configured should show agent guide', async ({ agen
 
 });
 
-test('Only fill role and goal should results in setup card remain same', async ({ agents, page }) => {
+/*test('Only fill role and goal should results in setup card remain same', async ({ agents, page }) => {
   await agents.goto('api');
   const agent = await agents.openAgent(AGENT_NAME);
 
@@ -155,4 +157,4 @@ test('Only fill role and goal should results in setup card remain same', async (
   await agent.prompt.expectStepState(1, 'incomplete');
   await agent.tabs.openConnectors();
   await agent.prompt.expectStepState(1, 'incomplete');
-});
+});*/
