@@ -1,6 +1,6 @@
 import { expect, test } from '../../../fixtures/base.fixture';
 
-test('migrated values should match structured fields', async ({ agents }) => {
+test('migrated values should match structured fields', async ({ agents ,page}) => {
 
   await agents.goto('chatbot');
   const oldAgent = await agents.openAgent('for testing the old agent');
@@ -35,6 +35,7 @@ test('migrated values should match structured fields', async ({ agents }) => {
   await oldAgent.header.clickPublish();
   await oldAgent.header.clickRevertButton();
   await oldAgent.header.clickDiscardChangesButton();
+  await page.waitForTimeout(2000);
 
 
 

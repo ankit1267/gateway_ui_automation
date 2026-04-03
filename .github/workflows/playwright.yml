@@ -58,7 +58,7 @@ jobs:
       - name: Run Playwright tests
         id: test-run
         continue-on-error: true
-        run: npx playwright test tests/integration/rag-embed-testing-tab.spec.ts
+        run: npx playwright test tests/a2a/agent-variable-add-verify-delete.spec.ts
 
       - name: Extract failed test summary
         if: always()
@@ -68,23 +68,23 @@ jobs:
             FAILED_SUMMARY=$(node -e "
               const fs = require('fs');
               const data = JSON.parse(fs.readFileSync('test-results.json', 'utf8'));
+              const BASE_URL = 'https://ankit1267.github.io/gateway_ui_automation/#?q=s%3Afailed&testId=';
+
               const failed = [];
-              const seen = new Set();
+              let count = 1;
 
               function walk(suites) {
                 for (const suite of suites || []) {
                   for (const spec of suite.specs || []) {
-                    if (seen.has(spec.title)) continue;
                     for (const test of spec.tests || []) {
                       if (test.status === 'unexpected') {
                         const r = test.results.find(r => r.status === 'failed' || r.status === 'timedOut');
                         if (r) {
-                          seen.add(spec.title);
-                          const errText = (r.error?.message || '') + '\\n' + (r.error?.stack || '') + '\\n' + (r.error?.snippet || '');
-                          const lines = errText.split('\\n');
-                          const msg = (r.error?.message || '').split('\\n')[0] || r.status;
-                          const srcLine = lines.find(l => l.trimStart().startsWith('>'));
-                          failed.push(spec.title + ' → ' + msg + (srcLine ? '\\n   ' + srcLine.trim() : ''));
+                          const id = test.testId || test.id || (spec.title + '-' + count);
+                          const url = BASE_URL + id;
+                          failed.push(
+                            count++ + '. ' + spec.title + ' : ' + url
+                          );
                         }
                       }
                     }
@@ -95,8 +95,11 @@ jobs:
 
               walk(data.suites);
 
-              if (failed.length === 0) console.log('All tests passed');
-              else console.log('Failed (' + failed.length + '):\\n' + failed.join('\\n'));
+              if (failed.length === 0) {
+                console.log('All tests passed');
+              } else {
+                console.log('Failed Tests:\n' + failed.join('\n'));
+              }
             ")
 
             echo "FAILED_SUMMARY<<EOF" >> $GITHUB_OUTPUT

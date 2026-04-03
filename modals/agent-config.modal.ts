@@ -59,7 +59,7 @@ export class AgentConfigModal {
   async fillValuePath(paramName: string, path: string) {
     const input = this.modal.getByTestId(`param-value-path-input-${paramName}`);
     await input.click();
-    await input.pressSequentially(path);
+    await input.fill(path);
     await input.blur();
   }
   async deleteParameter(paramName: string) {
