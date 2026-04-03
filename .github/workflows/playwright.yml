@@ -80,7 +80,8 @@ jobs:
                       if (test.status === 'unexpected') {
                         const r = test.results.find(r => r.status === 'failed' || r.status === 'timedOut');
                         if (r) {
-                          const url = BASE_URL + test.id;
+                          const id = test.testId || test.id || (spec.title + '-' + count);
+                          const url = BASE_URL + id;
                           failed.push(
                             count++ + '. ' + spec.title + ' : ' + url
                           );
