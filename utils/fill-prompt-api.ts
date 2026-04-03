@@ -88,6 +88,7 @@ async function capturePromptUpdates(
 
   try {
     await action();
+    await page.waitForTimeout(5000);
   } finally {
     page.off('request', handleRequest);
   }

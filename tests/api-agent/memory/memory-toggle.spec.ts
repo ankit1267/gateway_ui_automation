@@ -10,6 +10,8 @@ test('Memory toggle should work as expected', async ({ agents }) => {
     await agent.tabs.openMemory();
     await agent.memory.uncheckGptMemoryToggle();
     await agent.memory.expectGptMemoryContextTextareaNotVisible();
+    await agent.header.expectSavedVisible();
     await agent.memory.checkGptMemoryToggle();
+    await agent.header.expectSavedVisible();
     await agent.memory.expectGptMemoryContextTextareaVisible();
 });
