@@ -130,7 +130,10 @@ export class IntegrationGuidePage {
       await this.languageDropdownTrigger.click();
     }
     await expect(this.languageDropdownMenu).toBeVisible();
-    await this.page.getByTestId(`language-option-${langId}`).click();
+
+    const option = this.page.getByTestId(`language-option-${langId}`);
+    await option.waitFor({ state: 'visible' });
+    await option.click();
     // Wait for DaisyUI dropdown to close after selection
     await expect(this.languageDropdownMenu).not.toBeVisible();
   }

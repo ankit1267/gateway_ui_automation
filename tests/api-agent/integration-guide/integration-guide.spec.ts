@@ -1,4 +1,4 @@
-import { expect, test } from '../../../fixtures/base.fixture';
+﻿import { expect, test } from '../../../fixtures/base.fixture';
 import { AuthKeyPage } from '../../../pages/sidepanel/auth-key.page';
 
 const AGENT_NAME = process.env.AGENT_NAME!;
@@ -66,7 +66,7 @@ test.describe('Integration Guide - API Agent', () => {
     await batchAuthKeyPage.expectPageVisible();
   });
 
-  test('TC-IG-04: step 2 language dropdown shows curl, js, java, go', async ({ agents }) => {
+  test('TC-IG-04: step 2 language dropdown shows curl, js, java, go', async ({ agents, page }) => {
     await agents.goto('api');
     const agent = await agents.openAgent(AGENT_NAME);
     await agent.tabs.openIntegrationGuide();
@@ -78,14 +78,17 @@ test.describe('Integration Guide - API Agent', () => {
     await agent.integrationGuide.expectApiSnippetVisible('curl');
 
     // Switch to JavaScript
+    await page.waitForTimeout(2000);
     await agent.integrationGuide.selectLanguage('javascript');
     await agent.integrationGuide.expectApiSnippetVisible('javascript');
 
     // Switch to Java
+    await page.waitForTimeout(2000);
     await agent.integrationGuide.selectLanguage('java');
     await agent.integrationGuide.expectApiSnippetVisible('java');
 
     // Switch to Go
+    await page.waitForTimeout(2000);
     await agent.integrationGuide.selectLanguage('go');
     await agent.integrationGuide.expectApiSnippetVisible('go');
   });
