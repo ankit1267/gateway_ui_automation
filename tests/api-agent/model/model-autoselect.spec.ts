@@ -26,6 +26,15 @@ test.describe('Model - Auto Select Model Toggle', () => {
     // Wait for any pending API calls from beforeEach to complete
     await agent.getPage.waitForTimeout(1000);
 
+    const isAlreadyChecked = await agent.model.isAutoSelectModelToggleChecked();
+    if (isAlreadyChecked) {
+      await toggleAutoSelectModelWithApi(
+        page,
+        () => agent.model.uncheckAutoSelectModelToggle(),
+        false
+      );
+    }
+
     await toggleAutoSelectModelWithApi(
       page,
       () => agent.model.checkAutoSelectModelToggle(),
@@ -36,6 +45,14 @@ test.describe('Model - Auto Select Model Toggle', () => {
   });
 
   test('TC-MODEL-AUTOSEL-03: Switching service providers with auto-select enabled updates the model each time', async ({ page }) => {
+    const isAlreadyChecked = await agent.model.isAutoSelectModelToggleChecked();
+    if (isAlreadyChecked) {
+      await toggleAutoSelectModelWithApi(
+        page,
+        () => agent.model.uncheckAutoSelectModelToggle(),
+        false
+      );
+    }
     await toggleAutoSelectModelWithApi(
       page,
       () => agent.model.checkAutoSelectModelToggle(),

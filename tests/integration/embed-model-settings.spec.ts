@@ -39,7 +39,7 @@ test.describe('GTWY Embed - Model Settings', () => {
   });
 
   test('TC-MODEL-03: Custom Grok model display name appears in agent model dropdown', async ({ sidepanel }) => {
-    const customName = 'My Custom Grok';
+    const customName = 'My Custom Grok' + Date.now();
 
     await sidepanel.integrationDetailPage.clickModelSettingsServiceButton('grok');
     const modelName = await sidepanel.integrationDetailPage.getFirstModelNameInService();

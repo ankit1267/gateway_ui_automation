@@ -15,23 +15,23 @@ test.describe('Prompt - Build with AI', () => {
         await agent.prompt.selectResponseType('json_schema');
       },
     );
-    console.log(
-      `[json-schema-api] action=select-json_schema requests=${selectCapture.requestCount}`,
-      JSON.stringify((selectCapture.requestBody as { configuration?: { response_type?: unknown } }).configuration?.response_type ?? {}, null, 2),
-    );
+    // console.log(
+    //   `[json-schema-api] action=select-json_schema requests=${selectCapture.requestCount}`,
+    //   JSON.stringify((selectCapture.requestBody as { configuration?: { response_type?: unknown } }).configuration?.response_type ?? {}, null, 2),
+    // );
 
     await agent.prompt.openBuildWithAI();
     await agent.prompt.closeBuildWithAI();
     await agent.prompt.openBuildWithAI();
-    await agent.prompt.promptHelper.generateInstruction('improve');
-    await agent.prompt.promptHelper.clickCanvasSendButton();
+    await agent.prompt.promptHelper.generateJsonSchemaInstruction('improve');
+    await agent.prompt.promptHelper.clickJsonSchemaCanvasSendButton();
 
     await agent.prompt.promptHelper.expectApplyButtonVisible();
     await agent.prompt.promptHelper.clickResetChat();
     await agent.prompt.promptHelper.expectConversationsCleared();
 
-    await agent.prompt.promptHelper.generateInstruction('improve');
-    await agent.prompt.promptHelper.clickCanvasSendButton();
+    await agent.prompt.promptHelper.generateJsonSchemaInstruction('improve');
+    await agent.prompt.promptHelper.clickJsonSchemaCanvasSendButton();
 
     await agent.prompt.promptHelper.expectApplyButtonVisible();
     await agent.prompt.promptHelper.expectCopyButtonVisible();
@@ -47,10 +47,10 @@ test.describe('Prompt - Build with AI', () => {
         requireJsonSchema: true,
       },
     );
-    console.log(
-      `[json-schema-api] action=apply-build-with-ai requests=${applyCapture.requestCount}`,
-      JSON.stringify((applyCapture.requestBody as { configuration?: { response_type?: unknown } }).configuration?.response_type ?? {}, null, 2),
-    );
+    // console.log(
+    //   `[json-schema-api] action=apply-build-with-ai requests=${applyCapture.requestCount}`,
+    //   JSON.stringify((applyCapture.requestBody as { configuration?: { response_type?: unknown } }).configuration?.response_type ?? {}, null, 2),
+    // );
 
     await agent.prompt.promptHelper.expectMainVisible();
 

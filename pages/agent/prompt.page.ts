@@ -395,9 +395,8 @@ export class PromptPage {
 
   //deleteVariable
   async deleteVariable(index: number) {
-    const btn = this.page.locator(`#variable-delete-button-${index}`);
-    await btn.scrollIntoViewIfNeeded();
-    await btn.click();
+    const btn = this.variableSlider.locator(`#variable-delete-button-${index}`);
+    await btn.dispatchEvent('click');
   }
 
   async openInstructionsSection() {
@@ -406,6 +405,10 @@ export class PromptPage {
 
   async openVariableManager() {
     await this.manageVariablesButton.click();
+  }
+
+  async closeVariableManager() {
+    await this.page.getByTestId('variable-slider-bulk-edit-button').click();
   }
 
   async expectVariableSliderVisible() {

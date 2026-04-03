@@ -29,7 +29,7 @@ export class PromptHelperPanel {
     this.applyButton = page.locator('[data-testid^="canvas-apply-button-"]');
     this.copyButton = page.locator('[data-testid^="canvas-copy-button-"]');
     this.resetChatButton = page.getByTestId('canvas-reset-chat-button');
-    this.canvasSendButton = page.getByTestId('canvas-send-button');
+    this.canvasSendButton = this.promptHelperContainer.getByTestId('canvas-send-button');
   }
 
   async clickApplyButton() {
@@ -65,6 +65,16 @@ export class PromptHelperPanel {
   async generateInstruction(text: string) {
     await this.canvasInstructionTextarea.click();
     await this.canvasInstructionTextarea.fill(text);
+  }
+
+  async generateJsonSchemaInstruction(text: string) {
+    const textarea = this.page.getByTestId('JSON_SCHEMA').getByTestId('canvas-instruction-textarea');
+    await textarea.click();
+    await textarea.fill(text);
+  }
+
+  async clickJsonSchemaCanvasSendButton() {
+    await this.page.getByTestId('JSON_SCHEMA').getByTestId('canvas-send-button').click();
   }
 
   async applyGeneratedInstruction() {

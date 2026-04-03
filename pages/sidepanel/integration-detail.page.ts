@@ -696,8 +696,8 @@ export class IntegrationDetailPage {
 
   async clickModelSettingsServiceButton(serviceName: string) {
     await this.page
-      .locator('button[type="button"]')
-      .filter({ has: this.page.locator('span.font-medium.capitalize', { hasText: serviceName }) })
+      .getByRole('button', { name: new RegExp(serviceName, 'i') })
+      .first()
       .click();
   }
 
