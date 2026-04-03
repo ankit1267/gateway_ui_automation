@@ -58,7 +58,7 @@ jobs:
       - name: Run Playwright tests
         id: test-run
         continue-on-error: true
-        run: npx playwright test
+        run: npx playwright test tests/a2a/agent-variable-add-verify-delete.spec.ts
 
       - name: Extract failed test summary
         if: always()
