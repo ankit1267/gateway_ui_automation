@@ -188,7 +188,7 @@ export class PromptPage {
 
   async typeJsonSchema(text: string) {
     await this.jsonSchemaTextarea.click();
-    await this.jsonSchemaTextarea.press('Control+a');
+    await this.jsonSchemaTextarea.fill('');
     await this.jsonSchemaTextarea.pressSequentially(text);
   }
 
@@ -613,7 +613,7 @@ export class PromptPage {
   }
 
   async blurInput() {
-    await this.page.locator('body').click();
+    await this.page.keyboard.press('Tab');
   }
 
   async expectSavedVisible() {

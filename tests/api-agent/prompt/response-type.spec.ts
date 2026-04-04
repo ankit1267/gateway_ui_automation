@@ -273,7 +273,6 @@ test.describe('Prompt - Response Type', () => {
     await agent.prompt.expectInvalidJsonSchemaVisible();
 
 
-
     await agent.prompt.typeJsonSchema('{}');
 
     await agent.prompt.blurInput();
