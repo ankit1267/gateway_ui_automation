@@ -59,8 +59,9 @@ jobs:
         id: test-run
         continue-on-error: true
         run: |
-          npx playwright test tests/api-agent/prompt/prompt-diff.spec.ts
-    
+              npx playwright test \
+              tests/delete-agent/delete-agent.spec.ts \
+              tests/api-agent/manage-access/manage-access.spec.ts
 
       - name: Extract failed test summary
         if: always()
