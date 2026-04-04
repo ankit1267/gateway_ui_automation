@@ -9,9 +9,6 @@ test.describe('Tool - Prebuilt Tool Domain Config', () => {
 
   test.beforeEach(async ({ agents }) => {
     await agents.goto('api');
-    const agent = await agents.openAgent(AGENT_NAME);
-    await agent.tabs.openConnectors();
-    await agent.connectors.deletePrebuiltToolIfExists(TOOL_KEY);
   });
 
   test('TC-TOOL-01: Add domain, edit with invalid then valid value, and delete', async ({ agents }) => {
