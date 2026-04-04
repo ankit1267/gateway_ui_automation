@@ -68,7 +68,7 @@ jobs:
             FAILED_SUMMARY=$(node -e "
               const fs = require('fs');
               const data = JSON.parse(fs.readFileSync('test-results.json', 'utf8'));
-              const BASE_URL = 'https://ankit1267.github.io/gateway_ui_automation/#?q=s%3Afailed&testId=';
+              const BASE_URL = 'https://ankit1267.github.io/gateway_ui_automation/#?q=';
 
               const failed = [];
               let count = 1;
