@@ -196,7 +196,6 @@ export class AgentHeaderNav {
   }
 
   async clickConfirmPublish() {
-    await this.page.pause();
     await this.confirmPublishButton.click();
   }
 

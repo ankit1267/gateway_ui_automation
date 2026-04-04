@@ -1,9 +1,9 @@
 import process from 'process';
 import { test, expect } from '../../fixtures/base.fixture';
 
-const SEARCH_QUERY='DeleteAgent';
+const SEARCH_QUERY='SearchDeleteAgent';
 const AGENT_ID = process.env.DELETE_AGENT_ID!;
-const TESTING_AGENT = 'DeleteAgent';
+const TESTING_AGENT = 'SearchDeleteAgent';
 
 test('TC-SEARCH-01: Search for an agent by name using the command palette', async ({ agents }) => {
   await agents.goto();

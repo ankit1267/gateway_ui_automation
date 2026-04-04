@@ -58,7 +58,31 @@ jobs:
       - name: Run Playwright tests
         id: test-run
         continue-on-error: true
-        run: npx playwright test tests/agent-setup-guide/agent-setup-guide.spec.ts
+        run: |
+          npx playwright test \
+            tests/agent-setup-guide/agent-setup-guide.spec.ts \
+            tests/delete-agent/delete-agent.spec.ts \
+            tests/alerts/alerts.spec.ts \
+            tests/pre-tool/prebuilt-tool-domain-config.spec.ts \
+            tests/search/agent-search.spec.ts \
+            tests/api-agent/manage-access/manage-access.spec.ts \
+            tests/api-agent/connector/agent-search.spec.ts \
+            tests/api-agent/connector/kb-search.spec.ts \
+            tests/api-agent/connector/tool-search.spec.ts \
+            tests/api-agent/memory/memory-toggle.spec.ts \
+            tests/api-agent/model/model-stop.spec.ts \
+            tests/api-agent/prompt/prompt-diff.spec.ts \
+            tests/workspace/workspace-navigation.spec.ts \
+            tests/api-agent/setting/setting.spec.ts \
+            tests/a2a/agent-config.spec.ts \
+            tests/api-agent/agent-name/agent-name-validation.spec.ts \
+            tests/api-agent/manage-access/pause-resume.spec.ts \
+            tests/api-agent/model/tool-choice-function.spec.ts \
+            tests/api-agent/prompt/build-with-ai.spec.ts \
+            tests/api-agent/prompt/response-type.spec.ts \
+            tests/chatbot-agent/chatbot-purpose.spec.ts \
+            tests/delete-agent/delete-agent-restriction.spec.ts \
+            tests/pre-tool/query-pre-tool.spec.ts
 
       - name: Extract failed test summary
         if: always()
