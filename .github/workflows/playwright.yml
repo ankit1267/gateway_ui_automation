@@ -81,7 +81,7 @@ jobs:
                         const r = test.results.find(r => r.status === 'failed' || r.status === 'timedOut');
                         if (r) {
                           const id = test.testId || test.id || (spec.title + '-' + count);
-                          const query = encodeURIComponent(spec.title);
+                          const query = encodeURIComponent(`${spec.title} s:failed`);
                           const url = BASE_URL + query;
                           failed.push(
                             count++ + '. ' + spec.title + ' : ' + url
