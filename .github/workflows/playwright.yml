@@ -87,11 +87,11 @@ jobs:
                         const r = test.results.find(r => r.status === 'failed' || r.status === 'timedOut');
                         if (r) {
                           const title = spec.title || test.title || spec.file || 'unknown-test';
-                          const query = encodeURIComponent(`${title} s:failed`);
+                          const query = encodeURIComponent(title + ' s:failed');
                           const url = BASE_URL + query;
 
                           failed.push(
-                            count++ + '. ' + title + ' : [url](' + url + ')'
+                            count++ + '. ' + title + ' : ' + url
                           );
                         }
                       }
