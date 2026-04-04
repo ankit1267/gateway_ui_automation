@@ -85,7 +85,7 @@ jobs:
                           const url = BASE_URL + query;
 
                           failed.push(
-                            count++ + '. ' + title + ' : ' + url
+                            count++ + '. ' + title + ' : [url](' + url + ')'
                           );
                         }
                       }
