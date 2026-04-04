@@ -80,7 +80,8 @@ jobs:
                       if (test.status === 'unexpected') {
                         const r = test.results.find(r => r.status === 'failed' || r.status === 'timedOut');
                         if (r) {
-                          const query = encodeURIComponent(`${spec.title} s:failed`);
+                          const title = spec.title || test.title || 'unknown-test';
+                          const query = encodeURIComponent(`${title} s:failed`);
                           const url = BASE_URL + query;
                           failed.push(
                             count++ + '. ' + spec.title + ' : ' + url
