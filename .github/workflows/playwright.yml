@@ -65,6 +65,12 @@ jobs:
         id: summary
         run: |
           if [ -f test-results.json ]; then
+
+            # This logs the full structure to your GitHub Action console for debugging
+            echo "--- DEBUG: FULL JSON STRUCTURE ---"
+            cat test-results.json | node -e "const data = JSON.parse(require('fs').readFileSync(0)); console.log(JSON.stringify(data, null, 2));"
+            echo "----------------------------------"
+          
             FAILED_SUMMARY=$(node -e "
               const fs = require('fs');
               const data = JSON.parse(fs.readFileSync('test-results.json', 'utf8'));
