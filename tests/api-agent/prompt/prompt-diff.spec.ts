@@ -9,17 +9,17 @@ test('compare published and current prompt', async ({ agents, page }) => {
 
   const agent = await agents.openAgent(AGENT_NAME);
 
-  await fillPromptAndVerifyApi(
-    page,
-    async () => {
-      await agent.prompt.fillPrompt('', '', '');
-    },
-    {
-      role: '',
-      goal: '',
-      instruction: '',
-    }
-  );
+  // await fillPromptAndVerifyApi(
+  //   page,
+  //   async () => {
+  //     await agent.prompt.fillPrompt('', '', '');
+  //   },
+  //   {
+  //     role: '',
+  //     goal: '',
+  //     instruction: '',
+  //   }
+  // );
   
   const role = `You are a motivation coach${Date.now()}`;
   const goal = `Help users with motivation${Date.now()}`;

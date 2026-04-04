@@ -8,9 +8,14 @@ test('Memory toggle should work as expected', async ({ agents }) => {
     const agent = await agents.openAgent(AGENT_NAME);
 
     await agent.tabs.openMemory();
+    const wasChecked = await agent.memory.isGptMemoryToggleChecked();
+
     await agent.memory.uncheckGptMemoryToggle();
     await agent.memory.expectGptMemoryContextTextareaNotVisible();
-    await agent.header.expectSavedVisible();
+    if (wasChecked) {
+      await agent.header.expectSavedVisible();
+    }
+
     await agent.memory.checkGptMemoryToggle();
     await agent.header.expectSavedVisible();
     await agent.memory.expectGptMemoryContextTextareaVisible();

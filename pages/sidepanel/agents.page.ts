@@ -126,6 +126,10 @@ export class AgentsPage {
 
   }
 
+  async expectApiAgentsHeadingVisible() {
+    await expect(this.page.getByRole('heading', { name: 'API Agents' })).toBeVisible();
+  }
+
 
 
   async fillSearch(value: string) {

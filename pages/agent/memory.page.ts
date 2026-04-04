@@ -47,6 +47,10 @@ export class MemoryPage {
         await expect(this.gptMemoryContextTextarea).toHaveValue(text);
     }
 
+    async isGptMemoryToggleChecked(): Promise<boolean> {
+        return this.gptMemoryToggle.isChecked();
+    }
+
     async checkGptMemoryToggle() {
         await this.gptMemoryToggle.check();
     }
