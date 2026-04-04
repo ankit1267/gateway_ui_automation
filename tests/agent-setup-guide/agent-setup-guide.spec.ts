@@ -17,13 +17,25 @@ test('Fill Prompt and api configured should not show agent guide', async ({ agen
   await fillPromptAndVerifyApi(
     page,
     async () => {
-      await agent.prompt.fillPrompt(role, goal, instruction);
+      await agent.prompt.fillRole(role);
     },
-    {
-      role,
-      goal,
-      instruction,
-    }
+    { role}
+  );
+
+  await fillPromptAndVerifyApi(
+    page,
+    async () => {
+      await agent.prompt.fillGoal(goal);
+    },
+    { goal }
+  );
+
+  await fillPromptAndVerifyApi(
+    page,
+    async () => {
+      await agent.prompt.fillInstructions(instruction);
+    },
+    {  instruction }
   );
   await agent.prompt.expectStepState(1, 'completed');
 

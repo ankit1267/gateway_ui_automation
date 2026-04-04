@@ -1,9 +1,9 @@
 import type { Page, Request } from '@playwright/test';
 
 export type PromptFields = {
-  role: string;
-  goal: string;
-  instruction: string;
+  role?: string;
+  goal?: string;
+  instruction?: string;
 };
 
 type VerifyFillPromptOptions = {
@@ -117,15 +117,15 @@ export async function fillPromptAndVerifyApi(
   const { minRequestCount = 1 } = options;
   const captured = await capturePromptUpdates(page, action, minRequestCount);
 
-  if (captured.prompt.role !== expected.role) {
+  if (expected.role !== undefined && captured.prompt.role !== expected.role) {
     throw new Error(`Role mismatch in prompt API payload. Expected: "${expected.role}". Actual: "${captured.prompt.role}"`);
   }
 
-  if (captured.prompt.goal !== expected.goal) {
+  if (expected.goal !== undefined && captured.prompt.goal !== expected.goal) {
     throw new Error(`Goal mismatch in prompt API payload. Expected: "${expected.goal}". Actual: "${captured.prompt.goal}"`);
   }
 
-  if (captured.prompt.instruction !== expected.instruction) {
+  if (expected.instruction !== undefined && captured.prompt.instruction !== expected.instruction) {
     throw new Error(
       `Instruction mismatch in prompt API payload. Expected: "${expected.instruction}". Actual: "${captured.prompt.instruction}"`,
     );
