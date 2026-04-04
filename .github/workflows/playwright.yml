@@ -83,8 +83,9 @@ jobs:
                           const title = spec.title || test.title || 'unknown-test';
                           const query = encodeURIComponent(`${title} s:failed`);
                           const url = BASE_URL + query;
+
                           failed.push(
-                            count++ + '. ' + spec.title + ' : ' + url
+                            count++ + '. ' + title + ' : ' + url
                           );
                         }
                       }
