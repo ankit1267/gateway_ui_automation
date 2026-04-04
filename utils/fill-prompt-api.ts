@@ -121,14 +121,26 @@ export async function fillPromptAndVerifyApi(
     throw new Error(`Role mismatch in prompt API payload. Expected: "${expected.role}". Actual: "${captured.prompt.role}"`);
   }
 
-  if (expected.goal !== undefined && captured.prompt.goal !== expected.goal) {
-    throw new Error(`Goal mismatch in prompt API payload. Expected: "${expected.goal}". Actual: "${captured.prompt.goal}"`);
+  return captured;
+}
+
+export async function fillAllPromptFieldsAndVerifyApi(
+  page: Page,
+  action: () => Promise<void>,
+  expected: Required<PromptFields>,
+): Promise<CapturedPromptUpdate> {
+  const captured = await capturePromptUpdates(page, action, 1);
+
+  if (captured.prompt.role !== expected.role) {
+    throw new Error(`Role mismatch. Expected: "${expected.role}". Actual: "${captured.prompt.role}"`);
   }
 
-  if (expected.instruction !== undefined && captured.prompt.instruction !== expected.instruction) {
-    throw new Error(
-      `Instruction mismatch in prompt API payload. Expected: "${expected.instruction}". Actual: "${captured.prompt.instruction}"`,
-    );
+  if (captured.prompt.goal !== expected.goal) {
+    throw new Error(`Goal mismatch. Expected: "${expected.goal}". Actual: "${captured.prompt.goal}"`);
+  }
+
+  if (captured.prompt.instruction !== expected.instruction) {
+    throw new Error(`Instruction mismatch. Expected: "${expected.instruction}". Actual: "${captured.prompt.instruction}"`);
   }
 
   return captured;

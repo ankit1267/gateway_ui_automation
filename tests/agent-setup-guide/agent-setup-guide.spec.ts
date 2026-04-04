@@ -1,5 +1,5 @@
 ﻿import { test } from "../../fixtures/base.fixture";
-import { fillPromptAndVerifyApi } from '../../utils/fill-prompt-api';
+import { fillPromptAndVerifyApi, fillAllPromptFieldsAndVerifyApi } from '../../utils/fill-prompt-api';
 
 const AGENT_NAME = process.env.TESTING_AGENT!
 //dependent on css class if css class change it will break
@@ -14,29 +14,16 @@ test('Fill Prompt and api configured should not show agent guide', async ({ agen
   const role = `Support agent${Date.now()}`;
   const goal = `Help users${Date.now()}`;
   const instruction = `Be polite${Date.now()}`;
-  await fillPromptAndVerifyApi(
+  await fillAllPromptFieldsAndVerifyApi(
     page,
     async () => {
       await agent.prompt.fillRole(role);
-    },
-    { role}
-  );
-
-  await fillPromptAndVerifyApi(
-    page,
-    async () => {
       await agent.prompt.fillGoal(goal);
-    },
-    { goal }
-  );
-
-  await fillPromptAndVerifyApi(
-    page,
-    async () => {
       await agent.prompt.fillInstructions(instruction);
     },
-    {  instruction }
+    { role, goal, instruction }
   );
+
   await agent.prompt.expectStepState(1, 'completed');
 
   await agent.tabs.openModel();
