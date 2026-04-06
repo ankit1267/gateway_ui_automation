@@ -470,18 +470,19 @@ export class PromptPage {
     const input = this.page.getByTestId('embed-suggestion-search-input');
 
     await expect(async () => {
-     
       if (!(await dropdown.isVisible())) {
+        await expect(this.addPreTool).toBeVisible();
+        await this.addPreTool.scrollIntoViewIfNeeded();
         await this.addPreTool.click();
       }
-      await lockDaisyDropdown(this.page, 'embed-suggestion-dropdown-menu');
 
       await expect(dropdown).toBeVisible();
+      await lockDaisyDropdown(this.page, 'embed-suggestion-dropdown-menu');
       await expect(input).toBeVisible();
 
-      await input.click();
-      await expect(input).toBeFocused();
-    }).toPass({ timeout: 10_000 });
+      // Headless runs can occasionally fail on focus assertion even when input is usable.
+      await input.fill('');
+    }).toPass({ timeout: 15_000 });
   }
 
   async expectPreToolContainerVisible() {

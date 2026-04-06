@@ -361,13 +361,16 @@ async expectParameterNotVisible(paramName: string) {
 
 async fillAdvancedParameterText(paramName: string, value: string) {
     const input = this.page.getByTestId(`advanced-param-text-${paramName}`);
+    await input.click();
     await input.clear();
     await input.pressSequentially(value, { delay: 50 });
     await expect(input).toHaveValue(value);
 }
 
 async clickOutsideToSave() {
-    await this.page.getByTestId('model-tab-container').click();
+    // Directly blur the active element via evaluate — works in both headed and
+    // headless mode regardless of whether the app uses blur or click-outside handlers.
+    await this.page.evaluate(() => (document.activeElement as HTMLElement)?.blur());
 }
 
     // -------------------------

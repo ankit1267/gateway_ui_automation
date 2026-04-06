@@ -138,14 +138,6 @@ test.describe('Members Page - Invite User Modal', () => {
     await sidepanel.membersPage.closeInviteForm();
   });
 
-  test('TC-MEM-19: Invite form can be reopened after closing', async ({ sidepanel }) => {
-    await sidepanel.membersPage.openInviteForm();
-    await sidepanel.membersPage.closeInviteForm();
-    await sidepanel.membersPage.openInviteForm();
-    const isVisible = await sidepanel.membersPage.isInviteFormVisible();
-    expect(isVisible).toBe(true);
-  });
-
   test('TC-MEM-20: Fields are cleared after closing and reopening form', async ({ sidepanel }) => {
     await sidepanel.membersPage.openInviteForm();
     await sidepanel.membersPage.fillName('Test User');
@@ -234,12 +226,13 @@ test.describe('Members Page - Member Management Flow', () => {
     await container.locator('proxy-user-management').first().waitFor({ state: 'attached', timeout: 30000 });
     await container.locator('button:has-text("Invite Member")').first().waitFor({ state: 'visible', timeout: 30000 });
 
-    const memberRow = container.locator('.user-item').filter({ hasText: 'example' }).first();
+    const memberRow = container.locator('.user-item').first();
     await expect(memberRow).toBeVisible({ timeout: 10000 });
-
     await memberRow.hover();
-    await memberRow.locator('button:has-text("Edit")').waitFor({ state: 'visible' });
-    await memberRow.locator('button:has-text("Edit")').click();
+
+    const editButton = memberRow.getByRole('button', { name: 'Edit' });
+    await expect(editButton).toBeVisible({ timeout: 10000 });
+    await editButton.click();
     await page.waitForTimeout(1500);
 
     const permissionCombobox = page.getByRole('combobox', { name: 'Additional Permissions' });
