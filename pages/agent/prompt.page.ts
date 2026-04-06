@@ -470,8 +470,12 @@ export class PromptPage {
 
     await this.addPreTool.click();
 
-    await expect(input).toBeVisible();
+    // Lock the dropdown immediately after clicking so headless mode doesn't
+    // lose focus and collapse the CSS-driven DaisyUI dropdown before the
+    // input becomes visible.
     await lockDaisyDropdown(this.page, 'embed-suggestion-dropdown-menu');
+
+    await expect(input).toBeVisible();
 
     // retry-safe focus
     await expect(async () => {
