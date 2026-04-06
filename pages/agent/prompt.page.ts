@@ -3,7 +3,6 @@ import { expect } from '@playwright/test';
 import { PromptHelperPanel } from '../../components/prompt/prompt-helper.panel';
 import { PreToolDropdown } from '../../components/prompt/pre-tool.panel';
 import { PrebuiltPreToolConfigModal } from '../../modals/prebuilt-pre-tool-config.modal';
-import { lockDaisyDropdown } from '../../utils/daisy-ui';
 
 export class PromptPage {
   private readonly page: Page;
@@ -466,23 +465,46 @@ export class PromptPage {
   }
 
   async addPreToolClick() {
-    const dropdown = this.page.getByTestId('embed-suggestion-dropdown-menu');
-    const input = this.page.getByTestId('embed-suggestion-search-input');
+    const preToolContainer = this.page.getByTestId('pre-embed-list-container');
+    const dropdown = preToolContainer.locator('[data-testid="embed-suggestion-dropdown-menu"]:visible').first();
+    const input = preToolContainer.locator('[data-testid="embed-suggestion-search-input"]:visible').first();
+    const addButton = preToolContainer.getByTestId('pre-embed-add-button');
+    const preToolItem = preToolContainer.locator('[data-testid^="render-embed-item-"]').first();
+    const changeButton = preToolContainer.getByTestId(/^render-embed-refresh-button-/).first();
 
-    await expect(async () => {
-      if (!(await dropdown.isVisible())) {
-        await expect(this.addPreTool).toBeVisible();
-        await this.addPreTool.scrollIntoViewIfNeeded();
-        await this.addPreTool.click();
+    await expect(preToolContainer).toBeVisible({ timeout: 15000 });
+
+    const openWithAddButton = async () => {
+      await addButton.scrollIntoViewIfNeeded();
+      await addButton.click({ force: true });
+    };
+
+    const openWithChangeButton = async () => {
+      await expect(preToolItem).toBeVisible({ timeout: 15000 });
+      await preToolItem.hover();
+      await expect(changeButton).toBeVisible({ timeout: 5000 });
+      await changeButton.click({ force: true });
+    };
+
+    if (!(await dropdown.isVisible().catch(() => false))) {
+      if (await addButton.isVisible().catch(() => false)) {
+        await openWithAddButton();
+      } else {
+        await openWithChangeButton();
       }
 
-      await expect(dropdown).toBeVisible();
-      await lockDaisyDropdown(this.page, 'embed-suggestion-dropdown-menu');
-      await expect(input).toBeVisible();
+      // Headless fallback: if first trigger didn't open the dropdown, try the alternate trigger.
+      if (!(await dropdown.isVisible().catch(() => false))) {
+        if (await addButton.isVisible().catch(() => false)) {
+          await openWithChangeButton();
+        } else {
+          await openWithAddButton();
+        }
+      }
+    }
 
-      // Headless runs can occasionally fail on focus assertion even when input is usable.
-      await input.fill('');
-    }).toPass({ timeout: 15_000 });
+    await expect(dropdown).toBeVisible({ timeout: 15000 });
+    await expect(input).toBeVisible({ timeout: 15000 });
   }
 
   async expectPreToolContainerVisible() {
