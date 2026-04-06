@@ -24,7 +24,8 @@ test.describe('Publish - Chatbot Agent', () => {
     await agents.clickCreateNewAgent();
     await agents.createAgentModal.fillPurpose(AGENT_PURPOSE);
     const agent = await agents.clickCreateNewAgentSubmit();
-    await agent.header
+
+    await (await agent.header.getAgentName()).waitFor({ state: 'visible', timeout: 40000 });
 
     createdAgentName = await agent.header.getAgentNameText();
     

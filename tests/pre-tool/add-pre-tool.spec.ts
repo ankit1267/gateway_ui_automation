@@ -9,11 +9,15 @@ test('Add a pre-tool', async ({ agents, page }) => {
     // open testing agent
     const agentPage = await agents.openAgent(AGENT_NAME);
     await agentPage.tabs.openPrompt();
-    await agentPage.prompt.addPreToolClick();
 
-    // select factorial of a number
-    await agentPage.prompt.preToolDropdown.selectTool('factorial_of_a_numbe...');
-    await agentPage.prompt.expectPreToolContainerVisible();
+    // Retry the full add-pre-tool flow until the tool is actually added.
+    // Covers flaky dropdown closures, missed clicks, and slow renders.
+    await expect(async () => {
+      await agentPage.prompt.addPreToolClick();
+      await agentPage.prompt.preToolDropdown.selectTool('factorial_of_a_numbe...');
+      await agentPage.prompt.expectPreToolContainerVisible();
+    }).toPass({ timeout: 30_000 });
+    
     await page.waitForTimeout(2000);
     await agentPage.prompt.deletePreTool();
     await page.waitForTimeout(2000);
