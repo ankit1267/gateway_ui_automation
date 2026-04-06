@@ -24,10 +24,10 @@ test.describe('Publish - Chatbot Agent', () => {
     await agents.clickCreateNewAgent();
     await agents.createAgentModal.fillPurpose(AGENT_PURPOSE);
     const agent = await agents.clickCreateNewAgentSubmit();
-
+    await agent.header
 
     createdAgentName = await agent.header.getAgentNameText();
-    await agent.getPage.waitForTimeout(3000);
+    
 
     // -------- Publish Agent --------
     await agent.header.clickPublish();

@@ -466,22 +466,22 @@ export class PromptPage {
   }
 
   async addPreToolClick() {
+    const dropdown = this.page.getByTestId('embed-suggestion-dropdown-menu');
     const input = this.page.getByTestId('embed-suggestion-search-input');
 
-    await this.addPreTool.click();
-
-    // Lock the dropdown immediately after clicking so headless mode doesn't
-    // lose focus and collapse the CSS-driven DaisyUI dropdown before the
-    // input becomes visible.
-    await lockDaisyDropdown(this.page, 'embed-suggestion-dropdown-menu');
-
-    await expect(input).toBeVisible();
-
-    // retry-safe focus
     await expect(async () => {
+     
+      if (!(await dropdown.isVisible())) {
+        await this.addPreTool.click();
+      }
+      await lockDaisyDropdown(this.page, 'embed-suggestion-dropdown-menu');
+
+      await expect(dropdown).toBeVisible();
+      await expect(input).toBeVisible();
+
       await input.click();
       await expect(input).toBeFocused();
-    }).toPass();
+    }).toPass({ timeout: 10_000 });
   }
 
   async expectPreToolContainerVisible() {
