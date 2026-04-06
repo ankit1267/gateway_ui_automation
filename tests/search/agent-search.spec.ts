@@ -1,7 +1,7 @@
 import process from 'process';
 import { test, expect } from '../../fixtures/base.fixture';
 
-const SEARCH_QUERY='SearchDeleteAgent';
+const SEARCH_QUERY='DeleteAgent';
 const AGENT_ID = process.env.DELETE_AGENT_ID!;
 
 

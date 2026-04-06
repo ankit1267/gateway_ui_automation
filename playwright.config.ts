@@ -25,7 +25,7 @@ export default defineConfig({
 
   use: {
     launchOptions: {
-      slowMo: 1000,
+      slowMo: 500,
     },
     baseURL: process.env.BASE_URL!,
     headless: true,

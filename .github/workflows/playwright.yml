@@ -59,7 +59,7 @@ jobs:
         id: test-run
         continue-on-error: true
         run: |
-              npx playwright test tests/pre-tool tests/alerts tests/search tests/api-agent tests/chatbot-agent tests/integration tests/members
+              npx playwright test
 
       - name: Extract failed test summary
         if: always()
