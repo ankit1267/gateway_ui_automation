@@ -140,15 +140,19 @@ export class PlaygroundPage {
   // --- Basic chat actions ---
 
   async typeMessage(message: string) {
+    await this.messageTextarea.focus();
     await this.messageTextarea.fill(message);
+    await this.messageTextarea.focus();
     await this.page.keyboard.press('Enter');
   }
 
   async fillMessage(message: string) {
+    await this.messageTextarea.focus();
     await this.messageTextarea.fill(message);
   }
 
   async sendMessage() {
+    await this.messageTextarea.focus();
     await this.page.keyboard.press('Enter');
   }
 
@@ -432,7 +436,9 @@ export class PlaygroundPage {
       { timeout }
     );
 
+    await this.messageTextarea.focus();
     await this.messageTextarea.fill(message);
+    await this.messageTextarea.focus();
     await this.page.keyboard.press('Enter');
 
     const response = await responsePromise;
