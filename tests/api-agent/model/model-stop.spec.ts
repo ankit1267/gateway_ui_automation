@@ -10,7 +10,7 @@ test.describe('Model - Stop parameter', () => {
 
     const agent = await agents.openAgent(AGENT_NAME);
     await agent.tabs.openModel();
-
+    
     await agent.model.expectParameterVisible('stop');
     
     // API Verification: Fill stop parameter and verify API request

@@ -214,8 +214,12 @@ export class RAGEmbedDetailPage {
       await dialog.accept();
     });
 
-    await contentArea.locator('.ellipsis-btn').last().click();
-    await contentArea.locator('.delete-btn').last().waitFor({ state: 'visible', timeout: 5000 });
+    // Retry the click + visibility check together — in headless the dropdown may
+    // close before .delete-btn becomes visible if the click didn't fully register
+    await expect(async () => {
+      await contentArea.locator('.ellipsis-btn').last().click();
+      await expect(contentArea.locator('.delete-btn').last()).toBeVisible();
+    }).toPass({ timeout: 10000 });
     await contentArea.locator('.delete-btn').last().click({ force: true });
 
     // Wait for deletion to process on backend

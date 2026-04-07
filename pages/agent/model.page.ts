@@ -368,9 +368,10 @@ async fillAdvancedParameterText(paramName: string, value: string) {
 }
 
 async clickOutsideToSave() {
-    // Directly blur the active element via evaluate — works in both headed and
-    // headless mode regardless of whether the app uses blur or click-outside handlers.
-    await this.page.evaluate(() => (document.activeElement as HTMLElement)?.blur());
+    // Tab triggers a real browser focus change (keydown → blur → focus on next element),
+    // which React's synthetic event system handles correctly in both headed and headless.
+    // evaluate(blur) only fires a JS blur event and misses click-outside handlers.
+    await this.page.keyboard.press('Tab');
 }
 
     // -------------------------

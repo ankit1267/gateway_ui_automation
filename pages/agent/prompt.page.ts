@@ -471,6 +471,7 @@ export class PromptPage {
     await this.addPreTool.click();
 
     await expect(input).toBeVisible();
+    await input.focus();
     await lockDaisyDropdown(this.page, 'embed-suggestion-dropdown-menu');
 
     // Confirm dropdown menu is stable before proceeding
