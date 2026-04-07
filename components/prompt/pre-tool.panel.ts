@@ -39,6 +39,12 @@ export class PreToolDropdown {
 
     async searchAndSelect(toolName: string) {
         await this.search(toolName);
-        await this.selectTool(toolName);
+        // Scope click to dropdown to avoid matching text elsewhere on page,
+        // and wait for the option to be visible before clicking (headless-safe)
+        const option = this.page
+            .getByTestId('embed-suggestion-dropdown-menu')
+            .getByText(toolName, { exact: true });
+        await expect(option).toBeVisible();
+        await option.click();
     }
 }

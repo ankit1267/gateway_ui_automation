@@ -473,9 +473,12 @@ export class PromptPage {
     await expect(input).toBeVisible();
     await lockDaisyDropdown(this.page, 'embed-suggestion-dropdown-menu');
 
-    // retry-safe focus
+    // Confirm dropdown menu is stable before proceeding
+    await expect(this.page.getByTestId('embed-suggestion-dropdown-menu')).toBeVisible();
+
+    // retry-safe focus — use focus() to avoid blur side-effects from click()
     await expect(async () => {
-      await input.click();
+      await input.focus();
       await expect(input).toBeFocused();
     }).toPass();
   }
