@@ -13,7 +13,7 @@ export default defineConfig({
   timeout: 120_000,
 
   expect: {
-    timeout: 120_000,
+    timeout: 60_000,
   },
   workers: 1,
   retries: 1,
@@ -24,9 +24,7 @@ export default defineConfig({
   ],
 
   use: {
-    launchOptions: {
-      slowMo: 500,
-    },
+    launchOptions: {},
     baseURL: process.env.BASE_URL!,
     headless: true,
 

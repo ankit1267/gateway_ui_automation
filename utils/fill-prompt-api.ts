@@ -1,4 +1,6 @@
 import type { Page, Request } from '@playwright/test';
+import { expect } from '../fixtures/base.fixture';
+import { readRequestBody, VERSION_UPDATE_URL_PATTERN } from './request-helpers';
 
 export type PromptFields = {
   role?: string;
@@ -16,8 +18,6 @@ type CapturedPromptUpdate = {
   prompt: PromptFields;
 };
 
-const VERSION_UPDATE_URL_PATTERN = /\/api\/versions\/[a-f0-9]+(?:\?|$)/i;
-
 function parsePromptFromBody(body: Record<string, unknown>): PromptFields {
   const configuration = body.configuration as Record<string, unknown> | undefined;
   const prompt = configuration?.prompt;
@@ -33,31 +33,6 @@ function parsePromptFromBody(body: Record<string, unknown>): PromptFields {
     goal: String(promptObj.goal ?? ''),
     instruction: String(promptObj.instruction ?? ''),
   };
-}
-
-function readRequestBody(request: { postDataJSON: () => unknown; postData: () => string | null }): Record<string, unknown> {
-  try {
-    const body = request.postDataJSON();
-    if (body && typeof body === 'object' && !Array.isArray(body)) {
-      return body as Record<string, unknown>;
-    }
-  } catch {
-    const raw = request.postData();
-    if (!raw) {
-      return {};
-    }
-
-    try {
-      const parsed = JSON.parse(raw);
-      if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
-        return parsed as Record<string, unknown>;
-      }
-    } catch {
-      return {};
-    }
-  }
-
-  return {};
 }
 
 async function capturePromptUpdates(
@@ -88,7 +63,14 @@ async function capturePromptUpdates(
 
   try {
     await action();
-    await page.waitForTimeout(5000);
+    // Wait for the actual API response instead of arbitrary timeout
+    await page.waitForResponse(
+      (resp) =>
+        VERSION_UPDATE_URL_PATTERN.test(resp.url()) &&
+        resp.request().method() === 'PUT' &&
+        resp.status() === 200,
+      { timeout: 15000 }
+    );
   } finally {
     page.off('request', handleRequest);
   }
@@ -117,8 +99,8 @@ export async function fillPromptAndVerifyApi(
   const { minRequestCount = 1 } = options;
   const captured = await capturePromptUpdates(page, action, minRequestCount);
 
-  if (expected.role !== undefined && captured.prompt.role !== expected.role) {
-    throw new Error(`Role mismatch in prompt API payload. Expected: "${expected.role}". Actual: "${captured.prompt.role}"`);
+  if (expected.role !== undefined) {
+    expect(captured.prompt.role, 'Role mismatch in prompt API payload').toBe(expected.role);
   }
 
   return captured;
@@ -131,17 +113,9 @@ export async function fillAllPromptFieldsAndVerifyApi(
 ): Promise<CapturedPromptUpdate> {
   const captured = await capturePromptUpdates(page, action, 1);
 
-  if (captured.prompt.role !== expected.role) {
-    throw new Error(`Role mismatch. Expected: "${expected.role}". Actual: "${captured.prompt.role}"`);
-  }
-
-  if (captured.prompt.goal !== expected.goal) {
-    throw new Error(`Goal mismatch. Expected: "${expected.goal}". Actual: "${captured.prompt.goal}"`);
-  }
-
-  if (captured.prompt.instruction !== expected.instruction) {
-    throw new Error(`Instruction mismatch. Expected: "${expected.instruction}". Actual: "${captured.prompt.instruction}"`);
-  }
+  expect(captured.prompt.role, 'Role mismatch in prompt API payload').toBe(expected.role);
+  expect(captured.prompt.goal, 'Goal mismatch in prompt API payload').toBe(expected.goal);
+  expect(captured.prompt.instruction, 'Instruction mismatch in prompt API payload').toBe(expected.instruction);
 
   return captured;
 }

@@ -69,12 +69,18 @@ test.describe('Pre-Tool - Query Refiner', () => {
     await agent.prompt.closeQueryRefinerConfigModalIfVisible();
   });
 
-  test('TC-PRETOOL-QR-04: Query Refiner pre-tool persists after switching tabs and returning', async ({ agents }) => {
-
+  test('TC-PRETOOL-QR-04: Query Refiner pre-tool persists after switching tabs and returning', async ({ agents, page }) => {
     const agent = await agents.openAgent(AGENT_NAME);
     await agent.tabs.openPrompt();
+
+    const preToolApiPromise = page.waitForResponse(
+      res => res.url().includes('/api/tools/pre_tool/') && res.request().method() === 'PUT' && res.status() === 200,
+      { timeout: 15000 }
+    );
     await agent.prompt.addPreToolClick();
     await agent.prompt.preToolDropdown.searchAndSelect(QUERY_REFINER);
+    await preToolApiPromise;
+
     await agent.prompt.closeQueryRefinerConfigModalIfVisible();
     await agent.prompt.expectPreToolContainerVisible();
     await agent.tabs.openModel();
@@ -95,10 +101,7 @@ test.describe('Pre-Tool - Query Refiner', () => {
     await agent.prompt.queryRefinerConfigModal.clickSave();
   });
 
-});
-
   test('TC-PRETOOL-QR-06: Adding and then deleting the Query Refiner pre-tool removes it', async ({ agents }) => {
-    await agents.goto('api');
     const agent = await agents.openAgent(AGENT_NAME);
     await agent.tabs.openPrompt();
     await agent.prompt.addPreToolClick();
@@ -109,3 +112,5 @@ test.describe('Pre-Tool - Query Refiner', () => {
     await agent.prompt.deletePreTool();
     await agent.prompt.expectPreToolContainerNotVisible();
   });
+
+});

@@ -33,11 +33,11 @@ export class PrebuiltPreToolConfigModal {
 
 
   async isQueryRefinerConfigModalVisible(){
-    expect(this.container.isVisible()); 
+    await expect(this.container).toBeVisible();
   }
-  
+
   async isSaveButtonDisabled(){
-    expect(this.saveButton.isDisabled());
+    await expect(this.saveButton).toBeDisabled();
   }
 
   async fillRefinementPrompt(text: string) {

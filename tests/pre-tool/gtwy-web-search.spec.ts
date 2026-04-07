@@ -81,11 +81,18 @@ test.describe('Pre-Tool - Gtwy Web Search', () => {
     await agent.prompt.queryRefinerConfigModal.clickSave();
   });
 
-  test('TC-PRETOOL-GWS-05: Gtwy Web Search pre-tool persists after switching tabs and returning', async ({ agents }) => {
+  test('TC-PRETOOL-GWS-05: Gtwy Web Search pre-tool persists after switching tabs and returning', async ({ agents, page }) => {
     const agent = await agents.openAgent(AGENT_NAME);
     await agent.tabs.openPrompt();
+
+    const preToolApiPromise = page.waitForResponse(
+      res => res.url().includes('/api/tools/pre_tool/') && res.request().method() === 'PUT' && res.status() === 200,
+      { timeout: 15000 }
+    );
     await agent.prompt.addPreToolClick();
     await agent.prompt.preToolDropdown.searchAndSelect(GTWY_WEB_SEARCH);
+    await preToolApiPromise;
+
     await agent.prompt.closeWebSearchConfigModalIfVisible();
     await agent.prompt.expectPreToolContainerVisible();
     await agent.tabs.openModel();
@@ -106,10 +113,7 @@ test.describe('Pre-Tool - Gtwy Web Search', () => {
     await agent.prompt.closeWebSearchConfigModalIfVisible();
   });
 
-});
-
   test('TC-PRETOOL-GWS-07: Adding and then deleting the Gtwy Web Search pre-tool removes it', async ({ agents }) => {
-    await agents.goto('api');
     const agent = await agents.openAgent(AGENT_NAME);
     await agent.tabs.openPrompt();
     await agent.prompt.addPreToolClick();
@@ -120,3 +124,5 @@ test.describe('Pre-Tool - Gtwy Web Search', () => {
     await agent.prompt.deletePreTool();
     await agent.prompt.expectPreToolContainerNotVisible();
   });
+
+});

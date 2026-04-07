@@ -62,9 +62,9 @@ test.describe('Agent Table - API Agent', () => {
     await agents.commandPalette.expectNoResultsVisible();
   });
 
-  test('TC-TABLE-11: Clicking agent row opens agent detail page', async ({ agents }) => {
+  test('TC-TABLE-11: Clicking agent row opens agent detail page', async ({ agents, page }) => {
     const agent = await agents.openAgent(AGENT_NAME);
-    await agents.expectAgentTableUrl();
+    await expect(page).toHaveURL(/\/agents\/configure\/[a-f0-9]{24}/, { timeout: 10000 });
   });
 
   test('TC-TABLE-12: Clicking Create New Agent button opens create agent modal', async ({ agents }) => {

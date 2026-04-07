@@ -70,11 +70,18 @@ test.describe('Pre-Tool - RAG Knowledgebase', () => {
     await agent.prompt.queryRefinerConfigModal.clickSave();
   });
 
-  test('TC-PRETOOL-RAG-04: RAG Knowledgebase pre-tool persists after switching tabs and returning', async ({ agents }) => {
+  test('TC-PRETOOL-RAG-04: RAG Knowledgebase pre-tool persists after switching tabs and returning', async ({ agents, page }) => {
     const agent = await agents.openAgent(AGENT_NAME);
     await agent.tabs.openPrompt();
+
+    const preToolApiPromise = page.waitForResponse(
+      res => res.url().includes('/api/tools/pre_tool/') && res.request().method() === 'PUT' && res.status() === 200,
+      { timeout: 15000 }
+    );
     await agent.prompt.addPreToolClick();
     await agent.prompt.preToolDropdown.searchAndSelect(RAG_KNOWLEDGEBASE);
+    await preToolApiPromise;
+
     await agent.prompt.closeRagConfigModalIfVisible();
     await agent.prompt.expectPreToolContainerVisible();
     await agent.tabs.openModel();
@@ -95,10 +102,7 @@ test.describe('Pre-Tool - RAG Knowledgebase', () => {
     await agent.prompt.closeRagConfigModalIfVisible();
   });
 
-});
-
-test('TC-PRETOOL-RAG-06: Adding and then deleting the RAG Knowledgebase pre-tool removes it', async ({ agents }) => {
-    await agents.goto('api');
+  test('TC-PRETOOL-RAG-06: Adding and then deleting the RAG Knowledgebase pre-tool removes it', async ({ agents }) => {
     const agent = await agents.openAgent(AGENT_NAME);
     await agent.tabs.openPrompt();
     await agent.prompt.addPreToolClick();
@@ -109,3 +113,5 @@ test('TC-PRETOOL-RAG-06: Adding and then deleting the RAG Knowledgebase pre-tool
     await agent.prompt.deletePreTool();
     await agent.prompt.expectPreToolContainerNotVisible();
   });
+
+});

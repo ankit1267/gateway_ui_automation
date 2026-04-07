@@ -1,4 +1,6 @@
 import type { Page, Request } from '@playwright/test';
+import { expect } from '../fixtures/base.fixture';
+import { readRequestBody, asRecord, VERSION_UPDATE_URL_PATTERN } from './request-helpers';
 
 type VerifyJsonSchemaResponseOptions = {
   minRequestCount?: number;
@@ -11,41 +13,6 @@ export type CapturedJsonSchemaResponseUpdate = {
   requestBody: Record<string, unknown>;
   responseType: Record<string, unknown>;
 };
-
-const VERSION_UPDATE_URL_PATTERN = /\/api\/versions\/[a-f0-9]+(?:\?|$)/i;
-
-function asRecord(value: unknown): Record<string, unknown> | undefined {
-  if (!value || typeof value !== 'object' || Array.isArray(value)) {
-    return undefined;
-  }
-
-  return value as Record<string, unknown>;
-}
-
-function readRequestBody(request: { postDataJSON: () => unknown; postData: () => string | null }): Record<string, unknown> {
-  try {
-    const body = request.postDataJSON();
-    if (body && typeof body === 'object' && !Array.isArray(body)) {
-      return body as Record<string, unknown>;
-    }
-  } catch {
-    const raw = request.postData();
-    if (!raw) {
-      return {};
-    }
-
-    try {
-      const parsed = JSON.parse(raw);
-      if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
-        return parsed as Record<string, unknown>;
-      }
-    } catch {
-      return {};
-    }
-  }
-
-  return {};
-}
 
 function parseJsonSchemaResponseTypeFromBody(body: Record<string, unknown>): Record<string, unknown> {
   const configuration = asRecord(body.configuration);
@@ -123,15 +90,13 @@ export async function verifyJsonSchemaResponseApiUpdate(
 
   const jsonSchema = asRecord(captured.responseType.json_schema);
 
-  if (requireJsonSchema && !jsonSchema) {
-    throw new Error('Expected response_type.json_schema object in API payload, but it was missing');
+  if (requireJsonSchema) {
+    expect(jsonSchema, 'Expected response_type.json_schema object in API payload').toBeDefined();
   }
 
   if (expectedSchemaName) {
     const actualName = String(jsonSchema?.name ?? '');
-    if (actualName !== expectedSchemaName) {
-      throw new Error(`Schema name mismatch in API payload. Expected: "${expectedSchemaName}". Actual: "${actualName}"`);
-    }
+    expect(actualName, 'Schema name mismatch in API payload').toBe(expectedSchemaName);
   }
 
   return captured;

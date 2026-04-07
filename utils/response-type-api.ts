@@ -1,4 +1,6 @@
 import type { Page, Request } from '@playwright/test';
+import { expect } from '../fixtures/base.fixture';
+import { readRequestBody, asRecord, VERSION_UPDATE_URL_PATTERN } from './request-helpers';
 
 export type ResponseTypeValue = 'default' | 'text' | 'json_object' | 'json_schema' | 'widget';
 
@@ -11,41 +13,6 @@ type CapturedResponseTypeUpdate = {
   requestBody: Record<string, unknown>;
   responseType: ResponseTypeValue;
 };
-
-const VERSION_UPDATE_URL_PATTERN = /\/api\/versions\/[a-f0-9]+(?:\?|$)/i;
-
-function readRequestBody(request: { postDataJSON: () => unknown; postData: () => string | null }): Record<string, unknown> {
-  try {
-    const body = request.postDataJSON();
-    if (body && typeof body === 'object' && !Array.isArray(body)) {
-      return body as Record<string, unknown>;
-    }
-  } catch {
-    const raw = request.postData();
-    if (!raw) {
-      return {};
-    }
-
-    try {
-      const parsed = JSON.parse(raw);
-      if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
-        return parsed as Record<string, unknown>;
-      }
-    } catch {
-      return {};
-    }
-  }
-
-  return {};
-}
-
-function asRecord(value: unknown): Record<string, unknown> | undefined {
-  if (!value || typeof value !== 'object' || Array.isArray(value)) {
-    return undefined;
-  }
-
-  return value as Record<string, unknown>;
-}
 
 function asResponseType(value: unknown): ResponseTypeValue | undefined {
   const valid: ResponseTypeValue[] = ['default', 'text', 'json_object', 'json_schema', 'widget'];
@@ -128,6 +95,14 @@ async function captureResponseTypeUpdates(
 
   try {
     await action();
+    // Wait for the actual API response instead of removing listener immediately
+    await page.waitForResponse(
+      (resp) =>
+        VERSION_UPDATE_URL_PATTERN.test(resp.url()) &&
+        resp.request().method() === 'PUT' &&
+        resp.status() === 200,
+      { timeout: 15000 }
+    );
   } finally {
     page.off('request', handleRequest);
   }
@@ -157,11 +132,7 @@ export async function selectResponseTypeAndVerifyApi(
 
   const captured = await captureResponseTypeUpdates(page, action, minRequestCount);
 
-  if (captured.responseType !== expectedResponseType) {
-    throw new Error(
-      `Response type mismatch in API payload. Expected: "${expectedResponseType}". Actual: "${captured.responseType}"`,
-    );
-  }
+  expect(captured.responseType, 'Response type mismatch in API payload').toBe(expectedResponseType);
 
   return captured;
 }

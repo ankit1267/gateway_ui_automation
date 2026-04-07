@@ -16,12 +16,11 @@ test('Agent renders inside embed container after selection', async ({
 
   // trigger action
   await agent.connectors.clickAddAgent();
-  
-  // capture APIs AFTER opening dropdown to avoid background requests
+
+  // capture APIs BEFORE the action that triggers them
   const versionApiPromise = page.waitForResponse(res => {
     if (!res.url().includes('/api/versions') || res.request().method() !== 'PUT') return false;
     const body = res.request().postDataJSON();
-    // Only capture if request has connected_agents in payload (agent-add specific)
     return body?.agents?.connected_agents !== undefined;
   });
 
@@ -30,6 +29,7 @@ test('Agent renders inside embed container after selection', async ({
     res.request().method() === 'PUT'
   );
 
+  // action AFTER promises are set up - prevents race condition
   await agent.connectors.a2aDropdown.selectAgent(A2A_AGENT);
 
   // resolve responses ONCE
