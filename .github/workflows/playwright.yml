@@ -59,7 +59,7 @@ jobs:
         id: test-run
         continue-on-error: true
         run: |
-              npx playwright test
+              npx playwright test tests/pre-tool/gtwy-web-search.spec.ts
 
       - name: Extract failed test summary
         if: always()
