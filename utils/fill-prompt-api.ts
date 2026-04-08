@@ -63,22 +63,13 @@ async function capturePromptUpdates(
 
   try {
     await action();
-    // Wait for the actual API response instead of arbitrary timeout
-    await page.waitForResponse(
-      (resp) =>
-        VERSION_UPDATE_URL_PATTERN.test(resp.url()) &&
-        resp.request().method() === 'PUT' &&
-        resp.status() === 200,
-      { timeout: 15000 }
-    );
+    // action() includes blur + expectSavedVisible which already waits for each PUT.
+    // Poll briefly for the minimum captured request count (requests fire during action).
+    await expect(async () => {
+      expect(capturedBodies.length).toBeGreaterThanOrEqual(minRequestCount);
+    }).toPass({ timeout: 10000 });
   } finally {
     page.off('request', handleRequest);
-  }
-
-  if (capturedBodies.length < minRequestCount) {
-    throw new Error(
-      `Expected at least ${minRequestCount} prompt update request(s), but captured ${capturedBodies.length}`,
-    );
   }
 
   const requestBody = capturedBodies[capturedBodies.length - 1];
@@ -111,7 +102,9 @@ export async function fillAllPromptFieldsAndVerifyApi(
   action: () => Promise<void>,
   expected: Required<PromptFields>,
 ): Promise<CapturedPromptUpdate> {
-  const captured = await capturePromptUpdates(page, action, 1);
+  // Each field (role, goal, instruction) triggers a separate PUT on blur.
+  // Wait for all 3 requests so we verify the final state.
+  const captured = await capturePromptUpdates(page, action, 3);
 
   expect(captured.prompt.role, 'Role mismatch in prompt API payload').toBe(expected.role);
   expect(captured.prompt.goal, 'Goal mismatch in prompt API payload').toBe(expected.goal);

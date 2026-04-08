@@ -8,7 +8,10 @@ test('Fill Prompt and api configured should not show agent guide', async ({ agen
   await agents.goto('api');
   const agent = await agents.openAgent(AGENT_NAME);
   await agent.tabs.openModel();
-  await agent.model.selectServiceProvider("Grok");
+  const changed = await agent.model.selectServiceProviderIfNeeded("Grok");
+  if (changed) {
+    await agent.header.expectSavedVisible();
+  }
   await agent.prompt.expectAgentSetupGuideVisible();
   await agent.tabs.openPrompt();
   const role = `Support agent${Date.now()}`;
