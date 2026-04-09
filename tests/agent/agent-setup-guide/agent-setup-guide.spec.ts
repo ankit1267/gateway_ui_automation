@@ -1,5 +1,5 @@
-﻿import { test } from "../../fixtures/base.fixture";
-import { fillPromptAndVerifyApi, fillAllPromptFieldsAndVerifyApi } from '../../utils/fill-prompt-api';
+﻿import { test } from "../../../fixtures/base.fixture";
+import { fillPromptAndVerifyApi, fillAllPromptFieldsAndVerifyApi } from '../../../utils/fill-prompt-api';
 
 const AGENT_NAME = process.env.TESTING_AGENT!
 //dependent on css class if css class change it will break

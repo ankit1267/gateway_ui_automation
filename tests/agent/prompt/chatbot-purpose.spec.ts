@@ -1,4 +1,4 @@
-import { test, expect } from '../../fixtures/base.fixture';
+import { test, expect } from '../../../fixtures/base.fixture';
 
 test('Create chatbot with purpose and verify generated prompt', async ({ agents }) => {
   await agents.goto('chatbot');

@@ -1,4 +1,4 @@
-import { test } from '../../fixtures/base.fixture';
+import { test } from '../../../fixtures/base.fixture';
 
 const CHATBOT_AGENT = process.env.CHATBOT_AGENT!;
 

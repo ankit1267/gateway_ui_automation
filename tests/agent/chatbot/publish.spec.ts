@@ -1,4 +1,4 @@
-import { test, expect } from '../../fixtures/base.fixture';
+import { test, expect } from '../../../fixtures/base.fixture';
 
 const AGENT_PURPOSE = `Automation test agent created on ${new Date().toISOString().split('T')[0]}`;
 
