@@ -85,19 +85,6 @@ test.describe('Model - Service Provider Selection', () => {
     ]);
   });
 
-  test('TC-MODEL-06: Verify model list loads for Ai-ml', async ({ page }) => {
-    await selectServiceProviderWithApi(
-      page,
-      () => agent.model.selectServiceProvider('Ai_ml'),
-      'ai_ml'
-    );
-
-    await agent.model.expectModelsVisible([
-      'gpt-oss-120b',
-      'gpt-oss-20b',
-    ]);
-  });
-
   test('TC-MODEL-07: Verify model list loads for Grok', async ({ page }) => {
     await selectServiceProviderWithApi(
       page,

@@ -1,4 +1,4 @@
-import { test } from '../../fixtures/base.fixture';
+import { test } from '../../../fixtures/base.fixture';
 
 test.describe('Workspace - Usage Filter', () => {
 

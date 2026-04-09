@@ -2,7 +2,7 @@ import { test, expect } from '../../fixtures/base.fixture';
 
 const AGENT_NAME = process.env.TESTING_AGENT!;
 
-test('Add a pre-tool', async ({ agents, page }) => {
+test('Add a pre-tool and delete it', async ({ agents, page }) => {
     // open api page
     await agents.goto('api');
 

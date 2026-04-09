@@ -1,6 +1,6 @@
 import { test, expect } from '../../fixtures/base.fixture';
 
-const AGENT_PURPOSE = 'Sales agent that can answer questions about our products and pricing.';
+const AGENT_PURPOSE = `Automation test agent created on ${new Date().toISOString().split('T')[0]}`;
 
 test.describe('Publish - Chatbot Agent', () => {
 

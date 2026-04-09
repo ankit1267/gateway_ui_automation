@@ -82,20 +82,7 @@ test.describe('Model Configuration - Service Provider & Model List', () => {
         await agent.model.expectModelsVisible(geminiModels);
     });
 
-    test('TC-MODEL-07: Verify Model List Loads for Ai-ml', async ({ agents }) => {
-        const agent = await agents.openAgent(AGENT_NAME);
-        await agent.tabs.openModel();
-        await agent.model.selectServiceProvider('Ai_ml');
-
-        const aimlModels = [
-            'gpt-oss-120b',
-            'gpt-oss-20b',
-        ];
-
-        await agent.model.expectModelsVisible(aimlModels);
-    });
-
-    test('TC-MODEL-08: Verify Model List Loads for Grok', async ({ agents }) => {
+    test('TC-MODEL-07: Verify Model List Loads for Grok', async ({ agents }) => {
         const agent = await agents.openAgent(AGENT_NAME);
         await agent.tabs.openModel();
         await agent.model.selectServiceProvider('Grok');

@@ -1,4 +1,4 @@
-import { test } from '../../fixtures/base.fixture';
+import { test } from '../../../fixtures/base.fixture';
 
 const AGENT_NAME = process.env.AGENT_NAME!;
 const TOOL_NAME = 'Gtwy web search';

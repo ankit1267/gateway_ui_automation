@@ -272,6 +272,8 @@ export class AgentsPage {
 
     await this.deleteModal.confirm();
 
+    await expect(this.page.getByRole('alert')).toBeVisible(); 
+
   }
 
 

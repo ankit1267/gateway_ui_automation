@@ -6,7 +6,7 @@ test.describe('Command Palette - No Results on API Page', () => {
     await agents.goto('api');
   });
 
-  test('TC-SEARCH-03: Search by non-existent agent name, ID and version ID shows No results', async ({ agents }) => {
+  test('TC-SEARCH-02: Search by non-existent agent name, ID and version ID shows No results', async ({ agents }) => {
     await agents.commandPalette.open();
     //by agent name
     await agents.commandPalette.search('untitled_agent_8');

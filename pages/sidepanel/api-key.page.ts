@@ -12,6 +12,8 @@ export class ApiKeysPage {
   readonly apiKeyInput: Locator;
   readonly apiKeyCommentInput: Locator;
   readonly apiKeyLimitInput: Locator;
+  readonly apiKeyServiceSelect: Locator;
+  readonly apiKeyResetPeriodSelect: Locator;
   readonly apiKeyAdd: Locator;
   readonly guideSlider: Locator;
   readonly guideTabs: Locator;
@@ -26,6 +28,8 @@ export class ApiKeysPage {
     this.apiKeyInput = page.getByTestId('apikey-modal-field-apikey-input');
     this.apiKeyCommentInput = page.getByTestId('apikey-modal-field-comment-input');
     this.apiKeyLimitInput = page.getByTestId('apikey-modal-field-apikey_limit-input');
+    this.apiKeyServiceSelect = page.getByTestId('apikey-modal-service-select');
+    this.apiKeyResetPeriodSelect = page.getByTestId('apikey-modal-reset-period-select');
     this.apiKeyGuideButton = page.getByRole('button', { name: 'API Key Guide' });
     this.closeGuideButton = page.getByTestId('api-key-guide-close-button');
     this.apiKeyAdd = page.getByTestId('apikey-modal-submit-button');
@@ -82,6 +86,14 @@ export class ApiKeysPage {
 
   async fillApiKeyLimit(limit: string) {
     await this.apiKeyLimitInput.fill(limit);
+  }
+
+  async selectService(service: string) {
+    await this.apiKeyServiceSelect.selectOption({ label: service });
+  }
+
+  async selectResetPeriod(period: string) {
+    await this.apiKeyResetPeriodSelect.selectOption({ label: period });
   }
 
   async clickAddApiKey() {
@@ -202,12 +214,14 @@ export class ApiKeysPage {
     await this.apiKeyLimitInput.clear();
   }
 
-  async createApiKey(name: string, apiKey: string, comment?: string, limit?: string) {
+  async createApiKey(name: string, apiKey: string, service: string, comment?: string, limit?: string, resetPeriod?: string) {
     await this.addNewApiKey();
     await this.fillApiKeyName(name);
     await this.fillApiKey(apiKey);
+    await this.selectService(service);
     if (comment) await this.fillApiKeyComment(comment);
     if (limit) await this.fillApiKeyLimit(limit);
+    if (resetPeriod) await this.selectResetPeriod(resetPeriod);
     await this.clickAddApiKey();
   }
   

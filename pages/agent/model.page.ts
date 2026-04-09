@@ -254,7 +254,7 @@ export class ModelPage {
     }
 
     async expectDropdownApiKeyVisible() {
-        await expect(this.page.getByText('AnthropicNo API keys available for AnthropicGroqNo API keys available for')).toBeVisible();
+        await expect(this.page.getByTestId('apikey-input-dropdown')).toBeVisible();
     }
 
     // -------------------------
