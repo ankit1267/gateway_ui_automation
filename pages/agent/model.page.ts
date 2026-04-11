@@ -18,6 +18,11 @@ export class ModelPage {
     private readonly dropdownButton: string;
     private readonly listbox: Locator;
 
+    // Tool choice
+    readonly toolChoiceDropdownTrigger: Locator;
+    readonly toolChoiceToolLabels: Locator;
+    readonly toolChoiceAgentLabels: Locator;
+
     private readonly noApiKeysMessage: Locator;
     private readonly getStartedButton: Locator;
     private readonly apiKeyErrorText: RegExp;
@@ -51,6 +56,11 @@ export class ModelPage {
 
         this.chatTextarea = page.locator('#chat-message-textarea');
         this.iframeEmbed = page.locator('#iframe-component-interfaceEmbed');
+
+        // Tool choice
+        this.toolChoiceDropdownTrigger = page.getByTestId('advanced-param-dropdown-trigger-tool_choice');
+        this.toolChoiceToolLabels = page.locator('[id^="advanced-param-dropdown-tool-label-tool_choice-"]');
+        this.toolChoiceAgentLabels = page.locator('[id^="advanced-param-dropdown-agent-label-tool_choice-"]');
     }
 
     // -------------------------
@@ -191,6 +201,46 @@ export class ModelPage {
     async selectReasoningDropdownDefault() {
         await this.page.locator('.lucide.lucide-chevron-up').click();
         await this.page.locator('div').filter({ hasText: /^ReasoningSet Defaultdefaultminimallowmediumhigh$/ }).first().click();
+    }
+
+    // -------------------------
+    // TOOL CHOICE
+    // -------------------------
+
+    async selectToolChoiceFunction(toolName: string) {
+        await this.toolChoiceDropdownTrigger.click();
+        await this.toolChoiceToolLabels
+            .filter({ hasText: new RegExp(toolName, 'i') })
+            .click();
+        await this.waitForVersionUpdateApi();
+    }
+
+    async selectToolChoiceAgent(agentName: string) {
+        await this.toolChoiceDropdownTrigger.click();
+        await this.toolChoiceAgentLabels
+            .filter({ hasText: new RegExp(agentName, 'i') })
+            .click();
+        await this.waitForVersionUpdateApi();
+    }
+
+    async expectToolChoiceSelected(toolName: string | RegExp) {
+        await expect(this.toolChoiceDropdownTrigger).toContainText(toolName);
+    }
+
+    /**
+     * Waits for the version update API call to complete after tool choice selection.
+     * This API call updates the configuration with the selected tool_choice.
+     */
+    async waitForVersionUpdateApi(options?: { timeout?: number }) {
+        const timeout = options?.timeout ?? 30000;
+
+        await this.page.waitForResponse(
+            (resp) =>
+                resp.url().includes('/api/versions/') &&
+                resp.request().method() === 'PUT' &&
+                resp.status() === 200,
+            { timeout }
+        );
     }
 
     // -------------------------

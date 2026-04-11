@@ -41,6 +41,7 @@ jobs:
       TESTING_AGENT: ${{ vars[format('{0}_TESTING_AGENT', inputs.environment)] || secrets.TESTING_AGENT }}
       DELETE_AGENT_ID: ${{ vars[format('{0}_DELETE_AGENT_ID', inputs.environment)] }}
       GTWY_AUTOMATION_TOKEN: ${{ secrets.GTWY_AUTOMATION_TOKEN }}
+      TEST_API_KEY_VALUE: ${{ secrets.TEST_API_KEY_VALUE }}
 
     steps:
       - uses: actions/checkout@v4

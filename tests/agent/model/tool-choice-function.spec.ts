@@ -9,8 +9,8 @@ test('TC-TOOL-CHOICE-01: Select specific tool function and verify playground res
 
   await agent.tabs.openModel();
 
-  await agent.playground.selectToolChoiceFunction('secure_math_function');
-  await agent.playground.expectToolChoiceSelected(/secure_math_function/i);
+  await agent.model.selectToolChoiceFunction('secure_math_function');
+  await agent.model.expectToolChoiceSelected(/secure_math_function/i);
 
   await agent.playground.typeMessage('secureMath(5)');
 
@@ -23,8 +23,8 @@ test('TC-TOOL-CHOICE-02: Select Tool choice B - computeSecure returns result and
 
   await agent.tabs.openModel();
 
-  await agent.playground.selectToolChoiceAgent('Tool choice B');
-  await agent.playground.expectToolChoiceSelected(/Tool choice B/i);
+  await agent.model.selectToolChoiceAgent('Tool choice B');
+  await agent.model.expectToolChoiceSelected(/Tool choice B/i);
 
   await agent.playground.typeMessage('computeSecure(5)');
 

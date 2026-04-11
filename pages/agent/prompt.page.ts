@@ -60,6 +60,9 @@ export class PromptPage {
   private readonly schemaPropTypeSelectNew0: Locator;
   private readonly schemaPropDeleteButtonNew0: Locator;
   private readonly schemaPropDescriptionTextareaNew0: Locator;
+  private readonly jsonSchemaFullscreenButton: Locator;
+  private readonly jsonSchemaSaveAndCloseButton: Locator;
+  private readonly jsonSchemaFullscreenTextarea: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -111,7 +114,7 @@ export class PromptPage {
     this.defaultVariablesToggle = page.getByTestId('default-variables-toggle');
     this.advancedParamsWrapper = page.getByTestId('prompt-tab-advanced-params-wrapper');
     this.buildWithAiButton = page.getByText('Build with AI');
-    this.jsonSchemaTextarea = page.getByRole('textbox', { name: 'Enter JSON schema...' });
+    this.jsonSchemaTextarea = page.locator('#advanced-param-json-schema-textarea-response_type .cm-content');
     this.buildVisuallyButton = page.getByText('Build Visually');
     this.jsonSchemaBuilder = page.getByTestId('JSON_SCHEMA_BUILDER');
     this.jsonSchemaNameInput = page.getByTestId('json-schema-name-input');
@@ -122,6 +125,9 @@ export class PromptPage {
     this.schemaPropTypeSelectNew0 = page.getByTestId('schema-prop-type-select-new0');
     this.schemaPropDeleteButtonNew0 = page.getByTestId('schema-prop-delete-button-new0');
     this.schemaPropDescriptionTextareaNew0 = page.getByTestId('schema-prop-description-textarea-new0');
+    this.jsonSchemaFullscreenButton = page.getByTitle('Open JSON schema in fullscreen', { exact: true });
+    this.jsonSchemaSaveAndCloseButton = page.getByRole('button', { name: 'Save & Close' });
+    this.jsonSchemaFullscreenTextarea = page.getByTestId('FULLSCREEN_JSON_SCHEMA').getByRole('textbox');
   }
 
   async openMigrateModal() {
@@ -176,14 +182,7 @@ export class PromptPage {
   async fillJsonSchema(text: string) {
     await this.jsonSchemaTextarea.click();
     await this.jsonSchemaTextarea.press('Control+a');
-    await this.jsonSchemaTextarea.evaluate((el: HTMLTextAreaElement, value: string) => {
-      const nativeInputValueSetter = Object.getOwnPropertyDescriptor(
-        window.HTMLTextAreaElement.prototype, 'value'
-      )!.set!;
-      nativeInputValueSetter.call(el, value);
-      el.dispatchEvent(new Event('input', { bubbles: true }));
-      el.dispatchEvent(new Event('change', { bubbles: true }));
-    }, text);
+    await this.jsonSchemaTextarea.fill(text);
   }
 
   async typeJsonSchema(text: string) {
@@ -201,7 +200,7 @@ export class PromptPage {
   }
 
   async expectJsonSchemaTextareaValue(text: string) {
-    await expect(this.jsonSchemaTextarea).toHaveValue(text, { timeout: 10000 });
+    await expect(this.jsonSchemaTextarea).toHaveText(text, { timeout: 10000 });
   }
 
   async pressKeyInJsonSchema(key: string) {
@@ -215,22 +214,28 @@ export class PromptPage {
     ).toBeVisible();
   }
 
+  async expectInvalidJsonSchemaTextVisible() {
+    await expect(
+      this.page.getByText('Invalid JSON schema', { exact: true })
+    ).toBeVisible();
+  }
+
   async expectJsonSchemaTextareaScrollable() {
     const isScrollable = await this.jsonSchemaTextarea.evaluate(
-      (el: HTMLTextAreaElement) => el.scrollHeight > el.clientHeight
+      (el: HTMLElement) => el.scrollHeight > el.clientHeight
     );
     expect(isScrollable).toBe(true);
   }
 
   async scrollJsonSchemaToBottom() {
     await this.jsonSchemaTextarea.evaluate(
-      (el: HTMLTextAreaElement) => el.scrollTo(0, el.scrollHeight)
+      (el: HTMLElement) => el.scrollTo(0, el.scrollHeight)
     );
   }
 
   async expectJsonSchemaScrolled() {
     const scrollTop = await this.jsonSchemaTextarea.evaluate(
-      (el: HTMLTextAreaElement) => el.scrollTop
+      (el: HTMLElement) => el.scrollTop
     );
     expect(scrollTop).toBeGreaterThan(0);
   }
@@ -241,7 +246,7 @@ export class PromptPage {
   }
 
   async resizeJsonSchemaTextarea(deltaY: number) {
-    await this.jsonSchemaTextarea.evaluate((el: HTMLTextAreaElement, dy: number) => {
+    await this.jsonSchemaTextarea.evaluate((el: HTMLElement, dy: number) => {
       const computedStyle = window.getComputedStyle(el);
       if (computedStyle.resize === 'none') {
         throw new Error('Textarea resize is disabled');
@@ -286,6 +291,22 @@ export class PromptPage {
     await expect(
       this.page.getByRole('alert').filter({ hasText: 'JSON Schema saved successfully' })
     ).toBeVisible();
+  }
+
+  async clickJsonSchemaFullscreen() {
+    await this.jsonSchemaFullscreenButton.click();
+  }
+
+  async clickJsonSchemaSaveAndClose() {
+    await this.jsonSchemaSaveAndCloseButton.click();
+  }
+
+  async clickJsonSchemaFullscreenTextarea() {
+    await this.jsonSchemaFullscreenTextarea.click();
+  }
+
+  async fillJsonSchemaFullscreenTextarea(text: string) {
+    await this.jsonSchemaFullscreenTextarea.fill(text);
   }
 
   // --- Dynamic JSON Schema Property methods ---
