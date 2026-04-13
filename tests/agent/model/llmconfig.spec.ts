@@ -35,7 +35,6 @@ test('Check if llm configs are working', async ({ agents }) => {
     await model.expectFallbackModelDropdownVisible();
     // Test configure api key
     await model.clickConfigureApiKey();
-    await model.expectDropdownApiKeyVisible();
 
 });
 

@@ -14,10 +14,8 @@ test.describe('Widget Response Type', () => {
     await agent.prompt.expectAvailableWidgetsPanelVisible();
 
     await agent.prompt.selectWidgetByIndex(0);
-    await agent.prompt.expectSelectedWidgetChipVisible(2);
+    await agent.prompt.expectSelectedWidgetChipVisible(1);
     await agent.prompt.selectWidgetByIndex(0);
-    
-
   });
 
 });

@@ -27,7 +27,7 @@ export class AgentConfigModal {
     this.nameDescToggle = this.modal.locator('#function-param-name-desc-toggle');
     this.nameInput = this.modal.locator('#function-param-name-input');
     this.descTextarea = this.modal.locator('#function-param-desc-textarea');
-    this.jsonTextarea = this.modal.locator('#function-param-json-textarea');
+    this.jsonTextarea = this.modal.getByTestId('function-parameter-advanced-codemirror-wrapper');
   }
 
   async addVariable(name: string) {

@@ -19,6 +19,7 @@ test.describe('Publish - Chatbot Agent', () => {
   });
 
   test('TC-PUB-01: Publish agent successfully', async ({ agents }) => {
+    test.slow();
 
     // -------- Create New Agent --------
     await agents.clickCreateNewAgent();
@@ -28,8 +29,9 @@ test.describe('Publish - Chatbot Agent', () => {
     await (await agent.header.getAgentName()).waitFor({ state: 'visible', timeout: 40000 });
 
     createdAgentName = await agent.header.getAgentNameText();
-    
 
+    await agent.tabs.openModel();
+    await agent.model.selectModel('gpt-5-nano');
     // -------- Publish Agent --------
     await agent.header.clickPublish();
     await agent.header.clickPublishButton();

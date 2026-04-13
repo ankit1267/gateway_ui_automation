@@ -189,6 +189,6 @@ export class WorkspacePage {
     }
 
     async expectSnackBarVisible() {
-        await expect(this.page.locator('snack-bar-container')).toBeVisible();
+        await expect(this.page.getByRole('alert')).toBeVisible();
     }
 }

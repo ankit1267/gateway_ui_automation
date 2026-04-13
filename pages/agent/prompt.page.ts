@@ -157,10 +157,7 @@ export class PromptPage {
     await expect(this.migrateButton).toBeVisible();
   }
 
-  async expectParamModesVisible() {
-    await expect(this.simpleModeButton).toBeVisible();
-    await expect(this.advancedModeButton).toBeVisible();
-  }
+
 
   async selectResponseType(value: string) {
     await this.responseTypeSelect.selectOption(value);

@@ -16,14 +16,14 @@ export class ChatbotPage {
     this.frame = this.page.locator(
       '#iframe-component-interfaceEmbed'
     ).first().contentFrame();
-    this.scrollable = this.frame.locator('#scrollableDiv');
+    this.scrollable = this.frame.getByTestId('chatbot-messages-scroll-container');
     this.newThreadButton = this.frame.locator('button:has(.lucide-square-pen)');
     this.input = this.frame.getByRole('textbox', {
       name: 'Message AI Assistant...'
     });
-    this.copyButton = this.frame.getByRole('button', { name: 'Copy' });
-    this.goodResponseButton = this.frame.getByRole('button', { name: 'Good response' });
-    this.badResponseButton = this.frame.getByRole('button', { name: 'Bad response' });
+    this.copyButton = this.frame.getByTestId('chatbot-message-copy-button');
+    this.goodResponseButton = this.frame.getByTestId('chatbot-message-feedback-thumbs-up');
+    this.badResponseButton = this.frame.getByTestId('chatbot-message-feedback-thumbs-down');
     this.loadingSpinner = this.frame.locator('.loading-spinner, .animate-spin');
     this.sendButton = this.frame.getByRole('button', { name: /send/i });
   }

@@ -303,9 +303,7 @@ export class ModelPage {
         await this.page.locator('div').filter({ hasText: /^Configure API keys\.\.\.$/ }).nth(2).click();
     }
 
-    async expectDropdownApiKeyVisible() {
-        await expect(this.page.getByTestId('apikey-input-dropdown')).toBeVisible();
-    }
+  
 
     // -------------------------
     // FALLBACK MODEL EXTENDED

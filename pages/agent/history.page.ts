@@ -442,7 +442,7 @@ private get chatDetailsSlider(): Locator {
 }
 
 private get chatDetailsCloseButton(): Locator {
-    return this.page.getByRole('main').getByTestId('chat-details-close-button').first();
+    return this.page.getByTestId('chat_details_view').getByTestId('chat-details-close-button').first();
 }
 
 private get chatDetailsCopyDropdown(): Locator {

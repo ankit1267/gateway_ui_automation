@@ -28,6 +28,7 @@ export class AgentHeaderNav {
   private readonly publishVersionCheckbox: Locator;
   private readonly summaryGenerateButton: Locator;
   private readonly summarySaveButton: Locator;
+  private readonly summaryTextarea: Locator;
   private readonly confirmPublishButton: Locator;
 
   constructor(private readonly page: Page) {
@@ -52,11 +53,12 @@ export class AgentHeaderNav {
     this.publishedButton = this.page.getByTestId('navbar-published-button');
     this.publishedDataBanner = this.page.getByTestId('published-data-banner');
     this.versionTabs = this.page.getByTestId('bridge-version-tabs');
-    this.publishDialog = this.page.getByRole('dialog').filter({ hasText: 'Publish Bridge Version' });
+    this.publishDialog = this.page.getByTestId('publish-version-modal');
     this.publishVersionCheckbox = this.publishDialog.locator('#publish-summary-accordion-toggle');
     this.summaryGenerateButton = this.publishDialog.getByTestId('agent-summary-generate-button');
     this.summarySaveButton = this.publishDialog.getByTestId('agent-summary-save-button');
-    this.confirmPublishButton = this.page.locator('#publish-confirm-button').first();
+    this.summaryTextarea = this.publishDialog.getByTestId('prompt-summary-textarea');
+    this.confirmPublishButton = this.publishDialog.getByTestId('publish-version-publish-button');
   }
 
   async openChatbotConfig() {
