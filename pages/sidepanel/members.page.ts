@@ -10,17 +10,21 @@ export class MembersPage {
   readonly inviteMobileInput: Locator;
   readonly inviteRoleSelect: Locator;
   readonly addMemberButton: Locator;
+  readonly searchInput: Locator;
+  readonly membersList: Locator;
 
   constructor(page: Page) {
     this.page = page;
     this.userProxyContainer = page.locator('#userProxyContainer');
     this.proxyComponent = this.userProxyContainer.locator('proxy-user-management').first();
-    this.inviteUserButton = this.userProxyContainer.locator('button:has-text("Invite Member")').first();
-    this.inviteNameInput = page.locator('mat-form-field').filter({ has: page.locator('mat-label', { hasText: 'Name' }) }).locator('input').first();
-    this.inviteEmailInput = page.locator('mat-form-field').filter({ has: page.locator('mat-label', { hasText: 'Email' }) }).locator('input').first();
-    this.inviteMobileInput = page.locator('input[type="tel"]').first();
-    this.inviteRoleSelect = page.locator('mat-form-field').filter({ has: page.locator('mat-label', { hasText: 'Role' }) }).locator('mat-select').first();
-    this.addMemberButton = page.locator('button:has-text("Add Member")').first();
+    this.inviteUserButton = page.getByRole('button', { name: /invite member/i });
+    this.inviteNameInput = page.locator('#user-name').first();
+    this.inviteEmailInput = page.locator('#user-email').first();
+    this.inviteMobileInput = page.locator('#user-mobile').first();
+    this.inviteRoleSelect = page.locator('#user-role').first();
+    this.addMemberButton = page.getByRole('button', { name: /add member/i });
+    this.searchInput = page.locator('input[type="search"]').first();
+    this.membersList = page.locator('div.group').first();
   }
 
   async goto() {
@@ -31,8 +35,8 @@ export class MembersPage {
   }
 
   async waitForPage() {
-    await this.proxyComponent.waitFor({ state: 'attached', timeout: 30000 });
     await this.inviteUserButton.waitFor({ state: 'visible', timeout: 30000 });
+    await this.searchInput.waitFor({ state: 'visible', timeout: 30000 });
   }
 
   async isContainerAttached(): Promise<boolean> {
@@ -73,9 +77,7 @@ export class MembersPage {
   }
 
   async selectRole(roleName: string) {
-    await this.inviteRoleSelect.click();
-    await this.page.locator('.mat-select-panel').waitFor({ state: 'visible', timeout: 5000 });
-    await this.page.locator('.mat-select-panel mat-option').filter({ hasText: roleName }).click();
+    await this.inviteRoleSelect.selectOption({ label: roleName });
     await this.page.waitForTimeout(500);
   }
 
@@ -90,5 +92,69 @@ export class MembersPage {
 
   async isAddMemberButtonVisible(): Promise<boolean> {
     return this.addMemberButton.isVisible();
+  }
+
+  async getMemberRow(memberName: string): Promise<Locator> {
+    return this.page.locator('div.group').filter({ hasText: memberName }).first();
+  }
+
+  async hoverMemberRow(memberName: string) {
+    const memberRow = await this.getMemberRow(memberName);
+    await memberRow.hover();
+    await this.page.waitForTimeout(500);
+  }
+
+  async clickEditButton(memberName: string) {
+    const memberRow = await this.getMemberRow(memberName);
+    const editButton = memberRow.locator('button:has-text("Edit")').first();
+    await editButton.click();
+    await this.page.waitForTimeout(1500);
+  }
+
+  async clickRemoveButton(memberName: string) {
+    const memberRow = await this.getMemberRow(memberName);
+    const removeButton = memberRow.locator('button:has-text("Remove")').first();
+    await removeButton.click();
+    await this.page.waitForTimeout(1000);
+  }
+
+  async isEditMemberModalVisible(): Promise<boolean> {
+    return this.page.getByRole('heading', { name: /edit member/i }).isVisible();
+  }
+
+  async isRemoveConfirmationVisible(): Promise<boolean> {
+    return this.page.getByRole('heading', { name: /remove member/i }).isVisible();
+  }
+
+  async changeRoleInEditModal(roleName: string) {
+    const roleSelect = this.page.locator('#user-role');
+    await roleSelect.selectOption({ label: roleName });
+    await this.page.waitForTimeout(500);
+  }
+
+  async clickUpdateMemberButton() {
+    await this.page.getByRole('button', { name: /update member/i }).click();
+    await this.page.waitForTimeout(2000);
+  }
+
+  async confirmRemoveMember() {
+    const removeDialog = this.page.locator('[role="alertdialog"]');
+    await removeDialog.getByRole('button', { name: /^Remove$/i }).click();
+    await this.page.waitForTimeout(2000);
+  }
+
+  async cancelRemoveMember() {
+    const removeDialog = this.page.locator('[role="alertdialog"]');
+    await removeDialog.getByRole('button', { name: /cancel/i }).click();
+    await this.page.waitForTimeout(500);
+  }
+
+  async cancelEditMember() {
+    await this.page.getByRole('button', { name: /cancel/i }).click();
+    await this.page.waitForTimeout(500);
+  }
+
+  async isMemberVisible(memberEmail: string): Promise<boolean> {
+    return this.page.locator('div.group').filter({ hasText: memberEmail }).isVisible();
   }
 }
