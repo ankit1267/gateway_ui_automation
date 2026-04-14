@@ -26,9 +26,9 @@ export class MetricsPage {
     this.chartSectionHeading = page.getByRole('heading', { name: 'Metrics Visualization' });
     this.chartContainer = page.locator('.h-96');
 
-    this.groupByButton = page.locator('#metrics-filter-group-by-button');
-    this.agentFilterButton = page.locator('#metrics-filter-agent-button');
-    this.timeRangeButton = page.locator('#metrics-filter-time-range-button');
+    this.groupByButton = page.getByTestId('metrics-filter-group-by');
+    this.agentFilterButton = page.getByTestId('metrics-filter-agent-select');
+    this.timeRangeButton = page.getByTestId('metrics-filter-time-range');
 
     this.datePickerModal = page.locator('#date-range-picker-modal');
     this.datePickerStartInput = this.datePickerModal.locator('input[type="date"]').first();

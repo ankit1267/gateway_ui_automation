@@ -81,25 +81,25 @@ export class IntegrationDetailPage {
     this.testingSendDataButton = page.getByTestId('integration-testing-send-data-button');
     this.testingGetAgents = page.getByTestId('integration-testing-get-agents');
     this.testingGetAgentsButton = page.getByTestId('integration-testing-get-agents-button');
-    this.hideHomeButtonToggle = page.locator('label').filter({ hasText: 'Hide Home Button' }).locator('input[type="checkbox"]');
-    this.showHistoryToggle = page.locator('label').filter({ hasText: 'Show History' }).locator('input[type="checkbox"]');
-    this.showConfigTypeToggle = page.locator('label').filter({ hasText: 'Show Config Type' }).locator('input[type="checkbox"]');
-    this.hideAdvancedParametersToggle = page.locator('label').filter({ hasText: 'Hide Advanced Parameters' }).locator('input[type="checkbox"]');
-    this.hideCreateManuallyButtonToggle = page.locator('label').filter({ hasText: 'Hide Create Agent Manually Button' }).locator('input[type="checkbox"]');
-    this.hideAdvancedConfigurationsToggle = page.locator('label').filter({ hasText: 'Hide Advanced Configurations' }).locator('input[type="checkbox"]');
-    this.hidePreToolToggle = page.locator('label').filter({ hasText: 'Hide Pre Tool' }).locator('input[type="checkbox"]');
-    this.showResponseTypeToggle = page.locator('label').filter({ hasText: 'Show Response Type' }).locator('input[type="checkbox"]');
-    this.showVariablesToggle = page.locator('label').filter({ hasText: 'Show Variables' }).locator('input[type="checkbox"]');
-    this.showAgentNameToggle = page.locator('label').filter({ hasText: 'Show Agent Name' }).locator('input[type="checkbox"]');
-    this.slidePositionSelect = page.locator('.bg-base-200').filter({ has: page.locator('span', { hasText: 'Slide Position' }) }).locator('select');
-    this.defaultOpenToggle = page.locator('label').filter({ hasText: 'Default Open' }).locator('input[type="checkbox"]');
-    this.hideFullScreenButtonToggle = page.locator('label').filter({ hasText: 'Hide Full Screen' }).locator('input[type="checkbox"]');
-    this.hideCloseButtonToggle = page.locator('label').filter({ hasText: 'Hide Close Button' }).locator('input[type="checkbox"]');
-    this.hideHeaderToggle = page.locator('label').filter({ hasText: 'Hide Header' }).locator('input[type="checkbox"]');
-    this.addDefaultApiKeysToggle = page.locator('label').filter({ hasText: 'Add Default ApiKeys' }).locator('input[type="checkbox"]');
-    this.themeModeSelect = page.locator('.bg-base-200').filter({ has: page.locator('span', { hasText: 'Theme Mode' }) }).locator('select');
-    this.configSaveButton = page.getByRole('button', { name: 'Save' }).first();
-    this.useDefaultPromptToggle = page.locator('.form-control').filter({ has: page.locator('span', { hasText: 'Use default prompt' }) }).locator('input[type="checkbox"]');
+    this.hideHomeButtonToggle = page.getByTestId('embed-config-toggle-hide_home_button');
+    this.showHistoryToggle = page.getByTestId('embed-config-toggle-show_history');
+    this.showConfigTypeToggle = page.getByTestId('embed-config-toggle-show_config_type');
+    this.hideAdvancedParametersToggle = page.getByTestId('embed-config-toggle-hide_advanced_parameters');
+    this.hideCreateManuallyButtonToggle = page.getByTestId('embed-config-toggle-hide_create_manually_button');
+    this.hideAdvancedConfigurationsToggle = page.getByTestId('embed-config-toggle-hide_advanced_configurations');
+    this.hidePreToolToggle = page.getByTestId('embed-config-toggle-hide_pre_tool');
+    this.showResponseTypeToggle = page.getByTestId('embed-config-toggle-show_response_type');
+    this.showVariablesToggle = page.getByTestId('embed-config-toggle-show_variables');
+    this.showAgentNameToggle = page.getByTestId('embed-config-toggle_show_agent_name');
+    this.slidePositionSelect = page.getByTestId('embed-config-slide-position-select');
+    this.defaultOpenToggle = page.getByTestId('embed-config-toggle-default_open');
+    this.hideFullScreenButtonToggle = page.getByTestId('embed-config-toggle-hide_full_screen_button');
+    this.hideCloseButtonToggle = page.getByTestId('embed-config-toggle-hide_close_button');
+    this.hideHeaderToggle = page.getByTestId('embed-config-toggle-hide_header');
+    this.addDefaultApiKeysToggle = page.getByTestId('embed-config-toggle-add_default_apikeys');
+    this.themeModeSelect = page.getByTestId('embed-config-theme-mode-select');
+    this.configSaveButton = page.getByTestId('embed-config-save-button');
+    this.useDefaultPromptToggle = page.getByTestId('embed-config-toggle-use_default_prompt');
   }
 
   private async dismissOnboardingOverlay() {

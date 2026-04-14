@@ -47,10 +47,10 @@ export class WidgetsPage {
     this.messagesContainer = page.locator('.overflow-y-auto.px-6.py-8');
     this.saveWidgetButtonInChat = this.messagesContainer.getByRole('button', { name: 'Save Widget' });
 
-    this.saveWidgetModal = page.locator('#SAVE_WIDGET_MODAL');
-    this.saveWidgetModalNameInput = this.saveWidgetModal.getByPlaceholder('Enter widget name');
-    this.saveWidgetModalSaveButton = this.saveWidgetModal.getByRole('button', { name: 'Save Widget' });
-    this.saveWidgetModalCancelButton = this.saveWidgetModal.getByRole('button', { name: 'Cancel' });
+    this.saveWidgetModal = page.getByTestId('save-widget-modal');
+    this.saveWidgetModalNameInput = this.saveWidgetModal.getByTestId('save-widget-name-input');
+    this.saveWidgetModalSaveButton = this.saveWidgetModal.getByTestId('save-widget-save-button');
+    this.saveWidgetModalCancelButton = this.saveWidgetModal.getByTestId('save-widget-cancel-button');
 
     this.searchInput = page.getByRole('textbox', { name: /Search Widget/i });
     this.templatePreviewModal = page.getByTestId('TEMPLATE_PLAYGROUND');

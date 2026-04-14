@@ -20,7 +20,14 @@ export class AgentHeaderNav {
   private readonly deleteButton: Locator;
   private readonly revert: Locator;
   private readonly discardChangesButton: Locator;
-  private readonly configHistorySlider: Locator;
+  readonly configHistorySlider: Locator;
+  private readonly configHistoryTitle: Locator;
+  private readonly configHistoryUserFilterLabel: Locator;
+  private readonly configHistoryUserFilterSelect: Locator;
+  private readonly configHistoryFeatureFilterLabel: Locator;
+  private readonly configHistoryFeatureFilterSelect: Locator;
+  private readonly configHistoryClearButton: Locator;
+  private readonly configHistoryScrollContainer: Locator;
   private readonly publishedButton: Locator;
   private readonly publishedDataBanner: Locator;
   private readonly versionTabs: Locator;
@@ -49,7 +56,14 @@ export class AgentHeaderNav {
     this.trashIcon = this.page.locator('.lucide.lucide-trash2').first();
     this.deleteButton = this.page.getByTestId('DELETE_VERSION_MODAL').getByTestId('delete-modal-confirm-button').first();
     this.discardChangesButton = this.page.getByTestId('DELETE_MODAL').getByTestId('delete-modal-confirm-button');
-    this.configHistorySlider = this.page.locator('#default-config-history-slider');
+    this.configHistorySlider = this.page.getByTestId('config-history-sidebar');
+    this.configHistoryTitle = this.configHistorySlider.getByText('Updates History');
+    this.configHistoryUserFilterLabel = this.configHistorySlider.getByText('Filter by User');
+    this.configHistoryUserFilterSelect = this.configHistorySlider.locator('label').filter({ hasText: 'Filter by User' }).locator('..').locator('select');
+    this.configHistoryFeatureFilterLabel = this.configHistorySlider.getByText('Filter by Feature');
+    this.configHistoryFeatureFilterSelect = this.configHistorySlider.locator('label').filter({ hasText: 'Filter by Feature' }).locator('..').locator('select');
+    this.configHistoryClearButton = this.configHistorySlider.getByRole('button', { name: 'Clear' });
+    this.configHistoryScrollContainer = this.configHistorySlider.locator('#config-history-scroll-container');
     this.publishedButton = this.page.getByTestId('navbar-published-button');
     this.publishedDataBanner = this.page.getByTestId('published-data-banner');
     this.versionTabs = this.page.getByTestId('bridge-version-tabs');
@@ -145,6 +159,53 @@ export class AgentHeaderNav {
 
   async assertConfigHistorySliderVisible() {
     await expect(this.configHistorySlider).toBeInViewport({ timeout: 10000 });
+  }
+
+  async clickConfigHistoryClose() {
+    const closeButton = this.configHistorySlider.locator('#config-history-slider-close-icon');
+    await closeButton.click();
+  }
+
+  async assertConfigHistoryTitleVisible() {
+    await expect(this.configHistoryTitle).toBeVisible();
+  }
+
+  async assertConfigHistoryUserFilterVisible() {
+    await expect(this.configHistoryUserFilterLabel).toBeVisible();
+  }
+
+  async assertConfigHistoryFeatureFilterVisible() {
+    await expect(this.configHistoryFeatureFilterLabel).toBeVisible();
+  }
+
+  async assertConfigHistoryClearButtonVisible() {
+    await expect(this.configHistoryClearButton).toBeVisible();
+  }
+
+  async assertConfigHistoryScrollContainerVisible() {
+    await expect(this.configHistoryScrollContainer).toBeVisible();
+  }
+
+  async selectConfigHistoryUserFilter(userValue: string) {
+    await this.configHistoryUserFilterSelect.selectOption(userValue);
+  }
+
+  async selectConfigHistoryFeatureFilter(featureValue: string) {
+    await this.configHistoryFeatureFilterSelect.selectOption(featureValue);
+  }
+
+  async clickConfigHistoryClearFilters() {
+    await this.configHistoryClearButton.click();
+  }
+
+  async getConfigHistoryUserFilterOptions(): Promise<string[]> {
+    const options = await this.configHistoryUserFilterSelect.locator('option').allTextContents();
+    return options;
+  }
+
+  async getConfigHistoryFeatureFilterOptions(): Promise<string[]> {
+    const options = await this.configHistoryFeatureFilterSelect.locator('option').allTextContents();
+    return options;
   }
 
   async isHistoryTabVisible(): Promise<boolean> {

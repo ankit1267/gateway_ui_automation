@@ -14,7 +14,7 @@ test('Add a pre-tool and delete it', async ({ agents, page }) => {
     // Covers flaky dropdown closures, missed clicks, and slow renders.
     await expect(async () => {
       await agentPage.prompt.addPreToolClick();
-      await agentPage.prompt.preToolDropdown.selectTool('factorial_of_a_numbe...');
+      await agentPage.prompt.preToolDropdown.selectTool('secure_math_function');
       await agentPage.prompt.expectPreToolContainerVisible();
     }).toPass({ timeout: 30_000 });
     

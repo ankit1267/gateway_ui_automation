@@ -336,14 +336,14 @@ export class ChatbotConfigPage {
   }
 
   async fillConfigChatbotTitle(title: string) {
-    const input = this.configSidebarContent.getByPlaceholder('Enter chatbot title');
+    const input = this.configSidebarContent.getByTestId('chatbot-config-title-input');
     await input.clear();
     await input.fill(title);
     await input.blur();
   }
 
   async fillConfigChatbotSubtitle(subtitle: string) {
-    const input = this.configSidebarContent.getByPlaceholder('Enter chatbot subtitle');
+    const input = this.configSidebarContent.getByTestId('chatbot-config-subtitle-input');
     await input.clear();
     await input.fill(subtitle);
     await input.blur();
@@ -364,36 +364,36 @@ export class ChatbotConfigPage {
   }
 
   async fillConfigHeight(value: string) {
-    const input = this.configSidebarContent.locator('#dimension-input-height');
+    const input = this.configSidebarContent.getByTestId('chatbot-config-height-input');
     await input.clear();
     await input.fill(value);
     await input.blur();
   }
 
   async selectConfigHeightUnit(unit: string) {
-    const select = this.configSidebarContent.locator('#dimension-select-height-unit');
+    const select = this.configSidebarContent.getByTestId('chatbot-config-height-unit');
     await select.selectOption(unit);
   }
 
   async fillConfigWidth(value: string) {
-    const input = this.configSidebarContent.locator('#dimension-input-width');
+    const input = this.configSidebarContent.getByTestId('chatbot-config-width-input');
     await input.clear();
     await input.fill(value);
     await input.blur();
   }
 
   async selectConfigWidthUnit(unit: string) {
-    const select = this.configSidebarContent.locator('#dimension-select-width-unit');
+    const select = this.configSidebarContent.getByTestId('chatbot-config-width-unit');
     await select.selectOption(unit);
   }
 
   async selectConfigPosition(position: string) {
-    const select = this.configSidebarContent.locator('#radio-group-position select');
+    const select = this.configSidebarContent.getByTestId('chatbot-config-position-select');
     await select.selectOption(position);
   }
 
   async fillConfigThemeColor(color: string) {
-    const input = this.configSidebarContent.locator('input[name="themeColor"]');
+    const input = this.configSidebarContent.getByTestId('chatbot-config-theme-color');
     await input.evaluate((el: HTMLInputElement, c: string) => {
       el.value = c;
       el.dispatchEvent(new Event('input', { bubbles: true }));
@@ -403,7 +403,7 @@ export class ChatbotConfigPage {
   }
 
   async getConfigThemeColorDisplay(): Promise<string> {
-    return await this.configSidebarContent.locator('input[name="themeColor"]').evaluate((el: HTMLInputElement) => el.value);
+    return await this.configSidebarContent.getByTestId('chatbot-config-theme-color').evaluate((el: HTMLInputElement) => el.value);
   }
 
   // --- Live Preview iframe assertions ---

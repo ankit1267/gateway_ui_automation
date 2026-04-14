@@ -12,11 +12,11 @@ export class PrebuiltPreToolConfigModal {
   constructor(page: Page) {
     this.page = page;
     this.container = page.getByTestId('prebuilt-pre-tool-config-modal');
-    this.closeButton = this.container.getByRole('button', { name: 'Close', exact: true });
-    this.saveButton = this.container.getByRole('button', { name: 'Save', exact: true });
-    this.refinementPromptTextarea = this.container.getByPlaceholder('e.g. Rewrite the user\'s query to be more specific and search-engine friendly. Focus on intent and remove ambiguity.');
-    this.kbSearchInput = this.container.getByPlaceholder('Search knowledge bases...');
-    this.urlInput = this.container.getByPlaceholder('example.com');
+    this.closeButton = this.container.getByTestId('pretool-config-close-button');
+    this.saveButton = this.container.getByTestId('pretool-config-save-button');
+    this.refinementPromptTextarea = this.container.getByTestId('pretool-config-field-refinement_prompt');
+    this.kbSearchInput = this.container.getByTestId('pretool-config-kb-search-input');
+    this.urlInput = this.container.getByTestId('pretool-config-field-url');
   }
 
   async isVisible(): Promise<boolean> {

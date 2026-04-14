@@ -69,17 +69,15 @@ export class PromptPage {
     this.role = page.getByRole('textbox', { name: 'e.g. You are a helpful customer support agent' });
     this.goal = page.getByRole('textbox', { name: 'e.g. Help users resolve billing issues' });
     this.instructions = page.getByRole('textbox', { name: 'e.g. Always be polite. Never' });
-    this.migrateRole = page.getByRole('textbox', { name: 'e.g. You are a helpful customer support assistant' });
-    this.migrateGoal = page.getByRole('textbox', { name: 'e.g. Help users resolve their issues quickly and accurately' });
-    this.migrateInstructions = page.getByRole('textbox', { name: 'e.g. Always be polite. Ask clarifying questions if needed...' });
+    this.migrateRole = page.getByTestId('migrate-prompt-role-input');
+    this.migrateGoal = page.getByTestId('migrate-prompt-goal-input');
+    this.migrateInstructions = page.getByTestId('migrate-prompt-instruction-textarea');
     this.agentSetupCard = page.getByTestId('agent-setup-guide-container');
     this.diffButton = page.getByTestId('prompt-header-diff-button');
     this.diffModal = page.getByTestId('DIFF_PROMPT');
     this.instructionsSection = page.getByText('InstructionsAdd dynamic');
     this.manageVariablesButton = page.getByTestId('default-variables-manage-button');
-    this.variableSlider = page.getByRole('complementary', {
-      name: 'Variable collection slider'
-    });
+    this.variableSlider = page.getByTestId('variable-collection-slider');
     this.promptHelper = new PromptHelperPanel(page);
     this.responseTypeSelect = page.getByTestId('advanced-param-select-response_type');
     this.responseTypeSetDefaultButton = page.getByTestId('advanced-param-reset-response_type');
@@ -93,7 +91,7 @@ export class PromptPage {
     this.preEmbedFunctionsContainer = page.getByTestId('pre-embed-functions-container');
     this.deleteButton = page.getByTestId(/^render-embed-delete-button-/);
     this.deleteModal = page.getByTestId('DELETE_PRE_TOOL_MODAL').getByTestId('delete-modal-confirm-button');
-    this.migrateModal = page.locator('dialog').filter({ hasText: 'Migrate Prompt to Structured Format' });
+    this.migrateModal = page.getByTestId('migrate-prompt-modal');
 
     // Prompt header
     this.promptHeaderDefault = page.getByTestId('prompt-header-default');
@@ -136,21 +134,21 @@ export class PromptPage {
   }
 
   async expectMigrateModalFieldsVisible() {
-    await expect(this.migrateModal.getByText('role')).toBeVisible();
-    await expect(this.migrateModal.getByText('goal')).toBeVisible();
-    await expect(this.migrateModal.getByText('instruction')).toBeVisible();
+    await expect(this.migrateModal.getByTestId('migrate-prompt-role-input')).toBeVisible();
+    await expect(this.migrateModal.getByTestId('migrate-prompt-goal-input')).toBeVisible();
+    await expect(this.migrateModal.getByTestId('migrate-prompt-instruction-textarea')).toBeVisible();
 
     await expect(
-      this.migrateModal.getByRole('button', { name: 'Cancel' })
+      this.migrateModal.getByTestId('migrate-prompt-cancel-button')
     ).toBeVisible();
 
     await expect(
-      this.migrateModal.getByRole('button', { name: 'Migrate & Save' })
+      this.migrateModal.getByTestId('migrate-prompt-save-button')
     ).toBeVisible();
   }
 
   async clickMigrateAndSaveButton() {
-    await this.migrateModal.getByRole('button', { name: 'Migrate & Save' }).click();
+    await this.migrateModal.getByTestId('migrate-prompt-save-button').click();
   }
 
   async expectMigrateButtonVisible() {
