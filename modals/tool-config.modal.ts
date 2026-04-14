@@ -13,15 +13,15 @@ export class ToolConfigModal {
   private readonly closeButton: Locator;
 
   constructor(private readonly page: Page) {
-    this.modal = page.getByTestId('tool-function-parameter-modal');
+    this.modal = page.getByTestId('function-parameter-modal').first();
     this.modeSelect = this.modal.locator('#function-param-mode-select');
     this.oldDataCheckbox = this.modal.locator('#function-param-old-data-checkbox');
-    this.jsonTextarea = this.modal.locator('#function-param-json-textarea');
-    this.oldFieldsTextarea = this.modal.locator('#function-param-old-fields-textarea');
+    this.jsonTextarea = this.modal.getByTestId('function-parameter-advanced-codemirror-wrapper');
+    this.oldFieldsTextarea = this.modal.locator('.flex-1 .overflow-hidden .flex > .w-1/2:nth-child(2)');
     this.nameDescToggle = this.modal.locator('#function-param-name-desc-toggle');
     this.nameInput = this.modal.locator('#function-param-name-input');
     this.descTextarea = this.modal.locator('#function-param-desc-textarea');
-    this.closeButton = this.modal.locator('#function-param-close-button');
+    this.closeButton = this.modal.getByTestId('function-parameter-close-button');
   }
 
   async waitForVisible() {

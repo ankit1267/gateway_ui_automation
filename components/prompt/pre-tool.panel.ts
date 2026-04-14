@@ -47,4 +47,25 @@ export class PreToolDropdown {
         await expect(option).toBeVisible();
         await option.click();
     }
+
+    async searchAndSelectPreToolFunction(toolName: string) {
+        await this.search(toolName);
+
+        const dropdown = this.page.getByTestId('embed-suggestion-dropdown-menu');
+        const optionByTitle = dropdown
+            .locator(`li[id^="embed-suggestion-function-"] div[title="${toolName}"]`)
+            .first();
+
+        if (await optionByTitle.isVisible()) {
+            await optionByTitle.click();
+            return;
+        }
+
+        const optionByText = dropdown
+            .locator('li[id^="embed-suggestion-function-"]')
+            .getByText(toolName, { exact: false })
+            .first();
+        await expect(optionByText).toBeVisible();
+        await optionByText.click();
+    }
 }

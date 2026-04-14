@@ -75,7 +75,10 @@ export class PromptPage {
     this.agentSetupCard = page.getByTestId('agent-setup-guide-container');
     this.diffButton = page.getByTestId('prompt-header-diff-button');
     this.diffModal = page.getByTestId('DIFF_PROMPT');
-    this.instructionsSection = page.getByText('InstructionsAdd dynamic');
+    this.instructionsSection = page
+      .getByTestId('default-variables-section')
+      .locator(':scope > div')
+      .first();
     this.manageVariablesButton = page.getByTestId('default-variables-manage-button');
     this.variableSlider = page.getByTestId('variable-collection-slider');
     this.promptHelper = new PromptHelperPanel(page);
@@ -424,7 +427,7 @@ export class PromptPage {
   }
 
   async closeVariableManager() {
-    await this.page.getByTestId('variable-slider-bulk-edit-button').click();
+    await this.variableSlider.locator('#variable-slider-bulk-edit-button').first().click();
   }
 
   async expectVariableSliderVisible() {
@@ -435,6 +438,18 @@ export class PromptPage {
     await expect(
       this.page.locator(`#variable-key-input-${index}`)
     ).toBeVisible();
+  }
+
+  async expectVariableKeyWithValueVisible(value: string) {
+    await expect(
+      this.page.locator(`[id^="variable-key-input-"][value="${value}"]`).first()
+    ).toBeVisible();
+  }
+
+  async expectVariableKeyWithValueNotVisible(value: string) {
+    await expect(
+      this.page.locator(`[id^="variable-key-input-"][value="${value}"]`)
+    ).toHaveCount(0);
   }
 
   async getRoleValue(): Promise<string> {
@@ -472,8 +487,22 @@ export class PromptPage {
   }
 
   async deletePreTool() {
-    if (!(await this.deleteButton.isVisible())) return;
-    await this.deleteButton.click();
+    const preToolItem = this.preEmbedFunctionsContainer
+      .locator('[data-testid^="render-embed-item-"]')
+      .first();
+
+    if (!(await preToolItem.isVisible())) return;
+
+    await preToolItem.hover();
+
+    const removeButton = preToolItem
+      .locator('[data-testid^="render-embed-delete-button-"]')
+      .first();
+
+    await expect(removeButton).toBeVisible();
+    await removeButton.click();
+
+    await expect(this.deleteModal).toBeVisible();
     await this.deleteModal.click();
   }
 
@@ -511,6 +540,12 @@ export class PromptPage {
 
   async isPreToolDeleteButtonVisible(): Promise<boolean> {
     return this.deleteButton.isVisible();
+  }
+
+  async hasPreTool(): Promise<boolean> {
+    const items = this.preEmbedFunctionsContainer
+      .locator('[data-testid^="render-embed-item-"]');
+    return (await items.count()) > 0;
   }
 
   async closeQueryRefinerConfigModalIfVisible() {
