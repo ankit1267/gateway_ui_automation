@@ -9,6 +9,12 @@ export class CommandPalette {
   readonly closeButton: Locator;
   readonly clearFilterButton: Locator;
   readonly noResults: Locator;
+  readonly apiKeysResults: Locator;
+  readonly knowledgeBaseResults: Locator;
+  readonly integrationResults: Locator;
+  readonly authKeysResults: Locator;
+  readonly widgetsResults: Locator;
+  readonly ragEmbedResults: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -18,6 +24,12 @@ export class CommandPalette {
     this.closeButton = page.getByTestId('command-palette-close-button');
     this.clearFilterButton = page.getByTestId('command-palette-clear-filter');
     this.noResults = this.modal.getByText('No results');
+    this.apiKeysResults = page.locator('[data-testid^="command-palette-result-apikeys-"]');
+    this.knowledgeBaseResults = page.locator('[data-testid^="command-palette-result-docs-"]');
+    this.integrationResults = page.locator('[data-testid^="command-palette-result-integrations-"]');
+    this.authKeysResults = page.locator('[data-testid^="command-palette-result-Auths-"]');
+    this.widgetsResults = page.locator('[data-testid^="command-palette-result-widgets-"]');
+    this.ragEmbedResults = page.locator('[data-testid^="command-palette-result-rag_embed-"]');
   }
 
   async isVisible(): Promise<boolean> {
@@ -94,11 +106,14 @@ export class CommandPalette {
     await this.getItem(type, id).click();
   }
 
-  getResult(type: string, id: string): Locator {
-    return this.page.getByTestId(`command-palette-result-${type}-${id}`);
+  getResult(type: string, id?: string): Locator {
+    if (id) {
+      return this.page.getByTestId(`command-palette-result-${type}-${id}`);
+    }
+    return this.page.getByTestId(new RegExp(`command-palette-result-${type}-`));
   }
 
-  async clickResult(type: string, id: string) {
+  async clickResult(type: string, id?: string) {
     await this.getResult(type, id).click();
   }
 
@@ -108,5 +123,55 @@ export class CommandPalette {
 
   async expectNoResultsNotVisible() {
     await expect(this.noResults).not.toBeVisible();
+  }
+
+  // --- Search results by category ---
+
+  async getApiKeysResultsCount(): Promise<number> {
+    return this.apiKeysResults.count();
+  }
+
+  async assertApiKeysResultsVisible() {
+    await expect(this.apiKeysResults.first()).toBeVisible();
+  }
+
+  async getKnowledgeBaseResultsCount(): Promise<number> {
+    return this.knowledgeBaseResults.count();
+  }
+
+  async assertKnowledgeBaseResultsVisible() {
+    await expect(this.knowledgeBaseResults.first()).toBeVisible();
+  }
+
+  async getIntegrationResultsCount(): Promise<number> {
+    return this.integrationResults.count();
+  }
+
+  async assertIntegrationResultsVisible() {
+    await expect(this.integrationResults.first()).toBeVisible();
+  }
+
+  async getAuthKeysResultsCount(): Promise<number> {
+    return this.authKeysResults.count();
+  }
+
+  async assertAuthKeysResultsVisible() {
+    await expect(this.authKeysResults.first()).toBeVisible();
+  }
+
+  async getWidgetsResultsCount(): Promise<number> {
+    return this.widgetsResults.count();
+  }
+
+  async assertWidgetsResultsVisible() {
+    await expect(this.widgetsResults.first()).toBeVisible();
+  }
+
+  async getRagEmbedResultsCount(): Promise<number> {
+    return this.ragEmbedResults.count();
+  }
+
+  async assertRagEmbedResultsVisible() {
+    await expect(this.ragEmbedResults.first()).toBeVisible();
   }
 }
