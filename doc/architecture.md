@@ -297,6 +297,35 @@ test('Create and verify agent', async ({ agents }) => {
 });
 ```
 
+### 6.4 Hardcoded API and Chatbot Agent Names in Tests
+
+The following agent names are currently hardcoded in spec files (instead of fully relying on environment variables).
+
+#### API-side agent names
+
+| Hardcoded Name | Where Used |
+|---|---|
+| `Pretool variable` | `tests/pre-tool/compute-secure-function-pre-tool.spec.ts` |
+| `AI Assistant` | `tests/agent/setting/response-format.spec.ts` |
+| `General Chat` | `tests/agent/prompt/prompt-helper.spec.ts` |
+| `Tool Choice` | `tests/agent/model/tool-choice-function.spec.ts` |
+| `Model Stop Testing` | `tests/agent/model/model-stop.spec.ts` |
+| `Mathematical Genius_1` | `tests/agent/model/model-params.spec.ts` |
+| `DeleteAgent` | `tests/delete-agent/delete-agent.spec.ts` |
+| `ChildAgent` | `tests/agent/connector/agent-search.spec.ts` |
+
+#### Chatbot-side agent names
+
+| Hardcoded Name | Where Used |
+|---|---|
+| `Chatbot` | `tests/agent/chatbot/chat-bot-message.spec.ts`, `tests/pre-tool/query-pre-tool.spec.ts` |
+| `for testing the old agent` | `tests/agent/prompt/migrate-old-to-new.spec.ts`, `tests/agent/prompt/migrate-roal-goal-inst.spec.ts`, `tests/agent/prompt/prompt-migrate-simple.spec.ts` |
+| `Parental Guidance` | `tests/a2a/agent-config.spec.ts`, `tests/a2a/child-agent-trigger-variable.spec.ts`, `tests/history/history.spec.ts` |
+| `Prompt` | `tests/agent/prompt/prompt-diff.spec.ts` |
+| `ChildAgent` | `tests/delete-agent/delete-agent-restriction.spec.ts` |
+
+> Note: This list is intentionally explicit to make test-data dependencies visible. If desired, these can be progressively moved to `.env` variables for easier environment portability.
+
 ---
 
 ## 7. Authentication & Session Reuse
@@ -509,3 +538,6 @@ npx playwright show-trace test-results/<test-name>/trace.zip
 | `actionTimeout` | `15_000` | Max time for click/fill/press |
 | `navigationTimeout` | `30_000` | Max time for page navigation |
 | `headless` | `true` | No browser UI in CI |
+
+
+

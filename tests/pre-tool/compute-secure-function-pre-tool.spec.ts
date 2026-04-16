@@ -1,6 +1,6 @@
 import { test, expect } from '../../fixtures/base.fixture';
 
-const AGENT_NAME = process.env.TESTING_AGENT!;
+const AGENT_NAME = 'Pretool variable';
 const PRE_TOOL_NAME = 'compute_secure_function';
 const VARIABLE_KEY = 'test';
 
