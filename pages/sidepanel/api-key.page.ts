@@ -123,6 +123,36 @@ export class ApiKeysPage {
     return this.page.getByRole('row', { name: new RegExp(name) });
   }
 
+  async openConnectedAgentsByApiKeyName(name: string) {
+    const row = this.getApiKeyRow(name);
+    await row.click();
+  }
+
+  async expectConnectedAgentsModalTitleVisible(name: string) {
+    await expect(
+      this.page.getByRole('heading', {
+        name: `Connected Agents for API Key: ${name}`,
+        exact: true,
+      })
+    ).toBeVisible();
+  }
+
+  async expectConnectedAgentsListVisible() {
+    await expect(this.page.getByTestId('connected-agents-list')).toBeVisible();
+  }
+
+  async expectConnectedAgentCardVisible() {
+    await expect(this.page.locator('[data-testid^="connected-agent-card-"]').first()).toBeVisible();
+  }
+
+  async closeConnectedAgentsModal() {
+    await this.page.getByTestId('connected-agents-close-button').click();
+  }
+
+  async expectDeleteBlockedToastVisible(message: string) {
+    await expect(this.page.getByText(message, { exact: true })).toBeVisible();
+  }
+
   async isEmptyState(): Promise<boolean> {
     return this.emptyState.isVisible();
   }
