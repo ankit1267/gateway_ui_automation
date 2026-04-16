@@ -81,25 +81,25 @@ export class IntegrationDetailPage {
     this.testingSendDataButton = page.getByTestId('integration-testing-send-data-button');
     this.testingGetAgents = page.getByTestId('integration-testing-get-agents');
     this.testingGetAgentsButton = page.getByTestId('integration-testing-get-agents-button');
-    this.hideHomeButtonToggle = page.getByTestId('embed-config-toggle-hide_home_button');
-    this.showHistoryToggle = page.getByTestId('embed-config-toggle-show_history');
-    this.showConfigTypeToggle = page.getByTestId('embed-config-toggle-show_config_type');
-    this.hideAdvancedParametersToggle = page.getByTestId('embed-config-toggle-hide_advanced_parameters');
-    this.hideCreateManuallyButtonToggle = page.getByTestId('embed-config-toggle-hide_create_manually_button');
-    this.hideAdvancedConfigurationsToggle = page.getByTestId('embed-config-toggle-hide_advanced_configurations');
-    this.hidePreToolToggle = page.getByTestId('embed-config-toggle-hide_pre_tool');
-    this.showResponseTypeToggle = page.getByTestId('embed-config-toggle-show_response_type');
-    this.showVariablesToggle = page.getByTestId('embed-config-toggle-show_variables');
-    this.showAgentNameToggle = page.getByTestId('embed-config-toggle_show_agent_name');
+    this.hideHomeButtonToggle = page.getByTestId('embed-config-toggle-hideHomeButton');
+    this.showHistoryToggle = page.getByTestId('embed-config-toggle-showHistory');
+    this.showConfigTypeToggle = page.getByTestId('embed-config-toggle-showConfigType');
+    this.hideAdvancedParametersToggle = page.getByTestId('embed-config-toggle-hideAdvancedParameters');
+    this.hideCreateManuallyButtonToggle = page.getByTestId('embed-config-toggle-hideCreateManuallyButton');
+    this.hideAdvancedConfigurationsToggle = page.getByTestId('embed-config-toggle-hideAdvancedConfigurations');
+    this.hidePreToolToggle = page.getByTestId('embed-config-toggle-hidePreTool');
+    this.showResponseTypeToggle = page.getByTestId('embed-config-toggle-showResponseType');
+    this.showVariablesToggle = page.getByTestId('embed-config-toggle-showVariables');
+    this.showAgentNameToggle = page.getByTestId('embed-config-toggle-showAgentName');
     this.slidePositionSelect = page.getByTestId('embed-config-slide-position-select');
-    this.defaultOpenToggle = page.getByTestId('embed-config-toggle-default_open');
-    this.hideFullScreenButtonToggle = page.getByTestId('embed-config-toggle-hide_full_screen_button');
-    this.hideCloseButtonToggle = page.getByTestId('embed-config-toggle-hide_close_button');
-    this.hideHeaderToggle = page.getByTestId('embed-config-toggle-hide_header');
-    this.addDefaultApiKeysToggle = page.getByTestId('embed-config-toggle-add_default_apikeys');
+    this.defaultOpenToggle = page.getByTestId('embed-config-toggle-defaultOpen');
+    this.hideFullScreenButtonToggle = page.getByTestId('embed-config-toggle-hideFullScreenButton');
+    this.hideCloseButtonToggle = page.getByTestId('embed-config-toggle-hideCloseButton');
+    this.hideHeaderToggle = page.getByTestId('embed-config-toggle-hideHeader');
+    this.addDefaultApiKeysToggle = page.getByTestId('embed-config-toggle-addDefaultApiKeys');
     this.themeModeSelect = page.getByTestId('embed-config-theme-mode-select');
     this.configSaveButton = page.getByTestId('embed-config-save-button');
-    this.useDefaultPromptToggle = page.getByTestId('embed-config-toggle-use_default_prompt');
+    this.useDefaultPromptToggle = page.getByTestId('embed-config-toggle-useDefaultPrompt');
   }
 
   private async dismissOnboardingOverlay() {
