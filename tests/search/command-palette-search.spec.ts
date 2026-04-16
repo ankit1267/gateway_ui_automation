@@ -17,6 +17,25 @@ test.describe('Command Palette - Agent Search', () => {
     await agents.commandPalette.close();
   });
 
+  test('TC-SEARCH-02: Search by non-existent agent name, ID and version ID shows No results', async ({ agents }) => {
+    await agents.goto('api');
+
+    await agents.commandPalette.open();
+    //by agent name
+    await agents.commandPalette.search('untitled_agent_8');
+    await agents.commandPalette.expectNoResultsVisible();
+
+    //by agent id
+    await agents.commandPalette.search('6985c5b61d29a9a22321a786');
+    await agents.commandPalette.expectNoResultsVisible();
+
+    //by version id
+    await agents.commandPalette.search('6985c5b71d29a9a22321a788');
+    await agents.commandPalette.expectNoResultsVisible();
+    await agents.commandPalette.close();
+  });
+
+
   test('TC-SEARCH-03: Open and close command palette using keyboard shortcut', async ({ agents }) => {
     await agents.goto();
 
@@ -164,6 +183,7 @@ test.describe('Command Palette - Agent Search', () => {
 
     await agents.commandPalette.close();
   });
+
 
 });
 

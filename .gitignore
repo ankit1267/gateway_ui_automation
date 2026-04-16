@@ -14,3 +14,4 @@ notes.md
 Usersanshpchrome-playwright-profile
 tests/test.spec.ts
 test-results.json
+tests/agent/cleanup/

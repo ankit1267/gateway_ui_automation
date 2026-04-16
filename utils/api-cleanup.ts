@@ -1,5 +1,6 @@
 import type { Page } from '@playwright/test';
 import { getEnvConfig } from '../env.config';
+import { getAuthToken } from '../fixtures/base.fixture';
 
 function getDbBaseUrl(): string {
   const { authApiUrl } = getEnvConfig();
@@ -21,8 +22,28 @@ export async function deleteAgentApi(
   });
 }
 
+export async function deleteAgentApiWithToken(
+  page: Page,
+  agentId: string
+): Promise<void> {
+  if (!agentId) return;
+  const authToken = await getAuthToken();
+  const response = await page.context().request.delete(`${getDbBaseUrl()}/api/agent/${agentId}`, {
+    headers: {
+      authorization: authToken,
+      'content-type': 'application/json',
+    },
+    data: { org_id: process.env.ORG_ID!, restore: false },
+  });
+
+  //console.log(`Delete agent API status: ${response.status()}, ok: ${response.ok()}`);
+}
+
 export function captureAgentIdFromUrl(page: Page): string {
-  const match = page.url().match(/\/([a-f0-9]{24})\//);
+  const url = page.url();
+  //console.log(`Current URL: ${url}`);
+  const match = url.match(/\/([a-f0-9]{24})/);
+  //console.log(`Match result: ${match?.[1] ?? 'no match'}`);
   return match?.[1] ?? '';
 }
 

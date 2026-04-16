@@ -54,6 +54,10 @@ export class SettingsPage {
     readonly agentFlowTestModelTextbox: Locator;
     readonly agentFlowChatCloseButton: Locator;
 
+    // Cached response
+    readonly cachedResponseSection: Locator;
+    readonly cachedResponseToggle: Locator;
+
     constructor(page: Page) {
         this.page = page;
         this.toneSelect = page.getByTestId('tone-select');
@@ -106,6 +110,10 @@ export class SettingsPage {
         this.tabsLayoutContent = page.getByTestId('tabs-layout-content');
         this.agentFlowTestModelTextbox = page.getByRole('textbox', { name: 'Test the model...' });
         this.agentFlowChatCloseButton = page.locator('#flow-control-chat-close-button');
+
+        // Cached response
+        this.cachedResponseSection = page.getByTestId('cached-response-section');
+        this.cachedResponseToggle = page.getByTestId('cached-response-toggle');
     }
 
     async selectCustomMode() {
@@ -435,5 +443,31 @@ export class SettingsPage {
 
     async closeAgentFlowChat() {
         await this.agentFlowChatCloseButton.click();
+    }
+
+    // --- Cached response ---
+
+    async isCachedResponseSectionVisible(): Promise<boolean> {
+        return this.cachedResponseSection.isVisible();
+    }
+
+    async toggleCachedResponse() {
+        await this.cachedResponseToggle.click();
+    }
+
+    async checkCachedResponse() {
+        await this.cachedResponseToggle.check();
+    }
+
+    async uncheckCachedResponse() {
+        await this.cachedResponseToggle.uncheck();
+    }
+
+    async isCachedResponseChecked(): Promise<boolean> {
+        return this.cachedResponseToggle.isChecked();
+    }
+
+    async expectCachedResponseVisible() {
+        await expect(this.cachedResponseSection).toBeVisible();
     }
 }

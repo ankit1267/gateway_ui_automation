@@ -68,11 +68,11 @@ export class AgentHeaderNav {
     this.publishedDataBanner = this.page.getByTestId('published-data-banner');
     this.versionTabs = this.page.getByTestId('bridge-version-tabs');
     this.publishDialog = this.page.getByTestId('publish-version-modal');
-    this.publishVersionCheckbox = this.publishDialog.locator('#publish-summary-accordion-toggle');
-    this.summaryGenerateButton = this.publishDialog.getByTestId('agent-summary-generate-button');
-    this.summarySaveButton = this.publishDialog.getByTestId('agent-summary-save-button');
-    this.summaryTextarea = this.publishDialog.getByTestId('prompt-summary-textarea');
-    this.confirmPublishButton = this.publishDialog.getByTestId('publish-version-publish-button');
+    this.publishVersionCheckbox = this.publishDialog.locator('#publish-summary-accordion-toggle').first();
+    this.summaryGenerateButton = this.publishDialog.getByTestId('agent-summary-generate-button').first();
+    this.summarySaveButton = this.publishDialog.getByTestId('agent-summary-save-button').first();
+    this.summaryTextarea = this.publishDialog.getByTestId('prompt-summary-textarea').first();
+    this.confirmPublishButton = this.publishDialog.getByTestId('publish-version-publish-button').first();
   }
 
   async openChatbotConfig() {
