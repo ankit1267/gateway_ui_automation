@@ -16,7 +16,7 @@ export class PrebuiltPreToolConfigModal {
     this.saveButton = this.container.getByTestId('pretool-config-save-button');
     this.refinementPromptTextarea = this.container.getByTestId('pretool-config-field-refinement_prompt');
     this.kbSearchInput = this.container.getByTestId('pretool-config-kb-search-input');
-    this.urlInput = this.container.getByTestId('pretool-config-field-url');
+    this.urlInput = this.container.getByPlaceholder('example.com');
   }
 
   async isVisible(): Promise<boolean> {

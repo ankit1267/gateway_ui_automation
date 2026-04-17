@@ -99,7 +99,7 @@ export class IntegrationDetailPage {
     this.addDefaultApiKeysToggle = page.getByTestId('embed-config-toggle-addDefaultApiKeys');
     this.themeModeSelect = page.getByTestId('embed-config-theme-mode-select');
     this.configSaveButton = page.getByTestId('embed-config-save-button');
-    this.useDefaultPromptToggle = page.getByTestId('embed-config-toggle-useDefaultPrompt');
+    this.useDefaultPromptToggle = page.locator('.form-control').filter({ has: page.locator('span', { hasText: 'Use default prompt' }) }).locator('input[type="checkbox"]');
   }
 
   private async dismissOnboardingOverlay() {

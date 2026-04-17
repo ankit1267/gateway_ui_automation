@@ -22,7 +22,7 @@ test.describe('Command Palette - Agent Search', () => {
 
     await agents.commandPalette.open();
     //by agent name
-    await agents.commandPalette.search('untitled_agent_8');
+    await agents.commandPalette.search('ABCD');
     await agents.commandPalette.expectNoResultsVisible();
 
     //by agent id
