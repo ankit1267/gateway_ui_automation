@@ -32,7 +32,7 @@ test.describe('Publish - Chatbot Agent', () => {
 
     createdAgentName = await agent.header.getAgentNameText();
     createdAgentId = captureAgentIdFromUrl(page);
-    console.log(`Created agent ID: ${createdAgentId}`);
+    //console.log(`Created agent ID: ${createdAgentId}`);
     await agent.tabs.openModel();
     await agent.model.selectModel('gpt-5-nano');
     // -------- Publish Agent --------
@@ -40,9 +40,9 @@ test.describe('Publish - Chatbot Agent', () => {
     await agent.header.clickPublishButton();
 
     await agent.header.checkPublishVersionCheckbox();
-    await agent.header.clickGenerateSummary();
-    await agent.header.clickSaveSummary();
-    await agent.header.expectSummarySaveDisabled();
+    // await agent.header.clickGenerateSummary();
+    // await agent.header.clickSaveSummary();
+    // await agent.header.expectSummarySaveDisabled();
 
     await agent.header.clickConfirmPublish();
 

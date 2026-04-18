@@ -58,6 +58,10 @@ export class SettingsPage {
     readonly cachedResponseSection: Locator;
     readonly cachedResponseToggle: Locator;
 
+    // Chatbot configuration
+    readonly chatbotConfigSection: Locator;
+    readonly chatbotConfigAccordionToggle: Locator;
+
     constructor(page: Page) {
         this.page = page;
         this.toneSelect = page.getByTestId('tone-select');
@@ -114,6 +118,10 @@ export class SettingsPage {
         // Cached response
         this.cachedResponseSection = page.getByTestId('cached-response-section');
         this.cachedResponseToggle = page.getByTestId('cached-response-toggle');
+
+        // Chatbot configuration
+        this.chatbotConfigSection = page.getByTestId('chatbot-config-section');
+        this.chatbotConfigAccordionToggle = page.getByTestId('chatbot-config-accordion-toggle');
     }
 
     async selectCustomMode() {
@@ -463,11 +471,25 @@ export class SettingsPage {
         await this.cachedResponseToggle.uncheck();
     }
 
-    async isCachedResponseChecked(): Promise<boolean> {
-        return this.cachedResponseToggle.isChecked();
-    }
-
     async expectCachedResponseVisible() {
         await expect(this.cachedResponseSection).toBeVisible();
+    }
+
+    // --- Chatbot configuration ---
+
+    async isChatbotConfigSectionVisible(): Promise<boolean> {
+        return this.chatbotConfigSection.isVisible();
+    }
+
+    async toggleChatbotConfigAccordion() {
+        await this.chatbotConfigAccordionToggle.click();
+    }
+
+    async expectChatbotConfigSectionVisible() {
+        await expect(this.chatbotConfigSection).toBeVisible();
+    }
+
+    async expectChatbotConfigAccordionVisible() {
+        await expect(this.chatbotConfigAccordionToggle).toBeVisible();
     }
 }

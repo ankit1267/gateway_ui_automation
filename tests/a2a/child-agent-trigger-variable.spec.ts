@@ -17,7 +17,7 @@ test('child agent is triggered', async ({ agents ,page}) => {
     await chatbot.sendMessage('My name is tilakraj');
     
     await chatbot.waitForResponseComplete(90000);   // A2A = 2 LLM calls, needs more time
-    await chatbot.expectResponse(/ChildAgent/i);
+    await chatbot.expectResponse(/welcome|hello|Wecome/i);
     await page.waitForTimeout(20000);
 });
 

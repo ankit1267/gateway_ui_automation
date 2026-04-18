@@ -33,11 +33,11 @@ export class IntegrationGuidePage {
     this.curlCodeBlock = page.getByTestId('api-guide-snippet-curl');
     this.curlCodeBlockCopyButton = this.curlCodeBlock.getByTestId('code-block-copy-button');
     this.batchCurlCodeBlock = page.getByTestId('batch-api-guide-curl-code-block');
-    this.batchCurlCodeBlockCopyButton = this.batchCurlCodeBlock.getByTestId('copy-button');
+    this.batchCurlCodeBlockCopyButton = this.batchCurlCodeBlock.getByTestId('code-block-copy-button');
     this.responseCodeBlock = page.getByTestId('api-guide-response-code-block');
     this.responseCodeBlockCopyButton = this.responseCodeBlock.getByTestId('code-block-copy-button');
     this.batchResponseCodeBlock = page.getByTestId('batch-api-guide-response-code-block');
-    this.batchResponseCodeBlockCopyButton = this.batchResponseCodeBlock.getByTestId('copy-button');
+    this.batchResponseCodeBlockCopyButton = this.batchResponseCodeBlock.getByTestId('code-block-copy-button');
     this.languageDropdownTrigger = page.getByTestId('language-dropdown-trigger');
     this.languageDropdownMenu = page.getByTestId('language-dropdown-menu');
     this.apiStep1Section = page.locator('#api-guide-step1-section');

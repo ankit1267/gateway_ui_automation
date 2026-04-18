@@ -1,6 +1,6 @@
 import { test, expect } from "../../../fixtures/base.fixture";
 
-const AGENT_NAME = process.env.AGENT_NAME!;
+const AGENT_NAME = "IntelligentAssistant_1";
 
 test('Playground strategy selection', async ({ agents }) => {
   await agents.goto('api');
@@ -13,21 +13,25 @@ test('Playground strategy selection', async ({ agents }) => {
   
   await agent.playground.typeMessageAndWaitForApi('hi');
   await agent.playground.expectChatControlsVisible();
+  await agent.playground.expectChatMessageVisible(1);
 
   // Select cosine and verify it is sent in the next chat API request
   await agent.playground.selectStrategy('cosine');
   const { requestBody: cosineReq } = await agent.playground.typeMessageAndWaitForApi('test cosine');
   agent.playground.verifyChatStrategy(cosineReq, 'cosine');
+  await agent.playground.expectChatMessageVisible(3);
 
   // Select ai and verify
   await agent.playground.selectStrategy('ai');
   const { requestBody: aiReq } = await agent.playground.typeMessageAndWaitForApi('test ai');
   agent.playground.verifyChatStrategy(aiReq, 'ai');
+  await agent.playground.expectChatMessageVisible(5);
 
   // Select exact and verify
   await agent.playground.selectStrategy('exact');
   const { requestBody: exactReq } = await agent.playground.typeMessageAndWaitForApi('test exact');
   agent.playground.verifyChatStrategy(exactReq, 'exact');
+  await agent.playground.expectChatMessageVisible(7);
 });
 
 test('Playground add new test case click open new playground', async ({ agents }) => {

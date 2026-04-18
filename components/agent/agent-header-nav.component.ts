@@ -357,4 +357,9 @@ export class AgentHeaderNav {
   async expectRevertButtonNotVisible() {
     await expect(this.revert).not.toBeVisible();
   }
+
+  async expectPublishApiKeyMissingWarning() {
+    await expect(this.page.getByTestId('publish-apikey-missing-warning')).toBeVisible();
+    await expect(this.page.getByTestId('publish-apikey-missing-warning')).toContainText('API Key Not Configured');
+  }
 }

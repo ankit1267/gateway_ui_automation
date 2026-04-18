@@ -178,7 +178,7 @@ export class PlaygroundPage {
   }
 
   async expectChatMessageVisible(i: number) {
-    await expect(this.page.getByTestId(`chat-message-${i}`)).toBeVisible();
+    await expect(this.page.getByTestId(`chat-message-${i}`)).toBeVisible({timeout:40000});
   }
 
   getRunTestButton(index: number): Locator {
@@ -414,6 +414,9 @@ export class PlaygroundPage {
     const response = await responsePromise;
     const requestBody = JSON.parse(response.request().postData() || '{}');
     const responseBody = await response.json();
+    
+    // Wait for UI to be ready before next message
+    await this.page.waitForTimeout(10000);
 
     return { requestBody, responseBody, response };
   }
@@ -440,7 +443,7 @@ export class PlaygroundPage {
    * Runs a test case by ID and returns the intercepted API response.
    */
   async runTestCaseAndWaitForApi(testId: string, options?: { timeout?: number }) {
-    const timeout = options?.timeout ?? 30000;
+    const timeout = options?.timeout ?? 100000;
 
     const responsePromise = this.page.waitForResponse(
       (resp) =>

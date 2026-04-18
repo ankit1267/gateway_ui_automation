@@ -7,7 +7,7 @@ test.beforeEach(async ({ agents }) => {
 
 });
 
-test('Coonected agnet varaible passing', async ({ agents ,page}) => {
+test('Connected agent varaible passing', async ({ agents ,page}) => {
     const agent = await agents.openAgent(TESTING_AGENT);
     const chatbot = agent.chatbot;
     await page.waitForTimeout(4000);

@@ -14,7 +14,7 @@ export class PrebuiltPreToolConfigModal {
     this.container = page.getByTestId('prebuilt-pre-tool-config-modal');
     this.closeButton = this.container.getByTestId('pretool-config-close-button');
     this.saveButton = this.container.getByTestId('pretool-config-save-button');
-    this.refinementPromptTextarea = this.container.getByTestId('pretool-config-field-refinement_prompt');
+    this.refinementPromptTextarea = this.container.getByTestId('pretool-config-field-prompt');
     this.kbSearchInput = this.container.getByTestId('pretool-config-kb-search-input');
     this.urlInput = this.container.getByPlaceholder('example.com');
   }
