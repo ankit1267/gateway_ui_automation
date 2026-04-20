@@ -32,8 +32,23 @@ test.describe('Agent - Manage Access', () => {
     // Select the first user from the search results list
     await agents.accessManagementModal.selectFirstUser();
 
+    // Click Add to grant access to the selected user
+    await agents.accessManagementModal.clickAddUser();
+
     // Close the dialog
     await agents.accessManagementModal.clickClose();
+
+    // Verify success toast after closing the modal
+    await expect(agents.sidebar.getToast('User added to agent successfully')).toBeVisible();
+
+    // Re-open Manage Access and remove the same user
+    await agents.openManageAccessForAgent(TESTING_AGENT);
+    await agents.accessManagementModal.waitForVisible();
+    await agents.accessManagementModal.removeMemberByEmail(TEST_EMAIL);
+
+    // Close the dialog and verify removal toast
+    await agents.accessManagementModal.clickClose();
+    await expect(agents.sidebar.getToast('User removed from agent successfully')).toBeVisible();
   });
 
   test('TC-ACCESS-02: Open Usage & Limits popover from agent More Options, change limit, verify Update button is visible', async ({ agents }) => {

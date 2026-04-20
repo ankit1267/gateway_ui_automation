@@ -482,6 +482,26 @@ export class AgentsPage {
 
 
 
+  async expectPausedTagVisibleOnAgentRow(agentName: string) {
+
+    const row = this.getAgentRow(agentName);
+
+    await expect(row).toContainText('Paused');
+
+  }
+
+
+
+  async expectPausedTagRemovedFromAgentRow(agentName: string) {
+
+    const row = this.getAgentRow(agentName);
+
+    await expect(row).not.toContainText('Paused');
+
+  }
+
+
+
   async expectPausedToastVisible() {
 
     await expect(

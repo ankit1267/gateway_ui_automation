@@ -18,4 +18,16 @@ test.describe('Agents - Pause & Resume - API Agent', () => {
     await agents.expectResumedToastVisible();
   });
 
+  test('TC-ACCESS-05: Pause agent and verify paused tag appears, then resume and verify paused tag is removed', async ({ agents }) => {
+    await agents.assertAgentVisible(TESTING_AGENT);
+
+    await agents.pauseAgent(TESTING_AGENT);
+    await agents.expectPausedToastVisible();
+    await agents.expectPausedTagVisibleOnAgentRow(TESTING_AGENT);
+
+    await agents.resumeAgent(TESTING_AGENT);
+    await agents.expectResumedToastVisible();
+    await agents.expectPausedTagRemovedFromAgentRow(TESTING_AGENT);
+  });
+
 });

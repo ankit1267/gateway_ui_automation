@@ -63,6 +63,12 @@ export class AccessManagementModal {
     await this.addUserButton.click();
   }
 
+  async removeMemberByEmail(email: string) {
+    const member = this.page.locator('#access-management-members-list > div').filter({ hasText: email }).first();
+    await member.waitFor({ state: 'visible' });
+    await member.locator('[data-testid^="access-management-remove-button-"]').click();
+  }
+
   async isAddUserButtonVisible(): Promise<boolean> {
     return this.addUserButton.isVisible();
   }
