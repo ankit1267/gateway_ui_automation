@@ -10,6 +10,11 @@ test('Add a pre-tool and delete it', async ({ agents, page }) => {
     const agentPage = await agents.openAgent(AGENT_NAME);
     await agentPage.tabs.openPrompt();
 
+    // Ensure a clean state in case a pre-tool already exists.
+    if (await agentPage.prompt.hasPreTool()) {
+      await agentPage.prompt.deletePreTool();
+    }
+
     // Retry the full add-pre-tool flow until the tool is actually added.
     // Covers flaky dropdown closures, missed clicks, and slow renders.
     await expect(async () => {

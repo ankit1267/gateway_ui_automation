@@ -170,8 +170,11 @@ export class ConnectersPage {
    }
 
    async expectKBVisible(kbName: string) {
-       const kb = this.page.getByText(kbName, { exact: true });
-       await expect(kb).toBeVisible({ timeout: 15000 });
+       const kb = this.page
+        .locator('[data-testid^="knowledgebase-card-"]')
+        .filter({ hasText: kbName })
+        .first();
+      await expect(kb).toBeVisible({ timeout: 15000 });
     }
 
     async removeKB() {

@@ -22,7 +22,7 @@ test.describe('Model - Parameters change per model', () => {
     // API Verification: Select Anthropic model
     const anthropicResponse = await Promise.all([
       waitForAgentUpdateApi(page),
-      agent.model.selectModel('claude-3-7-sonnet-latest')
+      agent.model.selectModel('claude-opus-4-6')
     ]).then(([resp]) => resp);
 
     await verifyAgentUpdateRequest(anthropicResponse, {

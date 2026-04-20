@@ -13,19 +13,25 @@ test.describe('Connectors - Create New KB Added - API Agent', () => {
     capturedAuthHeader = null;
 
     await page.route('**/api/rag/resource', async (route) => {
-      if (route.request().method() === 'POST') {
-        const response = await route.fetch();
-        try {
-          const body = await response.json();
-          if (body?.data?._id) {
-            capturedResourceId = body.data._id;
-            capturedAuthHeader = route.request().headers()['authorization'] ?? null;
+      try {
+        if (route.request().method() === 'POST') {
+          const response = await route.fetch();
+          try {
+            const body = await response.json();
+            if (body?.data?._id) {
+              capturedResourceId = body.data._id;
+              capturedAuthHeader = route.request().headers()['authorization'] ?? null;
+            }
+          } catch {
           }
-        } catch {
+          await route.fulfill({ response });
+          return;
         }
-        await route.fulfill({ response });
-      } else {
+
         await route.continue();
+      } catch {
+        // Ignore route errors during teardown/navigation races.
+        // page.unrouteAll({ behavior: 'ignoreErrors' }) in afterEach handles remaining routes.
       }
     });
 
@@ -33,8 +39,12 @@ test.describe('Connectors - Create New KB Added - API Agent', () => {
   });
 
   test.afterEach(async ({ page }) => {
-    await deleteKnowledgeBaseResource(page, capturedResourceId ?? '', capturedAuthHeader);
-    capturedResourceId = null;
+    try {
+      await deleteKnowledgeBaseResource(page, capturedResourceId ?? '', capturedAuthHeader);
+    } finally {
+      await page.unrouteAll({ behavior: 'ignoreErrors' });
+      capturedResourceId = null;
+    }
   });
 
   test(

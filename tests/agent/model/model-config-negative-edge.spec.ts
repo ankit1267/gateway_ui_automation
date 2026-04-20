@@ -34,7 +34,7 @@ test.describe('Model Configuration - Service Provider & Model List', () => {
         const openAiModels = [
             'gpt-5',
             'gpt-4o-mini',
-            'chatgpt-4o-latest',
+            'gpt-4o',
             'gpt-4.1',
             'gpt-4.1-mini',
             'gpt-4.1-nano',
@@ -49,8 +49,8 @@ test.describe('Model Configuration - Service Provider & Model List', () => {
         await agent.model.selectServiceProvider('Anthropic');
 
         const anthropicModels = [
-            'claude-3-7-sonnet-latest',
-            'claude-3-7-sonnet-latest',
+            'claude-opus-4-6',
+            'claude-sonnet-4-6'
         ];
 
         await agent.model.expectModelsVisible(anthropicModels);

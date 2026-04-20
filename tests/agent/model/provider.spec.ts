@@ -40,7 +40,7 @@ test.describe('Model - Service Provider Selection', () => {
       'gpt-5',
       'gpt-5-nano',
       'gpt-4o-mini',
-      'chatgpt-4o-latest',
+      'gpt-4o',
       'gpt-4.1',
       'gpt-4.1-mini',
       'gpt-4.1-nano',
@@ -55,7 +55,7 @@ test.describe('Model - Service Provider Selection', () => {
     );
 
     await agent.model.expectModelsVisible([
-      'claude-3-7-sonnet-latest',
+      'claude-opus-4-6',
     ]);
   });
 

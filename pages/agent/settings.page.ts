@@ -463,6 +463,15 @@ export class SettingsPage {
         await this.cachedResponseToggle.click();
     }
 
+    async isCachedResponseChecked(): Promise<boolean> {
+        const ariaChecked = await this.cachedResponseToggle.getAttribute('aria-checked');
+        if (ariaChecked !== null) {
+            return ariaChecked === 'true';
+        }
+
+        return this.cachedResponseToggle.isChecked();
+    }
+
     async checkCachedResponse() {
         await this.cachedResponseToggle.check();
     }
