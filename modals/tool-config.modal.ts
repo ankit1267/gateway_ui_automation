@@ -17,7 +17,7 @@ export class ToolConfigModal {
     this.modeSelect = this.modal.locator('#function-param-mode-select');
     this.oldDataCheckbox = this.modal.locator('#function-param-old-data-checkbox');
     this.jsonTextarea = this.modal.getByTestId('function-parameter-advanced-codemirror-wrapper');
-    this.oldFieldsTextarea = this.modal.locator('.flex-1 .overflow-hidden .flex > .w-1/2:nth-child(2)');
+    this.oldFieldsTextarea = this.modal.getByTestId('function-parameter-old-data-codemirror-wrapper');
     this.nameDescToggle = this.modal.locator('#function-param-name-desc-toggle');
     this.nameInput = this.modal.locator('#function-param-name-input');
     this.descTextarea = this.modal.locator('#function-param-desc-textarea');
