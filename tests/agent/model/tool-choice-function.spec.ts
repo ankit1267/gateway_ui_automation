@@ -28,5 +28,5 @@ test('TC-TOOL-CHOICE-02: Select Tool choice B - computeSecure returns result and
 
   await agent.playground.typeMessage('computeSecure(5)');
 
-  await expect(agent.playground.chatMessagesContainer).toContainText('computeSecure', { timeout: 60000 });
+  await expect(agent.playground.chatMessagesContainer).toContainText('GTWY123', { timeout: 60000 });
 });
