@@ -1,6 +1,6 @@
 import { expect, test } from '../../../fixtures/base.fixture';
 
-const AGENT_NAME = 'General Chat Prompt';
+const AGENT_NAME = 'General Chat';
 
 test('open and close prompt helper and apply prompt', async ({ agents }) => {
 
