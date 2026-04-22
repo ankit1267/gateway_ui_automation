@@ -280,7 +280,7 @@ test.describe('Admin Settings - Add New Model', () => {
     await sidepanel.addNewModelPage.clickAddNewModel();
     await expect(sidepanel.page.locator('#add-new-model-modal-container')).toBeVisible();
 
-    await sidepanel.page.locator('#add-model-close-button').dispatchEvent('click');
+    await sidepanel.page.getByTestId('add-model-header-close-button').dispatchEvent('click');
     await expect(sidepanel.page.locator('#ADD_NEW_MODEL_MODAL')).not.toHaveAttribute('open', { timeout: 5000 });
   });
 

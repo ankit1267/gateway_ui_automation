@@ -6,6 +6,7 @@ export class HistoryPage {
     private readonly closeToolItemBtn: Locator;
     private readonly threadItemVar: Locator;
     private readonly pre_function: Locator;
+    private readonly showGeneratedButton: Locator;
 
     // Thread container
     private readonly threadContainer: Locator;
@@ -37,6 +38,7 @@ export class HistoryPage {
         this.closeToolItemBtn = page.getByTestId('tools-data-modal-close-button');
         this.threadItemVar = page.getByTestId('thread-item-user-variables-button').first();
         this.pre_function = page.getByRole('heading', { name: 'pre_function' });
+        this.showGeneratedButton = page.getByTestId('edit-message-show-generated-button');
 
         // Thread container
         this.threadContainer = page.getByTestId('thread-container');
@@ -673,6 +675,8 @@ async expectShowGeneratedButtonVisible() {
     await expect(this.page.getByTestId('edit-message-show-generated-button')).toBeVisible();
 }
 
+
+
 async clickBetterPromptButton() {
     await expect(this.editMessageModalContainer).toBeVisible();
     await expect(this.editMessageImproveButton).toBeVisible();
@@ -691,6 +695,22 @@ async expectPromptUpdatedTextareaVisible() {
 
 async expectPromptRegenerateButtonVisible() {
     await expect(this.historyPromptRegenerateButton).toBeVisible();
+}
+
+async clickPromptRegenerateButtonFromModal() {
+    await expect(this.historyPromptRegenerateButton).toBeVisible();
+    await this.historyPromptRegenerateButton.click();
+}
+
+async clickShowGeneratedButton() {
+    await expect(this.showGeneratedButton).toBeVisible();
+    await this.showGeneratedButton.click();
+}
+
+
+async clickSaveButton() {
+    await expect(this.historyPromptSaveButton).toBeVisible();
+    await this.historyPromptSaveButton.click();
 }
 
 async clickPromptRegenerateButton() {

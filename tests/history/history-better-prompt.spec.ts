@@ -7,7 +7,7 @@ test.describe('History - API Agent Better Prompt', () => {
     await agents.goto('api');
   });
 
-  test('TC-HISTORY-05: Edit message better prompt flow with regenerate and save', async ({ agents }) => {
+  test('TC-HISTORY-05: Edit message better prompt flow with regenerate and save', async ({ agents, page }) => {
     const agent = await agents.openAgent(AGENT_NAME);
     await agent.header.openHistory();
 
@@ -25,13 +25,22 @@ test.describe('History - API Agent Better Prompt', () => {
     await agent.history.expectPromptUpdatedTextareaVisible();
 
     await agent.history.expectPromptRegenerateButtonVisible();
+    await agent.history.clickPromptRegenerateButtonFromModal();
+    
+    //wait
+    await page.waitForTimeout(5000);
 
     await agent.history.clickPromptCancelButton();
 
     await agent.history.expectShowGeneratedButtonVisible();
 
-    await agent.history.clickEditMessageCancelButton();
-    await agent.history.expectEditMessageModalClosed();
+    await agent.history.hoverGroupChatAgentsResponse();
+    await agent.history.clickEditMessageButton();
+
+    await agent.history.clickShowGeneratedButton();
+
+    await agent.history.clickPromptSaveButton();
+
   });
 
   test('TC-HISTORY-09: Add test case cancel button closes modal', async ({ agents }) => {
