@@ -18,6 +18,7 @@ import { HistoryVisualizePage } from "./history-visualize.page";
 import { AuthRoutePage } from "./auth-route.page";
 import { TutorialModalPage } from "./tutorial-modal.page";
 import { MembersPage } from "./members.page";
+import { ModelGardenPage } from "./model-garden.page";
 import { expect } from "@playwright/test";
 
 export class SidepanelPage {
@@ -41,6 +42,7 @@ export class SidepanelPage {
   readonly authRoutePage: AuthRoutePage;
   readonly tutorialModalPage: TutorialModalPage;
   readonly membersPage: MembersPage;
+  readonly modelGardenPage: ModelGardenPage;
   readonly smartLinkExternal: Locator;
   readonly adminSettingsToggle: Locator;
   readonly adminSidebarHeading: Locator;
@@ -71,6 +73,7 @@ export class SidepanelPage {
     this.authRoutePage = new AuthRoutePage(page);
     this.tutorialModalPage = new TutorialModalPage(page);
     this.membersPage = new MembersPage(page);
+    this.modelGardenPage = new ModelGardenPage(page);
     this.smartLinkExternal = page.getByTestId('smart-link-external-link');
     this.adminSettingsToggle = page.locator('#main-slider-admin-settings-toggle');
     this.adminSidebarHeading = page.locator('h3', { hasText: 'Admin Settings' });
@@ -222,6 +225,14 @@ export class SidepanelPage {
     if (!orgId) throw new Error('ORG_ID env variable is not set');
     await this.page.goto(`/org/${orgId}/invite`);
     await this.page.waitForURL(`/org/${orgId}/invite`);
+    await this.dismissOnboardingOverlay();
+  }
+
+  async gotoModelGarden() {
+    const orgId = process.env.ORG_ID;
+    if (!orgId) throw new Error('ORG_ID env variable is not set');
+    await this.page.goto(`/org/${orgId}/model-garden`);
+    await this.page.waitForURL(`/org/${orgId}/model-garden`);
     await this.dismissOnboardingOverlay();
   }
 
