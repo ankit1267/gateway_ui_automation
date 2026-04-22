@@ -24,7 +24,7 @@ test.describe('Agent Settings', () => {
     await expect(agent.settings.bridgeTypeApi).toBeChecked({ timeout: 10_000 });
   });
 
-  test('TC-SET-02: Verify that user can select different tone options in Settings.', async () => {
+  test('TC-SET-02: Verify that the user can select different tone options in Settings.', async () => {
     await agent.settings.ensureApiMode();
 
     await agent.settings.selectTone('neutral');
@@ -96,5 +96,77 @@ test.describe('Agent Settings', () => {
 
     await agent.settings.uncheckGuardrailToggle();
     await expect(agent.settings.guardrailsToggle).not.toBeChecked();
+  });
+
+  test('TC-SET-08: Custom tone option opens modal and saves custom prompt.', async () => {
+    await agent.settings.ensureApiMode();
+
+    // Select custom tone option
+    await agent.settings.selectCustomTone();
+
+    // Verify custom tone modal is visible
+    await agent.settings.expectCustomToneModalVisible();
+
+    // Fill custom prompt
+    await agent.settings.fillCustomTonePrompt(`Respond in a warm yet professional tone - ${Math.random().toString(36).substring(7)}`);
+
+    // Save custom prompt
+    await agent.settings.clickCustomToneSave();
+
+    // Verify modal is closed
+    await agent.settings.expectCustomToneModalHidden();
+  });
+
+  test('TC-SET-09: Custom response style option opens modal and saves custom prompt.', async () => {
+    await agent.settings.ensureApiMode();
+
+    // Select custom response style option
+    await agent.settings.selectCustomResponseStyle();
+
+    // Verify custom response style modal is visible
+    await agent.settings.expectCustomResponseStyleModalVisible();
+
+    // Fill custom prompt
+    await agent.settings.fillCustomResponseStylePrompt(`Always respond with a short summary first, then bullet points - ${Math.random().toString(36).substring(7)}`);
+
+    // Save custom prompt
+    await agent.settings.clickCustomResponseStyleSave();
+
+    // Verify modal is closed
+    await agent.settings.expectCustomResponseStyleModalHidden();
+  });
+
+  test('TC-SET-10: Verify prompt persistence after cancel.', async () => {
+    await agent.settings.ensureApiMode();
+
+    // Select custom tone option
+    await agent.settings.selectCustomTone();
+
+    // Verify custom tone modal is visible
+    await agent.settings.expectCustomToneModalVisible();
+
+    const promptBeforeCancel = await agent.settings.getCustomTonePromptValue();
+    // Fill custom prompt
+    await agent.settings.fillCustomTonePrompt('Test prompt');
+
+    // Cancel without saving
+    await agent.settings.clickCustomToneCancel();
+
+    // Verify modal is closed
+    await agent.settings.expectCustomToneModalHidden();
+
+    // Re-open the modal by selecting custom tone again
+    await agent.settings.selectCustomTone();
+
+    // Verify modal is visible again
+    await agent.settings.expectCustomToneModalVisible();
+
+    // Verify the prompt is the same as before cancel
+    const promptAfterCancel = await agent.settings.getCustomTonePromptValue();
+    expect(promptAfterCancel).toBe(promptBeforeCancel);
+
+    // Cancel the modal to clean up
+    await agent.settings.clickCustomToneCancel();
+    await agent.settings.expectCustomToneModalHidden();
   });
 });

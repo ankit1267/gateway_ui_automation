@@ -5,6 +5,14 @@ export class SettingsPage {
     readonly page: Page;
     readonly toneSelect: Locator;
     readonly responseStyleSelect: Locator;
+    readonly customToneModal: Locator;
+    readonly customResponseStyleModal: Locator;
+    readonly customTonePromptTextarea: Locator;
+    readonly customResponseStylePromptTextarea: Locator;
+    readonly customToneSaveButton: Locator;
+    readonly customResponseStyleSaveButton: Locator;
+    readonly customToneCancelButton: Locator;
+    readonly customResponseStyleCancelButton: Locator;
     readonly guardrailsToggle: Locator;
     readonly addGuardrailBtn: Locator;
     readonly guardrailsCloseButton: Locator;
@@ -122,6 +130,16 @@ export class SettingsPage {
         // Chatbot configuration
         this.chatbotConfigSection = page.getByTestId('chatbot-config-section');
         this.chatbotConfigAccordionToggle = page.getByTestId('chatbot-config-accordion-toggle');
+
+        // Custom tone and response style modals
+        this.customToneModal = page.getByTestId('CUSTOM_TONE_MODAL');
+        this.customResponseStyleModal = page.getByTestId('CUSTOM_RESPONSE_STYLE_MODAL');
+        this.customTonePromptTextarea = page.getByPlaceholder('e.g. Respond in a warm yet professional tone');
+        this.customResponseStylePromptTextarea = page.getByPlaceholder('e.g. Always respond with a short summary first');
+        this.customToneSaveButton = this.customToneModal.getByRole('button', { name: 'Save' });
+        this.customResponseStyleSaveButton = this.customResponseStyleModal.getByRole('button', { name: 'Save' });
+        this.customToneCancelButton = this.customToneModal.getByRole('button', { name: 'Cancel' });
+        this.customResponseStyleCancelButton = this.customResponseStyleModal.getByRole('button', { name: 'Cancel' });
     }
 
     async selectCustomMode() {
@@ -159,6 +177,14 @@ export class SettingsPage {
 
     async selectTone(tone: string) {
         await this.toneSelect.selectOption(tone);
+    }
+
+    async getToneValue(): Promise<string> {
+        return this.toneSelect.inputValue();
+    }
+
+    async getCustomTonePromptValue(): Promise<string> {
+        return this.customTonePromptTextarea.inputValue();
     }
 
     async selectResponseStyle(style: string) {
@@ -500,5 +526,55 @@ export class SettingsPage {
 
     async expectChatbotConfigAccordionVisible() {
         await expect(this.chatbotConfigAccordionToggle).toBeVisible();
+    }
+
+    // --- Custom tone and response style ---
+
+    async selectCustomTone() {
+        await this.toneSelect.selectOption('custom');
+    }
+
+    async selectCustomResponseStyle() {
+        await this.responseStyleSelect.selectOption('custom');
+    }
+
+    async expectCustomToneModalVisible() {
+        await expect(this.customToneModal).toHaveAttribute('open');
+    }
+
+    async expectCustomResponseStyleModalVisible() {
+        await expect(this.customResponseStyleModal).toHaveAttribute('open');
+    }
+
+    async fillCustomTonePrompt(prompt: string) {
+        await this.customTonePromptTextarea.fill(prompt);
+    }
+
+    async fillCustomResponseStylePrompt(prompt: string) {
+        await this.customResponseStylePromptTextarea.fill(prompt);
+    }
+
+    async clickCustomToneSave() {
+        await this.customToneSaveButton.click();
+    }
+
+    async clickCustomResponseStyleSave() {
+        await this.customResponseStyleSaveButton.click();
+    }
+
+    async clickCustomToneCancel() {
+        await this.customToneCancelButton.click();
+    }
+
+    async clickCustomResponseStyleCancel() {
+        await this.customResponseStyleCancelButton.click();
+    }
+
+    async expectCustomToneModalHidden() {
+        await expect(this.customToneModal).not.toHaveAttribute('open');
+    }
+
+    async expectCustomResponseStyleModalHidden() {
+        await expect(this.customResponseStyleModal).not.toHaveAttribute('open');
     }
 }
