@@ -45,6 +45,7 @@ test('update org name',async({page})=>{
   await workspacePage.fillNameUserDetails(newName);
   await workspacePage.clickUpdateButton();
   await workspacePage.expectSnackBarVisible();
+  await expect(page.getByText(newName).first()).toBeVisible();
   await page.reload();
 
   // Navigate back to User Details after reload (reload goes to dashboard, not User Details)
