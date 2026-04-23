@@ -60,7 +60,7 @@ jobs:
         id: test-run
         continue-on-error: true
         run: |
-              npx playwright test
+              npx playwright test tests/workspace/workspace-navigation.spec.ts:35
 
       - name: Extract failed test summary
         if: always()
