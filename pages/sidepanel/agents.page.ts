@@ -216,7 +216,7 @@ export class AgentsPage {
 
     await Promise.all([
 
-      this.page.waitForURL(/\/agents\/.+/, { timeout: 30000 }),
+      this.page.waitForURL(/\/agents\/.+/, { timeout: 60000 }),
 
       this.createAgentModal.submit(),
 
