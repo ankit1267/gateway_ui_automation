@@ -33,10 +33,13 @@ export class AgentHeaderNav {
   private readonly versionTabs: Locator;
   private readonly publishDialog: Locator;
   private readonly publishVersionCheckbox: Locator;
-  private readonly summaryGenerateButton: Locator;
-  private readonly summarySaveButton: Locator;
-  private readonly summaryTextarea: Locator;
-  private readonly confirmPublishButton: Locator;
+  readonly summaryGenerateButton: Locator;
+  readonly summarySaveButton: Locator;
+  readonly summaryTextarea: Locator;
+  readonly confirmPublishButton: Locator;
+  readonly changesSummarySection: Locator;
+  readonly viewAllChangesButton: Locator;
+  readonly publishModalCloseButton: Locator;
 
   constructor(private readonly page: Page) {
     this.history = this.page.getByTestId('navbar-tab-history');
@@ -73,6 +76,9 @@ export class AgentHeaderNav {
     this.summarySaveButton = this.publishDialog.getByTestId('agent-summary-save-button').first();
     this.summaryTextarea = this.publishDialog.getByTestId('prompt-summary-textarea').first();
     this.confirmPublishButton = this.publishDialog.getByTestId('publish-version-publish-button').first();
+    this.changesSummarySection = this.publishDialog.getByText('Changes Summary');
+    this.viewAllChangesButton = this.publishDialog.locator('#publish-view-all-changes-button');
+    this.publishModalCloseButton = this.publishDialog.locator('#publish-close-x-button');
   }
 
   async openChatbotConfig() {
@@ -361,5 +367,33 @@ export class AgentHeaderNav {
   async expectPublishApiKeyMissingWarning() {
     await expect(this.page.getByTestId('publish-apikey-missing-warning')).toBeVisible();
     await expect(this.page.getByTestId('publish-apikey-missing-warning')).toContainText('API Key Not Configured');
+  }
+
+  async expectPublishModalVisible() {
+    await expect(this.publishDialog).toBeVisible();
+  }
+
+  async expectPublishModalHidden() {
+    await expect(this.publishDialog).not.toBeVisible();
+  }
+
+  async closePublishModal() {
+    await this.publishModalCloseButton.click();
+  }
+
+  async expectChangesSummaryVisible() {
+    await expect(this.changesSummarySection).toBeVisible();
+  }
+
+  async clickViewAllChanges() {
+    await this.viewAllChangesButton.click();
+  }
+
+  async expectChangeCardVisible(fieldDisplayName: string) {
+    await expect(this.publishDialog.getByText(fieldDisplayName)).toBeVisible();
+  }
+
+  async expectNoChangesMessageVisible() {
+    await expect(this.publishDialog.getByText('No differences found between the versions')).toBeVisible();
   }
 }
