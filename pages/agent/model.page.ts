@@ -10,6 +10,7 @@ export type ServiceProvider =
     | 'Grok';
 
 export class ModelPage {
+  
     private readonly modelConfigSection: Locator;
 
     private readonly serviceProvider: Locator;
@@ -377,7 +378,32 @@ export class ModelPage {
     // -------------------------
 
     async clickApikeyDropdown() {
-        await this.page.getByTestId('apikey-input-dropdown').click();
+        await this.page.getByTestId('apikey-input-dropdown-trigger-button').click();
+    }
+
+    async clickReasoningDropdown() {
+        await this.page.getByTestId('advanced-param-select-reasoning').click();
+    }
+
+    async selectToolChoiceOption(option: string) {
+        await this.page.locator(`#advanced-param-dropdown-option-tool_choice-${option}`).click();
+    }
+
+    async selectReasoningOption(option: string) {
+        await this.page.getByTestId('advanced-param-select-reasoning').selectOption(option);
+    }
+
+    async toggleStream(checked: boolean) {
+        const checkbox = this.page.getByTestId('advanced-param-checkbox-stream');
+        const currentState = await checkbox.isChecked();
+        
+        if (checked !== currentState) {
+            if (checked) {
+                await checkbox.check();
+            } else {
+                await checkbox.uncheck();
+            }
+        }
     }
 
     async isApikeyInputVisible(): Promise<boolean> {
