@@ -1,4 +1,4 @@
-import type { Page, Locator } from '@playwright/test';
+import type { Page, Locator, FrameLocator } from '@playwright/test';
 import { expect } from '@playwright/test';
 import { PromptHelperPanel } from '../../components/prompt/prompt-helper.panel';
 import { PreToolDropdown } from '../../components/prompt/pre-tool.panel';
@@ -506,6 +506,16 @@ export class PromptPage {
     await this.deleteModal.click();
   }
 
+  async closeViaSocketEmbedIfOpen() {
+    const viaSocketContainer = this.page.locator('#iframe-viasocket-embed-parent-container');
+    const closeButton = this.page.locator('#viasocket-embed-close-button');
+
+    if (await viaSocketContainer.isVisible()) {
+      await expect(closeButton).toBeVisible({ timeout: 10000 });
+      await closeButton.click();
+    }
+  }
+
   async waitForPageLoad() {
     await this.page.waitForLoadState('domcontentloaded');
   }
@@ -528,7 +538,64 @@ export class PromptPage {
       await expect(input).toBeFocused();
     }).toPass();
   }
-  
+
+  private getViaSocketFrame(): FrameLocator {
+    return this.page.frameLocator('#iframe-viasocket-embed-parent-container iframe');
+  }
+
+  async waitForViaSocketContainerVisible() {
+    const viaSocketContainer = this.page.locator('#iframe-viasocket-embed-parent-container');
+    await expect(viaSocketContainer).toBeVisible({ timeout: 60000 });
+  }
+
+  async clickCustomLogicToolCard() {
+    const viaSocketFrame = this.getViaSocketFrame();
+    const customLogicButton = viaSocketFrame
+      .locator('div.MuiCard-root:has(p.MuiTypography-root:has-text("Custom Logic (JS)")) button.MuiCardActionArea-root')
+      .first();
+
+    await expect(customLogicButton).toBeVisible({ timeout: 60000 });
+    await customLogicButton.click();
+  }
+
+  async clickCustomLogicCodeButton() {
+    const viaSocketFrame = this.getViaSocketFrame();
+    await viaSocketFrame.getByRole('button', { name: 'Code', exact: true }).click();
+  }
+
+  async fillCustomLogicCode(code: string) {
+    const viaSocketFrame = this.getViaSocketFrame();
+    const codeAccordion = viaSocketFrame.getByTestId('code-accordion');
+    await expect(codeAccordion).toBeVisible({ timeout: 30000 });
+
+    const codeEditor = codeAccordion
+      .locator('textarea, [contenteditable="true"], .cm-content')
+      .first();
+    await codeEditor.click();
+    await this.page.keyboard.press('Control+A');
+    await this.page.keyboard.type(code);
+  }
+
+  async saveCustomLogicPreTool() {
+    const viaSocketFrame = this.getViaSocketFrame();
+    await viaSocketFrame.getByRole('button', { name: 'Save', exact: true }).click();
+  }
+
+  async getCustomLogicFlowTitle(): Promise<string> {
+    const viaSocketFrame = this.getViaSocketFrame();
+    const flowTitle = await viaSocketFrame.locator('#flow-title-textfield').inputValue();
+    return flowTitle.trim();
+  }
+
+  async createCustomLogicPreToolAndGetFlowTitle(code: string): Promise<string> {
+    await this.waitForViaSocketContainerVisible();
+    await this.clickCustomLogicToolCard();
+    await this.clickCustomLogicCodeButton();
+    await this.fillCustomLogicCode(code);
+    await this.saveCustomLogicPreTool();
+
+    return this.getCustomLogicFlowTitle();
+  }
 
   async expectPreToolContainerVisible() {
     await expect(this.preEmbedFunctionsContainer).toBeVisible();
@@ -536,6 +603,7 @@ export class PromptPage {
 
   async expectPreToolAddedByName(name: string) {
     await expect(this.preEmbedFunctionsContainer).toContainText(name);
+    console.log("container", await this.preEmbedFunctionsContainer.textContent());
   }
 
   async isPreToolDeleteButtonVisible(): Promise<boolean> {
