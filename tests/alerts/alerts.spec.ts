@@ -1,6 +1,9 @@
 import { test } from '../../fixtures/base.fixture';
 
+const testEnv = process.env.TEST_ENV || 'dev';
+
 test.describe('Alerts - Sidepanel', () => {
+  test.skip(testEnv !== 'prod', 'Alerts test only runs on prod environment');
 
   test.beforeEach(async ({ sidepanel}) => {
     await sidepanel.gotoAlerts();
