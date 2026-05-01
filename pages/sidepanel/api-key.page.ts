@@ -1,7 +1,7 @@
 import type { Page, Locator } from '@playwright/test';
 import { expect } from '@playwright/test';
 
-export type ApiKeyGuideTab = 'openai' | 'groq' | 'anthropic' | 'openrouter' | 'mistral' | 'gemini' | 'aiml';
+export type ApiKeyGuideTab = 'openai' | 'groq' | 'anthropic' | 'openrouter' | 'mistral' | 'gemini' | 'aiml' | 'deepgram' | 'grok';
 
 export class ApiKeysPage {
   readonly page: Page;
@@ -178,7 +178,7 @@ export class ApiKeysPage {
   }
 
   async expectAllGuideTabsVisible() {
-    const tabs: ApiKeyGuideTab[] = ['openai', 'groq', 'anthropic', 'openrouter', 'mistral', 'gemini', 'aiml'];
+    const tabs: ApiKeyGuideTab[] = ['openai', 'groq', 'anthropic', 'openrouter', 'mistral', 'gemini', 'deepgram','grok'];
     for (const tab of tabs) {
       await this.expectGuideTabVisible(tab);
     }
@@ -196,6 +196,8 @@ export class ApiKeysPage {
     mistral: 'Mistral AI API Key Setup',
     gemini: 'Google Gemini API Key Setup',
     aiml: 'AI ML API Key Setup',
+    deepgram: 'Deepgram API Key Setup',
+    grok: 'Grok API Key Setup',
   };
 
   async expectGuideTabContentVisible(tab: ApiKeyGuideTab) {
@@ -206,7 +208,7 @@ export class ApiKeysPage {
   }
 
   async expectAllGuideTabContentsVisible() {
-    const tabs: ApiKeyGuideTab[] = ['openai', 'groq', 'anthropic', 'openrouter', 'mistral', 'gemini', 'aiml'];
+    const tabs: ApiKeyGuideTab[] = ['openai', 'groq', 'anthropic', 'openrouter', 'mistral', 'gemini', 'deepgram','grok'];
     for (const tab of tabs) {
       await this.expectGuideTabContentVisible(tab);
     }
