@@ -161,7 +161,7 @@ export class ConnectersPage {
    }
 
     async removeAgent() {
-        const removeIcon = this.agentList.getByTitle('Remove');
+        const removeIcon = this.agentList.getByTestId(/connected-agent-delete-button/);
         const removeAgentBtn = this.page.getByRole('button', { name: 'Remove Agent' });
         await expect(removeIcon).toBeVisible();
         await removeIcon.click();
