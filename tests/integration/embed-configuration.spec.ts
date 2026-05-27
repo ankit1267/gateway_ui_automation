@@ -10,18 +10,18 @@ test.describe('GTWY Embed - Configuration', () => {
     await sidepanel.integrationDetailPage.clickConfigurationTab();
   });
 
-  test('TC-EMBED-CONFIG-01: Home button is hidden in live preview when Hide Home Button is enabled', async ({ sidepanel }) => {
-    await sidepanel.integrationDetailPage.checkHideHomeButton();
-    await sidepanel.integrationDetailPage.expectHideHomeButtonChecked();
+  test('TC-EMBED-CONFIG-01: Home button is hidden in live preview when Show Home Button is disabled', async ({ sidepanel }) => {
+    await sidepanel.integrationDetailPage.uncheckShowHomeButton();
+    await sidepanel.integrationDetailPage.expectShowHomeButtonUnchecked();
     await sidepanel.integrationDetailPage.clickSaveConfig();
 
     await sidepanel.integrationDetailPage.clickFirstAgentInPreview();
     await sidepanel.integrationDetailPage.expectEmbedHomeButtonNotVisible();
   });
 
-  test('TC-EMBED-CONFIG-02: Home button is visible in live preview when Hide Home Button is disabled', async ({ sidepanel }) => {
-    await sidepanel.integrationDetailPage.uncheckHideHomeButton();
-    await sidepanel.integrationDetailPage.expectHideHomeButtonUnchecked();
+  test('TC-EMBED-CONFIG-02: Home button is visible in live preview when Show Home Button is enabled', async ({ sidepanel }) => {
+    await sidepanel.integrationDetailPage.checkShowHomeButton();
+    await sidepanel.integrationDetailPage.expectShowHomeButtonChecked();
     await sidepanel.integrationDetailPage.clickSaveConfig();
 
     await sidepanel.integrationDetailPage.clickFirstAgentInPreview();
@@ -66,9 +66,9 @@ test.describe('GTWY Embed - Configuration', () => {
     await sidepanel.integrationDetailPage.expectEmbedConfigTypeNotVisible();
   });
 
-  test('TC-EMBED-CONFIG-07: Parameters section is visible in Model tab when Hide Advanced Parameters is disabled', async ({ sidepanel }) => {
-    await sidepanel.integrationDetailPage.uncheckHideAdvancedParameters();
-    await sidepanel.integrationDetailPage.expectHideAdvancedParametersUnchecked();
+  test('TC-EMBED-CONFIG-07: Parameters section is visible in Model tab when Show Advanced Parameters is enabled', async ({ sidepanel }) => {
+    await sidepanel.integrationDetailPage.checkShowAdvancedParameters();
+    await sidepanel.integrationDetailPage.expectShowAdvancedParametersChecked();
     await sidepanel.integrationDetailPage.clickSaveConfig();
 
     await sidepanel.integrationDetailPage.clickFirstAgentInPreview();
@@ -76,9 +76,9 @@ test.describe('GTWY Embed - Configuration', () => {
     await sidepanel.integrationDetailPage.expectEmbedModelParametersSectionVisible();
   });
 
-  test('TC-EMBED-CONFIG-08: Parameters section is not visible in Model tab when Hide Advanced Parameters is enabled', async ({ sidepanel }) => {
-    await sidepanel.integrationDetailPage.checkHideAdvancedParameters();
-    await sidepanel.integrationDetailPage.expectHideAdvancedParametersChecked();
+  test('TC-EMBED-CONFIG-08: Parameters section is not visible in Model tab when Show Advanced Parameters is disabled', async ({ sidepanel }) => {
+    await sidepanel.integrationDetailPage.uncheckShowAdvancedParameters();
+    await sidepanel.integrationDetailPage.expectShowAdvancedParametersUnchecked();
     await sidepanel.integrationDetailPage.clickSaveConfig();
 
     await sidepanel.integrationDetailPage.clickFirstAgentInPreview();
@@ -86,21 +86,21 @@ test.describe('GTWY Embed - Configuration', () => {
     await sidepanel.integrationDetailPage.expectEmbedModelParametersSectionNotVisible();
   });
 
-  test('TC-EMBED-CONFIG-09: Hide Create Agent Manually Button toggle can be enabled', async ({ sidepanel }) => {
-    await sidepanel.integrationDetailPage.checkHideCreateManuallyButton();
-    await sidepanel.integrationDetailPage.expectHideCreateManuallyButtonChecked();
+  test('TC-EMBED-CONFIG-09: Show Create Agent Manually Button toggle can be enabled', async ({ sidepanel }) => {
+    await sidepanel.integrationDetailPage.checkShowCreateManuallyButton();
+    await sidepanel.integrationDetailPage.expectShowCreateManuallyButtonChecked();
     await sidepanel.integrationDetailPage.clickSaveConfig();
   });
 
-  test('TC-EMBED-CONFIG-10: Hide Create Agent Manually Button toggle can be disabled', async ({ sidepanel }) => {
-    await sidepanel.integrationDetailPage.uncheckHideCreateManuallyButton();
-    await sidepanel.integrationDetailPage.expectHideCreateManuallyButtonUnchecked();
+  test('TC-EMBED-CONFIG-10: Show Create Agent Manually Button toggle can be disabled', async ({ sidepanel }) => {
+    await sidepanel.integrationDetailPage.uncheckShowCreateManuallyButton();
+    await sidepanel.integrationDetailPage.expectShowCreateManuallyButtonUnchecked();
     await sidepanel.integrationDetailPage.clickSaveConfig();
   });
 
-  test('TC-EMBED-CONFIG-11: Advanced configurations are visible in Settings tab when Hide Advanced Configurations is disabled', async ({ sidepanel }) => {
-    await sidepanel.integrationDetailPage.uncheckHideAdvancedConfigurations();
-    await sidepanel.integrationDetailPage.expectHideAdvancedConfigurationsUnchecked();
+  test('TC-EMBED-CONFIG-11: Advanced configurations are visible in Settings tab when Show Advanced Configurations is enabled', async ({ sidepanel }) => {
+    await sidepanel.integrationDetailPage.checkShowAdvancedConfigurations();
+    await sidepanel.integrationDetailPage.expectShowAdvancedConfigurationsChecked();
     await sidepanel.integrationDetailPage.clickSaveConfig();
 
     await sidepanel.integrationDetailPage.clickFirstAgentInPreview();
@@ -108,9 +108,9 @@ test.describe('GTWY Embed - Configuration', () => {
     await sidepanel.integrationDetailPage.expectEmbedAdvancedConfigurationVisible();
   });
 
-  test('TC-EMBED-CONFIG-12: Advanced configurations are not visible in Settings tab when Hide Advanced Configurations is enabled', async ({ sidepanel }) => {
-    await sidepanel.integrationDetailPage.checkHideAdvancedConfigurations();
-    await sidepanel.integrationDetailPage.expectHideAdvancedConfigurationsChecked();
+  test('TC-EMBED-CONFIG-12: Advanced configurations are not visible in Settings tab when Show Advanced Configurations is disabled', async ({ sidepanel }) => {
+    await sidepanel.integrationDetailPage.uncheckShowAdvancedConfigurations();
+    await sidepanel.integrationDetailPage.expectShowAdvancedConfigurationsUnchecked();
     await sidepanel.integrationDetailPage.clickSaveConfig();
 
     await sidepanel.integrationDetailPage.clickFirstAgentInPreview();
@@ -118,18 +118,18 @@ test.describe('GTWY Embed - Configuration', () => {
     await sidepanel.integrationDetailPage.expectEmbedAdvancedConfigurationNotVisible();
   });
 
-  test('TC-EMBED-CONFIG-13: Pre Tool section is visible in live preview when Hide Pre Tool is disabled', async ({ sidepanel }) => {
-    await sidepanel.integrationDetailPage.uncheckHidePreTool();
-    await sidepanel.integrationDetailPage.expectHidePreToolUnchecked();
+  test('TC-EMBED-CONFIG-13: Pre Tool section is visible in live preview when Show Pre Tool is enabled', async ({ sidepanel }) => {
+    await sidepanel.integrationDetailPage.checkShowPreTool();
+    await sidepanel.integrationDetailPage.expectShowPreToolChecked();
     await sidepanel.integrationDetailPage.clickSaveConfig();
 
     await sidepanel.integrationDetailPage.clickFirstAgentInPreview();
     await sidepanel.integrationDetailPage.expectEmbedPreToolSectionVisible();
   });
 
-  test('TC-EMBED-CONFIG-14: Pre Tool section is not visible in live preview when Hide Pre Tool is enabled', async ({ sidepanel }) => {
-    await sidepanel.integrationDetailPage.checkHidePreTool();
-    await sidepanel.integrationDetailPage.expectHidePreToolChecked();
+  test('TC-EMBED-CONFIG-14: Pre Tool section is not visible in live preview when Show Pre Tool is disabled', async ({ sidepanel }) => {
+    await sidepanel.integrationDetailPage.uncheckShowPreTool();
+    await sidepanel.integrationDetailPage.expectShowPreToolUnchecked();
     await sidepanel.integrationDetailPage.clickSaveConfig();
 
     await sidepanel.integrationDetailPage.clickFirstAgentInPreview();
@@ -214,39 +214,39 @@ test.describe('GTWY Embed - Configuration', () => {
     await sidepanel.integrationDetailPage.clickSaveConfig();
   });
 
-  test('TC-EMBED-CONFIG-26: Hide Full Screen toggle can be enabled', async ({ sidepanel }) => {
-    await sidepanel.integrationDetailPage.checkHideFullScreenButton();
-    await sidepanel.integrationDetailPage.expectHideFullScreenButtonChecked();
+  test('TC-EMBED-CONFIG-26: Show Full Screen toggle can be enabled', async ({ sidepanel }) => {
+    await sidepanel.integrationDetailPage.checkShowFullScreenButton();
+    await sidepanel.integrationDetailPage.expectShowFullScreenButtonChecked();
     await sidepanel.integrationDetailPage.clickSaveConfig();
   });
 
-  test('TC-EMBED-CONFIG-27: Hide Full Screen toggle can be disabled', async ({ sidepanel }) => {
-    await sidepanel.integrationDetailPage.uncheckHideFullScreenButton();
-    await sidepanel.integrationDetailPage.expectHideFullScreenButtonUnchecked();
+  test('TC-EMBED-CONFIG-27: Show Full Screen toggle can be disabled', async ({ sidepanel }) => {
+    await sidepanel.integrationDetailPage.uncheckShowFullScreenButton();
+    await sidepanel.integrationDetailPage.expectShowFullScreenButtonUnchecked();
     await sidepanel.integrationDetailPage.clickSaveConfig();
   });
 
-  test('TC-EMBED-CONFIG-28: Hide Close Button toggle can be enabled', async ({ sidepanel }) => {
-    await sidepanel.integrationDetailPage.checkHideCloseButton();
-    await sidepanel.integrationDetailPage.expectHideCloseButtonChecked();
+  test('TC-EMBED-CONFIG-28: Show Close Button toggle can be enabled', async ({ sidepanel }) => {
+    await sidepanel.integrationDetailPage.checkShowCloseButton();
+    await sidepanel.integrationDetailPage.expectShowCloseButtonChecked();
     await sidepanel.integrationDetailPage.clickSaveConfig();
   });
 
-  test('TC-EMBED-CONFIG-29: Hide Close Button toggle can be disabled', async ({ sidepanel }) => {
-    await sidepanel.integrationDetailPage.uncheckHideCloseButton();
-    await sidepanel.integrationDetailPage.expectHideCloseButtonUnchecked();
+  test('TC-EMBED-CONFIG-29: Show Close Button toggle can be disabled', async ({ sidepanel }) => {
+    await sidepanel.integrationDetailPage.uncheckShowCloseButton();
+    await sidepanel.integrationDetailPage.expectShowCloseButtonUnchecked();
     await sidepanel.integrationDetailPage.clickSaveConfig();
   });
 
-  test('TC-EMBED-CONFIG-30: Hide Header toggle can be enabled', async ({ sidepanel }) => {
-    await sidepanel.integrationDetailPage.checkHideHeader();
-    await sidepanel.integrationDetailPage.expectHideHeaderChecked();
+  test('TC-EMBED-CONFIG-30: Show Header toggle can be enabled', async ({ sidepanel }) => {
+    await sidepanel.integrationDetailPage.checkShowHeader();
+    await sidepanel.integrationDetailPage.expectShowHeaderChecked();
     await sidepanel.integrationDetailPage.clickSaveConfig();
   });
 
-  test('TC-EMBED-CONFIG-31: Hide Header toggle can be disabled', async ({ sidepanel }) => {
-    await sidepanel.integrationDetailPage.uncheckHideHeader();
-    await sidepanel.integrationDetailPage.expectHideHeaderUnchecked();
+  test('TC-EMBED-CONFIG-31: Show Header toggle can be disabled', async ({ sidepanel }) => {
+    await sidepanel.integrationDetailPage.uncheckShowHeader();
+    await sidepanel.integrationDetailPage.expectShowHeaderUnchecked();
     await sidepanel.integrationDetailPage.clickSaveConfig();
   });
 

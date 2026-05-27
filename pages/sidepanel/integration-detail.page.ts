@@ -31,21 +31,21 @@ export class IntegrationDetailPage {
   readonly testingSendDataButton: Locator;
   readonly testingGetAgents: Locator;
   readonly testingGetAgentsButton: Locator;
-  readonly hideHomeButtonToggle: Locator;
+  readonly showHomeButtonToggle: Locator;
   readonly showHistoryToggle: Locator;
   readonly showConfigTypeToggle: Locator;
-  readonly hideAdvancedParametersToggle: Locator;
-  readonly hideCreateManuallyButtonToggle: Locator;
-  readonly hideAdvancedConfigurationsToggle: Locator;
-  readonly hidePreToolToggle: Locator;
+  readonly showAdvancedParametersToggle: Locator;
+  readonly showCreateManuallyButtonToggle: Locator;
+  readonly showAdvancedConfigurationsToggle: Locator;
+  readonly showPreToolToggle: Locator;
   readonly showResponseTypeToggle: Locator;
   readonly showVariablesToggle: Locator;
   readonly showAgentNameToggle: Locator;
   readonly slidePositionSelect: Locator;
   readonly defaultOpenToggle: Locator;
-  readonly hideFullScreenButtonToggle: Locator;
-  readonly hideCloseButtonToggle: Locator;
-  readonly hideHeaderToggle: Locator;
+  readonly showFullScreenButtonToggle: Locator;
+  readonly showCloseButtonToggle: Locator;
+  readonly showHeaderToggle: Locator;
   readonly addDefaultApiKeysToggle: Locator;
   readonly themeModeSelect: Locator;
   readonly configSaveButton: Locator;
@@ -81,21 +81,21 @@ export class IntegrationDetailPage {
     this.testingSendDataButton = page.getByTestId('integration-testing-send-data-button');
     this.testingGetAgents = page.getByTestId('integration-testing-get-agents');
     this.testingGetAgentsButton = page.getByTestId('integration-testing-get-agents-button');
-    this.hideHomeButtonToggle = page.getByTestId('embed-config-toggle-hideHomeButton');
+    this.showHomeButtonToggle = page.getByTestId('embed-config-toggle-showHomeButton');
     this.showHistoryToggle = page.getByTestId('embed-config-toggle-showHistory');
     this.showConfigTypeToggle = page.getByTestId('embed-config-toggle-showConfigType');
-    this.hideAdvancedParametersToggle = page.getByTestId('embed-config-toggle-hideAdvancedParameters');
-    this.hideCreateManuallyButtonToggle = page.getByTestId('embed-config-toggle-hideCreateManuallyButton');
-    this.hideAdvancedConfigurationsToggle = page.getByTestId('embed-config-toggle-hideAdvancedConfigurations');
-    this.hidePreToolToggle = page.getByTestId('embed-config-toggle-hidePreTool');
+    this.showAdvancedParametersToggle = page.getByTestId('embed-config-toggle-showAdvancedParameters');
+    this.showCreateManuallyButtonToggle = page.getByTestId('embed-config-toggle-showCreateManuallyButton');
+    this.showAdvancedConfigurationsToggle = page.getByTestId('embed-config-toggle-showAdvancedConfigurations');
+    this.showPreToolToggle = page.getByTestId('embed-config-toggle-showPreTool');
     this.showResponseTypeToggle = page.getByTestId('embed-config-toggle-showResponseType');
     this.showVariablesToggle = page.getByTestId('embed-config-toggle-showVariables');
     this.showAgentNameToggle = page.getByTestId('embed-config-toggle-showAgentName');
     this.slidePositionSelect = page.getByTestId('embed-config-slide-position-select');
     this.defaultOpenToggle = page.getByTestId('embed-config-toggle-defaultOpen');
-    this.hideFullScreenButtonToggle = page.getByTestId('embed-config-toggle-hideFullScreenButton');
-    this.hideCloseButtonToggle = page.getByTestId('embed-config-toggle-hideCloseButton');
-    this.hideHeaderToggle = page.getByTestId('embed-config-toggle-hideHeader');
+    this.showFullScreenButtonToggle = page.getByTestId('embed-config-toggle-showFullScreenButton');
+    this.showCloseButtonToggle = page.getByTestId('embed-config-toggle-showCloseButton');
+    this.showHeaderToggle = page.getByTestId('embed-config-toggle-showHeader');
     this.addDefaultApiKeysToggle = page.getByTestId('embed-config-toggle-addDefaultApiKeys');
     this.themeModeSelect = page.getByTestId('embed-config-theme-mode-select');
     this.configSaveButton = page.getByTestId('embed-config-save-button');
@@ -166,20 +166,20 @@ export class IntegrationDetailPage {
     await this.testingGetAgentsButton.click();
   }
 
-  async checkHideHomeButton() {
-    await this.hideHomeButtonToggle.check();
+  async checkShowHomeButton() {
+    await this.showHomeButtonToggle.check();
   }
 
-  async uncheckHideHomeButton() {
-    await this.hideHomeButtonToggle.uncheck();
+  async uncheckShowHomeButton() {
+    await this.showHomeButtonToggle.uncheck();
   }
 
-  async expectHideHomeButtonChecked() {
-    await expect(this.hideHomeButtonToggle).toBeChecked();
+  async expectShowHomeButtonChecked() {
+    await expect(this.showHomeButtonToggle).toBeChecked();
   }
 
-  async expectHideHomeButtonUnchecked() {
-    await expect(this.hideHomeButtonToggle).not.toBeChecked();
+  async expectShowHomeButtonUnchecked() {
+    await expect(this.showHomeButtonToggle).not.toBeChecked();
   }
 
   async clickSaveConfig() {
@@ -255,68 +255,68 @@ export class IntegrationDetailPage {
     await expect(this.showConfigTypeToggle).not.toBeChecked();
   }
 
-  async checkHideAdvancedParameters() {
-    await this.hideAdvancedParametersToggle.check();
+  async checkShowAdvancedParameters() {
+    await this.showAdvancedParametersToggle.check();
   }
 
-  async uncheckHideAdvancedParameters() {
-    await this.hideAdvancedParametersToggle.uncheck();
+  async uncheckShowAdvancedParameters() {
+    await this.showAdvancedParametersToggle.uncheck();
   }
 
-  async expectHideAdvancedParametersChecked() {
-    await expect(this.hideAdvancedParametersToggle).toBeChecked();
+  async expectShowAdvancedParametersChecked() {
+    await expect(this.showAdvancedParametersToggle).toBeChecked();
   }
 
-  async expectHideAdvancedParametersUnchecked() {
-    await expect(this.hideAdvancedParametersToggle).not.toBeChecked();
+  async expectShowAdvancedParametersUnchecked() {
+    await expect(this.showAdvancedParametersToggle).not.toBeChecked();
   }
 
-  async checkHideCreateManuallyButton() {
-    await this.hideCreateManuallyButtonToggle.check();
+  async checkShowCreateManuallyButton() {
+    await this.showCreateManuallyButtonToggle.check();
   }
 
-  async uncheckHideCreateManuallyButton() {
-    await this.hideCreateManuallyButtonToggle.uncheck();
+  async uncheckShowCreateManuallyButton() {
+    await this.showCreateManuallyButtonToggle.uncheck();
   }
 
-  async expectHideCreateManuallyButtonChecked() {
-    await expect(this.hideCreateManuallyButtonToggle).toBeChecked();
+  async expectShowCreateManuallyButtonChecked() {
+    await expect(this.showCreateManuallyButtonToggle).toBeChecked();
   }
 
-  async expectHideCreateManuallyButtonUnchecked() {
-    await expect(this.hideCreateManuallyButtonToggle).not.toBeChecked();
+  async expectShowCreateManuallyButtonUnchecked() {
+    await expect(this.showCreateManuallyButtonToggle).not.toBeChecked();
   }
 
-  async checkHideAdvancedConfigurations() {
-    await this.hideAdvancedConfigurationsToggle.check();
+  async checkShowAdvancedConfigurations() {
+    await this.showAdvancedConfigurationsToggle.check();
   }
 
-  async uncheckHideAdvancedConfigurations() {
-    await this.hideAdvancedConfigurationsToggle.uncheck();
+  async uncheckShowAdvancedConfigurations() {
+    await this.showAdvancedConfigurationsToggle.uncheck();
   }
 
-  async expectHideAdvancedConfigurationsChecked() {
-    await expect(this.hideAdvancedConfigurationsToggle).toBeChecked();
+  async expectShowAdvancedConfigurationsChecked() {
+    await expect(this.showAdvancedConfigurationsToggle).toBeChecked();
   }
 
-  async expectHideAdvancedConfigurationsUnchecked() {
-    await expect(this.hideAdvancedConfigurationsToggle).not.toBeChecked();
+  async expectShowAdvancedConfigurationsUnchecked() {
+    await expect(this.showAdvancedConfigurationsToggle).not.toBeChecked();
   }
 
-  async checkHidePreTool() {
-    await this.hidePreToolToggle.check();
+  async checkShowPreTool() {
+    await this.showPreToolToggle.check();
   }
 
-  async uncheckHidePreTool() {
-    await this.hidePreToolToggle.uncheck();
+  async uncheckShowPreTool() {
+    await this.showPreToolToggle.uncheck();
   }
 
-  async expectHidePreToolChecked() {
-    await expect(this.hidePreToolToggle).toBeChecked();
+  async expectShowPreToolChecked() {
+    await expect(this.showPreToolToggle).toBeChecked();
   }
 
-  async expectHidePreToolUnchecked() {
-    await expect(this.hidePreToolToggle).not.toBeChecked();
+  async expectShowPreToolUnchecked() {
+    await expect(this.showPreToolToggle).not.toBeChecked();
   }
 
   async checkShowResponseType() {
@@ -462,52 +462,52 @@ export class IntegrationDetailPage {
     await expect(this.defaultOpenToggle).not.toBeChecked();
   }
 
-  async checkHideFullScreenButton() {
-    await this.hideFullScreenButtonToggle.check();
+  async checkShowFullScreenButton() {
+    await this.showFullScreenButtonToggle.check();
   }
 
-  async uncheckHideFullScreenButton() {
-    await this.hideFullScreenButtonToggle.uncheck();
+  async uncheckShowFullScreenButton() {
+    await this.showFullScreenButtonToggle.uncheck();
   }
 
-  async expectHideFullScreenButtonChecked() {
-    await expect(this.hideFullScreenButtonToggle).toBeChecked();
+  async expectShowFullScreenButtonChecked() {
+    await expect(this.showFullScreenButtonToggle).toBeChecked();
   }
 
-  async expectHideFullScreenButtonUnchecked() {
-    await expect(this.hideFullScreenButtonToggle).not.toBeChecked();
+  async expectShowFullScreenButtonUnchecked() {
+    await expect(this.showFullScreenButtonToggle).not.toBeChecked();
   }
 
-  async checkHideCloseButton() {
-    await this.hideCloseButtonToggle.check();
+  async checkShowCloseButton() {
+    await this.showCloseButtonToggle.check();
   }
 
-  async uncheckHideCloseButton() {
-    await this.hideCloseButtonToggle.uncheck();
+  async uncheckShowCloseButton() {
+    await this.showCloseButtonToggle.uncheck();
   }
 
-  async expectHideCloseButtonChecked() {
-    await expect(this.hideCloseButtonToggle).toBeChecked();
+  async expectShowCloseButtonChecked() {
+    await expect(this.showCloseButtonToggle).toBeChecked();
   }
 
-  async expectHideCloseButtonUnchecked() {
-    await expect(this.hideCloseButtonToggle).not.toBeChecked();
+  async expectShowCloseButtonUnchecked() {
+    await expect(this.showCloseButtonToggle).not.toBeChecked();
   }
 
-  async checkHideHeader() {
-    await this.hideHeaderToggle.check();
+  async checkShowHeader() {
+    await this.showHeaderToggle.check();
   }
 
-  async uncheckHideHeader() {
-    await this.hideHeaderToggle.uncheck();
+  async uncheckShowHeader() {
+    await this.showHeaderToggle.uncheck();
   }
 
-  async expectHideHeaderChecked() {
-    await expect(this.hideHeaderToggle).toBeChecked();
+  async expectShowHeaderChecked() {
+    await expect(this.showHeaderToggle).toBeChecked();
   }
 
-  async expectHideHeaderUnchecked() {
-    await expect(this.hideHeaderToggle).not.toBeChecked();
+  async expectShowHeaderUnchecked() {
+    await expect(this.showHeaderToggle).not.toBeChecked();
   }
 
   async checkAddDefaultApiKeys() {
