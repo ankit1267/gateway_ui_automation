@@ -48,12 +48,11 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: lts/*
+          node-version: 20
 
       - name: Install dependencies
         run: npm ci
 
-  
       # STEP 1 — Free disk space before browser download
       - name: Free disk space
         run: |
@@ -67,6 +66,8 @@ jobs:
       # STEP 2 — Clear corrupted Playwright cache
       - name: Clear Playwright Cache
         run: rm -rf ~/.cache/ms-playwright
+
+      # STEP 3 — Install Playwright browsers
       - name: Install Playwright Browsers
         run: |
           npx playwright install
@@ -75,22 +76,24 @@ jobs:
         env:
           PLAYWRIGHT_DOWNLOAD_CONNECTION_TIMEOUT: 300000
 
-
+      - name: Debug Playwright Version
+        run: |
+          node -v
+          npm -v
+          npx playwright --version
       - name: Run Playwright tests
         id: test-run
         continue-on-error: true
         run: |
-              npx playwright test
+          npx playwright test
       - name: Extract failed test summary
         if: always()
         id: summary
         run: |
           if [ -f test-results.json ]; then
-            # This logs the full structure to your GitHub Action console for debugging
             echo "--- DEBUG: FULL JSON STRUCTURE ---"
             cat test-results.json | node -e "const data = JSON.parse(require('fs').readFileSync(0)); console.log(JSON.stringify(data, null, 2));"
             echo "----------------------------------"
-          
             FAILED_SUMMARY=$(node -e "
               const fs = require('fs');
               const data = JSON.parse(fs.readFileSync('test-results.json', 'utf8'));
