@@ -17,9 +17,7 @@ test.describe('Agent Settings', () => {
     await expect(agent.settings.bridgeTypeTrigger).toBeChecked({ timeout: 10_000 });
 
     await expect(agent.settings.embedHeader).toBeVisible();
-
     await agent.settings.closeEmbedIfVisible();
-
     await agent.settings.selectApiRadio();
     await expect(agent.settings.bridgeTypeApi).toBeChecked({ timeout: 10_000 });
   });
@@ -40,15 +38,16 @@ test.describe('Agent Settings', () => {
     await agent.settings.selectResponseStyle('storytelling');
   });
 
-  test('TC-SET-04: Verify enabling and disable Guardrails configuration.', async () => {
-    await agent.settings.ensureApiMode();
+  //we remove the guardrail toggle for now
+  // test('TC-SET-04: Verify enabling and disable Guardrails configuration.', async () => {
+  //   await agent.settings.ensureApiMode();
 
-    await agent.settings.checkGuardrailToggle();
-    await expect(agent.settings.addGuardrailBtn).toBeVisible({ timeout: 10_000 });
+  //   await agent.settings.checkGuardrailToggle();
+  //   await expect(agent.settings.addGuardrailBtn).toBeVisible({ timeout: 10_000 });
 
-    await agent.settings.uncheckGuardrailToggle();
-    await expect(agent.settings.addGuardrailBtn).toBeHidden({ timeout: 10_000 });
-  });
+  //   await agent.settings.uncheckGuardrailToggle();
+  //   await expect(agent.settings.addGuardrailBtn).toBeHidden({ timeout: 10_000 });
+  // });
 
   test('TC-SET-05: Verify webhook validation when Custom mode is selected.', async () => {
     await agent.settings.ensureApiMode();
@@ -73,30 +72,31 @@ test.describe('Agent Settings', () => {
 
     await agent.settings.selectDefaultMode();
   });
+  
+  // we remove the guardrail toggle for now
+  // test('TC-SET-07: Agent Settings – Guardrail Configuration.', async () => {
+  //   await agent.settings.ensureApiMode();
 
-  test('TC-SET-07: Agent Settings – Guardrail Configuration.', async () => {
-    await agent.settings.ensureApiMode();
+  //   await agent.settings.checkGuardrailToggle();
 
-    await agent.settings.checkGuardrailToggle();
+  //   await expect(agent.settings.addGuardrailBtn).toBeEnabled();
+  //   await agent.settings.clickAddGuardrailTypes();
 
-    await expect(agent.settings.addGuardrailBtn).toBeEnabled();
-    await agent.settings.clickAddGuardrailTypes();
+  //   await expect(agent.settings.promptInjection).toBeVisible();
+  //   await expect(agent.settings.bias).toBeVisible();
 
-    await expect(agent.settings.promptInjection).toBeVisible();
-    await expect(agent.settings.bias).toBeVisible();
+  //   await agent.settings.checkPromptInjection();
+  //   await agent.settings.checkBias();
 
-    await agent.settings.checkPromptInjection();
-    await agent.settings.checkBias();
+  //   await expect(agent.settings.promptInjection).toBeChecked();
+  //   await expect(agent.settings.bias).toBeChecked();
 
-    await expect(agent.settings.promptInjection).toBeChecked();
-    await expect(agent.settings.bias).toBeChecked();
+  //   await agent.settings.uncheckPromptInjection();
+  //   await agent.settings.uncheckBias();
 
-    await agent.settings.uncheckPromptInjection();
-    await agent.settings.uncheckBias();
-
-    await agent.settings.uncheckGuardrailToggle();
-    await expect(agent.settings.guardrailsToggle).not.toBeChecked();
-  });
+  //   await agent.settings.uncheckGuardrailToggle();
+  //   await expect(agent.settings.guardrailsToggle).not.toBeChecked();
+  // });
 
   test('TC-SET-08: Custom tone option opens modal and saves custom prompt.', async () => {
     await agent.settings.ensureApiMode();

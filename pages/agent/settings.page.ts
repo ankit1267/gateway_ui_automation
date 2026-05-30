@@ -153,7 +153,7 @@ export class SettingsPage {
     async ensureApiMode() {
         if (!await this.bridgeTypeApi.isChecked()) {
             if (await this.embedCloseButton.isVisible()) {
-                await this.embedCloseButton.click();
+                await this.embedCloseButton.evaluate((el) => (el as HTMLButtonElement).click());
             }
             await this.bridgeTypeApi.click();
         }
@@ -167,7 +167,7 @@ export class SettingsPage {
 
     async closeEmbedIfVisible() {
         if (await this.embedHeader.isVisible()) {
-            await this.embedCloseButton.click();
+            await this.embedCloseButton.evaluate((el) => (el as HTMLButtonElement).click());
         }
     }
 
