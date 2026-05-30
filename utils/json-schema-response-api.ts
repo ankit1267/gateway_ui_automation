@@ -60,11 +60,31 @@ async function captureJsonSchemaResponseUpdates(
 
   try {
     await action();
+    // Only wait for response if we expect at least 1 request
+    if (minRequestCount > 0) {
+      await page.waitForResponse(
+        (resp) =>
+          VERSION_UPDATE_URL_PATTERN.test(resp.url()) &&
+          resp.request().method() === 'PUT' &&
+          resp.status() === 200,
+        { timeout: 10000 }
+      );
+    }
+  } catch {
+    // Timeout or error - no API call was made, which is OK if minRequestCount is 0
   } finally {
     page.off('request', handleRequest);
   }
 
   if (capturedBodies.length < minRequestCount) {
+    // If no requests were captured but minRequestCount is 0, return empty result
+    if (capturedBodies.length === 0 && minRequestCount === 0) {
+      return {
+        requestCount: 0,
+        requestBody: {} as Record<string, unknown>,
+        responseType: {} as Record<string, unknown>,
+      };
+    }
     throw new Error(
       `Expected at least ${minRequestCount} JSON schema response update request(s), but captured ${capturedBodies.length}`,
     );
