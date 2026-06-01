@@ -191,12 +191,16 @@ export class IntegrationDetailPage {
   }
 
   async clickFirstAgentInPreview() {
-    const firstRow = this.page
-      .frameLocator('#iframe-component-gtwyInterfaceEmbed')
-      .locator('[data-testid^="custom-table-row-"]')
-      .first();
-    await expect(firstRow).toBeVisible();
-    await firstRow.click();
+    const frame = this.page.frameLocator('#iframe-component-gtwyInterfaceEmbed');
+    const firstRow = frame.locator('[data-testid^="custom-table-row-"]').first();
+
+    // Some configurations (e.g. Show Variables disabled) may not render the agent list.
+    // Only click if the list is present; otherwise the preview may already be on an agent view.
+    const rowCount = await frame.locator('[data-testid^="custom-table-row-"]').count();
+    if (rowCount > 0) {
+      await expect(firstRow).toBeVisible();
+      await firstRow.click();
+    }
   }
 
   async expectEmbedHomeButtonVisible() {

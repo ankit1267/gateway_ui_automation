@@ -1,7 +1,7 @@
 import { test, expect } from '../../../fixtures/base.fixture';
 
 const AGENT_NAME = process.env.TESTING_AGENT!;
-const TOOL_RESULT = 'Gtwy web search';
+const TOOL_RESULT = 'GTWY Web Search';
 
 test.describe('Connectors - Tool Search - API Agent', () => {
 

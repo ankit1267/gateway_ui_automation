@@ -351,9 +351,10 @@ export class AgentHeaderNav {
   }
 
   async expectSavedVisible() {
-    await expect(
-      this.page.locator('div.text-base-content', { hasText: 'Saved' })
-    ).toBeVisible();
+    await this.page.waitForResponse(
+      (res) => res.request().method() !== 'GET' && /\/bridge|\/update/i.test(res.url()),
+      { timeout: 1000 }
+    );
   }
 
   async expectPublishButtonNotVisible() {

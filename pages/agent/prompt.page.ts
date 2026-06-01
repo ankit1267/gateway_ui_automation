@@ -178,18 +178,21 @@ export class PromptPage {
   }
 
   async fillJsonSchema(text: string) {
+    await this.jsonSchemaTextarea.waitFor({ state: 'attached', timeout: 10000 });
     await this.jsonSchemaTextarea.click();
     await this.jsonSchemaTextarea.press('Control+a');
     await this.jsonSchemaTextarea.fill(text);
   }
 
   async typeJsonSchema(text: string) {
+    await this.jsonSchemaTextarea.waitFor({ state: 'attached', timeout: 10000 });
     await this.jsonSchemaTextarea.click();
     await this.jsonSchemaTextarea.fill('');
     await this.jsonSchemaTextarea.pressSequentially(text);
   }
 
   async pasteJsonSchema(text: string) {
+    await this.jsonSchemaTextarea.waitFor({ state: 'attached', timeout: 10000 });
     await this.jsonSchemaTextarea.click();
     await this.jsonSchemaTextarea.press('Control+a');
     await this.page.evaluate((value) => {
@@ -523,7 +526,16 @@ export class PromptPage {
   async addPreToolClick() {
     const input = this.page.getByTestId('embed-suggestion-search-input');
 
-    await this.addPreTool.click();
+    const addButton = this.page.getByTestId('pre-embed-add-button');
+    const changeButton = this.page.getByRole('button', { name: 'Change Pre Tool' });
+
+    if (await addButton.isVisible()) {
+      await addButton.click();
+    } else if (await changeButton.isVisible()) {
+      await changeButton.click();
+    } else {
+      throw new Error('Neither Add nor Change Pre Tool button is visible');
+    }
 
     await expect(input).toBeVisible();
     await input.focus();
@@ -740,11 +752,11 @@ export class PromptPage {
     await this.page.keyboard.press('Tab');
   }
 
-  async expectSavedVisible() {
-    await expect(
-      this.page.locator('div.text-base-content', { hasText: 'Saved' })
-    ).toBeVisible();
-  }
+   async expectSavedVisible() {
+  await expect(
+    this.page.locator('div.text-base-content', { hasText: 'Saved' })
+  ).toBeVisible();
+}
 
   //click on instructions input
   async clickInstructions() {

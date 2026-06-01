@@ -158,9 +158,17 @@ export class AgentsPage {
 
   async openAgent(agentName: string): Promise<AgentPage> {
 
-    await this.agentTable.getByText(agentName, { exact: true }).click();
+    await this.page.getByTestId('loading-spinner').waitFor({ state: 'hidden', timeout: 30000 }).catch(() => {});
 
+    const row = this.agentTable.getByText(agentName, { exact: true });
 
+    await Promise.all([
+
+      this.page.waitForURL(/\/agents\/[a-f0-9]+/, { timeout: 30000 }),
+
+      row.click(),
+
+    ]);
 
     return new AgentPage(this.page);
 

@@ -40,6 +40,9 @@ export class AgentTabs {
 
   async openPrompt() {
 
+    if (this.page.isClosed()) {
+      throw new Error('Cannot open prompt tab: page is already closed');
+    }
     await this.promptTab.click();
 
   }
@@ -48,6 +51,9 @@ export class AgentTabs {
 
   async openModel() {
 
+    if (this.page.isClosed()) {
+      throw new Error('Cannot open model tab: page is already closed');
+    }
     await this.modelTab.click();
 
   }
@@ -56,6 +62,9 @@ export class AgentTabs {
 
   async openConnectors() {
 
+    if (this.page.isClosed()) {
+      throw new Error('Cannot open connectors tab: page is already closed');
+    }
     await this.connecterTab.click();
 
   }
@@ -64,6 +73,9 @@ export class AgentTabs {
 
   async openMemory() {
 
+    if (this.page.isClosed()) {
+      throw new Error('Cannot open memory tab: page is already closed');
+    }
     await this.memoryTab.click();
 
   }
@@ -72,6 +84,9 @@ export class AgentTabs {
 
   async openSettings() {
 
+    if (this.page.isClosed()) {
+      throw new Error('Cannot open settings tab: page is already closed');
+    }
     await this.settingsTab.click();
 
   }
@@ -80,6 +95,9 @@ export class AgentTabs {
 
   async openIntegrationGuide() {
 
+    if (this.page.isClosed()) {
+      throw new Error('Cannot open integration guide tab: page is already closed');
+    }
     await this.integrationGuideTab.click();
 
   }

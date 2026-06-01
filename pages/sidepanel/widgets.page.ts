@@ -77,9 +77,15 @@ export class WidgetsPage {
     await this.dismissOnboardingOverlay();
   }
 
+  // async waitForPage() {
+  //   await this.page.waitForLoadState('networkidle');
+  // }
+  //replacing the above function
+
   async waitForPage() {
-    await this.page.waitForLoadState('networkidle');
+    await this.pageHeader.waitFor({ state: 'visible' });
   }
+
 
   async clickCreateWidget() {
     await this.createWidgetButton.click();
