@@ -752,11 +752,10 @@ export class PromptPage {
     await this.page.keyboard.press('Tab');
   }
 
-   async expectSavedVisible() {
-  await expect(
-    this.page.locator('div.text-base-content', { hasText: 'Saved' })
-  ).toBeVisible();
-}
+  async expectSavedVisible() {
+    const saveButton = this.page.getByTestId('prompt-header-save-button');
+    await expect(saveButton).toBeEnabled();
+  }
 
   //click on instructions input
   async clickInstructions() {

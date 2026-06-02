@@ -51,6 +51,7 @@ export class SidepanelPage {
   readonly adminMenuAuth: Locator;
   readonly adminMenuAddModel: Locator;
   readonly adminMenuGtwyTools: Locator;
+  readonly reloadEmbedButton: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -82,6 +83,7 @@ export class SidepanelPage {
     this.adminMenuAuth = page.locator('#main-slider-admin-auth');
     this.adminMenuAddModel = page.locator('#main-slider-admin-addModel');
     this.adminMenuGtwyTools = page.locator('#main-slider-admin-prebuiltPrompts');
+    this.reloadEmbedButton = page.getByTestId('reload-embed-button');
   }
 
   async openExternalLink() {

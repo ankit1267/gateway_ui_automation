@@ -50,6 +50,7 @@ export class IntegrationDetailPage {
   readonly themeModeSelect: Locator;
   readonly configSaveButton: Locator;
   readonly useDefaultPromptToggle: Locator;
+  readonly reloadEmbedButton: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -100,6 +101,7 @@ export class IntegrationDetailPage {
     this.themeModeSelect = page.getByTestId('embed-config-theme-mode-select');
     this.configSaveButton = page.getByTestId('embed-config-save-button');
     this.useDefaultPromptToggle = page.locator('.form-control').filter({ has: page.locator('span', { hasText: 'Use default prompt' }) }).locator('input[type="checkbox"]');
+    this.reloadEmbedButton = page.getByText('Reload embed');
   }
 
   private async dismissOnboardingOverlay() {
@@ -190,6 +192,11 @@ export class IntegrationDetailPage {
     }
   }
 
+  async reloadEmbed() {
+    await this.reloadEmbedButton.click();
+    await this.page.waitForTimeout(1000);
+  }
+
   async clickFirstAgentInPreview() {
     const frame = this.page.frameLocator('#iframe-component-gtwyInterfaceEmbed');
     const firstRow = frame.locator('[data-testid^="custom-table-row-"]').first();
@@ -211,7 +218,7 @@ export class IntegrationDetailPage {
 
   async expectEmbedHomeButtonNotVisible() {
     const frame = this.page.frameLocator('#iframe-component-gtwyInterfaceEmbed');
-    await expect(frame.locator('[data-testid="tabs-layout-container"]')).toBeVisible();
+    await frame.locator('[data-testid="tabs-layout-container"]').waitFor({ state: 'visible' });
     await expect(frame.locator('[data-testid="navbar-home-button"]')).not.toBeVisible();
   }
 

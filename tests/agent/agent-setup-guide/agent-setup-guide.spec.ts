@@ -4,14 +4,17 @@ import { fillPromptAndVerifyApi, fillAllPromptFieldsAndVerifyApi } from '../../.
 const AGENT_NAME = process.env.TESTING_AGENT!
 //dependent on css class if css class change it will break
 
-test('Fill Prompt and api configured should not show agent guide', async ({ agents, page }) => {
+test('TC-01 : Fill Prompt and api configured should not show agent guide', async ({ agents, page }) => {
   await agents.goto('api');
   const agent = await agents.openAgent(AGENT_NAME);
   await agent.tabs.openModel();
+  // now we are not looking for the saved text because it will blink only for the .5 seconds so test case breaks
   const changed = await agent.model.selectServiceProviderIfNeeded("Grok");
   if (changed) {
     await agent.header.expectSavedVisible();
   }
+ 
+
   await agent.prompt.expectAgentSetupGuideVisible();
   await agent.tabs.openPrompt();
   const role = `Support agent${Date.now()}`;
@@ -38,15 +41,14 @@ test('Fill Prompt and api configured should not show agent guide', async ({ agen
   
 });
 
-test('Agent setup card updates dynamically when prompt entered', async ({ agents, page }) => {
+test('TC-02 : Agent setup card updates dynamically when prompt entered', async ({ agents, page }) => {
   await agents.goto('api');
   const agent = await agents.openAgent(AGENT_NAME);
 
   await agent.tabs.openModel();
   const changed = await agent.model.selectServiceProviderIfNeeded("Grok");
-  if (changed) {
-    await agent.header.expectSavedVisible();
-  }
+  await agent.header.expectSavedVisible();
+  
 
   await agent.prompt.expectAgentSetupGuideVisible();
   await agent.tabs.openPrompt();
@@ -83,7 +85,7 @@ test('Agent setup card updates dynamically when prompt entered', async ({ agents
   await agent.prompt.expectStepState(1, 'completed');
 });
 
-test('Prompt Empty and switch tab should results in setup card remain same', async ({ agents, page }) => {
+test('TC-03 : Prompt Empty and switch tab should results in setup card remain same', async ({ agents, page }) => {
   
 
   await agents.goto('api');
@@ -111,7 +113,7 @@ test('Prompt Empty and switch tab should results in setup card remain same', asy
 
 });
 
-test('Fill Prompt and api not configured should show agent guide', async ({ agents, page }) => {
+test('TC-04 : Fill Prompt and api not configured should show agent guide', async ({ agents, page }) => {
   await agents.goto('api');
   const agent = await agents.openAgent(AGENT_NAME);
 

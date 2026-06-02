@@ -10,7 +10,7 @@ test.beforeEach(async ({ agents }) => {
 // 1. Modal open, close, save-disabled, close-without-saving
 // ---------------------------------------------------------------------------
 
-test('modal open, close, save-disabled, and close-without-saving', async ({ agents }) => {
+test('TS-01 modal open, close, save-disabled, and close-without-saving', async ({ agents }) => {
     const agent = await agents.openAgent(TESTING_AGENT);
     await agent.tabs.openConnectors();
     await agent.connectors.clickAgentConfig();
@@ -22,7 +22,7 @@ test('modal open, close, save-disabled, and close-without-saving', async ({ agen
     await expect(modal.getModal()).toBeVisible();
 
     // Save button disabled when no changes
-    await expect(modal.getSaveButton()).toBeDisabled();
+      await expect(modal.getSaveButton()).toBeDisabled();
 
     // Close modal
     await modal.close();
@@ -45,7 +45,7 @@ test('modal open, close, save-disabled, and close-without-saving', async ({ agen
 // 2. Parameter CRUD: add, verify, add multiple, delete specific
 // ---------------------------------------------------------------------------
 
-test('parameter CRUD: add single, add multiple, delete specific', async ({ agents }) => {
+test('TS-02 parameter CRUD: add single, add multiple, delete specific', async ({ agents }) => {
     const agent = await agents.openAgent(TESTING_AGENT);
     await agent.tabs.openConnectors();
     await agent.connectors.clickAgentConfig();
@@ -100,7 +100,7 @@ test('parameter CRUD: add single, add multiple, delete specific', async ({ agent
 // 3. Parameter type selection (number, boolean, array)
 // ---------------------------------------------------------------------------
 
-test('change parameter type to number, boolean, and array', async ({ agents }) => {
+test('TS-03 change parameter type to number, boolean, and array', async ({ agents }) => {
     const agent = await agents.openAgent(TESTING_AGENT);
     await agent.tabs.openConnectors();
     await agent.connectors.clickAgentConfig();
@@ -133,7 +133,7 @@ test('change parameter type to number, boolean, and array', async ({ agents }) =
 // 4. Required checkbox: set and unset
 // ---------------------------------------------------------------------------
 
-test('set and unset required on a parameter', async ({ agents }) => {
+test('TS-04 set and unset required on a parameter', async ({ agents }) => {
     const agent = await agents.openAgent(TESTING_AGENT);
     await agent.tabs.openConnectors();
     await agent.connectors.clickAgentConfig();
@@ -172,7 +172,7 @@ test('set and unset required on a parameter', async ({ agents }) => {
 // 5. Add parameter with all details at once
 // ---------------------------------------------------------------------------
 
-test('add parameter with name, type, required, and value path', async ({ agents }) => {
+test('TS-05 add parameter with name, type, required, and value path', async ({ agents }) => {
     const agent = await agents.openAgent(TESTING_AGENT);
     await agent.tabs.openConnectors();
     await agent.connectors.clickAgentConfig();
@@ -207,7 +207,7 @@ test('add parameter with name, type, required, and value path', async ({ agents 
 // 6. Enum (allowed values)
 // ---------------------------------------------------------------------------
 
-test('enable enum and set allowed values on a parameter', async ({ agents }) => {
+test('TS-06 enable enum and set allowed values on a parameter', async ({ agents }) => {
     const agent = await agents.openAgent(TESTING_AGENT);
     await agent.tabs.openConnectors();
     await agent.connectors.clickAgentConfig();
@@ -236,7 +236,7 @@ test('enable enum and set allowed values on a parameter', async ({ agents }) => 
 // 7. Object type with child properties
 // ---------------------------------------------------------------------------
 
-test('change type to object and add child property', async ({ agents }) => {
+test('TS-07 change type to object and add child property', async ({ agents }) => {
     const agent = await agents.openAgent(TESTING_AGENT);
     await agent.tabs.openConnectors();
     await agent.connectors.clickAgentConfig();
@@ -266,7 +266,7 @@ test('change type to object and add child property', async ({ agents }) => {
 // 8. Thread ID toggle
 // ---------------------------------------------------------------------------
 
-test('toggle thread ID on and verify it persists', async ({ agents }) => {
+test('TS-08 toggle thread ID on and verify it persists', async ({ agents }) => {
     const agent = await agents.openAgent(TESTING_AGENT);
     await agent.tabs.openConnectors();
     await agent.connectors.clickAgentConfig();
@@ -301,7 +301,7 @@ test('toggle thread ID on and verify it persists', async ({ agents }) => {
 // 9. Simple/Advanced mode toggle and version select
 // ---------------------------------------------------------------------------
 
-test('simple/advanced mode toggle and version select', async ({ agents }) => {
+test('TS-09 simple/advanced mode toggle and version select', async ({ agents }) => {
     const agent = await agents.openAgent(TESTING_AGENT);
     await agent.tabs.openConnectors();
     await agent.connectors.clickAgentConfig();
