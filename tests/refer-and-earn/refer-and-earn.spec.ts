@@ -27,14 +27,14 @@ test.describe('Refer And Earn Page', () => {
     // Verify affiliate portal info link opens and redirects correctly
     const affiliateInfoLink = page.locator('a.af-info-link');
     await expect(affiliateInfoLink).toBeVisible();
-    await expect(affiliateInfoLink).toHaveAttribute('href', 'https://main.d2pk65wuanp7g1.amplifyapp.com/login');
+    await expect(affiliateInfoLink).toHaveAttribute('href', 'https://affiliate.hostnsoft.com/login');
 
     const [portalPage] = await Promise.all([
       page.waitForEvent('popup'),
       affiliateInfoLink.click(),
     ]);
     await portalPage.waitForLoadState('domcontentloaded');
-    await expect(portalPage).toHaveURL(/https:\/\/main\.d2pk65wuanp7g1\.amplifyapp\.com\/login/);
+    await expect(portalPage).toHaveURL(/affiliate\.hostnsoft\.com\/login/);
     await portalPage.close();
   });
 
