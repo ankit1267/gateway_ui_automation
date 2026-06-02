@@ -31,7 +31,7 @@ export class WidgetsPage {
   constructor(page: Page) {
     this.page = page;
     this.pageHeader = page.getByTestId('page-header-container');
-    this.createWidgetButton = page.getByRole('button', { name: /\+\s*Create Widget/i });
+    this.createWidgetButton = page.getByTestId('create-widget-button-header');
     this.widgetGrid = page.locator('.grid.grid-cols-1');
     this.emptyStateText = page.getByText('No widgets found');
     this.emptyStateCreateButton = page.getByRole('button', { name: '+ Create Widget' }).last();
