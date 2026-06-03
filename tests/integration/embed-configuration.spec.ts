@@ -20,6 +20,7 @@ test.describe('GTWY Embed - Configuration', () => {
   });
 
   test('TC-EMBED-CONFIG-02: Home button is visible in live preview when Show Home Button is enabled', async ({ sidepanel }) => {
+   await sidepanel.integrationDetailPage.uncheckShowHomeButton();
     await sidepanel.integrationDetailPage.checkShowHomeButton();
     await sidepanel.integrationDetailPage.expectShowHomeButtonChecked();
     await sidepanel.integrationDetailPage.clickSaveConfig();
