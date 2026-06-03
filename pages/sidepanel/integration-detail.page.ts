@@ -189,6 +189,7 @@ export class IntegrationDetailPage {
     if (isEnabled) {
       await this.configSaveButton.click();
       await expect(this.page.getByText('Configuration saved')).toBeVisible();
+      await this.waitForEmbedReload();
     }
   }
 
@@ -200,25 +201,32 @@ export class IntegrationDetailPage {
   async clickFirstAgentInPreview() {
     const frame = this.page.frameLocator('#iframe-component-gtwyInterfaceEmbed');
     const firstRow = frame.locator('[data-testid^="custom-table-row-"]').first();
-
-    // Some configurations (e.g. Show Variables disabled) may not render the agent list.
-    // Only click if the list is present; otherwise the preview may already be on an agent view.
     const rowCount = await frame.locator('[data-testid^="custom-table-row-"]').count();
+
     if (rowCount > 0) {
       await expect(firstRow).toBeVisible();
       await firstRow.click();
+      // After clicking an agent, wait for the chat view's navbar to appear.
+      await expect(frame.locator('[data-testid="navbar"]')).toBeVisible({ timeout: 30000 });
     }
   }
 
   async expectEmbedHomeButtonVisible() {
     const frame = this.page.frameLocator('#iframe-component-gtwyInterfaceEmbed');
-    await expect(frame.locator('[data-testid="tabs-layout-container"]')).toBeVisible();
+    // The check for the navbar is now part of clickFirstAgentInPreview, so we can directly check for the button.
     await expect(frame.locator('[data-testid="navbar-home-button"]')).toBeVisible();
+  }
+
+  async waitForEmbedReload() {
+    // First, wait for the iframe element itself to be attached to the main page's DOM.
+    await this.page.locator('#iframe-component-gtwyInterfaceEmbed').first().waitFor({ state: 'attached', timeout: 30000 });
+    // Now wait for the initial agent list view to be ready by checking for the first agent row.
+    const frame = this.page.frameLocator('#iframe-component-gtwyInterfaceEmbed');
+    await expect(frame.locator('[data-testid^="custom-table-row-"]').first()).toBeVisible({ timeout: 30000 });
   }
 
   async expectEmbedHomeButtonNotVisible() {
     const frame = this.page.frameLocator('#iframe-component-gtwyInterfaceEmbed');
-    await frame.locator('[data-testid="tabs-layout-container"]').waitFor({ state: 'visible' });
     await expect(frame.locator('[data-testid="navbar-home-button"]')).not.toBeVisible();
   }
 
@@ -636,7 +644,7 @@ export class IntegrationDetailPage {
   }
 
   async expectEmbedPreviewVisible() {
-    await expect(this.page.locator('#iframe-component-gtwyInterfaceEmbed').first()).toBeVisible();
+    await this.page.locator('#iframe-component-gtwyInterfaceEmbed').first().waitFor({ state: 'attached' });
   }
 
   async expectEmbedPreviewNotVisible() {
