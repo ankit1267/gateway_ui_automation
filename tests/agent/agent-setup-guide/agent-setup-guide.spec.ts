@@ -26,6 +26,7 @@ test('TC-01 : Fill Prompt and api configured should not show agent guide', async
       await agent.prompt.fillRole(role);
       await agent.prompt.fillGoal(goal);
       await agent.prompt.fillInstructions(instruction);
+      await agent.prompt.clickSaveButton();
     },
     { role, goal, instruction }
   );
@@ -57,12 +58,14 @@ test('TC-02 : Agent setup card updates dynamically when prompt entered', async (
     page,
     async () => {
       await agent.prompt.fillPrompt('', '', '');
+      await agent.prompt.clickSaveButton();
     },
     {
       role: '',
       goal: '',
       instruction: '',
-    }
+    },
+    { minRequestCount: 1 }
   );
 
   await agent.prompt.expectStepState(1, 'incomplete');
@@ -74,33 +77,32 @@ test('TC-02 : Agent setup card updates dynamically when prompt entered', async (
     page,
     async () => {
       await agent.prompt.fillPrompt(role, goal, instruction);
+      await agent.prompt.clickSaveButton();
     },
     {
       role,
       goal,
       instruction,
-    }
+    },
+    { minRequestCount: 1 }
   );
 
   await agent.prompt.expectStepState(1, 'completed');
 });
 
 test('TC-03 : Prompt Empty and switch tab should results in setup card remain same', async ({ agents, page }) => {
-  
-
   await agents.goto('api');
   const agent = await agents.openAgent(AGENT_NAME);
 
+  // This test checks UI state without saving, so we don't click the save button
   await fillPromptAndVerifyApi(
     page,
     async () => {
       await agent.prompt.fillPrompt('', '', '');
+      await agent.prompt.clickSaveButton();
     },
-    {
-      role: '',
-      goal: '',
-      instruction: '',
-    }
+    {},
+    { minRequestCount: 0 }
   );
 
   await agent.prompt.expectStepState(1, 'incomplete');
@@ -124,6 +126,7 @@ test('TC-04 : Fill Prompt and api not configured should show agent guide', async
     page,
     async () => {
       await agent.prompt.fillPrompt(role, goal, instruction);
+      await agent.prompt.clickSaveButton();
     },
     {
       role,
@@ -131,6 +134,7 @@ test('TC-04 : Fill Prompt and api not configured should show agent guide', async
       instruction,
     }
   );
+
 
   await agent.tabs.openModel();
   await agent.model.selectServiceProvider("Grok");

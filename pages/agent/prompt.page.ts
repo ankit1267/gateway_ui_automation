@@ -705,20 +705,14 @@ export class PromptPage {
 
   async fillRole(prompt: string) {
     await this.role.fill(prompt);
-    await this.blurInput();
-    await this.expectSavedVisible();
   }
 
   async fillGoal(prompt: string) {
     await this.goal.fill(prompt);
-    await this.blurInput();
-    await this.expectSavedVisible();
   }
 
   async fillInstructions(prompt: string) {
     await this.instructions.fill(prompt);
-    await this.blurInput();
-    await this.expectSavedVisible();
   }
 
   async fillPrompt(role: string, goal: string, instructions: string) {
@@ -755,6 +749,13 @@ export class PromptPage {
   async expectSavedVisible() {
     const saveButton = this.page.getByTestId('prompt-header-save-button');
     await expect(saveButton).toBeEnabled();
+  }
+
+  async clickSaveButton() {
+    const saveButton = this.page.getByTestId('prompt-header-save-button');
+    await expect(saveButton).toBeEnabled();
+    await saveButton.click();
+   
   }
 
   //click on instructions input

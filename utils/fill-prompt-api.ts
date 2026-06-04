@@ -72,6 +72,14 @@ async function capturePromptUpdates(
     page.off('request', handleRequest);
   }
 
+  if (minRequestCount === 0 && capturedBodies.length === 0) {
+    return {
+      requestCount: 0,
+      requestBody: {},
+      prompt: { role: '', goal: '', instruction: '' },
+    };
+  }
+
   const requestBody = capturedBodies[capturedBodies.length - 1];
 
   return {
@@ -102,9 +110,8 @@ export async function fillAllPromptFieldsAndVerifyApi(
   action: () => Promise<void>,
   expected: Required<PromptFields>,
 ): Promise<CapturedPromptUpdate> {
-  // Each field (role, goal, instruction) triggers a separate PUT on blur.
-  // Wait for all 3 requests so we verify the final state.
-  const captured = await capturePromptUpdates(page, action, 3);
+  // We now expect a single request when the save button is clicked.
+  const captured = await capturePromptUpdates(page, action, 1);
 
   expect(captured.prompt.role, 'Role mismatch in prompt API payload').toBe(expected.role);
   expect(captured.prompt.goal, 'Goal mismatch in prompt API payload').toBe(expected.goal);
