@@ -113,7 +113,7 @@ export class ChatbotPage {
     this.scrollable = this.page.getByTestId('chat-messages-container');
    
  
-    this.loadingSpinner = this.page.locator('div.loading.loading-spinner');
+    this.loadingSpinner = this.page.locator('chat-loading-state');
     this.sendButton = this.page.getByRole('button', { name: /send/i });
   }
 

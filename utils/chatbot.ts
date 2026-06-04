@@ -21,9 +21,9 @@ export async function queryChatbot(
   } = options;
 
   await page.waitForTimeout(4000);
-  await chatbot.isCopyButtonVisible();
-  await chatbot.openNewThread();
-  await page.waitForTimeout(3000);
+  // await chatbot.isCopyButtonVisible();
+  // await chatbot.openNewThread();
+  // await page.waitForTimeout(3000);
   await chatbot.sendMessage(message);
 
   await chatbot.waitForResponseComplete(responseTimeout);
