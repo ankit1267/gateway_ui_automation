@@ -32,7 +32,7 @@ test.describe('History - API Agent Thread Actions', () => {
     // System Prompt (opens slider)
     await agent.history.clickSystemPrompt();
     await agent.history.expectChatDetailsSliderVisible();
-    await agent.history.closeChatDetails();
+    await agent.history.closeChatDetailsModal();
 
     // More (opens slider with AiConfig, latency, variables values)
     await agent.history.clickMore();
