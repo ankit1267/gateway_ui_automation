@@ -11,9 +11,7 @@ test.describe('Chatbot Widget', () => {
   test('TC-CHAT-02: Create chatbot widget from chat and verify widget response is generated', async ({ agents, page }) => {
     const agent = await agents.openAgent(AGENT_NAME);
     
-    await agent.chatbot.openNewThread();
-    await agent.chatbot.isHomeVisible();
-    await page.waitForTimeout(2000);
+  
     await agent.chatbot.sendMessage('onboarding mail template');
 
     const messages = agent.chatbot.getScrollable();
