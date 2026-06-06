@@ -175,7 +175,8 @@ export class ChatbotConfigPage {
   }
 
   async fillSendData(json: string) {
-    await this.testingSendDataInput.fill(json);
+    const editor = this.testingSendDataInput.locator('.cm-content');
+    await editor.fill(json);
   }
 
   async clickSendData() {
