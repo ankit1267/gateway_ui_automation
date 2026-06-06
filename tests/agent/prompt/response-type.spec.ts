@@ -267,7 +267,14 @@ test.describe('Prompt - Response Type', () => {
     await agent.prompt.clickJsonSchemaFullscreen();
 
     await agent.prompt.clickJsonSchemaFullscreenTextarea();
-    await agent.prompt.fillJsonSchemaFullscreenTextarea('abc');
+    await agent.prompt.fillJsonSchemaFullscreenTextarea(`{
+  "properties": {
+    "name": {
+      "description": "The name of the user" 
+      // Missing "type" keyword
+    }
+  }
+}`);
     await agent.prompt.clickJsonSchemaSaveAndClose();
     await agent.prompt.expectInvalidJsonSchemaTextVisible();
 
