@@ -11,11 +11,7 @@ test('child agent is triggered', async ({ agents ,page}) => {
     const agent = await agents.openAgent(TESTING_AGENT);
     const chatbot = agent.chatbot;
     await page.waitForTimeout(4000);
-    await chatbot.isCopyButtonVisible();
-    await chatbot.openNewThread();
-    await page.waitForTimeout(3000);
     await chatbot.sendMessage('My name is tilakraj');
-    
     await chatbot.waitForResponseComplete(90000);   // A2A = 2 LLM calls, needs more time
     await chatbot.expectResponse(/welcome|hello|Wecome/i);
     await page.waitForTimeout(20000);
