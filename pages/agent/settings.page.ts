@@ -68,7 +68,7 @@ export class SettingsPage {
 
     // Chatbot configuration
     readonly chatbotConfigSection: Locator;
-    readonly chatbotConfigAccordionToggle: Locator;
+
 
     constructor(page: Page) {
         this.page = page;
@@ -129,7 +129,7 @@ export class SettingsPage {
 
         // Chatbot configuration
         this.chatbotConfigSection = page.getByTestId('chatbot-config-section');
-        this.chatbotConfigAccordionToggle = page.getByTestId('chatbot-config-accordion-toggle');
+      
 
         // Custom tone and response style modals
         this.customToneModal = page.getByTestId('CUSTOM_TONE_MODAL');
@@ -516,17 +516,13 @@ export class SettingsPage {
         return this.chatbotConfigSection.isVisible();
     }
 
-    async toggleChatbotConfigAccordion() {
-        await this.chatbotConfigAccordionToggle.click();
-    }
 
     async expectChatbotConfigSectionVisible() {
         await expect(this.chatbotConfigSection).toBeVisible();
     }
 
-    async expectChatbotConfigAccordionVisible() {
-        await expect(this.chatbotConfigAccordionToggle).toBeVisible();
-    }
+  
+    
 
     // --- Custom tone and response style ---
 
