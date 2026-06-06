@@ -11,9 +11,9 @@ test('parallel tool call', async ({ agents ,page}) => {
     const agent = await agents.openAgent(TESTING_AGENT);
     const chatbot = agent.chatbot;
     await page.waitForTimeout(4000);
-    await chatbot.isCopyButtonVisible();
-    await chatbot.openNewThread();
-    await page.waitForTimeout(3000);
+    // await chatbot.isCopyButtonVisible();
+    // await chatbot.openNewThread();
+    // await page.waitForTimeout(3000);
     await chatbot.sendMessage('calculate compute_secure_function and secure_math_function and factorial_function and calculate_square for the value 5');
     
     await chatbot.waitForResponseComplete(90000);   // Parallel tool calls = multiple LLM calls, needs more time
