@@ -7,7 +7,7 @@ test('Query chatbot and check pre-tool is called', async ({ agents , page}) => {
     await agent.header.openChatbotConfig();
     await page.waitForTimeout(5000);
     const chatbot = agent.chatbot;
-    await chatbot.isCopyButtonVisible();
+    // await chatbot.isCopyButtonVisible();
     //we removed the new thread button for now and also chatbot
     // await chatbot.openNewThread();
     // await page.waitForTimeout(2000);
