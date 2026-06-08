@@ -507,7 +507,8 @@ export class ChatbotPage {
   }
 
   async expectResponse(message: string | RegExp) {
-    await expect(this.scrollable.getByText(message)).toBeVisible({ timeout: 100000 });
+    const responseContainer = this.scrollable.locator('.prose');
+    await expect(responseContainer.getByText(message)).toBeVisible({ timeout: 100000 });
   }
   async expectText(message: string) {
     await expect(this.scrollable)
