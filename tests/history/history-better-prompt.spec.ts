@@ -32,11 +32,11 @@ test.describe('History - API Agent Better Prompt', () => {
 
     await agent.history.clickPromptCancelButton();
 
-    await agent.history.expectShowGeneratedButtonVisible();
-
+    
     await agent.history.hoverGroupChatAgentsResponse();
     await agent.history.clickEditMessageButton();
-
+    
+    await agent.history.expectShowGeneratedButtonVisible();
     await agent.history.clickShowGeneratedButton();
 
     await agent.history.clickPromptSaveButton();
