@@ -58,10 +58,7 @@ test.describe('Connectors - Tool Config - API Agent', () => {
   test('TC-CON-TOOL-CONFIG-02: Open tool settings, click Name & Description, verify name input and description are visible', async ({ agents }) => {
     const agent = await agents.openAgent(AGENT_NAME);
     await agent.tabs.openConnectors();
-
-    await agent.connectors.clickAddTool();
-    await agent.connectors.toolDropdown.selectTool(TOOL_NAME);
-
+   
     await agent.connectors.openEmbedToolConfig();
     await agent.connectors.toolConfigModal.waitForVisible();
 
