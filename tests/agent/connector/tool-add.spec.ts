@@ -11,6 +11,7 @@ import { test, expect } from '../../../fixtures/base.fixture';
 
 const AGENT_NAME = process.env.TESTING_AGENT!;
 const TOOL_NAME = 'SendEmailonGmail2';
+const FUNCTION_ID = '698aedbf0acf612c862d6f85';
 
 const VERSION_API = /\/api\/versions\/[a-f0-9]+/;
 
@@ -39,13 +40,19 @@ test.describe('Connectors - Tool Add - API Agent', () => {
       agent.connectors.toolDropdown.selectTool(TOOL_NAME),
     ]);
 
-    const json = await response.json();
+    // const json = await response.json();
 
-    const toolExists = Object.values(json.agent.apiCalls || {}).some(
-      (call: any) => call.title === TOOL_NAME
-    );
+    // const toolExists = Object.values(json.agent.apiCalls || {}).some(
+    //   (call: any) => call.title === TOOL_NAME
+    // );
 
-    expect(toolExists).toBe(true);
+
+    const addJson = await response.json();
+    expect(addJson.agent.function_ids).toContain(FUNCTION_ID);
+    await agent.connectors.expectEmbedVisible(TOOL_NAME);
+
+
+    // expect(toolExists).toBe(true);
     await agent.connectors.expectEmbedVisible(TOOL_NAME);
 
     const [removeResponse] = await Promise.all([
@@ -60,10 +67,12 @@ test.describe('Connectors - Tool Add - API Agent', () => {
 
     const removeJson = await removeResponse.json();
 
-    const toolStillExists = Object.values(removeJson.agent.apiCalls || {}).some(
-      (call: any) => call.title === TOOL_NAME
-    );
+    // const toolStillExists = Object.values(removeJson.agent.apiCalls || {}).some(
+    //   (call: any) => call.title === TOOL_NAME
+    // );
 
-    expect(toolStillExists).toBe(false);
+    // expect(toolStillExists).toBe(false);
+    
+    expect(removeJson.agent.function_ids).not.toContain(FUNCTION_ID);
   });
 });
