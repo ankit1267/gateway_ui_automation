@@ -29,7 +29,7 @@ test('TC-age-01: Query agentic knowledge base chatbot and verify tool call in re
   
   
   await agent.chatbot.sendMessage('tell me about new ai technologies');
-  await agent.chatbot.waitForResponseComplete(120000);
+  await agent.chatbot.waitForResponseComplete(60000);
   // await page.waitForTimeout(60000);
   
   await agent.chatbot.expectResponse(/get_knowledge_base_data/i);
