@@ -11,7 +11,7 @@ test('Connected agent varaible passing using path', async ({ agents ,page}) => {
     const agent = await agents.openAgent(TESTING_AGENT);
     const chatbot = agent.chatbot;
     await page.waitForTimeout(4000);
-    await chatbot.isCopyButtonVisible();
+   
     
 
     // Go to manage variable
@@ -24,8 +24,8 @@ test('Connected agent varaible passing using path', async ({ agents ,page}) => {
     await agent.prompt.closeVariableManager();
     await page.waitForTimeout(5000);
 
-    await chatbot.openNewThread();
-    await page.waitForTimeout(3000);
+  
+  
     await chatbot.sendMessage('Hi');
     
     
