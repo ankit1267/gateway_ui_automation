@@ -30,7 +30,6 @@ export class ModelPage {
     private readonly apiKeyInputContainer: Locator;
 
     private readonly chatTextarea: Locator;
-    private readonly iframeEmbed: Locator;
 
     constructor(private page: Page) {
         // config section
@@ -56,7 +55,6 @@ export class ModelPage {
         this.apiKeyInputContainer = page.locator('#apikey-input-container');
 
         this.chatTextarea = page.locator('#chat-message-textarea');
-        this.iframeEmbed = page.locator('#iframe-component-interfaceEmbed');
 
         // Tool choice
         this.toolChoiceDropdownTrigger = page.getByTestId('advanced-param-dropdown-trigger-tool_choice');
@@ -127,12 +125,8 @@ export class ModelPage {
             .click();
     }
 
-    async expectChatTextareaVisible() {
-        await expect(this.chatTextarea).toBeVisible();
-    }
-
     async expectChatBotVisible() {
-        await expect(this.iframeEmbed).toBeVisible();
+        await expect(this.chatTextarea).toBeVisible();
     }
 
     // -------------------------
