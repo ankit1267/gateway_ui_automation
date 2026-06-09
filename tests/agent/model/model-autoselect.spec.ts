@@ -180,4 +180,67 @@ test.describe('Model - Auto Select Model Toggle', () => {
     await expect(agent.getPage.getByTestId('model-dropdown-trigger-button')).toBeVisible();
   });
 
+  test('TC-MODEL-AUTOSEL-09: Send query with auto-select cost preference and verify AI response', async ({ page }) => {
+    const isAlreadyChecked = await agent.model.isAutoSelectModelToggleChecked();
+    if (!isAlreadyChecked) {
+      await toggleAutoSelectModelWithApi(
+        page,
+        () => agent.model.checkAutoSelectModelToggle(),
+        true
+      );
+    }
+
+    await selectAutoSelectPreferenceWithApi(
+      page,
+      () => agent.model.selectAutoSelectPreference('cost'),
+      'cost'
+    );
+
+    await agent.chatbot.sendMessage('What is the capital of France?');
+    await agent.chatbot.waitForResponseComplete();
+    await agent.chatbot.expectResponse(/Paris/i);
+  });
+
+  test('TC-MODEL-AUTOSEL-10: Send query with auto-select quality preference and verify AI response', async ({ page }) => {
+    const isAlreadyChecked = await agent.model.isAutoSelectModelToggleChecked();
+    if (!isAlreadyChecked) {
+      await toggleAutoSelectModelWithApi(
+        page,
+        () => agent.model.checkAutoSelectModelToggle(),
+        true
+      );
+    }
+
+    await selectAutoSelectPreferenceWithApi(
+      page,
+      () => agent.model.selectAutoSelectPreference('quality'),
+      'quality'
+    );
+
+    await agent.chatbot.sendMessage('Explain photosynthesis in one sentence.');
+    await agent.chatbot.waitForResponseComplete();
+    await agent.chatbot.expectResponse(/photosynthesis|chlorophyll|sunlight|plant/i);
+  });
+
+  test('TC-MODEL-AUTOSEL-11: Send query with auto-select speed preference and verify AI response', async ({ page }) => {
+    const isAlreadyChecked = await agent.model.isAutoSelectModelToggleChecked();
+    if (!isAlreadyChecked) {
+      await toggleAutoSelectModelWithApi(
+        page,
+        () => agent.model.checkAutoSelectModelToggle(),
+        true
+      );
+    }
+
+    await selectAutoSelectPreferenceWithApi(
+      page,
+      () => agent.model.selectAutoSelectPreference('speed'),
+      'speed'
+    );
+
+    await agent.chatbot.sendMessage('What is 2 + 2?');
+    await agent.chatbot.waitForResponseComplete();
+    await agent.chatbot.expectResponse(/4/i);
+  });
+
 });
