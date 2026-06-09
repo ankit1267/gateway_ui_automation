@@ -43,5 +43,5 @@ test('TC-APIKEY-02: API key is added', async ({ agents, page }) => {
   // API Verification: Verify request includes apikey_object_id
   const requestBody = JSON.parse(apiKeyResponse.request().postData() || '{}');
   // Assertion: Chat is visible
-  await agent.model.expectChatTextareaVisible();
+  await agent.model.expectChatBotVisible();
 });
