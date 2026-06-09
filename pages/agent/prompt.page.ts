@@ -221,6 +221,18 @@ export class PromptPage {
     ).toBeVisible();
   }
 
+  async expectJsonSchemaEditorRedBorder() {
+    const border = this.page.getByTestId('advanced-param-json-schema-editor-border-response_type');
+    await expect(border).toBeVisible();
+    await expect(border).toHaveClass(/border-red-600/);
+  }
+
+  async expectInvalidJsonSchemaErrorMessageVisible() {
+    await expect(
+      this.page.getByText('Invalid JSON schema. Please fix the syntax and try again.', { exact: true })
+    ).toBeVisible();
+  }
+
   async expectJsonSchemaTextareaScrollable() {
     const isScrollable = await this.jsonSchemaTextarea.evaluate(
       (el: HTMLElement) => el.scrollHeight > el.clientHeight

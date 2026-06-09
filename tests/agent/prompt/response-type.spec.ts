@@ -285,4 +285,23 @@ test.describe('Prompt - Response Type', () => {
 
   });
 
+  test('TC-PROMPT-RESP-08: Invalid JSON schema in inline editor shows red border and error message on blur', async ({ agents, page }) => {
+
+    const agent = await agents.openAgent(AGENT_NAME);
+
+    await agent.tabs.openPrompt();
+    await agent.prompt.selectResponseType('json_schema');
+
+    // Type invalid JSON content into the inline editor
+    await agent.prompt.typeJsonSchema('nbnb');
+
+    // Click outside the JSON schema textarea to trigger validation
+    await page.locator('body').click({ position: { x: 5, y: 5 } });
+
+    // Assert: red border on the editor container and the error message is shown
+    await agent.prompt.expectJsonSchemaEditorRedBorder();
+    await agent.prompt.expectInvalidJsonSchemaErrorMessageVisible();
+
+  });
+
 });
