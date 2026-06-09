@@ -37,7 +37,7 @@ export class ModelPage {
 
         // labels
         this.serviceProvider = this.modelConfigSection.getByTestId('service-dropdown-trigger-button');
-        this.model = this.modelConfigSection.getByTestId('model-dropdown-trigger-button');
+        this.model = this.modelConfigSection.getByTestId('model-dropdown-container');
 
         // generic
         this.dropdownButton = 'role=button';
@@ -468,5 +468,26 @@ async clickOutsideToSave() {
 
     async expectModelNotAutoSelected() {
         await expect(this.model).toContainText('Select model');
+    }
+
+    // -------------------------
+    // AUTO SELECT MODEL PREFERENCE
+    // -------------------------
+
+    async isAutoSelectPreferenceDropdownVisible(): Promise<boolean> {
+        return this.page.getByTestId('auto-select-model-based-on-dropdown').isVisible();
+    }
+
+    async selectAutoSelectPreference(preference: 'cost' | 'quality' | 'speed') {
+        await this.page.getByTestId('auto-select-model-based-on-dropdown-trigger-button').click();
+        await this.page.getByTestId(`auto-select-model-based-on-dropdown-option-${preference}`).click();
+    }
+
+    async getSelectedAutoSelectPreference(): Promise<string> {
+        return (await this.page.getByTestId('auto-select-model-based-on-dropdown-trigger-button').textContent()) ?? '';
+    }
+
+    async expectAutoSelectPreferenceSelected(preference: string) {
+        await expect(this.page.getByTestId('auto-select-model-based-on-dropdown-trigger-button')).toContainText(preference);
     }
 }

@@ -147,6 +147,10 @@ export async function verifyAgentUpdateRequest(
       expect(actualValue).toBeUndefined();
     } else if (value === 'defined') {
       expect(actualValue).toBeDefined();
+    } else if (['cost', 'quality', 'speed'].includes(value)) {
+      const isExactMatch = actualValue === value;
+      const isTradeoffObject = actualValue && typeof actualValue === 'object' && actualValue.tradeoff === value;
+      expect(isExactMatch || isTradeoffObject).toBe(true);
     } else {
       expect(actualValue).toBe(value);
     }
@@ -211,11 +215,44 @@ export async function toggleAutoSelectModelWithApi(
     waitForAgentUpdateApi(page, { payloadField: 'auto_model_select' }),
     toggleFn()
   ]);
-  
-  await verifyAgentUpdateResponse(response, {
-    'agent.auto_model_select': expectedValue
+
+  await verifyAgentUpdateRequest(response, {
+    'auto_model_select': expectedValue ? 'cost' : null
   });
-  
+
+  return response;
+}
+
+/**
+ * Selects an auto-select model preference and verifies the API request payload
+ * contains the correct tradeoff value.
+ *
+ * @param page - Playwright Page object
+ * @param selectFn - Function that triggers the preference selection
+ * @param expectedTradeoff - Expected tradeoff value ('cost', 'quality', or 'speed')
+ * @returns Promise resolving to the captured API Response
+ *
+ * @example
+ * await selectAutoSelectPreferenceWithApi(
+ *   page,
+ *   () => model.selectAutoSelectPreference('quality'),
+ *   'quality'
+ * );
+ */
+export async function selectAutoSelectPreferenceWithApi(
+  page: Page,
+  selectFn: () => Promise<void>,
+  expectedTradeoff: 'cost' | 'quality' | 'speed'
+): Promise<Response> {
+  const [response] = await Promise.all([
+    waitForAgentUpdateApi(page, { payloadField: 'auto_model_select.tradeoff' }),
+    selectFn()
+  ]);
+
+  await verifyAgentUpdateRequest(response, {
+    'auto_model_select.tradeoff': expectedTradeoff
+  });
+
   return response;
 }
 
