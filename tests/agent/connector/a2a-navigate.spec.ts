@@ -23,6 +23,7 @@ test.describe('Connectors - A2A Agent Navigation - API Agent', () => {
     await agent.connectors.clickAddAgent();
     await agent.connectors.a2aDropdown.expectVisible();
     await agent.connectors.a2aDropdown.search(AGENT_NAME);
+    await agent.connectors.a2aDropdown.selectAgent(AGENT_NAME);
 
     // API: selecting an agent saves it to the version via PUT /api/versions/{id}
     const [versionResponse] = await Promise.all([
@@ -31,11 +32,11 @@ test.describe('Connectors - A2A Agent Navigation - API Agent', () => {
         res.request().method() === 'PUT' &&
         res.status() === 200
       ),
-      agent.connectors.a2aDropdown.selectAgent(AGENT_NAME),
+      page.getByTestId('agent-description-save-button').click(),
     ]);
     const versionData = await versionResponse.json();
     expect(versionData.agent).toBeDefined();
-    console.log(versionData);
+
     await agent.connectors.expectAgentVisible(AGENT_NAME);
 
     // API: clicking connected agent navigates to its page — intercept GET /api/agent/{id}
