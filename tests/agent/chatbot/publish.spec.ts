@@ -39,7 +39,7 @@ test.describe('Publish - Chatbot Agent', () => {
     await agent.header.clickPublish();
     await agent.header.clickPublishButton();
 
-    await agent.header.checkPublishVersionCheckbox();
+    // await agent.header.checkPublishVersionCheckbox();
     // await agent.header.clickGenerateSummary();
     // await agent.header.clickSaveSummary();
     // await agent.header.expectSummarySaveDisabled();
