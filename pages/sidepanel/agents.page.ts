@@ -674,7 +674,7 @@ export class AgentsPage {
 
   async selectUsagePreset(days: 1 | 5 | 10 | 15 | 30) {
 
-    const label = days === 1 ? 'Last 1 day' : `Last ${days} days`;
+    const label = days === 1 ? 'Last day' : `Last ${days} days`;
 
     await this.page.getByRole('button', { name: label }).click();
 
