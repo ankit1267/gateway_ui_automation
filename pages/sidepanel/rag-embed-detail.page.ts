@@ -254,13 +254,13 @@ export class RAGEmbedDetailPage {
   }
 
   async expectAllCopyButtonsWork() {
-    const containers = this.page.getByTestId('copy-button-container');
+    const containers = this.page.getByTestId('code-block-container');
     const count = await containers.count();
     expect(count).toBeGreaterThan(0);
     let clicked = 0;
     for (let i = 0; i < count; i++) {
       const container = containers.nth(i);
-      const btn = container.getByTestId('copy-button');
+      const btn = container.getByTestId('code-block-copy-button');
       if (!await btn.isVisible()) continue;
       await btn.dispatchEvent('click');
       await expect(container.getByText('Copied!')).toBeVisible();
