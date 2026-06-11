@@ -98,6 +98,16 @@ test('TC-03 : Prompt Empty and switch tab should results in setup card remain sa
   await fillPromptAndVerifyApi(
     page,
     async () => {
+      await agent.prompt.fillPrompt('fhbf', '', '');
+      await agent.prompt.clickSaveButton();
+    },
+    {},
+    { minRequestCount: 0 }
+  );
+
+  await fillPromptAndVerifyApi(
+    page,
+    async () => {
       await agent.prompt.fillPrompt('', '', '');
       await agent.prompt.clickSaveButton();
     },
