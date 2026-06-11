@@ -17,6 +17,7 @@ test('compare published and current prompt', async ({ agents, page }) => {
     page,
     async () => {
       await agent.prompt.fillPrompt(role, goal, instruction);
+      await agent.prompt.clickSaveButton();
     },
     {
       role,
