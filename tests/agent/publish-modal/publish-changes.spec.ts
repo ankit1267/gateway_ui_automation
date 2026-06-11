@@ -55,7 +55,7 @@ test.describe('Publish Modal - Changes Visibility', () => {
     await agent.header.closePublishModal();
 
     // -------- Restore Original Model --------
-    await agent.model.selectModel(originalModel);
+    await agent.model.selectModel('gpt-5-mini');
   });
 
   test('TC-PUB-CHANGES-03: Prompt change is visible in publish modal changes summary', async ({ page, agents }) => {
