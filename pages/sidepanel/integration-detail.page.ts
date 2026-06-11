@@ -157,7 +157,18 @@ export class IntegrationDetailPage {
   }
 
   async fillSendData(data: string) {
-    await this.testingSendDataInput.fill(data);
+    // The send-data input is a code editor (Monaco/CodeMirror) wrapper <div>,
+    // so .fill() cannot be used directly. Focus the inner editable area,
+    // select-all and type the new content.
+    const editable = this.testingSendDataInput
+      .locator('textarea, [contenteditable="true"]')
+      .first();
+    await editable.waitFor({ state: 'attached' });
+    await editable.click();
+    const modifier = process.platform === 'darwin' ? 'Meta' : 'Control';
+    await this.page.keyboard.press(`${modifier}+A`);
+    await this.page.keyboard.press('Delete');
+    await this.page.keyboard.type(data);
   }
 
   async clickSendData() {
