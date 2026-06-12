@@ -458,6 +458,14 @@ async clickOutsideToSave() {
         return this.page.getByTestId('auto-select-model-toggle').isChecked();
     }
 
+    async expectAutoSelectModelToggleUnchecked() {
+        await expect(this.page.getByTestId('auto-select-model-toggle')).not.toBeChecked();
+    }
+
+    async expectAutoSelectModelToggleChecked() {
+        await expect(this.page.getByTestId('auto-select-model-toggle')).toBeChecked();
+    }
+
     async getSelectedModelText(): Promise<string> {
         return (await this.model.textContent()) ?? '';
     }

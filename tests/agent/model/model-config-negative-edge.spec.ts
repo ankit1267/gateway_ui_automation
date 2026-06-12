@@ -14,6 +14,7 @@ test.describe('Model Configuration - Service Provider & Model List', () => {
         const agent = await agents.openAgent(AGENT_NAME);
         await agent.tabs.openModel();
         await agent.model.selectServiceProvider('Mistral');
+        await agent.model.uncheckAutoSelectModelToggle();
 
         const mistralModels = [
             'mistral-medium-latest',
@@ -30,6 +31,7 @@ test.describe('Model Configuration - Service Provider & Model List', () => {
         const agent = await agents.openAgent(AGENT_NAME);
         await agent.tabs.openModel();
         await agent.model.selectServiceProvider('Openai');
+        await agent.model.uncheckAutoSelectModelToggle();
 
         const openAiModels = [
             'gpt-5',
@@ -47,7 +49,8 @@ test.describe('Model Configuration - Service Provider & Model List', () => {
         const agent = await agents.openAgent(AGENT_NAME);
         await agent.tabs.openModel();
         await agent.model.selectServiceProvider('Anthropic');
-
+        await agent.model.expectAutoSelectModelToggleUnchecked();
+        
         const anthropicModels = [
             'claude-opus-4-6',
             'claude-sonnet-4-6'
@@ -60,6 +63,7 @@ test.describe('Model Configuration - Service Provider & Model List', () => {
         const agent = await agents.openAgent(AGENT_NAME);
         await agent.tabs.openModel();
         await agent.model.selectServiceProvider('Groq');
+        // await agent.model.uncheckAutoSelectModelToggle();
 
         const groqModels = [
             'llama-3.3-70b-versatile',
@@ -73,6 +77,7 @@ test.describe('Model Configuration - Service Provider & Model List', () => {
         const agent = await agents.openAgent(AGENT_NAME);
         await agent.tabs.openModel();
         await agent.model.selectServiceProvider('Gemini');
+        await agent.model.uncheckAutoSelectModelToggle();
 
         const geminiModels = [
             'gemini-2.5-pro',
@@ -86,6 +91,7 @@ test.describe('Model Configuration - Service Provider & Model List', () => {
         const agent = await agents.openAgent(AGENT_NAME);
         await agent.tabs.openModel();
         await agent.model.selectServiceProvider('Grok');
+        // await agent.model.uncheckAutoSelectModelToggle();
 
         const grokModels = [
             'grok-4-fast',
