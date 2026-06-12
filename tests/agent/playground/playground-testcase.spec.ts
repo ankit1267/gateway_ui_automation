@@ -16,6 +16,7 @@ test.describe('Playground Test Case Sidebar', () => {
     await agent.playground.expectChatControlsVisible();
 
     await agent.playground.clickAddNewTestCase();
+    await agent.playground.clickCreateTestCase();
 
     await agent.playground.toggleTestCases();
     await agent.playground.expectTestCaseSidebarVisible();

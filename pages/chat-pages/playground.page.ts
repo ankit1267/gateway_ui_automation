@@ -21,7 +21,7 @@ export class PlaygroundPage {
 
   // Chat controls
   readonly messageTextarea: Locator;
-  readonly strategySelect: Locator;
+  // readonly strategySelect: Locator;
   readonly addTestCaseButton: Locator;
 
   // Edit message
@@ -52,6 +52,7 @@ export class PlaygroundPage {
 
   // YouTube link
   readonly chatYoutubeLink: Locator;
+  readonly addTestCaseCreateButton: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -69,8 +70,8 @@ export class PlaygroundPage {
 
     // Chat controls
     this.messageTextarea = page.getByTestId('chat-message-textarea');
-    this.strategySelect = page.getByTestId('chat-strategy-select');
-    this.addTestCaseButton = page.getByTestId('chat-add-testcase-button');
+    // this.strategySelect = page.getByTestId('chat-strategy-select');
+    this.addTestCaseButton = page.getByTestId('chat-add-conversation-to-testcase-button');
 
     // Edit message
     this.chatEditTextarea = page.getByTestId('chat-edit-textarea');
@@ -105,6 +106,8 @@ export class PlaygroundPage {
     this.testcaseSidebar = page.getByTestId('testcase-sidebar');
     this.testcaseRunAllButton = page.getByTestId('testcase-run-all-button');
     this.testcaseListContainer = page.getByTestId('testcase-list-container');
+
+       this.addTestCaseCreateButton = page.getByTestId('add-testcase-create-button');
   }
 
   // --- Basic chat actions ---
@@ -138,34 +141,32 @@ export class PlaygroundPage {
 
   async expectChatControlsVisible() {
     await expect(this.addTestCaseButton).toBeVisible();
-    await expect(this.strategySelect).toBeVisible();
+    // await expect(this.strategySelect).toBeVisible();
   }
 
   async expectChatControlsNotVisible() {
     await expect(this.addTestCaseButton).not.toBeVisible();
-    await expect(this.strategySelect).not.toBeVisible();
+   
+      // await expect(this.strategySelect).not.toBeVisible();
   }
-
-  async selectStrategy(strategy: 'cosine' | 'ai' | 'exact') {
-    // Wait for the strategy select to be stable before interacting
-    await this.strategySelect.waitFor({ state: 'attached', timeout: 5000 });
-    await this.strategySelect.waitFor({ state: 'visible', timeout: 5000 });
-    
-    try {
-      await this.strategySelect.selectOption(strategy);
-    } catch (error) {
-      // If element is detached, wait and retry with fresh locator
-      await this.page.waitForTimeout(1000);
-      const freshStrategySelect = this.page.getByTestId('chat-strategy-select');
-      await freshStrategySelect.waitFor({ state: 'attached', timeout: 5000 });
-      await freshStrategySelect.waitFor({ state: 'visible', timeout: 5000 });
-      await freshStrategySelect.selectOption(strategy);
-    }
+ 
+  async selectStrategy(index: number, strategy: 'cosine' | 'ai' | 'exact') {
+    const runButton = this.page.getByTestId(`chat-run-test-button-${index}`);
+    await runButton.click();
+    const option = this.page.locator('ul.dropdown-content').getByRole('button', { name: strategy, exact: false });
+    await option.click();
   }
+  
 
   async clickAddNewTestCase() {
     await this.addTestCaseButton.click();
+
   }
+
+  async clickCreateTestCase() {
+    await this.addTestCaseCreateButton.click();
+  }
+ 
 
   async toggleTestCases() {
     await this.toggleTestCasesButton.click();
@@ -400,7 +401,7 @@ export class PlaygroundPage {
 
     const responsePromise = this.page.waitForResponse(
       (resp) =>
-        resp.url().includes('/api/v2/model/playground/chat/completion/') &&
+        resp.url().includes('/api/v2/model/chat/completion') &&
         resp.request().method() === 'POST' &&
         resp.status() === 200,
       { timeout }
@@ -465,7 +466,7 @@ export class PlaygroundPage {
    * Verifies the run-test-case API request body contains expected fields.
    */
   verifyRunTestCaseRequestBody(requestBody: any) {
-    expect(requestBody).toHaveProperty('version_id');
+    expect(requestBody).toHaveProperty('version_ids');
     expect(requestBody).toHaveProperty('testcase_id');
     expect(requestBody).toHaveProperty('bridge_id');
     expect(requestBody.testcases).toBe(true);

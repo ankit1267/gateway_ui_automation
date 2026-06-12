@@ -394,7 +394,7 @@ export class ChatbotPage {
 
     const responsePromise = this.page.waitForResponse(
       (resp) =>
-        resp.url().includes('/api/v2/model/playground/chat/completion/') &&
+        resp.url().includes('/api/v2/model/chat/completion') &&
         resp.request().method() === 'POST' &&
         resp.status() === 200,
       { timeout }
