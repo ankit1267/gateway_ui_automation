@@ -29,6 +29,8 @@ test.describe('GTWY Embed - Model Settings', () => {
     const modelName = await sidepanel.integrationDetailPage.getFirstModelNameInService();
 
     await sidepanel.integrationDetailPage.checkModelInSettings(modelName);
+    await sidepanel.integrationDetailPage.reloadEmbed();
+   
     await sidepanel.integrationDetailPage.clickSaveConfig();
 
     await sidepanel.integrationDetailPage.clickFirstAgentInPreview();

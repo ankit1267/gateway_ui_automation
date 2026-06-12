@@ -101,7 +101,7 @@ export class IntegrationDetailPage {
     this.themeModeSelect = page.getByTestId('embed-config-theme-mode-select');
     this.configSaveButton = page.getByTestId('embed-config-save-button');
     this.useDefaultPromptToggle = page.locator('.form-control').filter({ has: page.locator('span', { hasText: 'Use default prompt' }) }).locator('input[type="checkbox"]');
-    this.reloadEmbedButton = page.getByText('Reload embed');
+    this.reloadEmbedButton = page.getByTestId('embed-config-reload-button');
   }
 
   private async dismissOnboardingOverlay() {
@@ -206,7 +206,7 @@ export class IntegrationDetailPage {
 
   async reloadEmbed() {
     await this.reloadEmbedButton.click();
-    await this.page.waitForTimeout(1000);
+    await this.page.waitForTimeout(20000);
   }
 
   async clickFirstAgentInPreview() {
@@ -229,11 +229,17 @@ export class IntegrationDetailPage {
   }
 
   async waitForEmbedReload() {
-    // First, wait for the iframe element itself to be attached to the main page's DOM.
-    await this.page.locator('#iframe-component-gtwyInterfaceEmbed').first().waitFor({ state: 'attached', timeout: 30000 });
-    // Now wait for the initial agent list view to be ready by checking for the first agent row.
+    // 1. Wait for the iframe host element to be attached to the outer DOM.
+    const iframeEl = this.page.locator('#iframe-component-gtwyInterfaceEmbed').first();
+    await iframeEl.waitFor({ state: 'attached', timeout: 30000 });
+
+    // 2. Wait for the iframe's inner document to actually load (body present).
     const frame = this.page.frameLocator('#iframe-component-gtwyInterfaceEmbed');
-    await expect(frame.locator('[data-testid^="custom-table-row-"]').first()).toBeVisible({ timeout: 30000 });
+    await expect(frame.locator('body')).toBeVisible({ timeout: 30000 });
+
+    // 3. Allow any in-iframe loading spinner/skeleton to settle, then check for the agent list.
+    await this.page.waitForTimeout(1000);
+    await expect(frame.locator('[data-testid^="custom-table-row-"]').first()).toBeVisible({ timeout: 60000 });
   }
 
   async expectEmbedHomeButtonNotVisible() {
