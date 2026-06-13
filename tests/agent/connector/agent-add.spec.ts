@@ -2,7 +2,7 @@ import { test, expect } from '../../../fixtures/base.fixture';
 import { openAgentAndAssertApi } from '../../../utils/agent-api';
 
 const TESTING_AGENT_NAME = process.env.TESTING_AGENT!;
-const A2A_AGENT = process.env.AGENT_NAME!;
+const A2A_AGENT = 'Motivation Master';
 
 test('Agent renders inside embed container after selection', async ({
   agents, page,
@@ -31,6 +31,7 @@ test('Agent renders inside embed container after selection', async ({
 
   // action AFTER promises are set up - prevents race condition
   await agent.connectors.a2aDropdown.selectAgent(A2A_AGENT);
+  await page.getByTestId('agent-description-save-button').click();
 
   // resolve responses ONCE
   const versionRes = await versionApiPromise;
