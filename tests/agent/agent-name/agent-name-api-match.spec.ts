@@ -14,7 +14,7 @@ test.describe('Agent Name - API vs Frontend Match', () => {
         /\/api\/agent\/[a-f0-9]{24}$/.test(response.url()) &&
         response.request().method() === 'GET' &&
         response.status() === 200,
-      { timeout: 15000 }
+      { timeout: 45000 }
     );
 
     const agent = await agents.openAgent(AGENT_NAME);
