@@ -4,7 +4,9 @@ test.describe('GTWY Embed - Configuration', () => {
 
   test.beforeEach(async ({ sidepanel }) => {
     await sidepanel.gotoIntegration();
+    await sidepanel.page.waitForTimeout(5000);
     await sidepanel.integrationPage.waitForPage();
+    await sidepanel.page.waitForTimeout(5000);
     await sidepanel.integrationPage.openFirstRow();
     await sidepanel.integrationDetailPage.waitForPage();
     await sidepanel.integrationDetailPage.clickConfigurationTab();
