@@ -196,6 +196,9 @@ test.describe('Model - Auto Select Model Toggle', () => {
       'cost'
     );
 
+    await agent.tabs.openPrompt();
+    await agent.prompt.selectResponseType('default');
+
     await agent.chatbot.sendMessage('What is the capital of France?');
     await agent.chatbot.waitForResponseComplete();
     await agent.chatbot.expectResponse(/Paris/i);
