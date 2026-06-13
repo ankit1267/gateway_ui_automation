@@ -38,7 +38,7 @@ test('TC-age-01: Query agentic knowledge base chatbot and verify tool call in re
 test('TC-sem-01: Query semantic knowledge base chatbot and verify tool call in response', async ({ agents, page }) => {
   await agents.goto('chatbot');
   const agent = await agents.openAgent(SEMANTIC_AGENT_NAME);
-  await page.waitForTimeout(4000);
+  await page.waitForTimeout(10000);
   await agent.chatbot.sendMessage('tell me about new computing technologies');
 await agent.chatbot.waitForResponseComplete(120000);
   await agent.chatbot.expectResponse(/get_knowledge_base_data/i);
