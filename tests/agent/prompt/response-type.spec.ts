@@ -1,6 +1,7 @@
 import { test, expect } from '../../../fixtures/base.fixture';
 import { selectResponseTypeAndVerifyApi } from '../../../utils/response-type-api';
 
+
 const AGENT_NAME = process.env.AGENT_NAME!;
 
 function logResponseTypeApiCapture(selectedType: string, captured: { requestCount: number; responseType: string; requestBody: Record<string, unknown> }) {
@@ -26,14 +27,7 @@ test.describe('Prompt - Response Type', () => {
 
     await agent.tabs.openPrompt();
 
-    const defaultCapture = await selectResponseTypeAndVerifyApi(
-      page,
-      async () => {
-        await agent.prompt.selectResponseType('default');
-      },
-      'default',
-    );
-    logResponseTypeApiCapture('default', defaultCapture);
+   
 
     const textCapture = await selectResponseTypeAndVerifyApi(
       page,
@@ -43,6 +37,16 @@ test.describe('Prompt - Response Type', () => {
       'text',
     );
     logResponseTypeApiCapture('text', textCapture);
+
+    const defaultCapture = await selectResponseTypeAndVerifyApi(
+      page,
+      async () => {
+        await agent.prompt.selectResponseType('default');
+      },
+      'default',
+    );
+    logResponseTypeApiCapture('default', defaultCapture);
+
 
     const jsonObjectCapture = await selectResponseTypeAndVerifyApi(
       page,
