@@ -100,6 +100,24 @@ export class HistoryPage {
         await this.closeToolItemBtn.click();
     }
 
+    async clickMainAgent() {
+        const mainAgent = this.page.locator('[data-testid^="thread-item-"]').filter({ hasText: /Sales Assistant|Parental Guidance/ }).first();
+        await expect(mainAgent).toBeVisible();
+        await mainAgent.click();
+    }
+
+    async clickSubAgent() {
+        const subAgent = this.page.locator('[data-testid^="thread-item-"]').filter({ hasText: /sales_agent_B|Sub-agent/ }).first();
+        await expect(subAgent).toBeVisible();
+        await subAgent.click();
+    }
+
+    async verifyVariableInModal(key: string, value: string) {
+        await this.toolsDataModal.waitFor({ state: 'visible' });
+        const variableRow = this.toolsDataModal.locator('div').filter({ hasText: key }).filter({ hasText: value });
+        await expect(variableRow).toBeVisible({ timeout: 30000 });
+    }
+
     // --- Thread container ---
 
     private get firstSidebarThread(): Locator {
