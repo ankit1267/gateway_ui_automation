@@ -1,5 +1,6 @@
 ﻿import { test } from "../../../fixtures/base.fixture";
 import { fillPromptAndVerifyApi, fillAllPromptFieldsAndVerifyApi } from '../../../utils/fill-prompt-api';
+import { selectServiceProviderWithApi } from '../../../utils/model-api';
 
 const AGENT_NAME = process.env.TESTING_AGENT!
 //dependent on css class if css class change it will break
@@ -48,7 +49,13 @@ test('TC-02 : Agent setup card updates dynamically when prompt entered', async (
 
   await agent.tabs.openModel();
   const changed = await agent.model.selectServiceProviderIfNeeded("Grok");
-  await agent.header.expectSavedVisible();
+  if (changed) {
+    await selectServiceProviderWithApi(
+      page,
+      () => agent.model.selectServiceProvider('Grok'),
+      'grok'
+    );
+  }
   
 
   await agent.prompt.expectAgentSetupGuideVisible();
