@@ -37,7 +37,7 @@ export class HistoryPage {
             .first();
         this.closeToolItemBtn = page.getByTestId('tools-data-modal-close-button');
         this.threadItemVar = page.getByTestId('thread-item-user-variables-button').first();
-        this.pre_function = page.getByRole('heading', { name: 'pre_function' });
+      this.pre_function = page.locator('span').filter({ hasText: 'pre_function' }).first();
         this.showGeneratedButton = page.getByTestId('edit-message-show-generated-button');
 
         // Thread container
@@ -85,11 +85,9 @@ export class HistoryPage {
     }
 
     async verifyPreToolVariableVisible(message: string | RegExp) {
-        const preFunctionSection = this.page
-            .getByRole('heading', { name: 'pre_function' })
-            .locator('..');
+     const preFunctionRow = this.pre_function.locator('..');
 
-        await expect(preFunctionSection).toContainText(message);
+        await expect(preFunctionRow).toContainText(message);
     }
     async verifyVariableVisible(message: string | RegExp) {
         await this.toolsDataModal.waitFor({ state: 'visible' });
