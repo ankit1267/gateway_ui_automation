@@ -13,25 +13,25 @@ test('Playground strategy selection', async ({ agents }) => {
   
   await agent.playground.typeMessageAndWaitForApi('hi');
   await agent.playground.expectChatControlsVisible();
-  await agent.playground.expectChatMessageVisible(1);
+  await agent.playground.expectChatMessageVisible(0);
 
   // Select cosine and verify it is sent in the next chat API request
-  await agent.playground.selectStrategy('cosine');
+  await agent.playground.selectStrategy(0, 'cosine');
   const { requestBody: cosineReq } = await agent.playground.typeMessageAndWaitForApi('test cosine');
   agent.playground.verifyChatStrategy(cosineReq, 'cosine');
-  await agent.playground.expectChatMessageVisible(3);
+  await agent.playground.expectChatMessageVisible(2);
 
   // Select ai and verify
-  await agent.playground.selectStrategy('ai');
+  await agent.playground.selectStrategy(2, 'ai');
   const { requestBody: aiReq } = await agent.playground.typeMessageAndWaitForApi('test ai');
   agent.playground.verifyChatStrategy(aiReq, 'ai');
-  await agent.playground.expectChatMessageVisible(5);
+  await agent.playground.expectChatMessageVisible(4);
 
   // Select exact and verify
-  await agent.playground.selectStrategy('exact');
+  await agent.playground.selectStrategy(4, 'exact');
   const { requestBody: exactReq } = await agent.playground.typeMessageAndWaitForApi('test exact');
   agent.playground.verifyChatStrategy(exactReq, 'exact');
-  await agent.playground.expectChatMessageVisible(7);
+  await agent.playground.expectChatMessageVisible(6);
 });
 
 test('Playground add new test case click open new playground', async ({ agents }) => {
@@ -46,9 +46,9 @@ test('Playground add new test case click open new playground', async ({ agents }
   await agent.playground.typeMessage('hi');
   await agent.playground.expectChatControlsVisible();
 
-  await agent.playground.selectStrategy('cosine');
-  await agent.playground.selectStrategy('ai');
-  await agent.playground.selectStrategy('exact');
+  await agent.playground.selectStrategy(0, 'cosine');
+  await agent.playground.selectStrategy(0, 'ai');
+  await agent.playground.selectStrategy(0, 'exact');
 
   await agent.playground.clickAddNewTestCase();
   await agent.playground.expectChatControlsNotVisible();
@@ -67,5 +67,5 @@ test('Playground send message and verify response', async ({ agents }) => {
   agent.playground.verifyChatRequestBody(requestBody, 'hi');
   agent.playground.verifyChatResponseBody(responseBody);
 
-  await agent.playground.expectChatMessageVisible(1);
+  await agent.playground.expectChatMessageVisible(0); 
 });
