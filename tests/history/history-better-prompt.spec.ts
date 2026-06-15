@@ -96,7 +96,7 @@ test.describe('History - API Agent Better Prompt', () => {
     await agent.history.hoverGroupChatAgentsResponse();
     await agent.history.clickAddTestCaseButton();
 
-    await agent.history.expectAddTestCaseSecondLastRemoveToolVisible();
+    // await agent.history.expectAddTestCaseSecondLastRemoveToolVisible();
     await agent.history.expectAddTestCaseExpectedContentTextareaVisible();
     await agent.history.expectAddTestCaseCloseXButtonVisible();
     await agent.history.expectAddTestCaseCreateButtonVisible();

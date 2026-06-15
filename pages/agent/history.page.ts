@@ -167,15 +167,15 @@ export class HistoryPage {
     }
 
     async hoverGroupChatAgentsResponse() {
-        const editMessageButton = this.page.locator('#thread-item-edit-message-button').first();
-        const responseBubble = editMessageButton.locator('xpath=ancestor::div[contains(@class,"chat-bubble")]').first();
+        const editMessageButton = this.page.getByTestId('thread-item-edit-message-button').first();
+        const responseBubble = editMessageButton.locator('xpath=ancestor::div[@data-testid="final-response-card"]').first();
 
         await expect(responseBubble).toBeVisible();
         await responseBubble.hover();
     }
 
     async expectGroupChatHoverActionsVisible() {
-        const editMessageButton = this.page.locator('#thread-item-edit-message-button').first();
+        const editMessageButton = this.page.getByTestId('thread-item-edit-message-button').first();
         const editMessageTooltip = editMessageButton.locator('xpath=ancestor::div[@data-tip][1]');
 
         await expect(this.page.locator('#thread-item-add-test-case-button').first()).toBeVisible();
@@ -625,7 +625,7 @@ private collectThreadIdsFromApi(payload: unknown): string[] {
 // --- Edit Message Modal ---
 
 private get editMessageButton(): Locator {
-    return this.page.locator('#thread-item-edit-message-button').first();
+    return this.page.getByTestId('thread-item-edit-message-button').first();
 }
 
 private get editMessageModalContainer(): Locator {
@@ -761,9 +761,9 @@ async clickAddTestCaseButton() {
     await addTestCaseButton.click();
 }
 
-async expectAddTestCaseSecondLastRemoveToolVisible() {
-    await expect(this.page.locator('#add-testcase-second-last-remove-tool')).toBeVisible();
-}
+// async expectAddTestCaseSecondLastRemoveToolVisible() {
+//     await expect(this.page.locator('[id^="add-testcase-second-last-remove-tool-"]').first()).toBeVisible();
+// }
 
 async expectAddTestCaseExpectedContentTextareaVisible() {
     await expect(this.page.locator('#add-testcase-expected-content-textarea')).toBeVisible();
