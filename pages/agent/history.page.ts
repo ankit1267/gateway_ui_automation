@@ -17,6 +17,7 @@ export class HistoryPage {
     private readonly aiConfigButton: Locator;
     private readonly systemPromptButton: Locator;
     private readonly moreButton: Locator;
+    private readonly latencyButton: Locator;
 
     // Message type selectors
     private readonly selectChatbotMessage: Locator;
@@ -49,6 +50,7 @@ export class HistoryPage {
         this.aiConfigButton = page.getByTestId('thread-item-user-aiconfig-button').first();
         this.systemPromptButton = page.getByTestId('thread-item-user-system-prompt-button').first();
         this.moreButton = page.getByTestId('thread-item-user-more-button').first();
+        this.latencyButton = page.getByTestId('thread-item-user-latency-button').first();
 
         // Message type selectors
         this.selectChatbotMessage = page.getByTestId('thread-item-select-chatbot-message');
@@ -206,6 +208,9 @@ export class HistoryPage {
 
     async clickMore() {
         await this.moreButton.click();
+    }
+    async clicklatency() {
+        await this.latencyButton.click();
     }
 
     async clickVisualizeButton() {
@@ -476,6 +481,19 @@ private get chatDetailsViewModal(): Locator {
 async expectChatDetailsModalVisible() {
     await expect(this.chatDetailsViewModal).toBeVisible();
 }
+// Replace expectChatDetailsModalVisible with these for the respective actions:
+async expectInlineVariablesVisible() {
+    await expect(this.page.locator('span').filter({ hasText: 'Variables' })).toBeVisible();
+}
+ 
+async expectInlineSystemPromptVisible() {
+    await expect(this.page.getByText('System Prompt')).toBeVisible();
+}
+ 
+async expectInlineMoreDetailsVisible() {
+    await expect(this.page.getByText('Optional Details')).toBeVisible();
+}
+
 
 async closeChatDetailsModal() {
     await this.chatDetailsViewModal.getByTestId('chat-details-close-button').click();
@@ -695,7 +713,7 @@ async expectPromptRegenerateButtonVisible() {
     await expect(this.historyPromptRegenerateButton).toBeVisible();
 }
 
-async clickPromptRegenerateButtonFromModal() {
+async clickPromptRegenerateButton() {
     await expect(this.historyPromptRegenerateButton).toBeVisible();
     await this.historyPromptRegenerateButton.click();
 }
@@ -703,17 +721,6 @@ async clickPromptRegenerateButtonFromModal() {
 async clickShowGeneratedButton() {
     await expect(this.showGeneratedButton).toBeVisible();
     await this.showGeneratedButton.click();
-}
-
-
-async clickSaveButton() {
-    await expect(this.historyPromptSaveButton).toBeVisible();
-    await this.historyPromptSaveButton.click();
-}
-
-async clickPromptRegenerateButton() {
-    await expect(this.historyPromptRegenerateButton).toBeVisible();
-    await this.historyPromptRegenerateButton.click();
 }
 
 async clickPromptSaveButton() {
