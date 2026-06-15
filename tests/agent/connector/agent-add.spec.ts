@@ -29,6 +29,9 @@ test('Agent renders inside embed container after selection', async ({
     res.request().method() === 'PUT'
   );
 
+  // remove agent if already present before adding
+  await agent.connectors.removeConnectedAgentIfExists(A2A_AGENT);
+
   // action AFTER promises are set up - prevents race condition
   await agent.connectors.a2aDropdown.selectAgent(A2A_AGENT);
   await page.getByTestId('agent-description-save-button').click();
