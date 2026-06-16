@@ -154,7 +154,9 @@ export class ConnectersPage {
         const agentText = this.agentList.getByText(agentName, { exact: true });
         if (!await agentText.isVisible()) return;
         await agentText.hover();
-        await this.agentList.getByTitle('Remove').click();
+        // Locate delete button by data-testid pattern
+        const deleteButton = this.agentList.getByTestId(/connected-agent-delete-button-/).first();
+        await deleteButton.click();
         const removeAgentBtn = this.page.getByRole('button', { name: 'Remove Agent' });
         await expect(removeAgentBtn).toBeVisible();
         await removeAgentBtn.click();

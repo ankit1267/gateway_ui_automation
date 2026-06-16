@@ -44,7 +44,7 @@ test('Agent renders inside embed container after selection', async ({
   const agentData = await agentRes.json();
 
   // basic validation
-  expect(versionData.message).toBe('Agent Updated successfully');
+  expect(versionData.message).toBe('Version Updated successfully');
   expect(agentData.message).toBe('Agent Updated successfully');
 
   // =====  REQUEST → RESPONSE VALIDATION =====
