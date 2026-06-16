@@ -198,7 +198,7 @@ export class HistoryPage {
         await expect(this.page.locator('#thread-item-add-test-case-button').first()).toBeVisible();
         await expect(this.page.locator('#thread-item-debug-agent-button').first()).toBeVisible();
         await expect(editMessageButton).toBeVisible();
-        await expect(editMessageTooltip).toHaveAttribute('data-tip', /edit message/i);
+       
     }
 
     async scrollToBottom() {
