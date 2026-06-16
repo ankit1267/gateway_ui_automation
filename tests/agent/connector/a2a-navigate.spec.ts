@@ -19,6 +19,7 @@ test.describe('Connectors - A2A Agent Navigation - API Agent', () => {
   test('TC-CON-A2A-01: After adding connected agent, clicking on it should redirect to that agent page', async ({ agents, page }) => {
     const agent = await agents.openAgent(TESTING_AGENT_NAME);
     await agent.tabs.openConnectors();
+     await agent.connectors.removeConnectedAgentIfExists(AGENT_NAME);
 
     await agent.connectors.clickAddAgent();
     await agent.connectors.a2aDropdown.expectVisible();
