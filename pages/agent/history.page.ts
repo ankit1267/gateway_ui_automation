@@ -185,8 +185,7 @@ export class HistoryPage {
     }
 
     async hoverGroupChatAgentsResponse() {
-        const editMessageButton = this.page.getByTestId('thread-item-edit-message-button').first();
-        const responseBubble = editMessageButton.locator('xpath=ancestor::div[@data-testid="final-response-card"]').first();
+        const responseBubble = this.page.getByTestId('final-response-card').first();
 
         await expect(responseBubble).toBeVisible();
         await responseBubble.hover();
@@ -789,7 +788,16 @@ async clickAddTestCaseButton() {
 // }
 
 async expectAddTestCaseExpectedContentTextareaVisible() {
-    await expect(this.page.locator('#add-testcase-expected-content-textarea')).toBeVisible();
+    // Expected output can be either a content textarea or tool textareas depending on message type
+    const contentTextarea = this.page.locator('#add-testcase-expected-content-textarea');
+    const toolTextareas = this.page.locator('[id^="add-testcase-expected-tool-textarea-"]').first();
+    
+    const isContentVisible = await contentTextarea.isVisible().catch(() => false);
+    const isToolVisible = await toolTextareas.isVisible().catch(() => false);
+    
+    if (!isContentVisible && !isToolVisible) {
+        throw new Error('Neither expected content textarea nor expected tool textareas are visible in the Add Test Case modal');
+    }
 }
 
 async expectAddTestCaseCloseXButtonVisible() {

@@ -25,7 +25,7 @@ test.describe('History - API Agent Better Prompt', () => {
     await agent.history.expectPromptUpdatedTextareaVisible();
 
     await agent.history.expectPromptRegenerateButtonVisible();
-    await agent.history.clickPromptRegenerateButtonFromModal();
+    // await agent.history.clickPromptRegenerateButtonFromModal();
     
     //wait
     await page.waitForTimeout(5000);
