@@ -106,7 +106,7 @@ export class PromptHelperPanel {
 
   async expectTipTapEditorVisible() {
     await expect(
-      this.techDocFrame.locator('#tiptap-editor')
+      this.page.getByTestId('notes-embed-main')
     ).toBeVisible();
   }
 
