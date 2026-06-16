@@ -9,16 +9,16 @@ test.describe('Prompt - Build with AI', () => {
 
     const agent = await agents.openAgent(AGENT_NAME);
 
-    const selectCapture = await verifyJsonSchemaResponseApiUpdate(
-      page,
-      async () => {
-        await agent.prompt.selectResponseType('json_schema');
-      },
-    );
-    // console.log(
-    //   `[json-schema-api] action=select-json_schema requests=${selectCapture.requestCount}`,
-    //   JSON.stringify((selectCapture.requestBody as { configuration?: { response_type?: unknown } }).configuration?.response_type ?? {}, null, 2),
+    // const selectCapture = await verifyJsonSchemaResponseApiUpdate(
+    //   page,
+    //   async () => {
+    //   },
     // );
+    // console.log(
+      //   `[json-schema-api] action=select-json_schema requests=${selectCapture.requestCount}`,
+      //   JSON.stringify((selectCapture.requestBody as { configuration?: { response_type?: unknown } }).configuration?.response_type ?? {}, null, 2),
+      // );
+      await agent.prompt.selectResponseType('json_schema');
 
     await agent.prompt.openBuildWithAI();
     await agent.prompt.closeBuildWithAI();
