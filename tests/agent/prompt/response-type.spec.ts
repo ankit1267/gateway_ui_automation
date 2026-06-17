@@ -61,6 +61,8 @@ test.describe('Prompt - Response Type', () => {
       page,
       async () => {
         await agent.prompt.selectResponseType('json_schema');
+        await agent.prompt.fillJsonSchema('{"type":"object","properties":{"name":{"type":"string"}}}');
+        await page.locator('body').click();
       },
       'json_schema',
     );
