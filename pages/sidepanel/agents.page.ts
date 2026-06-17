@@ -46,6 +46,8 @@ export class AgentsPage {
 
   private readonly customTableView: Locator;
 
+  private readonly trashButton: Locator;
+
   readonly sidebar: Sidebar;
 
   readonly knowledgeBasePage: KnowledgeBasePage;
@@ -87,6 +89,8 @@ export class AgentsPage {
     this.searchInput = this.page.getByTestId('search-items-input').last();
 
     this.customTableView = this.page.getByTestId('custom-table-view').first();
+
+    this.trashButton = this.page.getByTestId('folder-tab-trash');
 
     this.sidebar = new Sidebar(page);
 
@@ -248,19 +252,21 @@ export class AgentsPage {
 
   async deleteAgentByName(agentName: string) {
 
-    const agentRow = this.agentTable
+    // Wait for loading spinner to disappear
+    await this.page.getByTestId('loading-spinner').waitFor({ state: 'hidden', timeout: 30000 }).catch(() => {});
 
-      .filter({ hasText: agentName })
+    // Wait for the custom table to be visible first
+    await expect(this.customTable).toBeVisible();
 
-      .first();
+    // Find the agent row using the same pattern as getAgentRow
+    const agentRow = this.agentTable.filter({ hasText: agentName }).first();
 
-
-
+    // Wait for the row to be visible
     await expect(agentRow).toBeVisible();
 
 
 
-    const rowMenuBtn = agentRow.locator('[role="button"]').last();
+    const rowMenuBtn = agentRow.locator('[data-testid^="agent-action-dropdown-btn-"]');
 
     const deleteAgentBtn = this.page.getByRole('button', { name: 'Delete Agent' });
 
@@ -296,6 +302,12 @@ export class AgentsPage {
 
   async cancelDeleteAgentByName(agentName: string) {
 
+    // Wait for loading spinner to disappear
+    await this.page.getByTestId('loading-spinner').waitFor({ state: 'hidden', timeout: 30000 }).catch(() => {});
+
+    // Wait for the custom table to be visible first
+    await expect(this.customTable).toBeVisible();
+
     const agentRow = this.agentTable
 
       .filter({ hasText: agentName })
@@ -308,7 +320,7 @@ export class AgentsPage {
 
 
 
-    const rowMenuBtn = agentRow.locator('[role="button"]').last();
+    const rowMenuBtn = agentRow.locator('[data-testid^="agent-action-dropdown-btn-"]');
 
     const deleteAgentBtn = this.page.getByRole('button', { name: 'Delete Agent' });
 
@@ -351,6 +363,14 @@ export class AgentsPage {
     await row.hover();
 
     await expect(row.getByText(`${days} days left`)).toBeVisible();
+
+  }
+
+  async clickTrash() {
+
+    await expect(this.trashButton).toBeVisible();
+
+    await this.trashButton.click();
 
   }
 
@@ -437,6 +457,11 @@ export class AgentsPage {
     await expect(this.getAgentRow(agentName)).toBeVisible();
 
   }
+  async assertAgentnotVisible(agentName: string) {
+
+    await expect(this.getAgentRow(agentName)).not.toBeVisible();
+
+  }
 
 
 
@@ -444,7 +469,7 @@ export class AgentsPage {
 
     const row = this.getAgentRow(agentName);
 
-    await row.getByRole('button').last().click();
+    await row.locator('[data-testid^="agent-action-dropdown-btn-"]').click();
 
   }
 

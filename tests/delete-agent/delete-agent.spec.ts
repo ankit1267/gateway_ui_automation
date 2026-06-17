@@ -10,12 +10,14 @@ test.describe('Agent - Delete', () => {
 
   test('TC-AGENT-01: Delete agent and undo deletion from agents list', async ({ agents }) => {
     await agents.deleteAgentByName(DELETE_AGENT);
-    await agents.assertAgentVisible(DELETE_AGENT);
+    await agents.assertAgentnotVisible(DELETE_AGENT);
+    await agents.clickTrash();
     await agents.undoDeleteAgentByName(DELETE_AGENT);
   });
 
   test('TC-AGENT-02: Verify 30 days left countdown is visible after agent deletion', async ({ agents }) => {
     await agents.deleteAgentByName(DELETE_AGENT);
+    await agents.clickTrash();
     await agents.verifyDeleteCountdown(DELETE_AGENT, 30);
     await agents.undoDeleteAgentByName(DELETE_AGENT);
   });
