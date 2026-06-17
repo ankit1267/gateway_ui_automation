@@ -403,6 +403,20 @@ export class ChatbotConfigPage {
     }, color);
   }
 
+  async fillConfigDefaultMessage(message: string) {
+    const input = this.configSidebarContent.getByTestId('chatbot-config-default-message');
+    await input.clear();
+    await input.fill(message);
+    await input.blur();
+  }
+
+  async fillConfigDefaultErrorMessage(message: string) {
+    const input = this.configSidebarContent.getByTestId('chatbot-config-default-error-message');
+    await input.clear();
+    await input.fill(message);
+    await input.blur();
+  }
+
   async getConfigThemeColorDisplay(): Promise<string> {
     return await this.configSidebarContent.getByTestId('chatbot-config-theme-color').evaluate((el: HTMLInputElement) => el.value);
   }
@@ -437,6 +451,37 @@ export class ChatbotConfigPage {
 
   async expectFloatingButton() {
     await expect(this.page.locator('#interfaceEmbed')).toBeVisible({ timeout: 15000 });
+  }
+
+  async openChatbotInPreview() {
+    await this.page.evaluate(() => {
+      if ((window as any).Chatbot?.open) {
+        (window as any).Chatbot.open();
+      }
+    });
+  }
+
+  async sendMessageInPreview(message: string) {
+    const frame = this.getPreviewFrame();
+    const input = frame.getByRole('textbox').first();
+    await input.fill(message);
+    await input.press('Enter');
+  }
+
+  async expectPreviewMessageVisible(text: string) {
+    const frame = this.getPreviewFrame();
+    await expect(frame.getByText(text).first()).toBeVisible({ timeout: 30000 });
+  }
+
+  async expectPreviewBotResponseVisible() {
+    const frame = this.getPreviewFrame();
+    const messages = frame.locator('[data-testid^="chat-message-"]');
+    await expect.poll(async () => {
+      const count = await messages.count();
+      if (count === 0) return 0;
+      const text = await messages.nth(count - 1).textContent();
+      return text?.trim().length ?? 0;
+    }, { timeout: 60000 }).toBeGreaterThan(20);
   }
 
   async expectShowAccessKeyRevealsKeyWithCopy() {

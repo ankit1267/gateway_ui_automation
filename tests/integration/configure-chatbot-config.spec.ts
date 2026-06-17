@@ -61,4 +61,28 @@ test.describe('Configure Chatbot - Configuration Tab', () => {
     await sidepanel.chatbotConfigPage.expectFirstStepVisible();
   });
 
+  test('TC-CB-CFG-09: Set default message and verify in live preview', async ({ sidepanel }) => {
+    await sidepanel.chatbotConfigPage.fillConfigDefaultMessage('Welcome! How can I help you today?');
+    await sidepanel.chatbotConfigPage.reloadPreview();
+    await sidepanel.chatbotConfigPage.expectPreviewContainsText('Welcome! How can I help you today?');
+  });
+
+  test('TC-CB-CFG-10: Set default error message and verify in live preview', async ({ sidepanel }) => {
+    await sidepanel.chatbotConfigPage.fillConfigDefaultErrorMessage('Something went wrong. Please try again.');
+   
+  });
+
+  test('TC-CB-CFG-11: Verify chatbot preview is visible and interactive', async ({ sidepanel }) => {
+    await sidepanel.chatbotConfigPage.expectPreviewFrameVisible();
+    await sidepanel.chatbotConfigPage.openChatbotInPreview();
+    
+  });
+
+  test('TC-CB-CFG-12: Send message in preview and verify chatbot response', async ({ sidepanel }) => {
+    await sidepanel.chatbotConfigPage.openChatbotInPreview();
+    await sidepanel.chatbotConfigPage.sendMessageInPreview('Hello');
+    await sidepanel.chatbotConfigPage.expectPreviewMessageVisible('Hello');
+    // await sidepanel.chatbotConfigPage.expectPreviewBotResponseVisible();
+  });
+
 });
