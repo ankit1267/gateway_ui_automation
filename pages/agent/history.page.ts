@@ -695,6 +695,44 @@ private get historyPromptSaveButton(): Locator {
     return this.page.getByTestId('history-prompt-save-button');
 }
 
+// --- Add Test Case Modal Locators ---
+
+private get addTestCaseModalForm(): Locator {
+    return this.page.locator('#add-testcase-modal-form');
+}
+
+private get addTestCaseNameInput(): Locator {
+    return this.page.getByTestId('add-testcase-name-input');
+}
+
+private get addTestCaseLastUserMessage(): Locator {
+    return this.page.locator('#add-testcase-last-user-message');
+}
+
+private get addTestCaseCloseXButton(): Locator {
+    return this.page.getByTestId('add-testcase-close-x-button');
+}
+
+private get addTestCaseCreateButton(): Locator {
+    return this.page.getByTestId('add-testcase-create-button');
+}
+
+private get addTestCaseCancelButton(): Locator {
+    return this.page.getByTestId('add-testcase-cancel-button');
+}
+
+private get addTestCaseMatchingStrategySelect(): Locator {
+    return this.page.getByTestId('add-testcase-matching-strategy-select');
+}
+
+private get addTestCaseExpectedOutputLabel(): Locator {
+    return this.addTestCaseModalForm.locator('div').filter({ hasText: 'User Expected Output' }).first();
+}
+
+private get addTestCaseBottomPanel(): Locator {
+    return this.page.getByTestId('add-testcase-bottom-panel');
+}
+
 async clickEditMessageButton() {
     await expect(this.editMessageButton).toBeVisible();
     await this.editMessageButton.click();
@@ -787,43 +825,50 @@ async clickAddTestCaseButton() {
 //     await expect(this.page.locator('[id^="add-testcase-second-last-remove-tool-"]').first()).toBeVisible();
 // }
 
+async expectAddTestCaseNameInputVisible() {
+    await expect(this.addTestCaseNameInput).toBeVisible();
+}
+
+async fillAddTestCaseNameInput(text: string) {
+    await expect(this.addTestCaseNameInput).toBeVisible();
+    await this.addTestCaseNameInput.fill(text);
+}
+
+async expectAddTestCaseLastUserMessageVisible() {
+    await expect(this.addTestCaseLastUserMessage).toBeVisible();
+}
+
 async expectAddTestCaseExpectedContentTextareaVisible() {
-    // Expected output can be either a content textarea or tool textareas depending on message type
-    const contentTextarea = this.page.locator('#add-testcase-expected-content-textarea');
-    const toolTextareas = this.page.locator('[id^="add-testcase-expected-tool-textarea-"]').first();
-    
-    const isContentVisible = await contentTextarea.isVisible().catch(() => false);
-    const isToolVisible = await toolTextareas.isVisible().catch(() => false);
-    
-    if (!isContentVisible && !isToolVisible) {
-        throw new Error('Neither expected content textarea nor expected tool textareas are visible in the Add Test Case modal');
-    }
+    // Expected output is displayed as read-only content in the modal
+    await expect(this.addTestCaseExpectedOutputLabel).toBeVisible();
+    await expect(this.addTestCaseBottomPanel).toBeVisible();
 }
 
 async expectAddTestCaseCloseXButtonVisible() {
-    await expect(this.page.getByTestId('add-testcase-close-x-button')).toBeVisible();
+    await expect(this.addTestCaseCloseXButton).toBeVisible();
 }
 
 async expectAddTestCaseCreateButtonVisible() {
-    await expect(this.page.getByTestId('add-testcase-create-button')).toBeVisible();
+    await expect(this.addTestCaseCreateButton).toBeVisible();
 }
 
 async expectAddTestCaseCancelButtonVisible() {
-    await expect(this.page.getByTestId('add-testcase-cancel-button')).toBeVisible();
+    await expect(this.addTestCaseCancelButton).toBeVisible();
 }
 
 async selectAddTestCaseMatchingStrategy(value: string) {
-    const select = this.page.getByTestId('add-testcase-matching-strategy-select');
-    await expect(select).toBeVisible();
-    await select.selectOption(value);
+    await expect(this.addTestCaseMatchingStrategySelect).toBeVisible();
+    await this.addTestCaseMatchingStrategySelect.selectOption(value);
 }
 
 async clickAddTestCaseCreateButton() {
-    await this.page.getByTestId('add-testcase-create-button').click();
+    await expect(this.addTestCaseCreateButton).toBeVisible();
+    await this.addTestCaseCreateButton.click();
 }
 
 async clickAddTestCaseCancelButton() {
-    await this.page.getByTestId('add-testcase-cancel-button').click();
+    await expect(this.addTestCaseCancelButton).toBeVisible();
+    await this.addTestCaseCancelButton.click();
 }
 
 async expectAddTestCaseModalClosed() {
