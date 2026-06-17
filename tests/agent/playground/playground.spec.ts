@@ -10,28 +10,31 @@ test('Playground strategy selection', async ({ agents }) => {
   await agent.model.selectServiceProvider("Openai");
   // await agent.model.clickConfigureApiKey();
   // await agent.model.selectApiKey("Mistral api key");
-  
+
+  // Increase max tokens to 8192
+  await agent.model.increaseMaxTokens(60000);
+
   await agent.playground.typeMessageAndWaitForApi('hi');
   await agent.playground.expectChatControlsVisible();
-  await agent.playground.expectChatMessageVisible(0);
+  await agent.playground.expectChatMessageVisible(1);
 
   // Select cosine and verify it is sent in the next chat API request
-  await agent.playground.selectStrategy(0, 'cosine');
-  const { requestBody: cosineReq } = await agent.playground.typeMessageAndWaitForApi('test cosine');
+  await agent.playground.typeMessageAndWaitForApi('test cosine');
+  const { requestBody: cosineReq } = await agent.playground.selectStrategy(2, 'cosine');
   agent.playground.verifyChatStrategy(cosineReq, 'cosine');
-  await agent.playground.expectChatMessageVisible(2);
+  await agent.playground.expectChatMessageVisible(3);
 
   // Select ai and verify
-  await agent.playground.selectStrategy(2, 'ai');
-  const { requestBody: aiReq } = await agent.playground.typeMessageAndWaitForApi('test ai');
+  await agent.playground.typeMessageAndWaitForApi('test ai');
+  const { requestBody: aiReq } = await agent.playground.selectStrategy(4, 'ai');
   agent.playground.verifyChatStrategy(aiReq, 'ai');
-  await agent.playground.expectChatMessageVisible(4);
+  await agent.playground.expectChatMessageVisible(5);
 
   // Select exact and verify
-  await agent.playground.selectStrategy(4, 'exact');
-  const { requestBody: exactReq } = await agent.playground.typeMessageAndWaitForApi('test exact');
+  await agent.playground.typeMessageAndWaitForApi('test exact');
+  const { requestBody: exactReq } = await agent.playground.selectStrategy(6, 'exact');
   agent.playground.verifyChatStrategy(exactReq, 'exact');
-  await agent.playground.expectChatMessageVisible(6);
+  await agent.playground.expectChatMessageVisible(7);
 });
 
 test('Playground add new test case click open new playground', async ({ agents }) => {

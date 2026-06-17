@@ -153,8 +153,21 @@ export class PlaygroundPage {
   async selectStrategy(index: number, strategy: 'cosine' | 'ai' | 'exact') {
     const runButton = this.page.getByTestId(`chat-run-test-button-${index}`);
     await runButton.click();
+
+    const responsePromise = this.page.waitForResponse(
+      (resp) =>
+        resp.url().includes('/api/v2/model/testcases') &&
+        resp.request().method() === 'POST' &&
+        resp.status() === 200,
+      { timeout: 100000 }
+    );
+
     const option = this.page.locator('ul.dropdown-content').getByRole('button', { name: strategy, exact: false });
     await option.click();
+
+    const response = await responsePromise;
+    const requestBody = JSON.parse(response.request().postData() || '{}');
+    return { requestBody };
   }
   
 
