@@ -767,7 +767,24 @@ export class PromptPage {
     const saveButton = this.page.getByTestId('prompt-header-save-button');
     await expect(saveButton).toBeEnabled();
     await saveButton.click();
-   
+  }
+
+  async clickSaveButtonAndReturnRequestBody() {
+    const saveButton = this.page.getByTestId('prompt-header-save-button');
+    await expect(saveButton).toBeEnabled();
+
+    const responsePromise = this.page.waitForResponse(
+      (resp) =>
+        /\/api\/versions\/[a-f0-9]+(?:\?|$)/i.test(resp.url()) &&
+        resp.request().method() === 'PUT' &&
+        resp.status() === 200,
+      { timeout: 30000 }
+    );
+
+    await saveButton.click();
+    const response = await responsePromise;
+    const requestBody = JSON.parse(response.request().postData() || '{}');
+    return { requestBody };
   }
 
   //click on instructions input

@@ -49,6 +49,10 @@ export class AgentPage {
     await expect(this.page.getByRole('alert').filter({ hasText: expectedMessage })).toBeVisible();
   }
 
+  async waitForTimeout(ms: number) {
+    await this.page.waitForTimeout(ms);
+  }
+
   get getPage(): Page {
     return this.page;
   }

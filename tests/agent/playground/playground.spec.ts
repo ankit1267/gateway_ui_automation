@@ -55,6 +55,40 @@ test('add new playground', async ({ agents }) => {
   await agent.playground.clickAddNewPlayground();
 });
 
+test('Playground send message verifies prompt fields in request body', async ({ agents }) => {
+  await agents.goto('api');
+  const agent = await agents.openAgent('agent-test-configurator');
+
+  const promptData = {
+    role: 'Test Role Content',
+    goal: 'Test Goal Content',
+    instruction: 'Test Instruction Content'
+  };
+  const promptData1 = {
+    role: 'Test Role Content1',
+    goal: 'Test Goal Content1',
+    instruction: 'Test Instruction Content1'
+  };
+  
+  // Fill and save prompt fields
+  await agent.tabs.openPrompt();
+  await agent.prompt.fillPrompt(promptData.role, promptData.goal, promptData.instruction);
+  await agent.prompt.clickSaveButton();
+  await agent.waitForTimeout(1000);
+  await agent.prompt.fillPrompt(promptData1.role, promptData1.goal, promptData1.instruction);
+   const { requestBody } = await agent.prompt.clickSaveButtonAndReturnRequestBody();
+
+ 
+
+
+  // Verify the request body contains the same prompt values as filled
+  expect(requestBody).toHaveProperty('configuration');
+  expect(requestBody.configuration).toHaveProperty('prompt');
+  expect(requestBody.configuration.prompt.role).toBe(promptData1.role);
+  expect(requestBody.configuration.prompt.goal).toBe(promptData1.goal);
+  expect(requestBody.configuration.prompt.instruction).toBe(promptData1.instruction);
+});
+
 test('Playground send message and verify response', async ({ agents }) => {
   await agents.goto('api');
   const agent = await agents.openAgent(AGENT_NAME);
