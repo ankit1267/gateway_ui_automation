@@ -23,6 +23,7 @@ export class PlaygroundPage {
   readonly messageTextarea: Locator;
   // readonly strategySelect: Locator;
   readonly addTestCaseButton: Locator;
+  readonly addPlaygroundButton: Locator;
 
   // Edit message
   readonly chatEditTextarea: Locator;
@@ -72,6 +73,7 @@ export class PlaygroundPage {
     this.messageTextarea = page.getByTestId('chat-message-textarea');
     // this.strategySelect = page.getByTestId('chat-strategy-select');
     this.addTestCaseButton = page.getByTestId('chat-add-conversation-to-testcase-button');
+    this.addPlaygroundButton = page.getByTestId('chat-reset-chat-button');
 
     // Edit message
     this.chatEditTextarea = page.getByTestId('chat-edit-textarea');
@@ -172,6 +174,11 @@ export class PlaygroundPage {
   
 
   async clickAddNewTestCase() {
+    await this.addTestCaseButton.click();
+
+  }
+
+  async clickAddNewPlayground() {
     await this.addTestCaseButton.click();
 
   }

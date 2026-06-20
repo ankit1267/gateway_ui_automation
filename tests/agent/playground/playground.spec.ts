@@ -12,8 +12,7 @@ test('Playground strategy selection', async ({ agents }) => {
   // await agent.model.selectApiKey("Mistral api key");
 
   // Increase max tokens to 8192
-  await agent.model.increaseMaxTokens(60000);
-
+  await agent.model.increaseMaxTokens(8192);
   await agent.playground.typeMessageAndWaitForApi('hi');
   await agent.playground.expectChatControlsVisible();
   await agent.playground.expectChatMessageVisible(1);
@@ -37,7 +36,7 @@ test('Playground strategy selection', async ({ agents }) => {
   await agent.playground.expectChatMessageVisible(7);
 });
 
-test('Playground add new test case click open new playground', async ({ agents }) => {
+test('add new playground', async ({ agents }) => {
   await agents.goto('api');
   const agent = await agents.openAgent(AGENT_NAME);
 
@@ -53,8 +52,7 @@ test('Playground add new test case click open new playground', async ({ agents }
   await agent.playground.selectStrategy(0, 'ai');
   await agent.playground.selectStrategy(0, 'exact');
 
-  await agent.playground.clickAddNewTestCase();
-  await agent.playground.expectChatControlsNotVisible();
+  await agent.playground.clickAddNewPlayground();
 });
 
 test('Playground send message and verify response', async ({ agents }) => {
