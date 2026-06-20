@@ -58,33 +58,35 @@ test.describe('History - API Agent Better Prompt', () => {
     await agent.history.expectAddTestCaseModalClosed();
   });
 
-  test('TC-HISTORY-10: Add test case with AI matching strategy creates successfully', async ({ agents }) => {
-    const agent = await agents.openAgent(AGENT_NAME);
-    await agent.header.openHistory();
+   // now we remove the option of selecting the matching strategy so test 10 ,11 are not applicable
 
-    await agent.history.openFirstSidebarThread();
-    await agent.history.expectThreadResponseVisible();
+  // test('TC-HISTORY-10: Add test case with AI matching strategy creates successfully', async ({ agents }) => {
+  //   const agent = await agents.openAgent(AGENT_NAME);
+  //   await agent.header.openHistory();
 
-    await agent.history.hoverGroupChatAgentsResponse();
-    await agent.history.clickAddTestCaseButton();
-    await agent.history.selectAddTestCaseMatchingStrategy('ai');
-    await agent.history.clickAddTestCaseCreateButton();
-    await agent.history.expectTestCaseCreatedToastVisible();
-  });
+  //   await agent.history.openFirstSidebarThread();
+  //   await agent.history.expectThreadResponseVisible();
 
-  test('TC-HISTORY-11: Add test case with Exact matching strategy creates successfully', async ({ agents }) => {
-    const agent = await agents.openAgent(AGENT_NAME);
-    await agent.header.openHistory();
+  //   await agent.history.hoverGroupChatAgentsResponse();
+  //   await agent.history.clickAddTestCaseButton();
+  //   await agent.history.selectAddTestCaseMatchingStrategy('ai');
+  //   await agent.history.clickAddTestCaseCreateButton();
+  //   await agent.history.expectTestCaseCreatedToastVisible();
+  // });
 
-    await agent.history.openFirstSidebarThread();
-    await agent.history.expectThreadResponseVisible();
+  // test('TC-HISTORY-11: Add test case with Exact matching strategy creates successfully', async ({ agents }) => {
+  //   const agent = await agents.openAgent(AGENT_NAME);
+  //   await agent.header.openHistory();
 
-    await agent.history.hoverGroupChatAgentsResponse();
-    await agent.history.clickAddTestCaseButton();
-    await agent.history.selectAddTestCaseMatchingStrategy('exact');
-    await agent.history.clickAddTestCaseCreateButton();
-    await agent.history.expectTestCaseCreatedToastVisible();
-  });
+  //   await agent.history.openFirstSidebarThread();
+  //   await agent.history.expectThreadResponseVisible();
+
+  //   await agent.history.hoverGroupChatAgentsResponse();
+  //   await agent.history.clickAddTestCaseButton();
+  //   await agent.history.selectAddTestCaseMatchingStrategy('exact');
+  //   await agent.history.clickAddTestCaseCreateButton();
+  //   await agent.history.expectTestCaseCreatedToastVisible();
+  // });
 
   test('TC-HISTORY-06: Add test case modal form validation and create with cosine strategy', async ({ agents }) => {
     const agent = await agents.openAgent(AGENT_NAME);
@@ -101,8 +103,9 @@ test.describe('History - API Agent Better Prompt', () => {
     await agent.history.expectAddTestCaseCloseXButtonVisible();
     await agent.history.expectAddTestCaseCreateButtonVisible();
     await agent.history.expectAddTestCaseCancelButtonVisible();
-
-    await agent.history.selectAddTestCaseMatchingStrategy('cosine');
+    
+    //now we remove the option of selecting the matching strategy
+    // await agent.history.selectAddTestCaseMatchingStrategy('cosine');
 
     await agent.history.clickAddTestCaseCreateButton();
 
