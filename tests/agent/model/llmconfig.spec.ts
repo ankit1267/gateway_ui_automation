@@ -21,9 +21,16 @@ test('Check if llm configs are working', async ({ agents }) => {
     await model.clickAdvancedParameterDropdown('tool_choice');
     await model.expectAdvancedParameterMenuVisible('tool_choice');
     await model.clickAdvancedParameterDropdown('tool_choice');
+    
+    
     // Test parallel tool calls checkbox
     await model.toggleParallelToolChoice(false);
     await model.toggleParallelToolChoice(true);
+    
+    // Test reasoning dropdown
+    await model.clickAdvancedParameterreasoningDropdown('reasoning');
+    await model.expectAdvancedParameterreasoningVisible('reasoning');
+    await model.clickAdvancedParameterreasoningDropdown('reasoning');
     // Test fallback model toggle works
     await model.toggleFallbackModel(false);
     await model.expectEnableFallbackModelTextVisible();

@@ -189,8 +189,14 @@ export class ModelPage {
     async clickAdvancedParameterDropdown(parameterName: string) {
         await this.page.getByTestId(`advanced-param-dropdown-trigger-${parameterName}`).click();
     }
+    async clickAdvancedParameterreasoningDropdown(parameterName: string) {
+        await this.page.getByTestId(`advanced-param-select-reasoning`).click();
+    }
     async expectAdvancedParameterMenuVisible(parameterName: string) {
         await expect(this.page.getByTestId(`advanced-param-dropdown-menu-${parameterName}`)).toBeVisible();
+    }
+    async expectAdvancedParameterreasoningVisible(parameterName: string) {
+        await expect(this.page.getByTestId(`advanced-param-select-reasoning`)).toBeVisible();
     }
 
     async selectReasoningDropdownDefault() {
@@ -497,5 +503,25 @@ async clickOutsideToSave() {
 
     async expectAutoSelectPreferenceSelected(preference: string) {
         await expect(this.page.getByTestId('auto-select-model-based-on-dropdown-trigger-button')).toContainText(preference);
+    }
+
+    // -------------------------
+    // TOKEN MANAGEMENT
+    // -------------------------
+
+    async increaseMaxTokens(targetValue: number) {
+        return this.setSliderValue('max_tokens', targetValue);
+    }
+
+    async getMaxTokensValue(): Promise<string> {
+        return this.getSliderValue('max_tokens');
+    }
+
+    async clickMaxTokensMaxButton() {
+        await this.clickAdvancedParameterMaxBtn('max_tokens');
+    }
+
+    async clickMaxTokensMinButton() {
+        await this.clickAdvancedParameterMinBtn('max_tokens');
     }
 }
