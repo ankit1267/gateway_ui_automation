@@ -39,10 +39,9 @@ test('History check that connected agent is triggered with variable age', async 
     await agent.header.openHistory();
     await page.waitForTimeout(5000);
 
-    //we have to use this after datatest is added by lavish
-    // await agent.history.clickMainAgent();
-    // await agent.history.clickSubAgent();
-    // await agent.history.verifyVariableInModal('age', '23');
-    // await agent.history.closeToolItem();
+    
+    await agent.history.clickSubAgent();
+    await agent.history.verifyTraceAgentVariable('age', '23');
+   
 
 });
