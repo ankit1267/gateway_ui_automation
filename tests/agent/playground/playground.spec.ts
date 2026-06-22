@@ -11,8 +11,7 @@ test('Playground strategy selection', async ({ agents }) => {
   // await agent.model.clickConfigureApiKey();
   // await agent.model.selectApiKey("Mistral api key");
 
-  // Increase max tokens to 8192
-  await agent.model.increaseMaxTokens(8192);
+  
   await agent.playground.typeMessageAndWaitForApi('hi');
   await agent.playground.expectChatControlsVisible();
   await agent.playground.expectChatMessageVisible(1);
