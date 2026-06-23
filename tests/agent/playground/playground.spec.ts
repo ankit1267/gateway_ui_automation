@@ -73,7 +73,7 @@ test('Playground send message verifies prompt fields in request body', async ({ 
   await agent.tabs.openPrompt();
   await agent.prompt.fillPrompt(promptData.role, promptData.goal, promptData.instruction);
   await agent.prompt.clickSaveButton();
-  await agent.waitForTimeout(1000);
+  await agent.waitForTimeout(5000);
   await agent.prompt.fillPrompt(promptData1.role, promptData1.goal, promptData1.instruction);
    const { requestBody } = await agent.prompt.clickSaveButtonAndReturnRequestBody();
 
