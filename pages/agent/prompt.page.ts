@@ -876,6 +876,7 @@ export class PromptPage {
   }
 
   async openPromptHelper() {
+    await this.instructions.click();
     await this.openHelperButton.click();
   }
 

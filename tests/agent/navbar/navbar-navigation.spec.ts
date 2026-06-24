@@ -16,7 +16,7 @@ test.describe('Agent - Navbar Navigation', () => {
 
     await agent.header.openTestCases();
 
-    await agent.testCasePage.expectTableVisible();
+    await agent.testCasePage.expectListTableVisible();
   });
 
   test('TC-NAV-02: Click History tab and verify thread container is visible', async ({ agents }) => {

@@ -1700,7 +1700,7 @@ async expectAddTestCaseExpectedContentTextareaVisible() {
 
     await expect(this.addTestCaseExpectedOutputLabel).toBeVisible();
 
-    const outputContainer = this.addTestCaseExpectedOutputLabel.locator('xpath=ancestor::div[contains(@class,"space-y-2")][1]');
+    const outputContainer = this.page.getByTestId('add-testcase-bottom-panel');
 
     await expect(outputContainer).toBeVisible();
 

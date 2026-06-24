@@ -55,6 +55,7 @@ test.describe('Agent - Keyboard Shortcuts', () => {
     await expect(page).toHaveURL(/\/agents\/history\//);
 
     await page.getByTestId('navbar-tab-history').click();
+    await page.locator('body').click();
 
     await page.keyboard.press('g');
     await page.keyboard.press('c');
