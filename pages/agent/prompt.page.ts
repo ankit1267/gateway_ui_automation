@@ -91,7 +91,7 @@ export class PromptPage {
     this.addPreTool = page.getByTestId('pre-embed-add-button');
     this.preToolDropdown = new PreToolDropdown(page);
     this.queryRefinerConfigModal = new PrebuiltPreToolConfigModal(page);
-    this.preEmbedFunctionsContainer = page.getByTestId('pre-embed-functions-container');
+    this.preEmbedFunctionsContainer = page.getByTestId('pre-embed-list-container');
     this.deleteButton = page.getByTestId(/^render-embed-delete-button-/);
     this.deleteModal = page.getByTestId('DELETE_PRE_TOOL_MODAL').getByTestId('delete-modal-confirm-button');
     this.migrateModal = page.getByTestId('migrate-prompt-modal');
@@ -117,11 +117,11 @@ export class PromptPage {
     this.buildWithAiButton = page.getByText('Build with AI');
     this.jsonSchemaTextarea = page.locator('#advanced-param-json-schema-textarea-response_type .cm-content');
     this.buildVisuallyButton = page.getByText('Build Visually');
-    this.jsonSchemaBuilder = page.getByTestId('JSON_SCHEMA_BUILDER');
-    this.jsonSchemaNameInput = page.getByTestId('json-schema-name-input');
-    this.jsonSchemaAddPropertyButton = page.getByTestId('json-schema-builder-add-property-button');
-    this.jsonSchemaSaveButton = page.getByTestId('json-schema-builder-save-button');
-    this.jsonSchemaCloseButton = page.getByTestId('json-schema-builder-close-button');
+    this.jsonSchemaBuilder = page.getByTestId('JSON_SCHEMA_BUILDER').first();
+    this.jsonSchemaNameInput = this.jsonSchemaBuilder.getByTestId('json-schema-name-input').first();
+    this.jsonSchemaAddPropertyButton = this.jsonSchemaBuilder.getByTestId('json-schema-builder-add-property-button').first();
+    this.jsonSchemaSaveButton = this.jsonSchemaBuilder.getByTestId('json-schema-builder-save-button').first();
+    this.jsonSchemaCloseButton = this.jsonSchemaBuilder.getByTestId('json-schema-builder-close-button').first();
     this.buildWithAiCloseButton = page.getByTestId('json-schema-close-button');
     this.schemaPropTypeSelectNew0 = page.getByTestId('schema-prop-type-select-new0');
     this.schemaPropDeleteButtonNew0 = page.getByTestId('schema-prop-delete-button-new0');

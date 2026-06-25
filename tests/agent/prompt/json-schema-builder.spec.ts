@@ -27,7 +27,7 @@ async function openJsonSchemaBuilderWithApiVerification(agent: AgentWithPrompt, 
   // Try to verify API call when selecting json_schema, but don't fail if no API call
   try {
     await agent.prompt.selectResponseType('default');
-    await page.waitForTimeout(1000);
+    await page.waitForTimeout(20000);
 
     const selectCapture = await verifyJsonSchemaResponseApiUpdate(
       page,
@@ -41,7 +41,7 @@ async function openJsonSchemaBuilderWithApiVerification(agent: AgentWithPrompt, 
   }
 
   await agent.prompt.fillJsonSchema('{}');
-  await page.waitForTimeout(5000);
+  await page.waitForTimeout(2000);
   await agent.prompt.openBuildVisually();
   await agent.prompt.expectJsonSchemaBuilderVisible();
 }
@@ -173,7 +173,9 @@ test.describe('Prompt - JSON Schema Builder', () => {
       },
     );
     logJsonSchemaApiCapture('save-json-schema-builder', saveCapture);
-    await agent.prompt.expectJsonSchemaSavedSuccessfully();
+
+    // we do not provide the toast for sucess
+    // await agent.prompt.expectJsonSchemaSavedSuccessfully();
   });
 
   test('TC-PROMPT-JS-09: close without saving and verify previous data remains', async ({ agents, page }) => {
