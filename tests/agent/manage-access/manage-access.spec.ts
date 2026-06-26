@@ -1,7 +1,7 @@
 import { test, expect } from '../../../fixtures/base.fixture';
 
 const TESTING_AGENT = process.env.TESTING_AGENT!;
-const TEST_EMAIL = 'tilakraj.ranawat09@gmail.com';
+const TEST_EMAIL = 'koushalpatel005@gmail.com';
 
 test.describe('Agent - Manage Access', () => {
 
