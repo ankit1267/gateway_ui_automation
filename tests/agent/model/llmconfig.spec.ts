@@ -10,6 +10,7 @@ test('Check if llm configs are working', async ({ agents }) => {
     await agents.goto('api');
     const agent = await agents.openAgent(AGENT_NAME);
     await agent.tabs.openModel();
+    await agent.model.selectServiceProvider('Gemini');
     const model = agent.model;
     // Test max_tokens slider and buttons
     await model.fillAdvancedParameter('max_tokens', '38216');
@@ -27,10 +28,7 @@ test('Check if llm configs are working', async ({ agents }) => {
     await model.toggleParallelToolChoice(false);
     await model.toggleParallelToolChoice(true);
     
-    // Test reasoning dropdown
-    await model.clickAdvancedParameterreasoningDropdown('reasoning');
-    await model.expectAdvancedParameterreasoningVisible('reasoning');
-    await model.clickAdvancedParameterreasoningDropdown('reasoning');
+ 
     // Test fallback model toggle works
     await model.toggleFallbackModel(false);
     await model.expectEnableFallbackModelTextVisible();
@@ -70,4 +68,16 @@ test('Set max_tokens to Max and Min and verify in API response', async ({ agents
 
     // Reset to default for cleanup
     await model.clickAdvancedParameterResetBtn('max_tokens');
+});
+
+test('Check reasoning dropdown', async ({ agents }) => {
+    await agents.goto('api');
+    const agent = await agents.openAgent(AGENT_NAME);
+    await agent.tabs.openModel();
+    await agent.model.selectServiceProvider('Openai');
+    const model = agent.model;
+     // Test reasoning dropdown
+    await model.clickAdvancedParameterreasoningDropdown('reasoning');
+    await model.expectAdvancedParameterreasoningVisible('reasoning');
+    await model.clickAdvancedParameterreasoningDropdown('reasoning');
 });
