@@ -75,7 +75,7 @@ export class AgentHeaderNav {
     this.summaryGenerateButton = this.publishDialog.getByTestId('agent-summary-generate-button').first();
     this.summarySaveButton = this.publishDialog.getByTestId('agent-summary-save-button').first();
     this.summaryTextarea = this.publishDialog.getByTestId('prompt-summary-textarea').first();
-    this.confirmPublishButton = this.publishDialog.getByTestId('publish-version-publish-button').first();
+    this.confirmPublishButton = this.page.getByTestId('publish-version-publish-button');
     this.changesSummarySection = this.publishDialog.getByText('Changes Summary');
     this.viewAllChangesButton = this.publishDialog.locator('#publish-view-all-changes-button');
     this.publishModalCloseButton = this.publishDialog.locator('#publish-close-x-button');
@@ -265,6 +265,7 @@ export class AgentHeaderNav {
   }
 
   async clickConfirmPublish() {
+  
     await this.confirmPublishButton.click();
   }
 
