@@ -27,7 +27,7 @@ test.describe('Model - API Key Management & Advanced Parameters', () => {
   test('TC-MODEL-PARAMS-01: Temperature parameter - set, verify and reset', async ({ agents, page }) => {
     const agent = await agents.openAgent(AGENT_NAME);
     await agent.tabs.openModel();
-
+    await agent.model.selectServiceProvider('Gemini');
     const param = 'creativity_level';
     
     // Set value using slider
