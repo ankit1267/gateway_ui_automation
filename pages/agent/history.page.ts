@@ -1446,7 +1446,7 @@ private get addTestCaseLastUserMessage(): Locator {
 
 private get addTestCaseCloseXButton(): Locator {
 
-    return this.page.getByTestId('add-testcase-close-x-button');
+    return this.page.getByTestId('ADD_TEST_CASE_MODAL-close-button');
 
 }
 

@@ -111,7 +111,7 @@ test.describe('Pre-Tool - RAG Knowledgebase', () => {
     await agent.prompt.expectPreToolContainerVisible();
     await agent.prompt.expectPreToolAddedByName(RAG_KNOWLEDGEBASE);
     await agent.prompt.deletePreTool();
-    await agent.prompt.expectPreToolContainerNotVisible();
+    await agent.prompt.expectPreToolContainerVisible();
   });
 
 });

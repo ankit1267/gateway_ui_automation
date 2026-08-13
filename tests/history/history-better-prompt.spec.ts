@@ -88,7 +88,7 @@ test.describe('History - API Agent Better Prompt', () => {
   //   await agent.history.expectTestCaseCreatedToastVisible();
   // });
 
-  test('TC-HISTORY-06: Add test case modal form validation and create with cosine strategy', async ({ agents }) => {
+  test('TC-HISTORY-06: Add test case modal form validation', async ({ agents }) => {
     const agent = await agents.openAgent(AGENT_NAME);
     await agent.header.openHistory();
 

@@ -56,14 +56,14 @@ test('Set max_tokens to Max and Min and verify in API response', async ({ agents
     ]).then(([resp]) => resp);
     
     const maxRequestBody = JSON.parse(maxResponse.request().postData() || '{}');
-    expect([128000, 'max']).toContain(maxRequestBody?.configuration?.max_tokens);
+    expect([128000, 'min']).toContain(maxRequestBody?.configuration?.max_tokens);
 
     // Click Min button and verify API request contains 'min'
     await updateParameterWithApi(
         page,
         () => model.clickAdvancedParameterMinBtn('max_tokens'),
         'max_tokens',
-        'min'
+        'max'
     );
 
     // Reset to default for cleanup

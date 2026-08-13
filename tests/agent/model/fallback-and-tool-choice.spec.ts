@@ -21,15 +21,15 @@ test.describe('Model - Fallback & Tool Choice', () => {
 
     // Select fallback service (e.g., Anthropic)
     await agent.model.selectFallbackService('gemini');
-    await expect(page.getByTestId('fallback-service-dropdown-button')).toContainText('Gemini');
+    await expect(page.getByTestId('fallback-service-dropdown-trigger-button')).toContainText('Gemini');
 
     // Select fallback model
     await agent.model.clickFallbackModelDropdown();
     // Assuming 'claude-3-5-sonnet' is available in the list
-    const modelOption = page.getByTestId('fallback-modal-dropdown-button').filter({ hasText: 'gemini-2.5-pro' }).first();
+    const modelOption = page.getByTestId('fallback-model-dropdown-trigger-button').filter({ hasText: 'gemini-2.5-pro' }).first();
     if (await modelOption.isVisible()) {
         await modelOption.click();
-        await expect(page.getByTestId('fallback-model-dropdown-button')).toContainText('gemini-2.5-pro');
+        await expect(page.getByTestId('fallback-model-dropdown-trigger-button')).toContainText('gemini-2.5-pro');
     }
   });
 

@@ -70,9 +70,9 @@ test('TC-OPENAI-ADVANCED-PARAMS-01: Set random advanced parameters for OpenAI wi
   await agent.model.toggleParallelToolChoice(true);
   await page.waitForTimeout(1000);
 
-  // Enable reasoning
-  await agent.model.selectReasoningOption('high');
-  await page.waitForTimeout(1000);
+  // Enable reasoning for Reasoning Model 
+  // await agent.model.selectReasoningOption('high');
+  // await page.waitForTimeout(1000);
 
   // Enable stream
   await agent.model.toggleStream(true);

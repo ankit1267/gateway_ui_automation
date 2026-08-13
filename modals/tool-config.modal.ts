@@ -21,7 +21,9 @@ export class ToolConfigModal {
     this.nameDescToggle = this.modal.locator('#function-param-name-desc-toggle');
     this.nameInput = this.modal.locator('#function-param-name-input');
     this.descTextarea = this.modal.locator('#function-param-desc-textarea');
-    this.closeButton = this.modal.getByTestId('function-parameter-close-button');
+    this.modal = page.locator('#tool-function-parameter-modal-container');
+    this.closeButton = this.modal.getByTestId('function-parameter-close-button'
+);
   }
 
   async waitForVisible() {
@@ -61,6 +63,7 @@ export class ToolConfigModal {
   async close() {
     await this.closeButton.click();
   }
+  
 
   getModal(): Locator {
     return this.modal;

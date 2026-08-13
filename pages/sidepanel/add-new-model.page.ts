@@ -32,6 +32,12 @@ export class AddNewModelPage {
     await this.addNewModelButton.click();
   }
 
+  async closeAddNewModelModal() {
+    await this.page
+      .getByTestId('ADD_NEW_MODEL_MODAL-close-button')
+      .click();
+  }
+
   async isEmptyState(): Promise<boolean> {
     return this.emptyState.isVisible();
   }

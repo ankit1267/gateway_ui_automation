@@ -34,10 +34,10 @@ test.describe('Admin Settings - Add New Model', () => {
 
   test('TC-ADMIN-36: Add New Model modal can be closed', async ({ sidepanel }) => {
     await sidepanel.addNewModelPage.clickAddNewModel();
-   await expect(sidepanel.page.getByTestId('ADD_NEW_MODEL_MODAL')).toBeVisible();
-
-    await sidepanel.page.getByTestId('add-model-header-close-button').dispatchEvent('click');
-    await expect(sidepanel.page.locator('#ADD_NEW_MODEL_MODAL')).not.toHaveAttribute('open', { timeout: 5000 });
+    const modal = sidepanel.page.getByTestId('ADD_NEW_MODEL_MODAL');
+    await expect(modal).toBeVisible();
+    await sidepanel.addNewModelPage.closeAddNewModelModal();
+    await expect(modal).not.toHaveAttribute('open');
   });
 
   test('TC-ADMIN-37: Add New Model modal Reset button is functional', async ({ sidepanel }) => {
@@ -62,7 +62,7 @@ test.describe('Admin Settings - Add New Model', () => {
     // Header elements
     await expect(sidepanel.page.getByRole('heading', { name: 'Add a New Model' })).toBeVisible();
     await expect(sidepanel.page.getByText('Add and configure a new model for your agent in just a few steps.')).toBeVisible();
-    await expect(sidepanel.page.getByTestId('add-model-header-close-button')).toBeVisible();
+    await expect(sidepanel.page.getByTestId('ADD_NEW_MODEL_MODAL-close-button')).toBeVisible();
 
     // Model Details section
     await expect(sidepanel.page.getByRole('heading', { name: 'Model Details' })).toBeVisible();

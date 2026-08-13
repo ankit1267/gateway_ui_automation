@@ -63,6 +63,7 @@ export class PromptPage {
   private readonly jsonSchemaFullscreenButton: Locator;
   private readonly jsonSchemaSaveAndCloseButton: Locator;
   private readonly jsonSchemaFullscreenTextarea: Locator;
+  // private readonly renderEmbedItemQueryRefiner: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -92,6 +93,7 @@ export class PromptPage {
     this.preToolDropdown = new PreToolDropdown(page);
     this.queryRefinerConfigModal = new PrebuiltPreToolConfigModal(page);
     this.preEmbedFunctionsContainer = page.getByTestId('pre-embed-list-container');
+    // this.renderEmbedItemQueryRefiner = page.getByTestId('render-embed-item-query_refiner');
     this.deleteButton = page.getByTestId(/^render-embed-delete-button-/);
     this.deleteModal = page.getByTestId('DELETE_PRE_TOOL_MODAL').getByTestId('delete-modal-confirm-button');
     this.migrateModal = page.getByTestId('migrate-prompt-modal');
@@ -662,6 +664,10 @@ export class PromptPage {
     await expect(this.preEmbedFunctionsContainer).not.toBeVisible();
   }
 
+  // async renderEmbedItemQueryRefinerNotVisible(){
+  //   await expect(this.renderEmbedItemQueryRefiner).not.toBeVisible();
+  // }
+
   async openPreToolConfig() {
     const preToolItem = this.preEmbedFunctionsContainer
       .locator('[data-testid^="render-embed-item-"]')
@@ -995,9 +1001,19 @@ export class PromptPage {
     await this.getVariableKeyInput(index).blur();
   }
 
+  // async fillVariableValue(index: number, value: string) {
+  //   await this.getVariableValueText(index).fill(value);
+  //   await this.getVariableValueText(index).blur();
+  // }
+
   async fillVariableValue(index: number, value: string) {
-    await this.getVariableValueText(index).fill(value);
-    await this.getVariableValueText(index).blur();
+    const input = this.getVariableValueText(index);
+    await expect(input).toBeVisible();
+    await expect(input).toBeEnabled();
+    await input.fill(value);
+    await expect(input).toHaveValue(value);
+    await input.blur();
+    await expect(input).toHaveValue(value);
   }
 
   async selectVariableType(index: number, type: string) {

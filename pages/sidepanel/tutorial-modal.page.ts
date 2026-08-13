@@ -13,7 +13,7 @@ export class TutorialModalPage {
     this.tutorialButton = page.locator('#main-slider-tutorial-button');
     this.modalDialog = page.getByTestId('TUTORIAL_MODAL');
     this.modalContainer = page.getByTestId('tutorial-modal-container');
-    this.closeButton = page.getByTestId('tutorial-close-button');
+    this.closeButton = page.getByTestId('TUTORIAL_MODAL-close-button');
   }
 
   async clickTutorialButton() {
@@ -31,6 +31,8 @@ export class TutorialModalPage {
   async clickCloseButton() {
     await this.closeButton.click();
   }
+
+
 
   async getTutorialItemCount(): Promise<number> {
     const items = this.page.locator('[data-testid^="tutorial-item-"]');

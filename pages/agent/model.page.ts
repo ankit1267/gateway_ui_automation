@@ -10,7 +10,7 @@ export type ServiceProvider =
     | 'Grok';
 
 export class ModelPage {
-  
+
     private readonly modelConfigSection: Locator;
 
     private readonly serviceProvider: Locator;
@@ -250,14 +250,14 @@ export class ModelPage {
 
     async toggleParallelToolChoice(check: boolean) {
         const checkbox = this.page.getByTestId('advanced-param-checkbox-parallel_tool_calls');
-        
+
         // Wait for checkbox to be enabled and stable
         await checkbox.waitFor({ state: 'attached', timeout: 5000 });
         await checkbox.waitFor({ state: 'visible', timeout: 5000 });
-        
+
         // Check current state and only toggle if needed
         const currentState = await checkbox.isChecked();
-        
+
         if (check !== currentState) {
             if (check) {
                 await checkbox.check({ timeout: 5000 });
@@ -268,11 +268,38 @@ export class ModelPage {
     }
 
     async clickFallbackServiceDropdown() {
-        await this.page.getByTestId('fallback-service-dropdown-button').click();
+
+        const dropdown = this.page.getByTestId(
+            'fallback-service-dropdown-trigger-button'
+        );
+
+        await expect(dropdown).toBeVisible();
+        await dropdown.click();
+
+        await expect(dropdown).toHaveAttribute('aria-expanded', 'true');
+    }
+
+    //   async selectFallbackService(serviceValue: string) {
+    //     await this.clickFallbackServiceDropdown();
+    //     await this.page.getByTestId(`fallback-service-item-${serviceValue}`).click();
+    // }
+
+    async selectFallbackService(serviceValue: string) {
+        await this.clickFallbackServiceDropdown();
+
+        const option = this.page.getByTestId(`fallback-service-dropdown-option-${serviceValue}`);
+
+        await expect(option).toBeVisible();
+        await option.scrollIntoViewIfNeeded();
+        await option.click();
+
+        await expect(
+            this.page.getByTestId('fallback-service-dropdown-trigger-button')
+        ).toContainText(new RegExp(serviceValue, 'i'));
     }
 
     async clickFallbackModelDropdown() {
-        await this.page.getByTestId('fallback-model-dropdown-button').click();
+        await this.page.getByTestId('fallback-model-dropdown-trigger-button').click();
     }
 
     async expectFallbackModelDropdownVisible() {
@@ -283,11 +310,21 @@ export class ModelPage {
         await expect(this.page.getByTestId('fallback-service-dropdown-menu')).toBeVisible();
     }
 
+    // async toggleFallbackModel(check: boolean) {
+    //     if (check) {
+    //         await this.page.getByTestId('fallback-model-toggle').check();
+    //     } else {
+    //         await this.page.getByTestId('fallback-model-toggle').uncheck();
+    //     }
+    // }
+
     async toggleFallbackModel(check: boolean) {
+        const toggle = this.page.getByTestId('fallback-model-toggle');
+        
         if (check) {
-            await this.page.getByTestId('fallback-model-toggle').check();
+            await toggle.check();
         } else {
-            await this.page.getByTestId('fallback-model-toggle').uncheck();
+            await toggle.uncheck();
         }
     }
 
@@ -304,16 +341,16 @@ export class ModelPage {
         await this.page.locator('div').filter({ hasText: /^Configure API keys\.\.\.$/ }).nth(2).click();
     }
 
-  
+
 
     // -------------------------
     // FALLBACK MODEL EXTENDED
     // -------------------------
 
-    async selectFallbackService(serviceValue: string) {
-        await this.clickFallbackServiceDropdown();
-        await this.page.getByTestId(`fallback-service-item-${serviceValue}`).click();
-    }
+    // async selectFallbackService(serviceValue: string) {
+    //     await this.clickFallbackServiceDropdown();
+    //     await this.page.getByTestId(`fallback-service-item-${serviceValue}`).click();
+    // }
 
     async isFallbackSameModelAlertVisible(): Promise<boolean> {
         return this.page.getByTestId('fallback-model-same-model-alert').isVisible();
@@ -346,7 +383,7 @@ export class ModelPage {
         await expect(this.page.getByTestId('model-preview-container')).toBeVisible({ timeout: 10000 });
     }
 
-// ... (rest of the code remains the same)
+    // ... (rest of the code remains the same)
     async expectModelPreviewNotVisible() {
         await expect(this.page.getByTestId('model-preview-container')).not.toBeVisible();
     }
@@ -396,7 +433,7 @@ export class ModelPage {
     async toggleStream(checked: boolean) {
         const checkbox = this.page.getByTestId('advanced-param-checkbox-stream');
         const currentState = await checkbox.isChecked();
-        
+
         if (checked !== currentState) {
             if (checked) {
                 await checkbox.check();
@@ -410,43 +447,43 @@ export class ModelPage {
         return this.apiKeyInputContainer.isVisible();
     }
 
-async selectApikeyByName(name: string) {
-    await this.clickApikeyDropdown();
-    await this.page.getByRole('option', { name }).click();
-}
+    async selectApikeyByName(name: string) {
+        await this.clickApikeyDropdown();
+        await this.page.getByRole('option', { name }).click();
+    }
 
-async clickAddNewApiKey() {
-    await this.clickApikeyDropdown();
-    await this.page.getByText('+  Add new API Key').click();
-}
+    async clickAddNewApiKey() {
+        await this.clickApikeyDropdown();
+        await this.page.getByText('+  Add new API Key').click();
+    }
 
-async selectModel(modelName: string) {
-    await this.model.click();
-    await this.page.getByTestId(`model-dropdown-grouped-option-${modelName.toLowerCase()}`).click();
-}
+    async selectModel(modelName: string) {
+        await this.model.click();
+        await this.page.getByTestId(`model-dropdown-grouped-option-${modelName.toLowerCase()}`).click();
+    }
 
-async expectParameterVisible(paramName: string) {
-    await expect(this.page.locator(`#advanced-param-field-${paramName}`)).toBeVisible();
-}
+    async expectParameterVisible(paramName: string) {
+        await expect(this.page.locator(`#advanced-param-field-${paramName}`)).toBeVisible();
+    }
 
-async expectParameterNotVisible(paramName: string) {
-    await expect(this.page.locator(`#advanced-param-field-${paramName}`)).not.toBeVisible();
-}
+    async expectParameterNotVisible(paramName: string) {
+        await expect(this.page.locator(`#advanced-param-field-${paramName}`)).not.toBeVisible();
+    }
 
-async fillAdvancedParameterText(paramName: string, value: string) {
-    const input = this.page.getByTestId(`advanced-param-text-${paramName}`);
-    await input.click();
-    await input.clear();
-    await input.pressSequentially(value, { delay: 50 });
-    await expect(input).toHaveValue(value);
-}
+    async fillAdvancedParameterText(paramName: string, value: string) {
+        const input = this.page.getByTestId(`advanced-param-text-${paramName}`);
+        await input.click();
+        await input.clear();
+        await input.pressSequentially(value, { delay: 50 });
+        await expect(input).toHaveValue(value);
+    }
 
-async clickOutsideToSave() {
-    // Tab triggers a real browser focus change (keydown → blur → focus on next element),
-    // which React's synthetic event system handles correctly in both headed and headless.
-    // evaluate(blur) only fires a JS blur event and misses click-outside handlers.
-    await this.page.keyboard.press('Tab');
-}
+    async clickOutsideToSave() {
+        // Tab triggers a real browser focus change (keydown → blur → focus on next element),
+        // which React's synthetic event system handles correctly in both headed and headless.
+        // evaluate(blur) only fires a JS blur event and misses click-outside handlers.
+        await this.page.keyboard.press('Tab');
+    }
 
     // -------------------------
     // AUTO SELECT MODEL

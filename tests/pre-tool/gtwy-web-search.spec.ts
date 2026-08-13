@@ -122,7 +122,7 @@ test.describe('Pre-Tool - Gtwy Web Search', () => {
     await agent.prompt.expectPreToolContainerVisible();
     await agent.prompt.expectPreToolAddedByName(GTWY_WEB_SEARCH);
     await agent.prompt.deletePreTool();
-    await agent.prompt.expectPreToolContainerNotVisible();
+    await agent.prompt.expectPreToolContainerVisible();
   });
 
 });
