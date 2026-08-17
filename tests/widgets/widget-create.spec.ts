@@ -8,13 +8,15 @@ test.describe('Widgets - Create Widget', () => {
 
     await sidepanel.widgetsPage.clickCreateWidget();
 
-    await sidepanel.widgetsPage.sendChatMessage('car page');
+    await sidepanel.widgetsPage.sendChatMessage('Send Notification on Slack and Email');
     await sidepanel.widgetsPage.waitForGeneration();
 
     await sidepanel.widgetsPage.clickSaveWidgetInChat();
     await sidepanel.widgetsPage.expectSaveWidgetModalVisible();
 
-    await sidepanel.widgetsPage.fillSaveWidgetName('car page');
+    await sidepanel.widgetsPage.fillSaveWidgetName('Send Notification on Slack and Email');
+    await sidepanel.widgetsPage.fillSaveWidgetDescription('Send notification on slack and email');
+
     await sidepanel.widgetsPage.clickSaveWidgetModalSave();
 
     await sidepanel.widgetsPage.expectSaveSuccessToast();
@@ -22,7 +24,7 @@ test.describe('Widgets - Create Widget', () => {
     await sidepanel.gotoWidgets();
     await sidepanel.widgetsPage.waitForPage();
 
-    await sidepanel.widgetsPage.expectWidgetInGrid('car page');
+    await sidepanel.widgetsPage.expectWidgetInGrid('Send Notification on Slack and Email');
   });
 
 });

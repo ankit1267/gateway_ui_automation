@@ -78,7 +78,7 @@ export class HistoryPage {
 
         this.threadItemVar = page.getByTestId('thread-item-user-variables-button').first();
 
-      this.pre_function = page.locator('span').filter({ hasText: 'pre_function' }).first();
+        this.pre_function = page.locator('span').filter({ hasText: 'pre_function' }).first();
 
         this.showGeneratedButton = page.getByTestId('edit-message-show-generated-button');
 
@@ -176,7 +176,7 @@ export class HistoryPage {
 
     async verifyPreToolVariableVisible(message: string | RegExp) {
 
-     const preFunctionRow = this.pre_function.locator('..');
+        const preFunctionRow = this.pre_function.locator('..');
 
 
 
@@ -422,7 +422,7 @@ export class HistoryPage {
 
         await expect(editMessageButton).toBeVisible();
 
-       
+
 
     }
 
@@ -698,1114 +698,1117 @@ export class HistoryPage {
 
     private get versionSelect(): Locator {
 
-    return this.page.getByTestId('history-sidebar-version-select');
-
-}
-
-
-
-private get searchInput(): Locator {
-
-    return this.page.getByTestId('history-sidebar-search-input');
-
-}
-
-
-
-private get searchClear(): Locator {
-
-    return this.page.getByTestId('history-sidebar-search-clear');
-
-}
-
-
-
-private get errorToggle(): Locator {
-
-    return this.page.getByTestId('history-sidebar-error-toggle');
-
-}
-
-
-
-private async resolveVersionOption(value: string): Promise<{ value: string; label: string }> {
-
-    const target = value.trim();
-
-    await this.versionSelect.waitFor({ state: 'visible' });
-
-
-
-    const options = await this.versionSelect
-
-        .locator('option')
-
-        .evaluateAll((nodes) =>
-
-            nodes.map((node) => {
-
-                const option = node as HTMLOptionElement;
-
-                return {
-
-                    value: option.value,
-
-                    label: (option.label || option.textContent || '').trim()
-
-                };
-
-            })
-
-        );
-
-
-
-    const exactMatch = options.find((option) =>
-
-        option.value === target || option.label === target
-
-    );
-
-
-
-    const versionLabelMatch = options.find((option) =>
-
-        /version/i.test(option.label)
-
-        && option.label.includes(target)
-
-    );
-
-
-
-    const containsMatch = options.find((option) =>
-
-        option.value.includes(target) || option.label.includes(target)
-
-    );
-
-
-
-    const selectedOption = exactMatch ?? versionLabelMatch ?? containsMatch;
-
-    if (!selectedOption) {
-
-        const available = options
-
-            .map((option) => `${option.label} [${option.value}]`)
-
-            .join(', ');
-
-        throw new Error(`Unable to select history version "${target}". Available options: ${available}`);
+        return this.page.getByTestId('history-sidebar-version-select');
 
     }
 
 
 
-    return selectedOption;
+    private get searchInput(): Locator {
 
-}
-
-
-
-async selectVersion(value: string) {
-
-    const selectedOption = await this.resolveVersionOption(value);
-
-    await this.versionSelect.selectOption({ value: selectedOption.value });
-
-}
-
-
-
-async selectVersionAndGetHistoryResponse(value: string): Promise<any> {
-
-    const selectedOption = await this.resolveVersionOption(value);
-
-    const currentValue = await this.getSelectedVersion();
-
-
-
-    if (currentValue === selectedOption.value) {
-
-        const fallback = this.versionSelect.locator('option').filter({ hasNotText: selectedOption.label }).first();
-
-        if (await fallback.count()) {
-
-            const fallbackValue = (await fallback.getAttribute('value')) || '';
-
-            if (fallbackValue && fallbackValue !== selectedOption.value) {
-
-                const fallbackResponsePromise = this.page.waitForResponse((response) =>
-
-                    response.status() === 200
-
-                    && response.request().method() === 'GET'
-
-                    && response.url().includes('/api/history/')
-
-                    && decodeURIComponent(response.url()).includes('page=1')
-
-                );
-
-                await this.versionSelect.selectOption({ value: fallbackValue });
-
-                await fallbackResponsePromise;
-
-            }
-
-        }
+        return this.page.getByTestId('history-sidebar-search-input');
 
     }
 
 
 
-    const responsePromise = this.page.waitForResponse((response) =>
+    private get searchClear(): Locator {
 
-        response.status() === 200
+        return this.page.getByTestId('history-sidebar-search-clear');
 
-        && response.request().method() === 'GET'
+    }
 
-        && response.url().includes('/api/history/')
 
-        && decodeURIComponent(response.url()).includes('page=1')
 
-        && decodeURIComponent(response.url()).includes('limit=40')
+    private get errorToggle(): Locator {
 
-        && decodeURIComponent(response.url()).includes(`version_id=${selectedOption.value}`)
+        return this.page.getByTestId('history-sidebar-error-toggle');
 
-        && !decodeURIComponent(response.url()).includes('thread_id=')
+    }
 
-        && !decodeURIComponent(response.url()).includes('message_id=')
 
-    );
 
+    private async resolveVersionOption(value: string): Promise<{ value: string; label: string }> {
 
+        const target = value.trim();
 
-    await this.versionSelect.selectOption({ value: selectedOption.value });
+        await this.versionSelect.waitFor({ state: 'visible' });
 
 
 
-    const response = await responsePromise;
+        const options = await this.versionSelect
 
-    return response.json();
+            .locator('option')
 
-}
+            .evaluateAll((nodes) =>
 
+                nodes.map((node) => {
 
+                    const option = node as HTMLOptionElement;
 
-async getSelectedVersion(): Promise<string> {
+                    return {
 
-    return this.versionSelect.inputValue();
+                        value: option.value,
 
-}
+                        label: (option.label || option.textContent || '').trim()
 
+                    };
 
+                })
 
-async searchHistory(query: string) {
+            );
 
-    await this.searchInput.fill(query);
 
-    await this.searchInput.press('Enter');
 
-}
+        const exactMatch = options.find((option) =>
 
-
-
-async clearSearch() {
-
-    await this.searchClear.click();
-
-}
-
-
-
-async isSearchClearVisible(): Promise<boolean> {
-
-    return this.searchClear.isVisible();
-
-}
-
-
-
-async toggleErrorHistory() {
-
-    await this.errorToggle.click();
-
-}
-
-
-
-async isErrorToggleChecked(): Promise<boolean> {
-
-    return this.errorToggle.isChecked();
-
-}
-
-
-
-private get chatDetailsSlider(): Locator {
-
-    return this.page.getByRole('main').getByTestId('chat-details-slider');
-
-}
-
-
-
-private get chatDetailsCloseButton(): Locator {
-
-    return this.page.getByTestId('chat_details_view').getByTestId('chat-details-close-button').first();
-
-}
-
-
-
-private get chatDetailsCopyDropdown(): Locator {
-
-    return this.page.getByTestId('chat-details-variables-copy-dropdown');
-
-}
-
-
-
-private get chatDetailsCopyCurrentValues(): Locator {
-
-    return this.page.getByTestId('chat-details-copy-current-values');
-
-}
-
-
-
-private get chatDetailsCopyKeyValuePairs(): Locator {
-
-    return this.page.getByTestId('chat-details-copy-key-value-pairs');
-
-}
-
-
-
-private get chatDetailsCopySystemPrompt(): Locator {
-
-    return this.page.getByTestId('chat-details-copy-system-prompt');
-
-}
-
-
-
-async isChatDetailsVisible(): Promise<boolean> {
-
-    return this.chatDetailsSlider.isVisible();
-
-}
-
-
-
-async closeChatDetails() {
-
-    await this.chatDetailsCloseButton.click({ force: true });
-
-}
-
-
-
-private get chatDetailsViewModal(): Locator {
-
-    return this.page.getByRole('main').locator('dialog[data-testid="chat_details_view"]');
-
-}
-
-
-
-async expectChatDetailsModalVisible() {
-
-    await expect(this.chatDetailsViewModal).toBeVisible();
-
-}
-
-// Replace expectChatDetailsModalVisible with these for the respective actions:
-
-async expectInlineVariablesVisible() {
-
-    await expect(this.page.locator('span').filter({ hasText: 'Variables' })).toBeVisible();
-
-}
-
- 
-
-async expectInlineSystemPromptVisible() {
-
-    await expect(this.page.getByText('System Prompt')).toBeVisible();
-
-}
-
- 
-
-async expectInlineMoreDetailsVisible() {
-
-    await expect(this.page.getByText('Optional Details')).toBeVisible();
-
-}
-
-
-
-
-
-async closeChatDetailsModal() {
-
-    await this.chatDetailsViewModal.getByTestId('chat-details-close-button').click();
-
-}
-
-
-
-async openCopyDropdown() {
-
-    await this.chatDetailsCopyDropdown.click();
-
-}
-
-
-
-async copyCurrentValues() {
-
-    await this.chatDetailsCopyCurrentValues.click();
-
-}
-
-
-
-async copyKeyValuePairs() {
-
-    await this.chatDetailsCopyKeyValuePairs.click();
-
-}
-
-
-
-async copySystemPrompt() {
-
-    await this.chatDetailsCopySystemPrompt.click();
-
-}
-
-
-
-// --- Date range picker ---
-
-
-
-private get dateRangePicker(): Locator {
-
-    return this.page.getByTestId('history-date-range-picker');
-
-}
-
-
-
-private get dateRangeFromInput(): Locator {
-
-    return this.page.getByTestId('history-date-range-from-input');
-
-}
-
-
-
-private get dateRangeToInput(): Locator {
-
-    return this.page.getByTestId('history-date-range-to-input');
-
-}
-
-
-
-private get dateRangeApplyButton(): Locator {
-
-    return this.page.getByTestId('history-date-range-apply-button');
-
-}
-
-
-
-private get dateRangeClearButton(): Locator {
-
-    return this.page.getByTestId('history-date-range-clear-button');
-
-}
-
-
-
-async isDateRangePickerVisible(): Promise<boolean> {
-
-    return this.dateRangePicker.isVisible();
-
-}
-
-
-
-async fillDateFrom(value: string) {
-
-    await this.dateRangeFromInput.fill(value);
-
-}
-
-
-
-async fillDateTo(value: string) {
-
-    await this.dateRangeToInput.fill(value);
-
-}
-
-
-
-async applyDateRange() {
-
-    await this.dateRangeApplyButton.click();
-
-}
-
-
-
-async clearDateRange() {
-
-    await this.dateRangeClearButton.click();
-
-}
-
-
-
-async applyDateFilter(from: string, to: string): Promise<any> {
-
-    await this.advanceFilterToggle.check();
-
-    await this.fillDateFrom(from);
-
-    await this.fillDateTo(to);
-
-
-
-    const responsePromise = this.page.waitForResponse((response) =>
-
-        response.status() === 200
-
-        && response.url().includes('/api/history/')
-
-        && decodeURIComponent(response.url()).includes(`page=1`)
-
-        && decodeURIComponent(response.url()).includes(`limit=40`)
-
-        && decodeURIComponent(response.url()).includes(`user_feedback=all`)
-
-        && decodeURIComponent(response.url()).includes(`error=false`)
-
-        && decodeURIComponent(response.url()).includes(`start_date=${from}`)
-
-        && decodeURIComponent(response.url()).includes(`end_date=${to}`)
-
-    );
-
-
-
-    await this.applyDateRange();
-
-
-
-    const response = await responsePromise;
-
-
-
-    return response.json();
-
-}
-
-
-
-async getUIThreadIds(): Promise<string[]> {
-
-    const ids = await this.page
-
-        .locator('li[data-testid^="history-sidebar-thread-"]:visible')
-
-        .evaluateAll((nodes) =>
-
-            nodes.map((node) =>
-
-                node
-
-                    .getAttribute('data-testid')
-
-                    ?.replace('history-sidebar-thread-', '') ?? ''
-
-            )
+            option.value === target || option.label === target
 
         );
 
 
 
-    return [...new Set(ids.filter((id) => id && !id.startsWith('toggle-')))];
+        const versionLabelMatch = options.find((option) =>
 
-}
+            /version/i.test(option.label)
 
+            && option.label.includes(target)
 
-
-private collectThreadIdsFromApi(payload: unknown): string[] {
-
-    const result = new Set<string>();
-
-    const maybeUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+        );
 
 
 
-    const visit = (value: unknown) => {
+        const containsMatch = options.find((option) =>
 
-        if (!value) return;
+            option.value.includes(target) || option.label.includes(target)
+
+        );
 
 
 
-        if (Array.isArray(value)) {
+        const selectedOption = exactMatch ?? versionLabelMatch ?? containsMatch;
 
-            for (const item of value) {
+        if (!selectedOption) {
 
-                visit(item);
+            const available = options
 
-            }
+                .map((option) => `${option.label} [${option.value}]`)
 
-            return;
+                .join(', ');
+
+            throw new Error(`Unable to select history version "${target}". Available options: ${available}`);
 
         }
 
 
 
-        if (typeof value !== 'object') return;
+        return selectedOption;
+
+    }
 
 
 
-        const record = value as Record<string, unknown>;
+    async selectVersion(value: string) {
 
-        for (const [key, entry] of Object.entries(record)) {
+        const selectedOption = await this.resolveVersionOption(value);
 
-            if (typeof entry === 'string') {
+        await this.versionSelect.selectOption({ value: selectedOption.value });
 
-                const isThreadKey =
-
-                    key === 'thread_id'
-
-                    || key === 'threadId'
-
-                    || key === 'subThread_id'
-
-                    || key === 'subThreadId';
+    }
 
 
 
-                const isGenericIdKey =
+    async selectVersionAndGetHistoryResponse(value: string): Promise<any> {
 
-                    key === 'id'
+        const selectedOption = await this.resolveVersionOption(value);
 
-                    || key === '_id';
+        const currentValue = await this.getSelectedVersion();
 
 
 
-                if (isThreadKey && entry.length > 0) {
+        if (currentValue === selectedOption.value) {
 
-                    result.add(entry);
+            const fallback = this.versionSelect.locator('option').filter({ hasNotText: selectedOption.label }).first();
 
-                } else if (isGenericIdKey && maybeUuid.test(entry)) {
+            if (await fallback.count()) {
 
-                    result.add(entry);
+                const fallbackValue = (await fallback.getAttribute('value')) || '';
+
+                if (fallbackValue && fallbackValue !== selectedOption.value) {
+
+                    const fallbackResponsePromise = this.page.waitForResponse((response) =>
+
+                        response.status() === 200
+
+                        && response.request().method() === 'GET'
+
+                        && response.url().includes('/api/history/')
+
+                        && decodeURIComponent(response.url()).includes('page=1')
+
+                    );
+
+                    await this.versionSelect.selectOption({ value: fallbackValue });
+
+                    await fallbackResponsePromise;
 
                 }
 
             }
 
-
-
-            visit(entry);
-
         }
 
-    };
 
 
+        const responsePromise = this.page.waitForResponse((response) =>
 
-    visit(payload);
+            response.status() === 200
 
-    return [...result];
+            && response.request().method() === 'GET'
 
-}
+            && response.url().includes('/api/history/')
 
+            && decodeURIComponent(response.url()).includes('page=1')
 
+            && decodeURIComponent(response.url()).includes('limit=40')
 
-// --- Edit Message Modal ---
+            && decodeURIComponent(response.url()).includes(`version_id=${selectedOption.value}`)
 
+            && !decodeURIComponent(response.url()).includes('thread_id=')
 
+            && !decodeURIComponent(response.url()).includes('message_id=')
 
-private get editMessageButton(): Locator {
+        );
 
-    return this.page.getByTestId('thread-item-edit-message-button').first();
 
-}
 
+        await this.versionSelect.selectOption({ value: selectedOption.value });
 
 
-private get editMessageModalContainer(): Locator {
 
-    return this.page.locator('#edit-message-modal-container');
+        const response = await responsePromise;
 
-}
+        return response.json();
 
+    }
 
 
-private get editMessageImproveButton(): Locator {
 
-    return this.page.getByTestId('edit-message-improve-button');
+    async getSelectedVersion(): Promise<string> {
 
-}
+        return this.versionSelect.inputValue();
 
+    }
 
 
-private get editMessageCancelButton(): Locator {
 
-    return this.page.getByTestId('edit-message-cancel-button');
+    async searchHistory(query: string) {
 
-}
+        await this.searchInput.fill(query);
 
+        await this.searchInput.press('Enter');
 
+    }
 
-// --- History Prompt Update Modal ---
 
 
+    async clearSearch() {
 
-private get historyPromptUpdateModalContainer(): Locator {
+        await this.searchClear.click();
 
-    return this.page.locator('#history-prompt-update-modal-container');
+    }
 
-}
 
 
+    async isSearchClearVisible(): Promise<boolean> {
 
-private get historyPromptPreviousTextarea(): Locator {
+        return this.searchClear.isVisible();
 
-    return this.page.getByTestId('history-prompt-previous-textarea');
+    }
 
-}
 
 
+    async toggleErrorHistory() {
 
-private get historyPromptUpdatedTextarea(): Locator {
+        await this.errorToggle.click();
 
-    return this.page.getByTestId('history-prompt-updated-textarea');
+    }
 
-}
 
 
+    async isErrorToggleChecked(): Promise<boolean> {
 
-private get historyPromptRegenerateButton(): Locator {
+        return this.errorToggle.isChecked();
 
-    return this.page.getByTestId('history-prompt-regenerate-button');
+    }
 
-}
 
 
+    private get chatDetailsSlider(): Locator {
 
-private get historyPromptSaveButton(): Locator {
+        return this.page.getByRole('main').getByTestId('chat-details-slider');
 
-    return this.page.getByTestId('history-prompt-save-button');
+    }
 
-}
 
 
+    private get chatDetailsCloseButton(): Locator {
 
-// --- Add Test Case Modal Locators ---
+        return this.page.getByTestId('chat_details_view').getByTestId('chat-details-close-button').first();
 
+    }
 
 
-private get addTestCaseModalForm(): Locator {
 
-    return this.page.locator('#add-testcase-modal-form');
+    private get chatDetailsCopyDropdown(): Locator {
 
-}
+        return this.page.getByTestId('chat-details-variables-copy-dropdown');
 
+    }
 
 
-private get addTestCaseNameInput(): Locator {
 
-    return this.page.getByTestId('add-testcase-name-input');
+    private get chatDetailsCopyCurrentValues(): Locator {
 
-}
+        return this.page.getByTestId('chat-details-copy-current-values');
 
+    }
 
 
-private get addTestCaseLastUserMessage(): Locator {
 
-    return this.page.locator('#add-testcase-last-user-message');
+    private get chatDetailsCopyKeyValuePairs(): Locator {
 
-}
+        return this.page.getByTestId('chat-details-copy-key-value-pairs');
 
+    }
 
 
-private get addTestCaseCloseXButton(): Locator {
 
-    return this.page.getByTestId('ADD_TEST_CASE_MODAL-close-button');
+    private get chatDetailsCopySystemPrompt(): Locator {
 
-}
+        return this.page.getByTestId('chat-details-copy-system-prompt');
 
+    }
 
 
-private get addTestCaseCreateButton(): Locator {
 
-    return this.page.getByTestId('add-testcase-create-button');
+    async isChatDetailsVisible(): Promise<boolean> {
 
-}
+        return this.chatDetailsSlider.isVisible();
 
+    }
 
 
-private get addTestCaseCancelButton(): Locator {
 
-    return this.page.getByTestId('add-testcase-cancel-button');
+    async closeChatDetails() {
 
-}
+        await this.chatDetailsCloseButton.click({ force: true });
 
+    }
 
 
-private get addTestCaseMatchingStrategySelect(): Locator {
 
-    return this.page.getByTestId('add-testcase-matching-strategy-select');
+    public get chatDetailsViewModal(): Locator {
 
-}
+        return this.page.getByRole('main').locator('dialog[data-testid="chat_details_view"]');
 
+    }
 
 
-private get addTestCaseExpectedOutputLabel(): Locator {
+    async expectChatDetailsModalVisible() {
 
-    return this.addTestCaseModalForm.locator('div').filter({ hasText: 'User Expected Output' }).first();
+        await expect(this.chatDetailsViewModal).toBeVisible();
 
-}
+    }
 
+    // Replace expectChatDetailsModalVisible with these for the respective actions:
 
+    async expectInlineVariablesVisible() {
 
-async clickEditMessageButton() {
+        await expect(this.page.locator('span').filter({ hasText: 'Variables' })).toBeVisible();
 
-    await expect(this.editMessageButton).toBeVisible();
+    }
 
-    await this.editMessageButton.click();
 
-}
 
+    async expectInlineSystemPromptVisible() {
 
+        await expect(this.page.getByText('System Prompt')).toBeVisible();
 
-async expectEditMessageTextareaVisible() {
+    }
 
-    await expect(this.page.getByTestId('edit-message-textarea')).toBeVisible();
 
-}
 
+    async expectInlineMoreDetailsVisible() {
 
+        await expect(this.page.getByText('Optional Details')).toBeVisible();
 
-async expectShowGeneratedButtonVisible() {
+    }
 
-    await expect(this.page.getByTestId('edit-message-show-generated-button')).toBeVisible();
 
-}
 
 
 
+    async closeChatDetailsModal() {
 
+        await this.chatDetailsViewModal.getByTestId('chat_details_view-close-button').click();
 
+    }
 
+    async expectChatDetailsViewModalVisible() {
+        await expect(this.chatDetailsViewModal).toBeVisible();
+    }
 
-async clickBetterPromptButton() {
 
-    await expect(this.editMessageModalContainer).toBeVisible();
 
-    await expect(this.editMessageImproveButton).toBeVisible();
+    async openCopyDropdown() {
 
-    await this.editMessageImproveButton.click();
+        await this.chatDetailsCopyDropdown.click();
 
-}
+    }
 
 
 
-async expectPromptPreviousTextareaVisible() {
+    async copyCurrentValues() {
 
-    await expect(this.historyPromptUpdateModalContainer).toBeVisible();
+        await this.chatDetailsCopyCurrentValues.click();
 
-    await expect(this.historyPromptPreviousTextarea).toBeVisible();
+    }
 
-}
 
 
+    async copyKeyValuePairs() {
 
-async expectPromptUpdatedTextareaVisible() {
+        await this.chatDetailsCopyKeyValuePairs.click();
 
-    await expect(this.historyPromptUpdateModalContainer).toBeVisible();
+    }
 
-    await expect(this.historyPromptUpdatedTextarea).toBeVisible();
 
-}
 
+    async copySystemPrompt() {
 
+        await this.chatDetailsCopySystemPrompt.click();
 
-async expectPromptRegenerateButtonVisible() {
+    }
 
-    await expect(this.historyPromptRegenerateButton).toBeVisible();
 
-}
 
+    // --- Date range picker ---
 
 
-async clickPromptRegenerateButton() {
 
-    await expect(this.historyPromptRegenerateButton).toBeVisible();
+    private get dateRangePicker(): Locator {
 
-    await this.historyPromptRegenerateButton.click();
+        return this.page.getByTestId('history-date-range-picker');
 
-}
+    }
 
 
 
-async clickShowGeneratedButton() {
+    private get dateRangeFromInput(): Locator {
 
-    await expect(this.showGeneratedButton).toBeVisible();
+        return this.page.getByTestId('history-date-range-from-input');
 
-    await this.showGeneratedButton.click();
+    }
 
-}
 
 
+    private get dateRangeToInput(): Locator {
 
-async clickPromptSaveButton() {
+        return this.page.getByTestId('history-date-range-to-input');
 
-    await expect(this.historyPromptSaveButton).toBeVisible();
+    }
 
-    await this.historyPromptSaveButton.click();
 
-}
 
+    private get dateRangeApplyButton(): Locator {
 
+        return this.page.getByTestId('history-date-range-apply-button');
 
-async clickPromptCancelButton() {
+    }
 
-    await expect(this.page.getByTestId('history-prompt-cancel-button')).toBeVisible();
 
-    await this.page.getByTestId('history-prompt-cancel-button').click();
 
-}
+    private get dateRangeClearButton(): Locator {
 
+        return this.page.getByTestId('history-date-range-clear-button');
 
+    }
 
-async clickEditMessageCancelButton() {
 
-    await expect(this.editMessageCancelButton).toBeVisible();
 
-    await this.editMessageCancelButton.click();
+    async isDateRangePickerVisible(): Promise<boolean> {
 
-}
+        return this.dateRangePicker.isVisible();
 
+    }
 
 
-async fillEditMessageTextarea(text: string) {
 
-    await this.page.getByTestId('edit-message-textarea').fill(text);
+    async fillDateFrom(value: string) {
 
-}
+        await this.dateRangeFromInput.fill(value);
 
+    }
 
 
-async expectEditMessageModalClosed() {
 
-    await expect(this.page.locator('dialog#EDIT_MESSAGE_MODAL')).not.toHaveAttribute('open');
+    async fillDateTo(value: string) {
 
-}
+        await this.dateRangeToInput.fill(value);
 
+    }
 
 
-// --- Debug Agent ---
 
+    async applyDateRange() {
 
+        await this.dateRangeApplyButton.click();
 
-async clickDebugAgentButton() {
+    }
 
-    const debugButton = this.page.locator('#thread-item-debug-agent-button').first();
 
-    await expect(debugButton).toBeVisible();
 
-    await debugButton.click();
+    async clearDateRange() {
 
-}
+        await this.dateRangeClearButton.click();
 
+    }
 
 
-async expectIframeParentContainerVisible() {
 
-    await expect(this.page.locator('#iframe-parent-container').first()).toBeVisible();
+    async applyDateFilter(from: string, to: string): Promise<any> {
 
-}
+        await this.advanceFilterToggle.check();
 
+        await this.fillDateFrom(from);
 
+        await this.fillDateTo(to);
 
-// --- Add Test Case Modal ---
 
 
+        const responsePromise = this.page.waitForResponse((response) =>
 
-async clickAddTestCaseButton() {
+            response.status() === 200
 
-    const addTestCaseButton = this.page.locator('#thread-item-add-test-case-button').first();
+            && response.url().includes('/api/history/')
 
-    await expect(addTestCaseButton).toBeVisible();
+            && decodeURIComponent(response.url()).includes(`page=1`)
 
-    await addTestCaseButton.click();
+            && decodeURIComponent(response.url()).includes(`limit=40`)
 
-}
+            && decodeURIComponent(response.url()).includes(`user_feedback=all`)
 
+            && decodeURIComponent(response.url()).includes(`error=false`)
 
+            && decodeURIComponent(response.url()).includes(`start_date=${from}`)
 
-// async expectAddTestCaseSecondLastRemoveToolVisible() {
+            && decodeURIComponent(response.url()).includes(`end_date=${to}`)
 
-//     await expect(this.page.locator('[id^="add-testcase-second-last-remove-tool-"]').first()).toBeVisible();
+        );
 
-// }
 
 
+        await this.applyDateRange();
 
-async expectAddTestCaseNameInputVisible() {
 
-    await expect(this.addTestCaseNameInput).toBeVisible();
 
-}
+        const response = await responsePromise;
 
 
 
-async fillAddTestCaseNameInput(text: string) {
+        return response.json();
 
-    await expect(this.addTestCaseNameInput).toBeVisible();
+    }
 
-    await this.addTestCaseNameInput.fill(text);
 
-}
 
+    async getUIThreadIds(): Promise<string[]> {
 
+        const ids = await this.page
 
-async expectAddTestCaseLastUserMessageVisible() {
+            .locator('li[data-testid^="history-sidebar-thread-"]:visible')
 
-    await expect(this.addTestCaseLastUserMessage).toBeVisible();
+            .evaluateAll((nodes) =>
 
-}
+                nodes.map((node) =>
 
+                    node
 
+                        .getAttribute('data-testid')
 
-async expectAddTestCaseExpectedContentTextareaVisible() {
+                        ?.replace('history-sidebar-thread-', '') ?? ''
 
-    // Expected output is displayed as read-only content in the modal
+                )
 
-    await expect(this.addTestCaseExpectedOutputLabel).toBeVisible();
+            );
 
-    const outputContainer = this.page.getByTestId('add-testcase-bottom-panel');
 
-    await expect(outputContainer).toBeVisible();
 
-}
+        return [...new Set(ids.filter((id) => id && !id.startsWith('toggle-')))];
 
+    }
 
 
-async expectAddTestCaseCloseXButtonVisible() {
 
-    await expect(this.addTestCaseCloseXButton).toBeVisible();
+    private collectThreadIdsFromApi(payload: unknown): string[] {
 
-}
+        const result = new Set<string>();
 
+        const maybeUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 
-async expectAddTestCaseCreateButtonVisible() {
 
-    await expect(this.addTestCaseCreateButton).toBeVisible();
+        const visit = (value: unknown) => {
 
-}
+            if (!value) return;
 
 
 
-async expectAddTestCaseCancelButtonVisible() {
+            if (Array.isArray(value)) {
 
-    await expect(this.addTestCaseCancelButton).toBeVisible();
+                for (const item of value) {
 
-}
+                    visit(item);
 
+                }
 
+                return;
 
-async selectAddTestCaseMatchingStrategy(value: string) {
+            }
 
-    await expect(this.addTestCaseMatchingStrategySelect).toBeVisible();
 
-    await this.addTestCaseMatchingStrategySelect.selectOption(value);
 
-}
+            if (typeof value !== 'object') return;
 
 
 
-async clickAddTestCaseCreateButton() {
+            const record = value as Record<string, unknown>;
 
-    await expect(this.addTestCaseCreateButton).toBeVisible();
+            for (const [key, entry] of Object.entries(record)) {
 
-    await this.addTestCaseCreateButton.click();
+                if (typeof entry === 'string') {
 
-}
+                    const isThreadKey =
 
+                        key === 'thread_id'
 
+                        || key === 'threadId'
 
-async clickAddTestCaseCancelButton() {
+                        || key === 'subThread_id'
 
-    await expect(this.addTestCaseCancelButton).toBeVisible();
+                        || key === 'subThreadId';
 
-    await this.addTestCaseCancelButton.click();
 
-}
 
+                    const isGenericIdKey =
 
+                        key === 'id'
 
-async expectAddTestCaseModalClosed() {
+                        || key === '_id';
 
-    await expect(this.page.locator('dialog#ADD_TEST_CASE_MODAL')).not.toHaveAttribute('open');
 
-}
 
+                    if (isThreadKey && entry.length > 0) {
 
+                        result.add(entry);
 
-async expectTestCaseCreatedToastVisible() {
+                    } else if (isGenericIdKey && maybeUuid.test(entry)) {
 
-    await expect(this.page.getByText('Test case created successfully')).toBeVisible();
+                        result.add(entry);
 
-}
+                    }
 
+                }
 
 
-async expectAiConfigDetailModalContainsText(text: string) {
 
-    
+                visit(entry);
 
-    const contentContainer = this.page.getByRole('main').getByTestId('chat_details_view');
+            }
 
-    await expect(contentContainer).toBeVisible();
+        };
 
-    await expect(contentContainer).toContainText(text);
 
-}
 
+        visit(payload);
 
+        return [...result];
 
-async verifyHistoryMatchesAPI(apiResponse: any) {
+    }
 
-    const apiIds = this.collectThreadIdsFromApi(apiResponse);
 
 
+    // --- Edit Message Modal ---
 
-    await expect(async () => {
 
-        const uiIds = await this.getUIThreadIds();
 
-        expect([...uiIds].sort()).toEqual([...apiIds].sort());
+    private get editMessageButton(): Locator {
 
-    }).toPass({ timeout: 15000 });
+        return this.page.getByTestId('thread-item-edit-message-button').first();
 
-}
+    }
+
+
+
+    private get editMessageModalContainer(): Locator {
+
+        return this.page.locator('#edit-message-modal-container');
+
+    }
+
+
+
+    private get editMessageImproveButton(): Locator {
+
+        return this.page.getByTestId('edit-message-improve-button');
+
+    }
+
+
+
+    private get editMessageCancelButton(): Locator {
+
+        return this.page.getByTestId('edit-message-cancel-button');
+
+    }
+
+
+
+    // --- History Prompt Update Modal ---
+
+
+
+    private get historyPromptUpdateModalContainer(): Locator {
+
+        return this.page.locator('#history-prompt-update-modal-container');
+
+    }
+
+
+
+    private get historyPromptPreviousTextarea(): Locator {
+
+        return this.page.getByTestId('history-prompt-previous-textarea');
+
+    }
+
+
+
+    private get historyPromptUpdatedTextarea(): Locator {
+
+        return this.page.getByTestId('history-prompt-updated-textarea');
+
+    }
+
+
+
+    private get historyPromptRegenerateButton(): Locator {
+
+        return this.page.getByTestId('history-prompt-regenerate-button');
+
+    }
+
+
+
+    private get historyPromptSaveButton(): Locator {
+
+        return this.page.getByTestId('history-prompt-save-button');
+
+    }
+
+
+
+    // --- Add Test Case Modal Locators ---
+
+
+
+    private get addTestCaseModalForm(): Locator {
+
+        return this.page.locator('#add-testcase-modal-form');
+
+    }
+
+
+
+    private get addTestCaseNameInput(): Locator {
+
+        return this.page.getByTestId('add-testcase-name-input');
+
+    }
+
+
+
+    private get addTestCaseLastUserMessage(): Locator {
+
+        return this.page.locator('#add-testcase-last-user-message');
+
+    }
+
+
+
+    private get addTestCaseCloseXButton(): Locator {
+
+        return this.page.getByTestId('ADD_TEST_CASE_MODAL-close-button');
+
+    }
+
+
+
+    private get addTestCaseCreateButton(): Locator {
+
+        return this.page.getByTestId('add-testcase-create-button');
+
+    }
+
+
+
+    private get addTestCaseCancelButton(): Locator {
+
+        return this.page.getByTestId('add-testcase-cancel-button');
+
+    }
+
+
+
+    private get addTestCaseMatchingStrategySelect(): Locator {
+
+        return this.page.getByTestId('add-testcase-matching-strategy-select');
+
+    }
+
+
+
+    private get addTestCaseExpectedOutputLabel(): Locator {
+
+        return this.addTestCaseModalForm.locator('div').filter({ hasText: 'User Expected Output' }).first();
+
+    }
+
+
+
+    async clickEditMessageButton() {
+
+        await expect(this.editMessageButton).toBeVisible();
+
+        await this.editMessageButton.click();
+
+    }
+
+
+
+    async expectEditMessageTextareaVisible() {
+
+        await expect(this.page.getByTestId('edit-message-textarea')).toBeVisible();
+
+    }
+
+
+
+    async expectShowGeneratedButtonVisible() {
+
+        await expect(this.page.getByTestId('edit-message-show-generated-button')).toBeVisible();
+
+    }
+
+
+
+
+
+
+
+    async clickBetterPromptButton() {
+
+        await expect(this.editMessageModalContainer).toBeVisible();
+
+        await expect(this.editMessageImproveButton).toBeVisible();
+
+        await this.editMessageImproveButton.click();
+
+    }
+
+
+
+    async expectPromptPreviousTextareaVisible() {
+
+        await expect(this.historyPromptUpdateModalContainer).toBeVisible();
+
+        await expect(this.historyPromptPreviousTextarea).toBeVisible();
+
+    }
+
+
+
+    async expectPromptUpdatedTextareaVisible() {
+
+        await expect(this.historyPromptUpdateModalContainer).toBeVisible();
+
+        await expect(this.historyPromptUpdatedTextarea).toBeVisible();
+
+    }
+
+
+
+    async expectPromptRegenerateButtonVisible() {
+
+        await expect(this.historyPromptRegenerateButton).toBeVisible();
+
+    }
+
+
+
+    async clickPromptRegenerateButton() {
+
+        await expect(this.historyPromptRegenerateButton).toBeVisible();
+
+        await this.historyPromptRegenerateButton.click();
+
+    }
+
+
+
+    async clickShowGeneratedButton() {
+
+        await expect(this.showGeneratedButton).toBeVisible();
+
+        await this.showGeneratedButton.click();
+
+    }
+
+
+
+    async clickPromptSaveButton() {
+
+        await expect(this.historyPromptSaveButton).toBeVisible();
+
+        await this.historyPromptSaveButton.click();
+
+    }
+
+
+
+    async clickPromptCancelButton() {
+
+        await expect(this.page.getByTestId('history-prompt-cancel-button')).toBeVisible();
+
+        await this.page.getByTestId('history-prompt-cancel-button').click();
+
+    }
+
+
+
+    async clickEditMessageCancelButton() {
+
+        await expect(this.editMessageCancelButton).toBeVisible();
+
+        await this.editMessageCancelButton.click();
+
+    }
+
+
+
+    async fillEditMessageTextarea(text: string) {
+
+        await this.page.getByTestId('edit-message-textarea').fill(text);
+
+    }
+
+
+
+    async expectEditMessageModalClosed() {
+
+        await expect(this.page.locator('dialog#EDIT_MESSAGE_MODAL')).not.toHaveAttribute('open');
+
+    }
+
+
+
+    // --- Debug Agent ---
+
+
+
+    async clickDebugAgentButton() {
+
+        const debugButton = this.page.locator('#thread-item-debug-agent-button').first();
+
+        await expect(debugButton).toBeVisible();
+
+        await debugButton.click();
+
+    }
+
+
+
+    async expectIframeParentContainerVisible() {
+
+        await expect(this.page.locator('#iframe-parent-container').first()).toBeVisible();
+
+    }
+
+
+
+    // --- Add Test Case Modal ---
+
+
+
+    async clickAddTestCaseButton() {
+
+        const addTestCaseButton = this.page.locator('#thread-item-add-test-case-button').first();
+
+        await expect(addTestCaseButton).toBeVisible();
+
+        await addTestCaseButton.click();
+
+    }
+
+
+
+    // async expectAddTestCaseSecondLastRemoveToolVisible() {
+
+    //     await expect(this.page.locator('[id^="add-testcase-second-last-remove-tool-"]').first()).toBeVisible();
+
+    // }
+
+
+
+    async expectAddTestCaseNameInputVisible() {
+
+        await expect(this.addTestCaseNameInput).toBeVisible();
+
+    }
+
+
+
+    async fillAddTestCaseNameInput(text: string) {
+
+        await expect(this.addTestCaseNameInput).toBeVisible();
+
+        await this.addTestCaseNameInput.fill(text);
+
+    }
+
+
+
+    async expectAddTestCaseLastUserMessageVisible() {
+
+        await expect(this.addTestCaseLastUserMessage).toBeVisible();
+
+    }
+
+
+
+    async expectAddTestCaseExpectedContentTextareaVisible() {
+
+        // Expected output is displayed as read-only content in the modal
+
+        await expect(this.addTestCaseExpectedOutputLabel).toBeVisible();
+
+        const outputContainer = this.page.getByTestId('add-testcase-bottom-panel');
+
+        await expect(outputContainer).toBeVisible();
+
+    }
+
+
+
+    async expectAddTestCaseCloseXButtonVisible() {
+
+        await expect(this.addTestCaseCloseXButton).toBeVisible();
+
+    }
+
+
+
+    async expectAddTestCaseCreateButtonVisible() {
+
+        await expect(this.addTestCaseCreateButton).toBeVisible();
+
+    }
+
+
+
+    async expectAddTestCaseCancelButtonVisible() {
+
+        await expect(this.addTestCaseCancelButton).toBeVisible();
+
+    }
+
+
+
+    async selectAddTestCaseMatchingStrategy(value: string) {
+
+        await expect(this.addTestCaseMatchingStrategySelect).toBeVisible();
+
+        await this.addTestCaseMatchingStrategySelect.selectOption(value);
+
+    }
+
+
+
+    async clickAddTestCaseCreateButton() {
+
+        await expect(this.addTestCaseCreateButton).toBeVisible();
+
+        await this.addTestCaseCreateButton.click();
+
+    }
+
+
+
+    async clickAddTestCaseCancelButton() {
+
+        await expect(this.addTestCaseCancelButton).toBeVisible();
+
+        await this.addTestCaseCancelButton.click();
+
+    }
+
+
+
+    async expectAddTestCaseModalClosed() {
+
+        await expect(this.page.locator('dialog#ADD_TEST_CASE_MODAL')).not.toHaveAttribute('open');
+
+    }
+
+
+
+    async expectTestCaseCreatedToastVisible() {
+
+        await expect(this.page.getByText('Test case created successfully')).toBeVisible();
+
+    }
+
+
+
+    async expectAiConfigDetailModalContainsText(text: string) {
+
+
+
+        const contentContainer = this.page.getByRole('main').getByTestId('chat_details_view');
+
+        await expect(contentContainer).toBeVisible();
+
+        await expect(contentContainer).toContainText(text);
+
+    }
+
+
+
+    async verifyHistoryMatchesAPI(apiResponse: any) {
+
+        const apiIds = this.collectThreadIdsFromApi(apiResponse);
+
+
+
+        await expect(async () => {
+
+            const uiIds = await this.getUIThreadIds();
+
+            expect([...uiIds].sort()).toEqual([...apiIds].sort());
+
+        }).toPass({ timeout: 15000 });
+
+    }
 
 }

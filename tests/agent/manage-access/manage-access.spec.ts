@@ -58,7 +58,11 @@ test.describe('Agent - Manage Access', () => {
 
     await agents.usageSummaryPopover.waitForVisible();
 
-    await agents.usageSummaryPopover.fillLimit('10');
+    const currentLimit = await agents.usageSummaryPopover.getLimitValue();
+
+    const newLimit = currentLimit === '1' ? '2' : '1';
+
+    await agents.usageSummaryPopover.fillLimit(newLimit);
 
     await agents.usageSummaryPopover.expectUpdateButtonVisible();
     await agents.usageSummaryPopover.expectUpdateButtonEnabled();

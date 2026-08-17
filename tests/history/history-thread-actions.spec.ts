@@ -18,7 +18,7 @@ test.describe('History - API Agent Thread Actions', () => {
  
   // AI Config - This one DOES open a modal/slider in some views
   await agent.history.clickAiConfig();
-  await expect(page.getByTestId('ai-config-modal')).toBeVisible(); // Corrected ID
+  await agent.history.expectChatDetailsViewModalVisible(); 
   await agent.history.closeChatDetailsModal();
   
   // Variables - Now Inline
@@ -37,7 +37,7 @@ test.describe('History - API Agent Thread Actions', () => {
 
 
   await agent.history.clicklatency();
-  await expect(page.getByTestId('latency-details-modal')).toBeVisible(); //
+  await agent.history.expectChatDetailsViewModalVisible(); 
   await agent.history.closeChatDetailsModal();
 
   });

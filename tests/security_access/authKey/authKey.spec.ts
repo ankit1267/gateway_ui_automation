@@ -10,6 +10,7 @@ test.describe('Auth Key - Security & Access', () => {
 
   test('TC-AUTH-01: Validation error shown for name shorter than 3 characters', async ({ sidepanel }) => {
     await sidepanel.authKeyPage.clickCreateNewKey();
+    await sidepanel.authKeyPage.fillAuthKeyName('ab');
     await sidepanel.authKeyPage.clickCreateSubmit();
     await sidepanel.authKeyPage.expectValidationErrorToast();
   });

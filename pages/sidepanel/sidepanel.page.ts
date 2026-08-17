@@ -116,6 +116,7 @@ export class SidepanelPage {
     await this.page.goto(`/org/${orgId}/chatbotConfig`);
     await this.page.waitForURL(`/org/${orgId}/chatbotConfig`);
     await this.dismissOnboardingOverlay();
+    await this.chatbotConfigPage.waitForReady();
   }
 
   async gotoKnowledgeBase() {

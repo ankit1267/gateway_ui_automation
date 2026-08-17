@@ -17,7 +17,7 @@ export class AuthKeyPage {
     this.table = page.getByTestId('custom-table');
     this.smartLinkExternalLink = page.getByTestId('smart-link-external-link');
     this.nameInput = page.locator('#authNameInput');
-    this.createSubmitButton = page.getByRole('button', { name: '+ Create', exact: true });
+    this.createSubmitButton = page.getByRole('button', { name: 'Create', exact: true });
     this.deleteModal = new DeleteModal(page);
   }
 
@@ -81,6 +81,7 @@ export class AuthKeyPage {
   }
 
   async fillAuthKeyName(name: string) {
+    await expect(this.nameInput).toBeVisible();
     await this.nameInput.fill(name);
   }
 

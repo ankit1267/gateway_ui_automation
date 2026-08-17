@@ -8,7 +8,7 @@ export class UsageSummaryPopover {
 
   constructor(private readonly page: Page) {
     this.limitInput = page.getByPlaceholder('Enter limit in $');
-    this.updateButton = page.getByRole('button', { name: 'Set / Update Limit' });
+    this.updateButton = page.getByRole('button', { name: 'Save Limits' });
     this.resetButton = page.getByRole('button', { name: 'Reset Usage' });
   }
 

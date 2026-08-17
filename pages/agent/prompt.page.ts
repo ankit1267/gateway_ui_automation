@@ -43,6 +43,7 @@ export class PromptPage {
   private readonly promptSummaryButton: Locator;
   private readonly optimizePromptButton: Locator;
   private readonly promptEditorContainer: Locator;
+  private readonly preEmbedEmptyDropdown: Locator;
   private readonly promptFullscreenToggle: Locator;
   private readonly promptResizeHandle: Locator;
   private readonly defaultVariablesCollapse: Locator;
@@ -93,6 +94,7 @@ export class PromptPage {
     this.preToolDropdown = new PreToolDropdown(page);
     this.queryRefinerConfigModal = new PrebuiltPreToolConfigModal(page);
     this.preEmbedFunctionsContainer = page.getByTestId('pre-embed-list-container');
+    this.preEmbedEmptyDropdown = page.getByTestId('pre-embed-empty-dropdown');
     // this.renderEmbedItemQueryRefiner = page.getByTestId('render-embed-item-query_refiner');
     this.deleteButton = page.getByTestId(/^render-embed-delete-button-/);
     this.deleteModal = page.getByTestId('DELETE_PRE_TOOL_MODAL').getByTestId('delete-modal-confirm-button');
@@ -535,6 +537,10 @@ export class PromptPage {
 
   async waitForPageLoad() {
     await this.page.waitForLoadState('domcontentloaded');
+  }
+
+  async expectPreEmbedEmptyDropdownVisible() {
+    await expect(this.preEmbedEmptyDropdown).toBeVisible({ timeout: 10000 });
   }
 
   async addPreToolClick() {

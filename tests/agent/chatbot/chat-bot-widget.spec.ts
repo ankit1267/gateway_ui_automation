@@ -12,7 +12,7 @@ test.describe('Chatbot Widget', () => {
     const agent = await agents.openAgent(AGENT_NAME);
     
   
-    await agent.chatbot.sendMessage('onboarding mail template');
+    await agent.chatbot.sendMessage('Send Notification on Slack');
 
     const messages = agent.chatbot.getScrollable();
     

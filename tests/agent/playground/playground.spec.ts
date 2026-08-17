@@ -2,7 +2,7 @@ import { test, expect } from "../../../fixtures/base.fixture";
 
 const AGENT_NAME = "IntelligentAssistant_1";
 
-test('Playground strategy selection', async ({ agents }) => {
+test('Testcases playground slider', async ({ agents }) => {
   await agents.goto('api');
   const agent = await agents.openAgent(AGENT_NAME);
 
@@ -35,7 +35,7 @@ test('Playground strategy selection', async ({ agents }) => {
   await agent.playground.expectChatMessageVisible(7);
 });
 
-test('add new playground', async ({ agents }) => {
+test('add new testcase from playground', async ({ agents }) => {
   await agents.goto('api');
   const agent = await agents.openAgent(AGENT_NAME);
 
@@ -46,10 +46,6 @@ test('add new playground', async ({ agents }) => {
   
   await agent.playground.typeMessage('hi');
   await agent.playground.expectChatControlsVisible();
-
-  await agent.playground.selectStrategy(0, 'cosine');
-  await agent.playground.selectStrategy(0, 'ai');
-  await agent.playground.selectStrategy(0, 'exact');
 
   await agent.playground.clickAddNewPlayground();
 });
@@ -76,9 +72,6 @@ test('Playground send message verifies prompt fields in request body', async ({ 
   await agent.waitForTimeout(5000);
   await agent.prompt.fillPrompt(promptData1.role, promptData1.goal, promptData1.instruction);
    const { requestBody } = await agent.prompt.clickSaveButtonAndReturnRequestBody();
-
- 
-
 
   // Verify the request body contains the same prompt values as filled
   expect(requestBody).toHaveProperty('configuration');

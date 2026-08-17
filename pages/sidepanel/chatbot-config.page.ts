@@ -78,12 +78,17 @@ export class ChatbotConfigPage {
     }
   }
 
+  async waitForReady() {
+    await this.page.getByTestId('loading-spinner').waitFor({ state: 'hidden', timeout: 30000 }).catch(() => {});
+  }
+
   async goto() {
     const orgId = process.env.ORG_ID;
     if (!orgId) throw new Error('ORG_ID env variable is not set');
     await this.page.goto(`/org/${orgId}/chatbotConfig`);
     await this.page.waitForURL(`/org/${orgId}/chatbotConfig`);
     await this.dismissOnboardingOverlay();
+    await this.waitForReady();
   }
 
   async waitForPage() {
@@ -208,7 +213,9 @@ export class ChatbotConfigPage {
   }
 
   async clickConfigTab(tabId: string) {
+    await this.waitForReady();
     await this.getConfigTab(tabId).click();
+    await this.waitForReady();
   }
 
   async clickConfigBack() {
@@ -433,6 +440,7 @@ export class ChatbotConfigPage {
 
   async reloadPreview() {
     await this.page.getByRole('button', { name: 'Reload preview' }).click();
+    await this.waitForReady();
     await this.page.locator('iframe[src*="chatbot"]').waitFor({ state: 'attached', timeout: 30000 });
   }
 
@@ -460,10 +468,15 @@ export class ChatbotConfigPage {
       }
     });
   }
-
+  
   async sendMessageInPreview(message: string) {
     const frame = this.getPreviewFrame();
-    const input = frame.getByRole('textbox').first();
+  
+    const input = frame.locator('[data-testid="chatbot-message-input"]:visible');
+  
+    await expect(input).toBeVisible({ timeout: 30000 });
+    await expect(input).toBeEnabled();
+  
     await input.fill(message);
     await input.press('Enter');
   }

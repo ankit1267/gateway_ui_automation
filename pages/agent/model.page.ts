@@ -307,7 +307,7 @@ export class ModelPage {
     }
 
     async expectFallbackServiceDropdownVisible() {
-        await expect(this.page.getByTestId('fallback-service-dropdown-menu')).toBeVisible();
+        await expect(this.page.getByTestId('fallback-model-dropdown-trigger-button')).toBeVisible();
     }
 
     // async toggleFallbackModel(check: boolean) {
@@ -334,7 +334,7 @@ export class ModelPage {
     }
 
     async expectFallbackModelContainerVisible() {
-        await expect(this.page.locator('.w-full.p-3.border.border-base-200')).toBeVisible();
+        await expect(this.page.getByTestId('fallback-model-dropdown-trigger-button')).toBeVisible();
     }
 
     async clickConfigureApiKey() {

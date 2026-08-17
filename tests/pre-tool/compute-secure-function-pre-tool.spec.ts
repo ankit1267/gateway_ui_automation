@@ -16,6 +16,9 @@ test('Add compute_secure_function pre-tool variable path and verify variable row
     await agentPage.prompt.deletePreTool();
   }
 
+  await agentPage.prompt.expectPreEmbedEmptyDropdownVisible();
+  
+
   const configModal = agentPage.getPage.getByTestId('function-parameter-modal').first();
   const valuePathInput = configModal.locator('[data-testid^="param-value-path-input-"]').first();
   const saveButton = configModal.getByTestId('function-parameter-save-button');

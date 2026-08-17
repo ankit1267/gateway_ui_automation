@@ -19,6 +19,7 @@ export class WidgetsPage {
   readonly saveWidgetButtonInChat: Locator;
   readonly saveWidgetModal: Locator;
   readonly saveWidgetModalNameInput: Locator;
+  readonly saveWidgetModalDescriptionInput: Locator;
   readonly saveWidgetModalSaveButton: Locator;
   readonly saveWidgetModalCancelButton: Locator;
   readonly searchInput: Locator;
@@ -49,7 +50,8 @@ export class WidgetsPage {
 
     this.saveWidgetModal = page.getByTestId('save-widget-modal');
     this.saveWidgetModalNameInput = this.saveWidgetModal.getByTestId('save-widget-name-input');
-    this.saveWidgetModalSaveButton = this.saveWidgetModal.getByTestId('save-widget-save-button');
+    this.saveWidgetModalDescriptionInput =this.saveWidgetModal.getByTestId('save-widget-description-textarea');
+    this.saveWidgetModalSaveButton = page.getByTestId('SAVE_WIDGET_MODAL').getByTestId('save-widget-save-button');
     this.saveWidgetModalCancelButton = this.saveWidgetModal.getByTestId('save-widget-cancel-button');
 
     this.searchInput = page.getByRole('textbox', { name: /Search Widget/i });
@@ -100,7 +102,7 @@ export class WidgetsPage {
   }
 
   getWidgetCard(widgetName: string): Locator {
-    return this.widgetGrid.locator('.card').first().filter({ hasText: widgetName });
+    return this.widgetGrid.locator('.card').filter({ hasText: widgetName }).first();
   }
 
   async getWidgetCardTitle(index: number): Promise<string> {
@@ -173,6 +175,11 @@ export class WidgetsPage {
   async fillSaveWidgetName(name: string) {
     await this.saveWidgetModalNameInput.clear();
     await this.saveWidgetModalNameInput.fill(name);
+  }
+
+  async fillSaveWidgetDescription(description: string) { 
+    await this.saveWidgetModalDescriptionInput.clear(); 
+    await this.saveWidgetModalDescriptionInput.fill(description); 
   }
 
   async clickSaveWidgetModalSave() {
@@ -276,11 +283,11 @@ export class WidgetsPage {
   }
 
   async expectTemplatePreviewCloseButtonVisible() {
-    await expect(this.templatePreviewModal.locator('button.btn-circle')).toBeVisible();
+    await expect(this.templatePreviewModal.getByTestId('TEMPLATE_PLAYGROUND-close-button')).toBeVisible();
   }
 
   async clickTemplatePreviewClose() {
-    await this.templatePreviewModal.locator('button.btn-circle').click();
+    await this.templatePreviewModal.getByTestId('TEMPLATE_PLAYGROUND-close-button').click();
   }
 
   async expectTemplatePreviewModalNotVisible() {
