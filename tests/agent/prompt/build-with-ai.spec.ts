@@ -4,7 +4,7 @@ import { verifyJsonSchemaResponseApiUpdate } from '../../../utils/json-schema-re
 const AGENT_NAME = process.env.AGENT_NAME!;
 
 test.describe('Prompt - Build with AI', () => {
-  test('TC-PROMPT-BAI-01: generate and apply instruction from Build with AI panel', async ({ agents, page }) => {
+  test('TC-PROMPT-BAI-01: generate and apply JSON Schema from Build with AI panel', async ({ agents, page }) => {
     await agents.goto('api');
 
     const agent = await agents.openAgent(AGENT_NAME);

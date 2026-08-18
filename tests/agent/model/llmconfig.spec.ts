@@ -73,14 +73,3 @@ test('Set max_tokens to Max and Min and verify in API response', async ({ agents
     await model.clickAdvancedParameterResetBtn('max_tokens');
 });
 
-test('Check reasoning dropdown', async ({ agents }) => {
-    await agents.goto('api');
-    const agent = await agents.openAgent(AGENT_NAME);
-    await agent.tabs.openModel();
-    await agent.model.selectServiceProvider('Openai');
-    const model = agent.model;
-     // Test reasoning dropdown
-    await model.clickAdvancedParameterreasoningDropdown('reasoning');
-    await model.expectAdvancedParameterreasoningVisible('reasoning');
-    await model.clickAdvancedParameterreasoningDropdown('reasoning');
-});

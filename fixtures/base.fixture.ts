@@ -35,10 +35,22 @@ type Fixtures = {
   sidepanel: SidepanelPage;
 };
 
+const SESSION_COOKIE_NAME = testEnv === 'prod' ? 'PROD_env_local_token' : 'test_env_local_token';
+
+function isAuthFileExpired(): boolean {
+  if (!fs.existsSync(AUTH_FILE)) return true;
+  const state = JSON.parse(fs.readFileSync(AUTH_FILE, 'utf-8'));
+  const cookies: Array<{ name: string; expires?: number }> = state.cookies || [];
+  const sessionCookie = cookies.find((c) => c.name === SESSION_COOKIE_NAME);
+  if (!sessionCookie) return true;
+  const nowSeconds = Date.now() / 1000;
+  return typeof sessionCookie.expires === 'number' && sessionCookie.expires > 0 && sessionCookie.expires < nowSeconds;
+}
+
 export const test = base.extend<Fixtures>({
   storageState: [
     async ({ browser }, use) => {
-      if (!fs.existsSync(AUTH_FILE)) {
+      if (isAuthFileExpired()) {
         const envConfig = getEnvConfig();
         await getAuthToken();
         const ctx = await browser.newContext();

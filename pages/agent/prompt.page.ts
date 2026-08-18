@@ -126,7 +126,7 @@ export class PromptPage {
     this.jsonSchemaAddPropertyButton = this.jsonSchemaBuilder.getByTestId('json-schema-builder-add-property-button').first();
     this.jsonSchemaSaveButton = this.jsonSchemaBuilder.getByTestId('json-schema-builder-save-button').first();
     this.jsonSchemaCloseButton = this.jsonSchemaBuilder.getByTestId('json-schema-builder-close-button').first();
-    this.buildWithAiCloseButton = page.getByTestId('json-schema-close-button');
+    this.buildWithAiCloseButton = page.getByTestId('JSON_SCHEMA-close-button');
     this.schemaPropTypeSelectNew0 = page.getByTestId('schema-prop-type-select-new0');
     this.schemaPropDeleteButtonNew0 = page.getByTestId('schema-prop-delete-button-new0');
     this.schemaPropDescriptionTextareaNew0 = page.getByTestId('schema-prop-description-textarea-new0');
@@ -165,6 +165,13 @@ export class PromptPage {
 
 
   async selectResponseType(value: string) {
+    const currentValue = await this.responseTypeSelect.inputValue();
+
+    if (currentValue !== 'default') {
+      await this.clickResponseTypeSetDefault();
+      await this.expectResponseTypeIsDefault();
+    }
+
     await this.responseTypeSelect.selectOption(value);
     await expect(this.responseTypeSelect).toHaveValue(value);
   }
@@ -592,7 +599,7 @@ export class PromptPage {
 
   async clickCustomLogicCodeButton() {
     const viaSocketFrame = this.getViaSocketFrame();
-    await viaSocketFrame.getByRole('button', { name: 'Code', exact: true }).click();
+    await viaSocketFrame.getByRole('button', { name: 'See Code', exact: true }).click();
   }
 
   async fillCustomLogicCode(code: string) {

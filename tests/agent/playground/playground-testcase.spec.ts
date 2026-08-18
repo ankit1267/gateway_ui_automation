@@ -1,6 +1,6 @@
 ﻿import { test, expect } from '../../../fixtures/base.fixture';
 
-const AGENT_NAME = process.env.AGENT_NAME!;
+const AGENT_NAME = process.env.TESTING_AGENT!;
 
 test.describe('Playground Test Case Sidebar', () => {
 

@@ -20,7 +20,7 @@ test.describe('Model - Fallback & Tool Choice', () => {
     await expect(page.locator('.w-full.p-3.border.border-base-200.rounded-lg.bg-base-50')).toBeVisible();
 
     // Select fallback service (e.g., Anthropic)
-    await agent.model.selectFallbackService('gemini');
+    await agent.model.selectFallbackService('mistral');
     await expect(page.getByTestId('fallback-service-dropdown-trigger-button')).toContainText('Mistral');
 
     // Select fallback model

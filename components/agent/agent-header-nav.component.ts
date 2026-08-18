@@ -78,7 +78,7 @@ export class AgentHeaderNav {
     this.confirmPublishButton = this.page.getByTestId('publish-version-publish-button');
     this.changesSummarySection = this.publishDialog.getByText('Changes Summary');
     this.viewAllChangesButton = this.publishDialog.locator('#publish-view-all-changes-button');
-    this.publishModalCloseButton = this.publishDialog.locator('#publish-close-x-button');
+    this.publishModalCloseButton = this.page.getByTestId('publish_bridge_version_modal-close-button');
   }
 
   async openChatbotConfig() {
@@ -265,7 +265,7 @@ export class AgentHeaderNav {
   }
 
   async clickConfirmPublish() {
-  
+
     await this.confirmPublishButton.click();
   }
 
@@ -377,8 +377,18 @@ export class AgentHeaderNav {
     await expect(this.publishDialog).not.toBeVisible();
   }
 
+  // async closePublishModal() {
+  //   await this.publishModalCloseButton.click();
+  // }
+
   async closePublishModal() {
+    await expect(this.publishDialog).toBeVisible({ timeout: 15000 });
+    await expect(this.publishModalCloseButton).toBeVisible({ timeout: 15000 });
+    await expect(this.publishModalCloseButton).toBeEnabled({ timeout: 15000 });
+
     await this.publishModalCloseButton.click();
+
+    await expect(this.publishDialog).not.toBeVisible({ timeout: 15000 });
   }
 
   async expectChangesSummaryVisible() {

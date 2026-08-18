@@ -33,7 +33,8 @@ test.describe('Prompt - Response Type (Chatbot)', () => {
       strict: true,
     });
     await agent.prompt.fillJsonSchema(schema);
-    await agent.prompt.blurInput();
+    // await agent.prompt.blurInput();
+
 
     await agent.chatbot.sendMessage('hii');
     await agent.chatbot.waitForResponseComplete();

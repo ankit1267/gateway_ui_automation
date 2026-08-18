@@ -40,7 +40,7 @@ test.describe('Knowledge Base - Create & Update', () => {
 
   test('Create Knowledge Base using Content', async ({ sidepanel }) => {
     await sidepanel.knowledgeBasePage.clickCreate();
-    await sidepanel.knowledgeBasePage.fillKbName('Kb_Ajit Doval');
+    await sidepanel.knowledgeBasePage.fillKbName('Testing');
     await sidepanel.knowledgeBasePage.fillKbDescription('Wikipedia of Ajit Doval');
     await sidepanel.knowledgeBasePage.selectContentRadio();
     await sidepanel.knowledgeBasePage.fillContent('Ajit Kumar Doval (born 20 January 1945) is an Indian bureaucrat, spymaster and retired police and intelligence officer who has been serving as the longest tenured National Security Advisor of India (NSA) since 2014.');
@@ -48,7 +48,7 @@ test.describe('Knowledge Base - Create & Update', () => {
     await sidepanel.knowledgeBasePage.selectModerateRadio();
     await sidepanel.knowledgeBasePage.selectHighAccuracyRadio();
     await sidepanel.knowledgeBasePage.clickSubmit();
-    await sidepanel.knowledgeBasePage.expectKnowledgeBaseByName('Kb_Ajit Doval');
+    await sidepanel.knowledgeBasePage.expectKnowledgeBaseByName('Testing');
   });
 
   test('Create Knowledge Base using URL', async ({ sidepanel }) => {
