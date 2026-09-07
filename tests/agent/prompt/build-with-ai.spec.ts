@@ -18,7 +18,8 @@ test.describe('Prompt - Build with AI', () => {
       //   `[json-schema-api] action=select-json_schema requests=${selectCapture.requestCount}`,
       //   JSON.stringify((selectCapture.requestBody as { configuration?: { response_type?: unknown } }).configuration?.response_type ?? {}, null, 2),
       // );
-      await agent.prompt.selectResponseType('json_schema');
+    await agent.prompt.selectResponseType('json_schema');
+    await page.waitForTimeout(4000);
 
     await agent.prompt.openBuildWithAI();
     await agent.prompt.closeBuildWithAI();

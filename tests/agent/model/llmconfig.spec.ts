@@ -13,6 +13,7 @@ test('Check if llm configs are working', async ({ agents }) => {
     await agent.model.selectServiceProvider('Gemini');
 
     const model = agent.model;
+
     // Test max_tokens slider and buttons
     await model.fillAdvancedParameter('max_tokens', '38216');
     await model.clickAdvancedParameterMaxBtn('max_tokens');
@@ -23,7 +24,7 @@ test('Check if llm configs are working', async ({ agents }) => {
     await model.clickAdvancedParameterDropdown('tool_choice');
     await model.expectAdvancedParameterMenuVisible('tool_choice');
     await model.clickAdvancedParameterDropdown('tool_choice');
-    
+
     
     // Test parallel tool calls checkbox
     await model.toggleParallelToolChoice(false);
@@ -36,11 +37,9 @@ test('Check if llm configs are working', async ({ agents }) => {
     await model.expectFallbackModelContainerVisible();
     await model.clickFallbackServiceDropdown();
     await model.expectFallbackServiceDropdownVisible();
-    await model.clickFallbackServiceDropdown();
-    await model.clickFallbackServiceDropdown();
-    await model.clickFallbackModelDropdown();
     await model.clickFallbackModelDropdown();
     await model.expectFallbackModelDropdownVisible();
+    
     // Test configure api key
     await model.clickConfigureApiKey();
 
@@ -59,14 +58,14 @@ test('Set max_tokens to Max and Min and verify in API response', async ({ agents
     ]).then(([resp]) => resp);
     
     const maxRequestBody = JSON.parse(maxResponse.request().postData() || '{}');
-    expect([128000, 'min']).toContain(maxRequestBody?.configuration?.max_tokens);
+    expect([128000, 'max']).toContain(maxRequestBody?.configuration?.max_tokens);
 
     // Click Min button and verify API request contains 'min'
     await updateParameterWithApi(
         page,
         () => model.clickAdvancedParameterMinBtn('max_tokens'),
         'max_tokens',
-        'max'
+        'min'
     );
 
     // Reset to default for cleanup

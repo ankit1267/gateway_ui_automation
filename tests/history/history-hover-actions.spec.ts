@@ -1,6 +1,6 @@
 import { test } from '../../fixtures/base.fixture';
 
-const AGENT_NAME = process.env.AGENT_NAME!;
+const AGENT_NAME = 'General Chat';
 
 test.describe('History - API Agent Hover Actions', () => {
   test.beforeEach(async ({ agents }) => {

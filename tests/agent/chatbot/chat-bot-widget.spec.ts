@@ -19,7 +19,7 @@ test.describe('Chatbot Widget', () => {
     const generatedWidgets = messages.locator(
       'div.flex.flex-col[style*="padding: 8px"][style*="gap: 12px"]'
     );
-
+ 
     await agent.chatbot.waitForResponseComplete(120000);
 
     await expect(generatedWidgets.first()).toBeVisible({ timeout: 120000 });

@@ -134,15 +134,18 @@ export class ConnectersPage {
    }
 
    async removeEmbedToolIfExists() {
+        await this.embedToolsContainer.waitFor({ state: 'visible', timeout: 5000 }).catch(() => {});
         if (!await this.embedToolsContainer.isVisible()) return;
         const toolItem = this.embedToolsContainer
             .locator('[data-testid^="render-embed-item-"]').first();
+        await toolItem.waitFor({ state: 'visible', timeout: 5000 }).catch(() => {});
         if (!await toolItem.isVisible()) return;
         await toolItem.hover();
         await toolItem.getByTitle('Remove').click();
         const confirmBtn = this.page.getByTestId('DELETE_TOOL_MODAL').getByTestId('delete-modal-confirm-button');
         await expect(confirmBtn).toBeVisible();
         await confirmBtn.click();
+        await expect(toolItem).not.toBeVisible({ timeout: 15000 });
    }
 
    async clickConnectedAgent(agentName: string) {

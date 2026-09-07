@@ -15,7 +15,7 @@ test('open and close prompt helper and apply prompt', async ({ agents }) => {
   await agent.prompt.promptHelper.expectVisible();
   await agent.prompt.promptHelper.expectTipTapEditorVisible();
 
-  await agent.prompt.promptHelper.generateInstruction('hii');
+  await agent.prompt.promptHelper.generateInstruction('Generate prompt to write email');
   await agent.prompt.promptHelper.expectCanvasInputVisible();
   await agent.prompt.promptHelper.clickCanvasSendButton();
 

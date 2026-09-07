@@ -19,9 +19,10 @@ test('Add compute_secure_function pre-tool variable path and verify variable row
   await agentPage.prompt.expectPreEmbedEmptyDropdownVisible();
   
 
-  const configModal = agentPage.getPage.getByTestId('function-parameter-modal').first();
+  const configModal = agentPage.getPage.getByTestId('pre-function-parameter-modal').first();
   const valuePathInput = configModal.locator('[data-testid^="param-value-path-input-"]').first();
   const saveButton = configModal.getByTestId('function-parameter-save-button');
+  const closeButton = configModal.getByTestId('function-parameter-close-button');
 
   await agentPage.prompt.addPreToolClick();
   await agentPage.prompt.preToolDropdown.searchAndSelectPreToolFunction(PRE_TOOL_NAME);
@@ -33,6 +34,7 @@ test('Add compute_secure_function pre-tool variable path and verify variable row
 
   await valuePathInput.fill(VARIABLE_KEY);
   await valuePathInput.blur();
+  await expect(saveButton).toBeVisible();
   await expect(saveButton).toBeEnabled();
   await saveButton.click();
   await agentPage.getPage.waitForTimeout(5000);
@@ -45,13 +47,14 @@ test('Add compute_secure_function pre-tool variable path and verify variable row
   await agentPage.prompt.openPreToolConfig();
   await expect(configModal).toBeVisible();
   await valuePathInput.fill('');
-  await saveButton.click();
+  await closeButton.click();
   await agentPage.getPage.waitForTimeout(5000);
 
   await agentPage.prompt.openVariableManager();
   await agentPage.prompt.expectVariableSliderVisible();
   await agentPage.prompt.deleteVariable(0);
   await agentPage.prompt.closeVariableManager();
+  
 
   if (await agentPage.prompt.hasPreTool()) {
     await agentPage.prompt.deletePreTool();

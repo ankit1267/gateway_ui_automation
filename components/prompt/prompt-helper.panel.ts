@@ -36,7 +36,6 @@ export class PromptHelperPanel {
     await this.applyButton.click();
   }
 
-
   async OpenHelperButtonVisible() {
     return await this.openHelperButton.isVisible();
   }

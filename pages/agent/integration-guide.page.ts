@@ -27,7 +27,7 @@ export class IntegrationGuidePage {
   constructor(private page: Page) {
     this.pageTitle = page.getByRole('heading', { name: 'Integration Guide' });
     this.integrationTabApi = page.getByTestId('integration-tab-api');
-    this.integrationTabBatch = page.getByTestId('integration-tab-batch');
+    this.integrationTabBatch = page.getByTestId('onboarding-example-batch');
     this.creatApiAuthKey = page.getByTestId('api-guide-create-authkey-link');
     this.createBatchAuthKey = page.getByTestId('batch-api-guide-create-authkey-link');
     this.curlCodeBlock = page.getByTestId('api-guide-snippet-curl');

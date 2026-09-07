@@ -303,20 +303,12 @@ export class ModelPage {
     }
 
     async expectFallbackModelDropdownVisible() {
-        await expect(this.page.getByTestId('fallback-model-dropdown-menu')).toBeVisible();
-    }
-
-    async expectFallbackServiceDropdownVisible() {
         await expect(this.page.getByTestId('fallback-model-dropdown-trigger-button')).toBeVisible();
     }
 
-    // async toggleFallbackModel(check: boolean) {
-    //     if (check) {
-    //         await this.page.getByTestId('fallback-model-toggle').check();
-    //     } else {
-    //         await this.page.getByTestId('fallback-model-toggle').uncheck();
-    //     }
-    // }
+    async expectFallbackServiceDropdownVisible() {
+        await expect(this.page.getByTestId('fallback-service-dropdown-trigger-button')).toBeVisible();
+    }
 
     async toggleFallbackModel(check: boolean) {
         const toggle = this.page.getByTestId('fallback-model-toggle');
@@ -346,11 +338,6 @@ export class ModelPage {
     // -------------------------
     // FALLBACK MODEL EXTENDED
     // -------------------------
-
-    // async selectFallbackService(serviceValue: string) {
-    //     await this.clickFallbackServiceDropdown();
-    //     await this.page.getByTestId(`fallback-service-item-${serviceValue}`).click();
-    // }
 
     async isFallbackSameModelAlertVisible(): Promise<boolean> {
         return this.page.getByTestId('fallback-model-same-model-alert').isVisible();

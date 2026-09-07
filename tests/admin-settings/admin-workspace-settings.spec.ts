@@ -81,8 +81,8 @@ test.describe('Admin Settings - Workspace Settings', () => {
     const isOpenBefore = await sidepanel.workspaceSettingPage.isTimezoneEditorOpen();
     expect(isOpenBefore).toBe(true);
 
-    await sidepanel.workspaceSettingPage.searchTimezone('Asia/Kolkata');
-    await sidepanel.workspaceSettingPage.selectTimezone('Asia/Kolkata');
+    await sidepanel.workspaceSettingPage.searchTimezone('Africa/Abidjan');
+    await sidepanel.workspaceSettingPage.selectTimezone('Africa/Abidjan');
     await sidepanel.workspaceSettingPage.clickSave();
 
     const isOpenAfter = await sidepanel.workspaceSettingPage.isTimezoneEditorOpen();

@@ -8,6 +8,8 @@ test('compare published and current prompt', async ({ agents, page }) => {
   await agents.goto('chatbot');
 
   const agent = await agents.openAgent(AGENT_NAME);
+
+  await agent.tabs.openPrompt();
   
   const role = `You are a motivation coach${Date.now()}`;
   const goal = `Help users with motivation${Date.now()}`;

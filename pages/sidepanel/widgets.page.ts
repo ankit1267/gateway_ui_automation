@@ -268,8 +268,14 @@ export class WidgetsPage {
   async hoverCardAndExpectDateFormat(name: string) {
     const card = this.getTemplateCardByName(name);
     await card.hover();
-    await expect(card.getByText(/\d{1,2}\s\w{3}\s\d{2},\s\d{2}:\d{2}/)).toBeVisible();
-  }
+    // await expect(card.getByText(/\d{1,2}\s\w{3}\s\d{2},\s\d{2}:\d{2}/)).toBeVisible();
+
+    const hoverDate = card.locator('.group-hover\\:block');
+    await expect(hoverDate).toBeVisible();
+    await expect(hoverDate).toHaveText(
+      /^\d{1,2}\s(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sept|Oct|Nov|Dec)\s\d{2},\s\d{2}:\d{2}$/
+    );
+}
 
   async clickCardPreviewButton(name: string) {
     const card = this.getTemplateCardByName(name);
