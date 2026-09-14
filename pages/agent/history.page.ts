@@ -78,7 +78,8 @@ export class HistoryPage {
 
         this.threadItemVar = page.getByTestId('thread-item-user-variables-button').first();
 
-        this.pre_function = page.locator('span').filter({ hasText: 'pre_function' }).first();
+        // Pre-tool trace header: data-testid="trace-tool-header-<PreFunctionName>"
+        this.pre_function = page.locator('[data-testid^="trace-tool-header-"]').first();
 
         this.showGeneratedButton = page.getByTestId('edit-message-show-generated-button');
 
@@ -132,9 +133,13 @@ export class HistoryPage {
 
 
 
-    async verifyPreFunctionVisible() {
+    async verifyPreFunctionVisible(functionName?: string) {
 
-        await expect(this.pre_function).toBeVisible();
+        const header = functionName
+            ? this.page.getByTestId(`trace-tool-header-${functionName}`)
+            : this.pre_function;
+
+        await expect(header).toBeVisible({ timeout: 15000 });
 
     }
 
@@ -178,9 +183,12 @@ export class HistoryPage {
 
         const preFunctionRow = this.pre_function.locator('..');
 
+        // Expand the trace header if its details are collapsed
+        if (!(await preFunctionRow.getByText(message).first().isVisible().catch(() => false))) {
+            await this.pre_function.click();
+        }
 
-
-        await expect(preFunctionRow).toContainText(message);
+        await expect(preFunctionRow).toContainText(message, { timeout: 15000 });
 
     }
 
@@ -397,12 +405,19 @@ export class HistoryPage {
     async hoverGroupChatAgentsResponse() {
 
         const responseBubble = this.page.getByTestId('final-response-card').first();
-
-
-
+        
         await expect(responseBubble).toBeVisible();
 
-        await responseBubble.hover();
+        await responseBubble.scrollIntoViewIfNeeded();
+
+        // The card's centre can be overlapped by the previous message's action bar,
+        // so hover the card's own content; fall back to a forced hover on the card.
+        const content = responseBubble.locator('p, span, div').filter({ hasText: /\S/ }).last();
+        if (await content.isVisible().catch(() => false)) {
+            await content.hover({ timeout: 5000 }).catch(() => responseBubble.hover({ force: true }));
+        } else {
+            await responseBubble.hover({ force: true });
+        }
 
     }
 

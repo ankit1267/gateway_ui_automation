@@ -530,6 +530,11 @@ export class PromptPage {
 
     await expect(this.deleteModal).toBeVisible();
     await this.deleteModal.click();
+
+    // Wait for the confirmation modal to close and the item to be removed before continuing
+    // DaisyUI <dialog> stays in the DOM when closed; it only loses the `open` attribute
+    await expect(this.page.getByTestId('DELETE_PRE_TOOL_MODAL')).not.toHaveAttribute('open', '', { timeout: 15000 });
+    await expect(preToolItem).toBeHidden({ timeout: 15000 });
   }
 
   async closeViaSocketEmbedIfOpen() {
@@ -556,15 +561,18 @@ export class PromptPage {
     const addButton = this.page.getByTestId('pre-embed-add-button');
     const changeButton = this.page.getByRole('button', { name: 'Change Pre Tool' });
 
-    if (await addButton.isVisible()) {
-      await addButton.click();
-    } else if (await changeButton.isVisible()) {
-      await changeButton.click();
-    } else {
-      throw new Error('Neither Add nor Change Pre Tool button is visible');
-    }
-
-    await expect(input).toBeVisible();
+    // The pre-tool list can re-render right after add/delete, which closes the dropdown.
+    // Retry the click until the search input is actually shown.
+    await expect(async () => {
+      if (await addButton.isVisible()) {
+        await addButton.click();
+      } else if (await changeButton.isVisible()) {
+        await changeButton.click();
+      } else {
+        throw new Error('Neither Add nor Change Pre Tool button is visible');
+      }
+      await expect(input).toBeVisible({ timeout: 3000 });
+    }).toPass({ timeout: 60000 });
     await input.focus();
     await lockDaisyDropdown(this.page, 'embed-suggestion-dropdown-menu');
 
@@ -607,23 +615,48 @@ export class PromptPage {
     const codeAccordion = viaSocketFrame.getByTestId('code-accordion');
     await expect(codeAccordion).toBeVisible({ timeout: 30000 });
 
-    const codeEditor = codeAccordion
-      .locator('textarea, [contenteditable="true"], .cm-content')
-      .first();
-    await codeEditor.click();
-    await this.page.keyboard.press('Control+A');
+    // Monaco editor: its textarea is covered by the rendered lines, so click the
+    // visible editor surface (falls back to other editor kinds) and focus the input.
+    const monacoLines = codeAccordion.locator('.monaco-editor .view-lines').first();
+    if (await monacoLines.isVisible().catch(() => false)) {
+      await monacoLines.click();
+      await codeAccordion.locator('textarea.inputarea').first().focus();
+    } else {
+      const codeEditor = codeAccordion
+        .locator('textarea, [contenteditable="true"], .cm-content')
+        .first();
+      await codeEditor.click({ force: true });
+    }
+
+    const selectAll = process.platform === 'darwin' ? 'Meta+A' : 'Control+A';
+    await this.page.keyboard.press(selectAll);
+    await this.page.keyboard.press('Backspace');
     await this.page.keyboard.type(code);
   }
 
   async saveCustomLogicPreTool() {
     const viaSocketFrame = this.getViaSocketFrame();
     await viaSocketFrame.getByRole('button', { name: 'Save', exact: true }).click();
+
+    // Wait for viaSocket to finish saving and switch to the saved flow view
+    await expect(viaSocketFrame.getByText('Live', { exact: true }).first()).toBeVisible({ timeout: 60000 });
   }
 
   async getCustomLogicFlowTitle(): Promise<string> {
     const viaSocketFrame = this.getViaSocketFrame();
-    const flowTitle = await viaSocketFrame.locator('#flow-title-textfield').inputValue();
-    return flowTitle.trim();
+    const titleInput = viaSocketFrame.locator('#flow-title-textfield');
+    // After save, viaSocket shows the flow title as a heading instead of a text field
+    const titleHeading = viaSocketFrame
+      .getByRole('heading', { level: 5 })
+      .filter({ hasNotText: 'Custom Logic (JS)' })
+      .first();
+
+    await expect(titleInput.or(titleHeading).first()).toBeVisible({ timeout: 30000 });
+
+    if (await titleInput.isVisible().catch(() => false)) {
+      return (await titleInput.inputValue()).trim();
+    }
+    return ((await titleHeading.textContent()) ?? '').trim();
   }
 
   async createCustomLogicPreToolAndGetFlowTitle(code: string): Promise<string> {
