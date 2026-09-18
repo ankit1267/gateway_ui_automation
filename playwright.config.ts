@@ -16,7 +16,7 @@ export default defineConfig({
     timeout: 60_000,
   },
   workers: 1,
-  retries: 1,
+  retries: 0,
 
  reporter: [
     ['html', { open: 'on-failure' }],
@@ -28,7 +28,7 @@ export default defineConfig({
     baseURL: process.env.BASE_URL!,
     headless: true,
 
-    trace: 'on-first-retry',
+    trace: 'retain-on-failure',
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',
 

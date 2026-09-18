@@ -1,6 +1,9 @@
 import type { Page, Locator } from '@playwright/test';
 import { expect } from '@playwright/test';
 
+/** SDK/language categories exposed via the onboarding category tabs. */
+export type SdkCategory = 'curl' | 'gtwy' | 'openai';
+
 export class IntegrationGuidePage {
   private readonly pageTitle: Locator;
   private readonly integrationTabApi: Locator;
@@ -15,14 +18,8 @@ export class IntegrationGuidePage {
   private readonly responseCodeBlockCopyButton: Locator;
   private readonly batchResponseCodeBlock: Locator;
   private readonly batchResponseCodeBlockCopyButton: Locator;
-  private readonly languageDropdownTrigger: Locator;
-  private readonly languageDropdownMenu: Locator;
-  private readonly apiStep1Section: Locator;
-  private readonly apiStep2Section: Locator;
-  private readonly batchStep1Section: Locator;
-  private readonly batchStep2Section: Locator;
-  private readonly apiResponseSection: Locator;
-  private readonly batchResponseSection: Locator;
+  private readonly codeBlockContainers: Locator;
+  private readonly onboardingContainer: Locator;
 
   constructor(private page: Page) {
     this.pageTitle = page.getByRole('heading', { name: 'Integration Guide' });
@@ -30,22 +27,22 @@ export class IntegrationGuidePage {
     this.integrationTabBatch = page.getByTestId('onboarding-example-batch');
     this.creatApiAuthKey = page.getByTestId('api-guide-create-authkey-link');
     this.createBatchAuthKey = page.getByTestId('batch-api-guide-create-authkey-link');
-    this.curlCodeBlock = page.getByTestId('api-guide-snippet-curl');
+    // NOTE: the app renders code blocks with a single generic
+    // `code-block-container` testid (no per-language/per-tab testid exists).
+    // The API/Batch API tabs each show exactly two: the request snippet
+    // (curl) first, followed by the JSON response. Since only one tab's
+    // pair is in the DOM at a time, the curl/response locators below work
+    // for both the API tab and the Batch API tab.
+    this.codeBlockContainers = page.getByTestId('code-block-container');
+    this.curlCodeBlock = this.codeBlockContainers.nth(0);
     this.curlCodeBlockCopyButton = this.curlCodeBlock.getByTestId('code-block-copy-button');
-    this.batchCurlCodeBlock = page.getByTestId('batch-api-guide-curl-code-block');
-    this.batchCurlCodeBlockCopyButton = this.batchCurlCodeBlock.getByTestId('code-block-copy-button');
-    this.responseCodeBlock = page.getByTestId('api-guide-response-code-block');
+    this.batchCurlCodeBlock = this.curlCodeBlock;
+    this.batchCurlCodeBlockCopyButton = this.curlCodeBlockCopyButton;
+    this.responseCodeBlock = this.codeBlockContainers.nth(1);
     this.responseCodeBlockCopyButton = this.responseCodeBlock.getByTestId('code-block-copy-button');
-    this.batchResponseCodeBlock = page.getByTestId('batch-api-guide-response-code-block');
-    this.batchResponseCodeBlockCopyButton = this.batchResponseCodeBlock.getByTestId('code-block-copy-button');
-    this.languageDropdownTrigger = page.getByTestId('language-dropdown-trigger');
-    this.languageDropdownMenu = page.getByTestId('language-dropdown-menu');
-    this.apiStep1Section = page.locator('#api-guide-step1-section');
-    this.apiStep2Section = page.getByTestId('api-guide-step2-section');
-    this.batchStep1Section = page.getByTestId('batch-api-guide-step1-section');
-    this.batchStep2Section = page.getByTestId('batch-api-guide-step2-section');
-    this.apiResponseSection = page.getByTestId('api-guide-response-section');
-    this.batchResponseSection = page.getByTestId('batch-api-guide-response-section');
+    this.batchResponseCodeBlock = this.responseCodeBlock;
+    this.batchResponseCodeBlockCopyButton = this.responseCodeBlockCopyButton;
+    this.onboardingContainer = page.getByTestId('integration-guide-onboarding');
   }
 
   async expectPageVisible() {
@@ -68,20 +65,68 @@ export class IntegrationGuidePage {
     await this.createBatchAuthKey.click();
   }
 
+  /**
+   * Copy buttons on code blocks are only rendered/interactable while the
+   * block is hovered (opacity-0 -> opacity-100 on hover). Hover the block
+   * first, then wait for the button to be visible before clicking it.
+   */
+  private async clickCopyButton(codeBlock: Locator, copyButton: Locator) {
+    await codeBlock.scrollIntoViewIfNeeded();
+    await codeBlock.hover();
+    await copyButton.waitFor({ state: 'visible' });
+    await copyButton.click();
+  }
+
   async copyCurlCodeBlock() {
-    await this.curlCodeBlockCopyButton.click();
+    await this.clickCopyButton(this.curlCodeBlock, this.curlCodeBlockCopyButton);
   }
 
   async copyBatchCurlCodeBlock() {
-    await this.batchCurlCodeBlockCopyButton.click();
+    await this.clickCopyButton(this.batchCurlCodeBlock, this.batchCurlCodeBlockCopyButton);
   }
 
   async copyResponseCodeBlock() {
-    await this.responseCodeBlockCopyButton.click();
+    await this.clickCopyButton(this.responseCodeBlock, this.responseCodeBlockCopyButton);
   }
 
   async copyBatchResponseCodeBlock() {
-    await this.batchResponseCodeBlockCopyButton.click();
+    await this.clickCopyButton(this.batchResponseCodeBlock, this.batchResponseCodeBlockCopyButton);
+  }
+
+  /** The onboarding category tab for a given SDK/language (cURL, GTWY SDK, OpenAI SDK). */
+  getCategoryTab(category: SdkCategory): Locator {
+    return this.page.getByTestId(`onboarding-category-${category}`);
+  }
+
+  async selectCategory(category: SdkCategory) {
+    await this.getCategoryTab(category).click();
+  }
+
+  /**
+   * Clicks the copy button on every code block currently rendered for the
+   * active tab/category and verifies each shows "Copied!". Some code blocks
+   * (e.g. the GTWY SDK's install command and response-usage snippet) don't
+   * have a copy button at all, so those are skipped rather than failing.
+   * Returns the number of buttons that were copied and verified.
+   */
+  async copyAllAvailableCodeBlocks(): Promise<number> {
+    const count = await this.codeBlockContainers.count();
+    let copiedCount = 0;
+
+    for (let i = 0; i < count; i++) {
+      const container = this.codeBlockContainers.nth(i);
+      const copyButton = container.getByTestId('code-block-copy-button');
+
+      if ((await copyButton.count()) === 0) {
+        continue;
+      }
+
+      await this.clickCopyButton(container, copyButton);
+      await expect(copyButton).toHaveText('Copied!');
+      copiedCount++;
+    }
+
+    return copiedCount;
   }
 
   async isContainerVisible(): Promise<boolean> {
@@ -120,46 +165,33 @@ export class IntegrationGuidePage {
     return this.responseCodeBlock.innerText();
   }
 
-  async clickLanguageDropdown() {
-    await this.languageDropdownTrigger.click();
-  }
+  /**
+   * The app doesn't have a language dropdown; instead it has category tabs
+   * for the SDK/language used in the snippet: cURL, GTWY SDK, OpenAI SDK.
+   * This asserts all three are visible and that selecting each one swaps
+   * in the expected code sample.
+   */
+  async expectAvailableCategoriesShowExpectedSnippets() {
+    const expectations: Array<{ category: SdkCategory; expectedText: string }> = [
+      { category: 'curl', expectedText: "curl --location" },
+      { category: 'gtwy', expectedText: 'from gtwy import' },
+      { category: 'openai', expectedText: 'import OpenAI' },
+    ];
 
-  async selectLanguage(langId: string) {
-    // Ensure dropdown is open before selecting
-    if (!(await this.languageDropdownMenu.isVisible())) {
-      await this.languageDropdownTrigger.click();
+    for (const { category, expectedText } of expectations) {
+      await expect(this.getCategoryTab(category)).toBeVisible();
+      await this.selectCategory(category);
+      await expect(this.onboardingContainer).toContainText(expectedText);
     }
-    await expect(this.languageDropdownMenu).toBeVisible();
-
-    const option = this.page.getByTestId(`language-option-${langId}`);
-    await option.waitFor({ state: 'visible' });
-    await option.click();
-    // Wait for DaisyUI dropdown to close after selection
-    await expect(this.languageDropdownMenu).not.toBeVisible();
-  }
-
-  async expectLanguageDropdownVisible() {
-    await expect(this.languageDropdownTrigger).toBeVisible();
-  }
-
-  getApiSnippet(lang: string): Locator {
-    return this.page.getByTestId(`api-guide-snippet-${lang}`);
-  }
-
-  getApiSnippetCopyButton(lang: string): Locator {
-    return this.getApiSnippet(lang).getByTestId('code-block-copy-button');
-  }
-
-  async expectApiSnippetVisible(lang: string) {
-    await expect(this.getApiSnippet(lang)).toBeVisible();
-  }
-
-  async clickApiSnippetCopyButton(lang: string) {
-    await this.getApiSnippetCopyButton(lang).click();
   }
 
   async expectApiSnippetCopied(lang: string) {
-    await expect(this.getApiSnippetCopyButton(lang)).toHaveText('Copied!');
+    // The app has no per-language snippet testid; the curl copy button
+    // shown by default is the same generic code-block copy button.
+    if (lang !== 'curl') {
+      throw new Error(`expectApiSnippetCopied only supports 'curl'; got "${lang}"`);
+    }
+    await expect(this.curlCodeBlockCopyButton).toHaveText('Copied!');
   }
 
   async expectApiResponseCopied() {
@@ -174,39 +206,21 @@ export class IntegrationGuidePage {
     await expect(this.batchResponseCodeBlock.getByText('Copied!')).toBeVisible();
   }
 
-  async expectApiStep1HasText() {
-    await expect(this.apiStep1Section).toBeVisible();
-    const text = await this.apiStep1Section.innerText();
+  /**
+   * The app has no separate "step 1 / step 2" sections; the onboarding
+   * container just shows the request snippet followed by the response.
+   * Asserts both are present and non-empty for whichever tab (API or
+   * Batch API) is currently active.
+   */
+  async expectRequestSnippetHasText() {
+    await expect(this.curlCodeBlock).toBeVisible();
+    const text = await this.curlCodeBlock.innerText();
     expect(text.trim().length).toBeGreaterThan(0);
   }
 
-  async expectApiStep2HasText() {
-    await expect(this.apiStep2Section).toBeVisible();
-    const text = await this.apiStep2Section.innerText();
-    expect(text.trim().length).toBeGreaterThan(0);
-  }
-
-  async expectApiResponseSectionHasText() {
-    await expect(this.apiResponseSection).toBeVisible();
-    const text = await this.apiResponseSection.innerText();
-    expect(text.trim().length).toBeGreaterThan(0);
-  }
-
-  async expectBatchStep1HasText() {
-    await expect(this.batchStep1Section).toBeVisible();
-    const text = await this.batchStep1Section.innerText();
-    expect(text.trim().length).toBeGreaterThan(0);
-  }
-
-  async expectBatchStep2HasText() {
-    await expect(this.batchStep2Section).toBeVisible();
-    const text = await this.batchStep2Section.innerText();
-    expect(text.trim().length).toBeGreaterThan(0);
-  }
-
-  async expectBatchResponseSectionHasText() {
-    await expect(this.batchResponseSection).toBeVisible();
-    const text = await this.batchResponseSection.innerText();
+  async expectResponseSnippetHasText() {
+    await expect(this.responseCodeBlock).toBeVisible();
+    const text = await this.responseCodeBlock.innerText();
     expect(text.trim().length).toBeGreaterThan(0);
   }
 }
