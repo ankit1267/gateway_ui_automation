@@ -492,13 +492,6 @@ export class ChatbotPage {
     expect(requestBody?.testcase_data?.matching_type).toBe(expectedStrategy);
   }
 
-
-
-  
-
-  
-  
-
   async sendMessage(message: string) {
      await this.messageTextarea.focus();
     await this.messageTextarea.fill(message);
@@ -513,15 +506,6 @@ export class ChatbotPage {
     await expect(this.scrollable)
       .toContainText(message, { timeout: 100000 });
   }
-
-
-
-
-
-
- 
- 
- 
 
   // --- Additional iframe locators ---
 

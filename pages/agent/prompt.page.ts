@@ -84,7 +84,9 @@ export class PromptPage {
     this.manageVariablesButton = page.getByTestId('default-variables-manage-button');
     this.variableSlider = page.getByTestId('variable-collection-slider');
     this.promptHelper = new PromptHelperPanel(page);
-    this.responseTypeSelect = page.getByTestId('advanced-param-select-response_type');
+    // The response type control is no longer a native <select>; it's now a
+    // custom button that opens a dropdown list of options.
+    this.responseTypeSelect = page.getByTestId('advanced-param-add-response-type-response_type');
     this.responseTypeSetDefaultButton = page.getByTestId('advanced-param-reset-response_type');
     this.promptTextarea = page.getByTestId('prompt-textarea');
     this.migrateButton = page.getByTestId('prompt-header-migrate-button');
@@ -164,16 +166,28 @@ export class PromptPage {
 
 
 
-  async selectResponseType(value: string) {
-    const currentValue = await this.responseTypeSelect.inputValue();
+  // The response type dropdown currently only offers these two options in
+  // the UI (no more "default" / "json_object" / "widget" entries, and no
+  // reset-to-default control next to the picker).
+  private static readonly RESPONSE_TYPE_LABELS: Record<string, string> = {
+    text: 'Text',
+    json_schema: 'JSON Schema',
+  };
 
-    if (currentValue !== 'default') {
-      await this.clickResponseTypeSetDefault();
-      await this.expectResponseTypeIsDefault();
+  async selectResponseType(value: string) {
+    const label = PromptPage.RESPONSE_TYPE_LABELS[value];
+    if (!label) {
+      throw new Error(
+        `selectResponseType: "${value}" is not available in the Response Type dropdown. ` +
+        `Only ${Object.keys(PromptPage.RESPONSE_TYPE_LABELS).join(', ')} are currently supported.`
+      );
     }
 
-    await this.responseTypeSelect.selectOption(value);
-    await expect(this.responseTypeSelect).toHaveValue(value);
+    await this.responseTypeSelect.click();
+    const option = this.page.getByRole('button', { name: label, exact: true });
+    await option.waitFor({ state: 'visible' });
+    await option.click();
+    await expect(this.responseTypeSelect).toHaveText(label);
   }
 
   async clickResponseTypeSetDefault() {
@@ -205,7 +219,7 @@ export class PromptPage {
   async pasteJsonSchema(text: string) {
     await this.jsonSchemaTextarea.waitFor({ state: 'attached', timeout: 10000 });
     await this.jsonSchemaTextarea.click();
-    await this.jsonSchemaTextarea.press('Control+a');
+    await this.pressKeyInJsonSchema('Control+a');
     await this.page.evaluate((value) => {
       document.execCommand('insertText', false, value);
     }, text);
@@ -217,7 +231,15 @@ export class PromptPage {
 
   async pressKeyInJsonSchema(key: string) {
     await this.jsonSchemaTextarea.focus();
-    await this.jsonSchemaTextarea.press(key);
+    // The browser's native select-all/copy/cut/paste shortcuts follow the
+    // host OS: Meta (Cmd) on macOS, Control everywhere else. These tests
+    // run on macOS, so a literal "Control+a" only moves the caret instead
+    // of selecting all text in the CodeMirror editor. Remap Control-based
+    // clipboard/selection shortcuts to Meta when running on darwin.
+    const platformKey = process.platform === 'darwin'
+      ? key.replace(/^Control\+/, 'Meta+')
+      : key;
+    await this.jsonSchemaTextarea.press(platformKey);
   }
 
   async expectInvalidJsonSchemaVisible() {
@@ -686,6 +708,12 @@ export class PromptPage {
     const items = this.preEmbedFunctionsContainer
       .locator('[data-testid^="render-embed-item-"]');
     return (await items.count()) > 0;
+  }
+
+  async deletePreToolIfExists() {
+    if (await this.hasPreTool()) {
+      await this.deletePreTool();
+    }
   }
 
   async closeQueryRefinerConfigModalIfVisible() {

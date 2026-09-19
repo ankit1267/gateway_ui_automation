@@ -17,7 +17,7 @@ export class PrebuiltToolsConfigModal {
     this.addDomainButton = page.getByTestId('prebuilt-tools-config-add-domain-button');
     this.domainsList = page.getByTestId('prebuilt-tools-config-domains-list');
     this.closeButton = page.getByTestId('prebuilt-tools-config-close-button');
-    this.validationError = this.container.locator('.label-text-alt.text-error');
+    this.validationError = this.container.locator('.label span.text-error');
   }
 
   async isVisible(): Promise<boolean> {

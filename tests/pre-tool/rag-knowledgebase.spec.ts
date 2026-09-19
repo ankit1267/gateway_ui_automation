@@ -39,6 +39,7 @@ test.describe('Pre-Tool - RAG Knowledgebase', () => {
   test('TC-PRETOOL-RAG-01: Selecting RAG Knowledgebase opens the config modal and verifies its visibility', async ({ agents }) => {
     const agent = await agents.openAgent(AGENT_NAME);
     await agent.tabs.openPrompt();
+    await agent.prompt.deletePreToolIfExists();
     await agent.prompt.addPreToolClick();
     await agent.prompt.preToolDropdown.searchAndSelect(RAG_KNOWLEDGEBASE);
     await agent.prompt.isQueryRefinerConfigModalVisible();
@@ -50,6 +51,7 @@ test.describe('Pre-Tool - RAG Knowledgebase', () => {
   test('TC-PRETOOL-RAG-02: Save button is disabled when no knowledge base is selected', async ({ agents }) => {
     const agent = await agents.openAgent(AGENT_NAME);
     await agent.tabs.openPrompt();
+    await agent.prompt.deletePreToolIfExists();
     await agent.prompt.addPreToolClick();
     await agent.prompt.preToolDropdown.searchAndSelect(RAG_KNOWLEDGEBASE);
     await agent.prompt.queryRefinerConfigModal.waitForVisible();
@@ -60,6 +62,7 @@ test.describe('Pre-Tool - RAG Knowledgebase', () => {
   test('TC-PRETOOL-RAG-03: Selecting a knowledge base enables the Save button and saves successfully', async ({ agents }) => {
     const agent = await agents.openAgent(AGENT_NAME);
     await agent.tabs.openPrompt();
+    await agent.prompt.deletePreToolIfExists();
     await agent.prompt.addPreToolClick();
     await agent.prompt.preToolDropdown.searchAndSelect(RAG_KNOWLEDGEBASE);
     await agent.prompt.queryRefinerConfigModal.waitForVisible();
@@ -73,13 +76,19 @@ test.describe('Pre-Tool - RAG Knowledgebase', () => {
   test('TC-PRETOOL-RAG-04: RAG Knowledgebase pre-tool persists after switching tabs and returning', async ({ agents, page }) => {
     const agent = await agents.openAgent(AGENT_NAME);
     await agent.tabs.openPrompt();
+    await agent.prompt.deletePreToolIfExists();
+    await agent.prompt.addPreToolClick();
+    await agent.prompt.preToolDropdown.searchAndSelect(RAG_KNOWLEDGEBASE);
+    await agent.prompt.queryRefinerConfigModal.waitForVisible();
+    await agent.prompt.searchAndSelectKnowledgeBase(KB_NAME);
+    await agent.prompt.expectKnowledgeBaseSelected(KB_NAME);
+    await agent.prompt.expectRagSaveButtonEnabled();
 
     const preToolApiPromise = page.waitForResponse(
       res => res.url().includes('/api/tools/pre_tool/') && res.request().method() === 'PUT' && res.status() === 200,
       { timeout: 15000 }
     );
-    await agent.prompt.addPreToolClick();
-    await agent.prompt.preToolDropdown.searchAndSelect(RAG_KNOWLEDGEBASE);
+    await agent.prompt.queryRefinerConfigModal.clickSave();
     await preToolApiPromise;
 
     await agent.prompt.closeRagConfigModalIfVisible();
@@ -93,8 +102,14 @@ test.describe('Pre-Tool - RAG Knowledgebase', () => {
   test('TC-PRETOOL-RAG-05: Re-opening the config modal from the pre-tool card reopens it', async ({ agents }) => {
     const agent = await agents.openAgent(AGENT_NAME);
     await agent.tabs.openPrompt();
+    await agent.prompt.deletePreToolIfExists();
     await agent.prompt.addPreToolClick();
     await agent.prompt.preToolDropdown.searchAndSelect(RAG_KNOWLEDGEBASE);
+    await agent.prompt.queryRefinerConfigModal.waitForVisible();
+    await agent.prompt.searchAndSelectKnowledgeBase(KB_NAME);
+    await agent.prompt.expectKnowledgeBaseSelected(KB_NAME);
+    await agent.prompt.expectRagSaveButtonEnabled();
+    await agent.prompt.queryRefinerConfigModal.clickSave();
     await agent.prompt.closeRagConfigModalIfVisible();
     await agent.prompt.expectPreToolContainerVisible();
     await agent.prompt.openPreToolConfig();
@@ -105,6 +120,7 @@ test.describe('Pre-Tool - RAG Knowledgebase', () => {
   test('TC-PRETOOL-RAG-06: Adding and then deleting the RAG Knowledgebase pre-tool removes it', async ({ agents }) => {
     const agent = await agents.openAgent(AGENT_NAME);
     await agent.tabs.openPrompt();
+    await agent.prompt.deletePreToolIfExists();
     await agent.prompt.addPreToolClick();
     await agent.prompt.preToolDropdown.searchAndSelect(RAG_KNOWLEDGEBASE);
     await agent.prompt.closeRagConfigModalIfVisible();

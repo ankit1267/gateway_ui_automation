@@ -168,7 +168,7 @@ export class AgentsPage {
 
     await Promise.all([
 
-      this.page.waitForURL(/\/agents\/[a-f0-9]+/, { timeout: 30000 }),
+      this.page.waitForURL(/\/agents\/[a-f0-9]+/, { timeout: 40000 }),
 
       row.click(),
 

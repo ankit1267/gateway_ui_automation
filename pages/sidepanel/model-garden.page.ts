@@ -14,7 +14,7 @@ export class ModelGardenPage {
 
   // Service buttons (dynamic)
   getServiceButton(serviceName: string): Locator {
-    return this.page.getByText(serviceName, { exact: false });
+    return this.servicesSidebar.getByRole('button', { name: serviceName });
   }
 
   // Models panel

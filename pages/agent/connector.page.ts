@@ -241,9 +241,27 @@ export class ConnectersPage {
 
    async deletePrebuiltToolIfExists(toolValue: string) {
        const tool = this.getPrebuiltTool(toolValue);
-       if (await tool.isVisible()) {
+       // The Tools list can still be rendering right after the Connectors
+       // tab opens, so an already-attached tool may not be in the DOM yet.
+       // A plain isVisible() is a single instant check with no auto-wait,
+       // so it can catch that render race and wrongly conclude the tool
+       // isn't there — skipping deletion even though it's genuinely
+       // attached (a page reload proves it reappears). Give it a bounded
+       // wait instead of an instant snapshot.
+       const exists = await tool
+           .waitFor({ state: 'visible', timeout: 5000 })
+           .then(() => true)
+           .catch(() => false);
+       if (exists) {
            await this.deletePrebuiltTool(toolValue);
+           // Confirm the confirmation modal actually opened before clicking
+           // its confirm button, and verify the tool card is actually gone
+           // afterward — otherwise a flaky/no-op delete silently leaves the
+           // tool in place, which later breaks "add this tool" flows since
+           // an already-added tool is excluded from the Available Tools list.
+           await expect(this.page.getByTestId('DELETE_PREBUILT_TOOL_MODAL')).toBeVisible({ timeout: 10000 });
            await this.confirmDeletePrebuiltTool();
+           await expect(tool).toBeHidden({ timeout: 15000 });
        }
    }
 

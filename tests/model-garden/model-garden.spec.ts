@@ -35,7 +35,7 @@ test.describe('Model Garden', () => {
     const initialCount = await sidepanel.modelGardenPage.getModelCount();
 
     // Search for a specific model
-    await sidepanel.modelGardenPage.searchModels('gpt');
+    await sidepanel.modelGardenPage.searchModels('gpt-5.4');
 
     // Verify search results are filtered
     const filteredCount = await sidepanel.modelGardenPage.getModelCount();

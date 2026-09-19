@@ -196,11 +196,11 @@ test.describe('Model - Auto Select Model Toggle', () => {
       'cost'
     );
 
-    await agent.model.selectServiceProvider('Mistral');
+    await agent.model.selectServiceProvider('Openai');
 
-    await agent.model.selectApiKey('Mistral api key');
+    await agent.model.selectApiKey('neww');
     await agent.tabs.openPrompt();
-    await agent.prompt.selectResponseType('default');
+    // await agent.prompt.selectResponseType('default');
 
     await agent.chatbot.sendMessage('What is the capital of France?');
     await agent.chatbot.waitForResponseComplete();
@@ -223,11 +223,11 @@ test.describe('Model - Auto Select Model Toggle', () => {
       'quality'
     );
 
-    await agent.model.selectServiceProvider('Mistral');
+    await agent.model.selectServiceProvider('Openai');
 
-    await agent.model.selectApiKey('Mistral api key');
+    await agent.model.selectApiKey('neww');
     await agent.tabs.openPrompt();
-    await agent.prompt.selectResponseType('default');
+    // await agent.prompt.selectResponseType('default');
 
     await agent.chatbot.sendMessage('Explain photosynthesis in one sentence.');
     await agent.chatbot.waitForResponseComplete();
@@ -250,11 +250,11 @@ test.describe('Model - Auto Select Model Toggle', () => {
       'speed'
     );
 
-    await agent.model.selectServiceProvider('Mistral');
+    await agent.model.selectServiceProvider('Openai');
 
-    await agent.model.selectApiKey('Mistral api key');
+    await agent.model.selectApiKey('neww');
     await agent.tabs.openPrompt();
-    await agent.prompt.selectResponseType('default');
+    // await agent.prompt.selectResponseType('default');
 
     await agent.chatbot.sendMessage('What is 2 + 2?');
     await agent.chatbot.waitForResponseComplete();

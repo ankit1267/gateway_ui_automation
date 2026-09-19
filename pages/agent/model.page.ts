@@ -52,7 +52,7 @@ export class ModelPage {
 
         this.apiKeyErrorText = /api key required/i;
 
-        this.apiKeyInputContainer = page.locator('#apikey-input-container');
+        this.apiKeyInputContainer = page.getByTestId('apikey-input-compact-container');
 
         this.chatTextarea = page.locator('#chat-message-textarea');
 
@@ -120,9 +120,14 @@ export class ModelPage {
     }
 
     async selectApiKey(providerName: string) {
-        await this.apiKeyInputContainer
-            .getByRole('button', { name: providerName })
-            .click();
+        const trigger = this.apiKeyInputContainer.getByTestId('apikey-input-compact-dropdown-trigger-button');
+        await trigger.click();
+
+        const options = this.page.locator('[data-testid^="apikey-input-compact-dropdown-option-"]');
+        await expect(options.first()).toBeVisible();
+
+        await options.filter({ hasText: providerName }).first().click();
+        await this.page.waitForTimeout(3000);
     }
 
     async expectChatBotVisible() {
@@ -312,7 +317,7 @@ export class ModelPage {
 
     async toggleFallbackModel(check: boolean) {
         const toggle = this.page.getByTestId('fallback-model-toggle');
-        
+
         if (check) {
             await toggle.check();
         } else {

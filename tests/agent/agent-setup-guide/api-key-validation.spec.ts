@@ -23,9 +23,9 @@ test.describe('Model - API Key validation', () => {
     test('TC-APIKEY-02: API key is added', async ({ agents }) => {
         const agent = await agents.openAgent(AGENT_NAME);
         await agent.tabs.openModel();
-        await agent.model.selectServiceProvider('Mistral');
+        await agent.model.selectServiceProvider('Openai');
 
-        await agent.model.selectApiKey('Mistral api key');
+        await agent.model.selectApiKey('neww');
         await agent.model.expectChatBotVisible();
 
     });

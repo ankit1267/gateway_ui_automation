@@ -35,9 +35,9 @@ test('TC-01 : Fill Prompt and api configured should not show agent guide', async
   await agent.prompt.expectStepState(1, 'completed');
 
   await agent.tabs.openModel();
-  await agent.model.selectServiceProvider("Mistral");
+  await agent.model.selectServiceProvider("Openai");
   await agent.model.clickConfigureApiKey();
-  await agent.model.selectApiKey("Mistral api key");
+  await agent.model.selectApiKey("neww");
   await agent.prompt.expectAgentSetupGuideNotVisible();
   
   
@@ -160,26 +160,3 @@ test('TC-04 : Fill Prompt and api not configured should show agent guide', async
   await agent.prompt.expectStepState(2, 'incomplete'); 
 
 });
-
-/*test('Only fill role and goal should results in setup card remain same', async ({ agents, page }) => {
-  await agents.goto('api');
-  const agent = await agents.openAgent(AGENT_NAME);
-
-  const role = `Support agent${Date.now()}`;
-  const goal = `Help users${Date.now()}`;
-  await fillPromptAndVerifyApi(
-    page,
-    async () => {
-      await agent.prompt.fillPrompt(role, goal, '');
-    },
-    {
-      role,
-      goal,
-      instruction: '',
-    }
-  );
-
-  await agent.prompt.expectStepState(1, 'incomplete');
-  await agent.tabs.openConnectors();
-  await agent.prompt.expectStepState(1, 'incomplete');
-});*/

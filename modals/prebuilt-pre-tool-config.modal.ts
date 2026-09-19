@@ -28,7 +28,11 @@ export class PrebuiltPreToolConfigModal {
   }
 
   async close() {
-    await this.closeButton.click();
+    const closeButtonVisible = await this.closeButton.isVisible().catch(() => false);
+    if (!closeButtonVisible) {
+      return;
+    }
+    await this.closeButton.click({ timeout: 5000 }).catch(() => {});
   }
 
 

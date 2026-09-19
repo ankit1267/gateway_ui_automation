@@ -165,9 +165,6 @@ test('TS-04 set and unset required on a parameter', async ({ agents }) => {
     await agent.header.expectSavedVisible();
 });
 
-
-
-
 // ---------------------------------------------------------------------------
 // 5. Add parameter with all details at once
 // ---------------------------------------------------------------------------
@@ -193,7 +190,9 @@ test('TS-05 add parameter with name, type, required, and value path', async ({ a
     await modal.waitForVisible();
     await expect(modal.getParameterNameInput('new0')).toHaveValue('new0');
     await expect(modal.getTypeSelect('new0')).toHaveValue('number');
-    await expect(modal.getRequiredCheckbox('new0')).toBeChecked();
+    // Once Fill with AI is off and a Value Path is set, the Required checkbox
+    // is removed from the UI entirely (Required only applies to AI-filled params).
+    await expect(modal.getRequiredCheckbox('new0')).not.toBeVisible();
     await expect(modal.getValuePathInput('new0')).toHaveValue('age');
     await expect(modal.getParameterDescriptionTextarea('new0')).toHaveValue('User age');
 

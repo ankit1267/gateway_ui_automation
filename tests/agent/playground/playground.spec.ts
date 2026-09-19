@@ -9,7 +9,7 @@ test('Testcases playground slider', async ({ agents }) => {
   await agent.tabs.openModel();
   await agent.model.selectServiceProvider("Openai");
   // await agent.model.clickConfigureApiKey();
-  // await agent.model.selectApiKey("Mistral api key");
+  // await agent.model.selectApiKey("neww");
 
   
   await agent.playground.typeMessageAndWaitForApi('hi');
@@ -42,7 +42,7 @@ test('add new testcase from playground', async ({ agents }) => {
   await agent.tabs.openModel();
   await agent.model.selectServiceProvider("Openai");
   // await agent.model.clickConfigureApiKey();
-  // await agent.model.selectApiKey("Mistral api key");
+  // await agent.model.selectApiKey("neww");
   
   await agent.playground.typeMessage('hi');
   await agent.playground.expectChatControlsVisible();
@@ -88,7 +88,7 @@ test('Playground send message and verify response', async ({ agents }) => {
   await agent.tabs.openModel();
   await agent.model.selectServiceProvider("Openai");
   // await agent.model.clickConfigureApiKey();
-  // await agent.model.selectApiKey("Mistral api key");
+  // await agent.model.selectApiKey("neww");
 
   const { requestBody, responseBody } = await agent.playground.typeMessageAndWaitForApi('hi');
   agent.playground.verifyChatRequestBody(requestBody, 'hi');
