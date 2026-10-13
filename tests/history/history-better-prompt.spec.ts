@@ -1,6 +1,7 @@
 import { test } from '../../fixtures/base.fixture';
 
 const AGENT_NAME = process.env.AGENT_NAME!;
+const SEED_QUERY = 'Hi, give me a short greeting';
 
 test.describe('History - API Agent Better Prompt', () => {
   test.beforeEach(async ({ agents }) => {
@@ -9,10 +10,10 @@ test.describe('History - API Agent Better Prompt', () => {
 
   test('TC-HISTORY-05: Edit message better prompt flow with regenerate and save', async ({ agents, page }) => {
     const agent = await agents.openAgent(AGENT_NAME);
+    await agent.history.createHistoryWithQuery(SEED_QUERY);
     await agent.header.openHistory();
 
-    await agent.history.openFirstSidebarThread();
-    await agent.history.expectThreadResponseVisible();
+    await agent.history.openLatestThreadWithSuccessfulReply();
 
     await agent.history.hoverGroupChatAgentsResponse();
     await agent.history.clickEditMessageButton();
@@ -43,10 +44,10 @@ test.describe('History - API Agent Better Prompt', () => {
 
   test('TC-HISTORY-06: Add test case modal form validation', async ({ agents }) => {
     const agent = await agents.openAgent(AGENT_NAME);
+    await agent.history.createHistoryWithQuery(SEED_QUERY);
     await agent.header.openHistory();
 
-    await agent.history.openFirstSidebarThread();
-    await agent.history.expectThreadResponseVisible();
+    await agent.history.openLatestThreadWithSuccessfulReply();
 
     await agent.history.hoverGroupChatAgentsResponse();
     await agent.history.clickAddTestCaseButton();
@@ -63,12 +64,12 @@ test.describe('History - API Agent Better Prompt', () => {
 
   test('TC-HISTORY-07: Debug agent button opens iframe container', async ({ agents }) => {
     const agent = await agents.openAgent(AGENT_NAME);
+    await agent.history.createHistoryWithQuery(SEED_QUERY);
     await agent.header.openHistory();
 
-    await agent.history.openFirstSidebarThread();
-    await agent.history.expectThreadResponseVisible();
+    await agent.history.openLatestThreadWithSuccessfulReply();
 
-  await agent.history.hoverGroupChatAgentsResponse();
+    await agent.history.hoverGroupChatAgentsResponse();
     await agent.history.clickDebugAgentButton();
 
     await agent.history.expectIframeParentContainerVisible();
@@ -76,10 +77,10 @@ test.describe('History - API Agent Better Prompt', () => {
 
    test('TC-HISTORY-08: Hover on agent response reveals test case, debug, and edit message buttons', async ({ agents }) => {
     const agent = await agents.openAgent(AGENT_NAME);
+    await agent.history.createHistoryWithQuery(SEED_QUERY);
     await agent.header.openHistory();
 
-    await agent.history.openFirstSidebarThread();
-    await agent.history.expectThreadResponseVisible();
+    await agent.history.openLatestThreadWithSuccessfulReply();
 
     await agent.history.hoverGroupChatAgentsResponse();
     await agent.history.expectGroupChatHoverActionsVisible();
@@ -88,10 +89,10 @@ test.describe('History - API Agent Better Prompt', () => {
 
   test('TC-HISTORY-09: Add test case cancel button closes modal', async ({ agents }) => {
     const agent = await agents.openAgent(AGENT_NAME);
+    await agent.history.createHistoryWithQuery(SEED_QUERY);
     await agent.header.openHistory();
 
-    await agent.history.openFirstSidebarThread();
-    await agent.history.expectThreadResponseVisible();
+    await agent.history.openLatestThreadWithSuccessfulReply();
 
     await agent.history.hoverGroupChatAgentsResponse();
     await agent.history.clickAddTestCaseButton();

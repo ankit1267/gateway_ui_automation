@@ -2,7 +2,7 @@ import { test, expect } from '../../fixtures/base.fixture';
 
 const AGENT_NAME = process.env.TESTING_AGENT!;
 
-test('Add a pre-tool and delete it', async ({ agents, page }) => {
+test('Add existing pre-tool and delete it', async ({ agents, page }) => {
     // open api page
     await agents.goto('api');
 
@@ -10,10 +10,8 @@ test('Add a pre-tool and delete it', async ({ agents, page }) => {
     const agentPage = await agents.openAgent(AGENT_NAME);
     await agentPage.tabs.openPrompt();
 
-    // Ensure a clean state in case a pre-tool already exists.
-    if (await agentPage.prompt.hasPreTool()) {
-      await agentPage.prompt.deletePreTool();
-    }
+    // Always start clean: remove any connected pre-tool.
+    await agentPage.prompt.deletePreToolIfExists();
 
     // Retry the full add-pre-tool flow until the tool is actually added.
     // Covers flaky dropdown closures, missed clicks, and slow renders.

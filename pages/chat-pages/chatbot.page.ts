@@ -522,6 +522,12 @@ export class ChatbotPage {
     await this.loadingSpinner.waitFor({ state: 'hidden', timeout });
   }
 
+  // The loading spinner hides while tool calls are still running ("<tool> calling…"),
+  // so wait for those to finish too before treating the reply as complete.
+  async waitForToolCallsComplete(timeout = 120000) {
+    await expect(this.scrollable.getByText('calling…')).toHaveCount(0, { timeout });
+  }
+
   async clickSendButton() {
     await this.sendButton.click();
   }

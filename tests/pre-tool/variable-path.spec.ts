@@ -7,7 +7,7 @@ test.beforeEach(async ({ agents }) => {
 
 });
 
-test('Connected agent varaible passing', async ({ agents ,page}) => {
+test('Connected pre-tool variable passing', async ({ agents ,page}) => {
     const agent = await agents.openAgent(TESTING_AGENT);
     const chatbot = agent.chatbot;
     await page.waitForTimeout(4000);
@@ -27,7 +27,7 @@ test('Connected agent varaible passing', async ({ agents ,page}) => {
     await page.waitForTimeout(3000);
     await chatbot.sendMessage('Hi');
     
-    await chatbot.waitForResponseComplete(90000);   //A2A = 2 LLM calls, needs more time
+    await chatbot.waitForResponseComplete(90000);
     await chatbot.expectResponse(/AGE:40/i);
     await page.waitForTimeout(20000);
 });

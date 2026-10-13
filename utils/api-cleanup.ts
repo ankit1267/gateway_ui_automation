@@ -2,7 +2,7 @@ import type { Page } from '@playwright/test';
 import { getEnvConfig } from '../env.config';
 import { getAuthToken } from '../fixtures/base.fixture';
 
-function getDbBaseUrl(): string {
+export function getDbBaseUrl(): string {
   const { authApiUrl } = getEnvConfig();
   return authApiUrl.replace('/api/auth/generate-token', '');
 }
@@ -93,19 +93,19 @@ export async function removeKBFromVersion(
   });
 }
 
+// Pre-tools are saved on the agent version: operation 1 = add, 2 = update config, 0 = remove.
 export async function disablePreTool(
   page: Page,
-  agentId: string,
   versionId: string,
   preToolType: string,
   authHeader: string | null
 ): Promise<void> {
-  if (!agentId || !versionId) return;
-  await page.context().request.put(`${getDbBaseUrl()}/api/tools/pre_tool/${agentId}`, {
+  if (!versionId) return;
+  await page.context().request.put(`${getDbBaseUrl()}/api/versions/${versionId}`, {
     headers: {
       ...(authHeader ? { authorization: authHeader } : {}),
       'content-type': 'application/json',
     },
-    data: { pre_tools: { type: preToolType }, version_id: versionId, status: '0' },
+    data: { connected_tool: { type: 'pre_tool', pre_tool_type: preToolType }, operation: 0 },
   });
 }

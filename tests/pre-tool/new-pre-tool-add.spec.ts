@@ -11,10 +11,8 @@ test('Add a new pre-tool and delete it', async ({ agents }) => {
   const agentPage = await agents.openAgent(AGENT_NAME);
   await agentPage.tabs.openPrompt();
 
-  // Ensure a clean state in case a pre-tool already exists.
-  if (await agentPage.prompt.hasPreTool()) {
-    await agentPage.prompt.deletePreTool();
-  }
+  // Always start clean: remove any connected pre-tool.
+  await agentPage.prompt.deletePreToolIfExists();
 
   await agentPage.prompt.addPreToolClick();
   await agentPage.prompt.preToolDropdown.clickAddNewTool();

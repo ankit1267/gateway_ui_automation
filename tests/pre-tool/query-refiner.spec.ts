@@ -7,20 +7,17 @@ const QUERY_REFINER = 'Query Refiner';
 test.describe('Pre-Tool - Query Refiner', () => {
   let capturedVersionId: string | null = null;
   let capturedAuthHeader: string | null = null;
-  let capturedAgentId: string | null = null;
 
   test.beforeEach(async ({ agents, page }) => {
     capturedVersionId = null;
     capturedAuthHeader = null;
-    capturedAgentId = null;
     page.on('request', (req) => {
-      const match = req.url().match(/\/api\/tools\/pre_tool\/([a-f0-9]+)/);
+      const match = req.url().match(/\/api\/versions\/([a-f0-9]+)/);
       if (match && req.method() === 'PUT') {
         try {
           const body = req.postDataJSON();
-          if (body?.version_id) {
-            capturedAgentId = match[1];
-            capturedVersionId = body.version_id;
+          if (body?.connected_tool?.type === 'pre_tool') {
+            capturedVersionId = match[1];
             capturedAuthHeader = req.headers()['authorization'] ?? null;
           }
         } catch {
@@ -31,13 +28,14 @@ test.describe('Pre-Tool - Query Refiner', () => {
   });
 
   test.afterEach(async ({ page }) => {
-    await disablePreTool(page, capturedAgentId ?? '', capturedVersionId ?? '', 'query_refiner', capturedAuthHeader);
+    await disablePreTool(page, capturedVersionId ?? '', 'query_refiner', capturedAuthHeader);
     capturedVersionId = null;
   });
 
   test('TC-PRETOOL-QR-01: Selecting Query Refiner opens the config modal and verify its visibility', async ({ agents }) => {
     const agent = await agents.openAgent(AGENT_NAME);
     await agent.tabs.openPrompt();
+    await agent.prompt.deletePreToolIfExists();
     await agent.prompt.addPreToolClick();
     await agent.prompt.preToolDropdown.searchAndSelect(QUERY_REFINER);
     await agent.prompt.isQueryRefinerConfigModalVisible();
@@ -49,6 +47,7 @@ test.describe('Pre-Tool - Query Refiner', () => {
   test('TC-PRETOOL-QR-02: Re-opening the config modal from the pre-tool card reopens it', async ({ agents }) => {
     const agent = await agents.openAgent(AGENT_NAME);
     await agent.tabs.openPrompt();
+    await agent.prompt.deletePreToolIfExists();
     await agent.prompt.addPreToolClick();
     await agent.prompt.preToolDropdown.searchAndSelect(QUERY_REFINER);
     await agent.prompt.closeQueryRefinerConfigModalIfVisible();
@@ -61,6 +60,7 @@ test.describe('Pre-Tool - Query Refiner', () => {
   test('TC-PRETOOL-QR-03: Config modal Save button is disabled when no changes are made', async ({ agents }) => {
     const agent = await agents.openAgent(AGENT_NAME);
     await agent.tabs.openPrompt();
+    await agent.prompt.deletePreToolIfExists();
     await agent.prompt.addPreToolClick();
     await agent.prompt.preToolDropdown.searchAndSelect(QUERY_REFINER);
     await agent.prompt.queryRefinerConfigModal.waitForVisible();
@@ -72,11 +72,9 @@ test.describe('Pre-Tool - Query Refiner', () => {
   test('TC-PRETOOL-QR-04: Query Refiner pre-tool persists after switching tabs and returning', async ({ agents, page }) => {
     const agent = await agents.openAgent(AGENT_NAME);
     await agent.tabs.openPrompt();
+    await agent.prompt.deletePreToolIfExists();
 
-    const preToolApiPromise = page.waitForResponse(
-      res => res.url().includes('/api/tools/pre_tool/') && res.request().method() === 'PUT' && res.status() === 200,
-      { timeout: 15000 }
-    );
+    const preToolApiPromise = agent.prompt.waitForPreToolSaved();
     await agent.prompt.addPreToolClick();
     await agent.prompt.preToolDropdown.searchAndSelect(QUERY_REFINER);
     await preToolApiPromise;
@@ -92,6 +90,7 @@ test.describe('Pre-Tool - Query Refiner', () => {
     test('TC-PRETOOL-QR-05: Entering text in the Refinement Prompt textarea enables the Save button', async ({ agents }) => {
     const agent = await agents.openAgent(AGENT_NAME);
     await agent.tabs.openPrompt();
+    await agent.prompt.deletePreToolIfExists();
     await agent.prompt.addPreToolClick();
     await agent.prompt.preToolDropdown.searchAndSelect(QUERY_REFINER);
     await agent.prompt.queryRefinerConfigModal.waitForVisible();
@@ -104,6 +103,7 @@ test.describe('Pre-Tool - Query Refiner', () => {
   test('TC-PRETOOL-QR-06: Adding and then deleting the Query Refiner pre-tool removes it', async ({ agents }) => {
     const agent = await agents.openAgent(AGENT_NAME);
     await agent.tabs.openPrompt();
+    await agent.prompt.deletePreToolIfExists();
     await agent.prompt.addPreToolClick();
     await agent.prompt.preToolDropdown.searchAndSelect(QUERY_REFINER);
     await agent.prompt.closeQueryRefinerConfigModalIfVisible();

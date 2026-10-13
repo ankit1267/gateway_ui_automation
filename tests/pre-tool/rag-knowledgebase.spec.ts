@@ -8,20 +8,17 @@ const KB_NAME = 'Resume';
 test.describe('Pre-Tool - RAG Knowledgebase', () => {
   let capturedVersionId: string | null = null;
   let capturedAuthHeader: string | null = null;
-  let capturedAgentId: string | null = null;
 
   test.beforeEach(async ({ agents, page }) => {
     capturedVersionId = null;
     capturedAuthHeader = null;
-    capturedAgentId = null;
     page.on('request', (req) => {
-      const match = req.url().match(/\/api\/tools\/pre_tool\/([a-f0-9]+)/);
+      const match = req.url().match(/\/api\/versions\/([a-f0-9]+)/);
       if (match && req.method() === 'PUT') {
         try {
           const body = req.postDataJSON();
-          if (body?.version_id) {
-            capturedAgentId = match[1];
-            capturedVersionId = body.version_id;
+          if (body?.connected_tool?.type === 'pre_tool') {
+            capturedVersionId = match[1];
             capturedAuthHeader = req.headers()['authorization'] ?? null;
           }
         } catch {
@@ -32,7 +29,7 @@ test.describe('Pre-Tool - RAG Knowledgebase', () => {
   });
 
   test.afterEach(async ({ page }) => {
-    await disablePreTool(page, capturedAgentId ?? '', capturedVersionId ?? '', 'rag_knowledgebase', capturedAuthHeader);
+    await disablePreTool(page, capturedVersionId ?? '', 'rag_knowledgebase', capturedAuthHeader);
     capturedVersionId = null;
   });
 
@@ -84,10 +81,7 @@ test.describe('Pre-Tool - RAG Knowledgebase', () => {
     await agent.prompt.expectKnowledgeBaseSelected(KB_NAME);
     await agent.prompt.expectRagSaveButtonEnabled();
 
-    const preToolApiPromise = page.waitForResponse(
-      res => res.url().includes('/api/tools/pre_tool/') && res.request().method() === 'PUT' && res.status() === 200,
-      { timeout: 15000 }
-    );
+    const preToolApiPromise = agent.prompt.waitForPreToolSaved();
     await agent.prompt.queryRefinerConfigModal.clickSave();
     await preToolApiPromise;
 

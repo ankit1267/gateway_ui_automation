@@ -11,10 +11,8 @@ test('Add compute_secure_function pre-tool variable path and verify variable row
   const agentPage = await agents.openAgent(AGENT_NAME);
   await agentPage.tabs.openPrompt();
 
-  // Always start clean: remove existing pretool if present.
-  if (await agentPage.prompt.hasPreTool()) {
-    await agentPage.prompt.deletePreTool();
-  }
+  // Always start clean: remove any connected pre-tool.
+  await agentPage.prompt.deletePreToolIfExists();
 
   await agentPage.prompt.expectPreEmbedEmptyDropdownVisible();
   
@@ -56,7 +54,5 @@ test('Add compute_secure_function pre-tool variable path and verify variable row
   await agentPage.prompt.closeVariableManager();
   
 
-  if (await agentPage.prompt.hasPreTool()) {
-    await agentPage.prompt.deletePreTool();
-  }
+  await agentPage.prompt.deletePreToolIfExists();
 });

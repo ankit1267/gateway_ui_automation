@@ -89,6 +89,20 @@ export class ModelPage {
     // MODEL LIST ASSERTION
     // -------------------------
 
+    // Asserts the model dropdown lists exactly these models (e.g. from getServiceChatModels), no more, no less.
+    async expectModelDropdownMatches(models: string[]) {
+
+        await this.model.click();
+
+        const options = this.page.locator('[data-testid^="model-dropdown-grouped-option-"]');
+        await expect(options.first()).toBeVisible();
+
+        const shown = await options.evaluateAll(els =>
+            els.map(el => el.getAttribute('data-testid')!.replace('model-dropdown-grouped-option-', '').toLowerCase())
+        );
+        expect([...shown].sort()).toEqual(models.map(m => m.toLowerCase()).sort());
+    }
+
     async expectModelsVisible(models: string[]) {
 
 

@@ -35,7 +35,6 @@ export class IntegrationDetailPage {
   readonly showHistoryToggle: Locator;
   readonly showConfigTypeToggle: Locator;
   readonly showAdvancedParametersToggle: Locator;
-  readonly showCreateManuallyButtonToggle: Locator;
   readonly showAdvancedConfigurationsToggle: Locator;
   readonly showPreToolToggle: Locator;
   readonly showResponseTypeToggle: Locator;
@@ -86,7 +85,6 @@ export class IntegrationDetailPage {
     this.showHistoryToggle = page.getByTestId('embed-config-toggle-showHistory');
     this.showConfigTypeToggle = page.getByTestId('embed-config-toggle-showConfigType');
     this.showAdvancedParametersToggle = page.getByTestId('embed-config-toggle-showAdvancedParameters');
-    this.showCreateManuallyButtonToggle = page.getByTestId('embed-config-toggle-showCreateManuallyButton');
     this.showAdvancedConfigurationsToggle = page.getByTestId('embed-config-toggle-showAdvancedConfigurations');
     this.showPreToolToggle = page.getByTestId('embed-config-toggle-showPreTool');
     this.showResponseTypeToggle = page.getByTestId('embed-config-toggle-showResponseType');
@@ -100,7 +98,7 @@ export class IntegrationDetailPage {
     this.addDefaultApiKeysToggle = page.getByTestId('embed-config-toggle-addDefaultApiKeys');
     this.themeModeSelect = page.getByTestId('embed-config-theme-mode-select');
     this.configSaveButton = page.getByTestId('embed-config-save-button');
-    this.useDefaultPromptToggle = page.locator('.form-control').filter({ has: page.locator('span', { hasText: 'Use default prompt' }) }).locator('input[type="checkbox"]');
+    this.useDefaultPromptToggle = page.getByText('Use default prompt', { exact: true }).locator('xpath=..').locator('input[type="checkbox"]');
     this.reloadEmbedButton = page.getByTestId('embed-config-reload-button');
   }
 
@@ -205,8 +203,30 @@ export class IntegrationDetailPage {
   }
 
   async reloadEmbed() {
+    const frame = this.page.frameLocator('#iframe-component-gtwyInterfaceEmbed');
+    const firstRow = frame.locator('[data-testid^="custom-table-row-"]').first();
     await this.reloadEmbedButton.click();
-    await this.page.waitForTimeout(20000);
+    // Give the old preview a moment to tear down so we don't match its stale agent list.
+    await firstRow.waitFor({ state: 'hidden', timeout: 5000 }).catch(() => {});
+    await this.waitForEmbedReload();
+  }
+
+  // Saves the config only if there are unsaved changes, then always reloads the embed preview.
+  async saveConfigAndReloadEmbed() {
+    if (await this.configSaveButton.isEnabled()) {
+      await this.configSaveButton.click();
+      await expect(this.page.getByText('Configuration saved')).toBeVisible();
+    }
+    await this.reloadEmbed();
+  }
+
+  async setToggle(toggle: Locator, enabled: boolean) {
+    await toggle.setChecked(enabled);
+    if (enabled) {
+      await expect(toggle).toBeChecked();
+    } else {
+      await expect(toggle).not.toBeChecked();
+    }
   }
 
   async clickFirstAgentInPreview() {
@@ -305,22 +325,6 @@ export class IntegrationDetailPage {
 
   async expectShowAdvancedParametersUnchecked() {
     await expect(this.showAdvancedParametersToggle).not.toBeChecked();
-  }
-
-  async checkShowCreateManuallyButton() {
-    await this.showCreateManuallyButtonToggle.check();
-  }
-
-  async uncheckShowCreateManuallyButton() {
-    await this.showCreateManuallyButtonToggle.uncheck();
-  }
-
-  async expectShowCreateManuallyButtonChecked() {
-    await expect(this.showCreateManuallyButtonToggle).toBeChecked();
-  }
-
-  async expectShowCreateManuallyButtonUnchecked() {
-    await expect(this.showCreateManuallyButtonToggle).not.toBeChecked();
   }
 
   async checkShowAdvancedConfigurations() {
@@ -713,17 +717,19 @@ export class IntegrationDetailPage {
   // TOOLS CONFIGURATION
   // -------------------------
 
+  // Pre-Tool and Post-Tool sections use the same markup, so scope to the "Tools Configuration" section itself.
+  private get toolsSection(): Locator {
+    return this.page
+      .getByRole('heading', { name: 'Tools Configuration', exact: true })
+      .locator('xpath=ancestor::div[contains(@class, "space-y-3")][1]');
+  }
+
   async clickToolsAddButton() {
-    await this.page
-      .locator('div.space-y-3')
-      .filter({ has: this.page.locator('h5', { hasText: 'Tools Configuration' }) })
-      .locator('button', { hasText: 'Add' })
-      .first()
-      .click();
+    await this.toolsSection.getByRole('button', { name: 'Add' }).click();
   }
 
   async expectToolsDropdownVisible() {
-    await expect(this.page.getByTestId('embed-suggestion-dropdown-menu')).toBeVisible();
+    await expect(this.toolsSection.getByTestId('embed-suggestion-dropdown-menu')).toBeVisible();
   }
 
   // -------------------------

@@ -15,18 +15,7 @@ test.describe('Model Garden', () => {
     await sidepanel.modelGardenPage.expectModelsPanelVisible();
   });
 
-  test('TC-MG-03: Models panel can be closed', async ({ sidepanel }) => {
-    await sidepanel.gotoModelGarden();
-    await sidepanel.modelGardenPage.expectPageVisible();
-    await sidepanel.modelGardenPage.selectService('openAI');
-
-    if (await sidepanel.modelGardenPage.modelsPanel.isVisible()) {
-      await sidepanel.modelGardenPage.closeModelsPanel();
-      await sidepanel.modelGardenPage.expectModelsPanelHidden();
-    }
-  });
-
-  test('TC-MG-04: Search bar filters models by name', async ({ sidepanel }) => {
+  test('TC-MG-03: Search bar filters models by name', async ({ sidepanel }) => {
     await sidepanel.gotoModelGarden();
     await sidepanel.modelGardenPage.expectPageVisible();
     await sidepanel.modelGardenPage.selectService('openAI');

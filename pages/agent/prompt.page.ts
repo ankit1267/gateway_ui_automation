@@ -1,9 +1,10 @@
-import type { Page, Locator, FrameLocator } from '@playwright/test';
+import type { Page, Locator, FrameLocator, Response } from '@playwright/test';
 import { expect } from '@playwright/test';
 import { PromptHelperPanel } from '../../components/prompt/prompt-helper.panel';
 import { PreToolDropdown } from '../../components/prompt/pre-tool.panel';
 import { PrebuiltPreToolConfigModal } from '../../modals/prebuilt-pre-tool-config.modal';
 import { lockDaisyDropdown } from '../../utils/daisy-ui';
+import { readRequestBody, VERSION_UPDATE_URL_PATTERN } from '../../utils/request-helpers';
 
 export class PromptPage {
   private readonly page: Page;
@@ -21,7 +22,6 @@ export class PromptPage {
   private readonly variableSlider: Locator;
   readonly promptHelper: PromptHelperPanel;
   private readonly responseTypeSelect: Locator;
-  private readonly responseTypeSetDefaultButton: Locator;
   private readonly promptTextarea: Locator;
   private readonly migrateButton: Locator;
   private readonly simpleModeButton: Locator;
@@ -87,7 +87,6 @@ export class PromptPage {
     // The response type control is no longer a native <select>; it's now a
     // custom button that opens a dropdown list of options.
     this.responseTypeSelect = page.getByTestId('advanced-param-add-response-type-response_type');
-    this.responseTypeSetDefaultButton = page.getByTestId('advanced-param-reset-response_type');
     this.promptTextarea = page.getByTestId('prompt-textarea');
     this.migrateButton = page.getByTestId('prompt-header-migrate-button');
     this.simpleModeButton = page.getByRole('button', { name: 'simple' });
@@ -166,40 +165,72 @@ export class PromptPage {
 
 
 
-  // The response type dropdown currently only offers these two options in
-  // the UI (no more "default" / "json_object" / "widget" entries, and no
-  // reset-to-default control next to the picker).
+  // Response Type dropdown options. "default" has no option of its own: the
+  // menu's "Remove" item clears the response type, and the picker shows "Not set".
   private static readonly RESPONSE_TYPE_LABELS: Record<string, string> = {
     text: 'Text',
+    json_object: 'JSON Object',
     json_schema: 'JSON Schema',
   };
+  private static readonly RESPONSE_TYPE_NOT_SET_LABEL = 'Not set';
+
+  // The options list renders next to the trigger button, so scope to it to avoid
+  // matching the trigger itself (which shows the selected option's label).
+  private get responseTypeMenu(): Locator {
+    return this.responseTypeSelect.locator('xpath=following-sibling::ul');
+  }
+
+  private async openResponseTypeMenu() {
+    await this.responseTypeSelect.click();
+    await expect(this.responseTypeMenu).toBeVisible();
+  }
 
   async selectResponseType(value: string) {
+    if (value === 'default') {
+      await this.resetResponseTypeToDefault();
+      return;
+    }
+
     const label = PromptPage.RESPONSE_TYPE_LABELS[value];
     if (!label) {
       throw new Error(
         `selectResponseType: "${value}" is not available in the Response Type dropdown. ` +
-        `Only ${Object.keys(PromptPage.RESPONSE_TYPE_LABELS).join(', ')} are currently supported.`
+        `Supported: default, ${Object.keys(PromptPage.RESPONSE_TYPE_LABELS).join(', ')}.`
       );
     }
 
-    await this.responseTypeSelect.click();
-    const option = this.page.getByRole('button', { name: label, exact: true });
-    await option.waitFor({ state: 'visible' });
-    await option.click();
-    await expect(this.responseTypeSelect).toHaveText(label);
+    await this.openResponseTypeMenu();
+    await this.responseTypeMenu.getByRole('button', { name: label, exact: true }).click();
+    await this.expectResponseType(value);
   }
 
-  async clickResponseTypeSetDefault() {
-    await this.responseTypeSetDefaultButton.click();
+  async setJsonSchemaResponseType(schema: string) {
+    await this.selectResponseType('json_schema');
+    await this.fillJsonSchema(schema);
+    // Tab inserts an indent inside CodeMirror, so blur the editor directly to trigger the save.
+    await this.jsonSchemaTextarea.blur();
   }
 
-  async expectResponseTypeSetDefaultVisible() {
-    await expect(this.responseTypeSetDefaultButton).toBeVisible({ timeout: 10000 });
+  async resetResponseTypeToDefault() {
+    if ((await this.responseTypeSelect.innerText()).trim() === PromptPage.RESPONSE_TYPE_NOT_SET_LABEL) return;
+    await this.openResponseTypeMenu();
+    await this.responseTypeMenu.getByRole('button', { name: 'Remove', exact: true }).click();
+    await this.expectResponseTypeIsDefault();
+  }
+
+  async expectResponseType(value: string) {
+    const label = value === 'default'
+      ? PromptPage.RESPONSE_TYPE_NOT_SET_LABEL
+      : PromptPage.RESPONSE_TYPE_LABELS[value];
+    await expect(this.responseTypeSelect).toHaveText(label, { timeout: 10000 });
   }
 
   async expectResponseTypeIsDefault() {
-    await expect(this.responseTypeSelect).toHaveValue('default', { timeout: 10000 });
+    await this.expectResponseType('default');
+  }
+
+  async expectJsonSchemaEditorNotVisible() {
+    await expect(this.jsonSchemaTextarea).toHaveCount(0, { timeout: 10000 });
   }
 
   async fillJsonSchema(text: string) {
@@ -583,23 +614,26 @@ export class PromptPage {
     const addButton = this.page.getByTestId('pre-embed-add-button');
     const changeButton = this.page.getByRole('button', { name: 'Change Pre Tool' });
 
-    // The pre-tool list can re-render right after add/delete, which closes the dropdown.
-    // Retry the click until the search input is actually shown.
+    const menu = this.page.getByTestId('embed-suggestion-dropdown-menu');
+
+    // The pre-tool list can re-render right after add/delete, which closes the dropdown even after
+    // the search input appeared. Retry until the menu is open and locked; only click when it is
+    // closed, since clicking the trigger of an open dropdown would close it again.
     await expect(async () => {
-      if (await addButton.isVisible()) {
-        await addButton.click();
-      } else if (await changeButton.isVisible()) {
-        await changeButton.click();
-      } else {
-        throw new Error('Neither Add nor Change Pre Tool button is visible');
+      if (!(await menu.isVisible())) {
+        if (await addButton.isVisible()) {
+          await addButton.click();
+        } else if (await changeButton.isVisible()) {
+          await changeButton.click();
+        } else {
+          throw new Error('Neither Add nor Change Pre Tool button is visible');
+        }
       }
       await expect(input).toBeVisible({ timeout: 3000 });
+      await input.focus();
+      await lockDaisyDropdown(this.page, 'embed-suggestion-dropdown-menu');
+      await expect(menu).toBeVisible({ timeout: 3000 });
     }).toPass({ timeout: 60000 });
-    await input.focus();
-    await lockDaisyDropdown(this.page, 'embed-suggestion-dropdown-menu');
-
-    // Confirm dropdown menu is stable before proceeding
-    await expect(this.page.getByTestId('embed-suggestion-dropdown-menu')).toBeVisible();
 
     // retry-safe focus — use focus() to avoid blur side-effects from click()
     await expect(async () => {
@@ -629,7 +663,23 @@ export class PromptPage {
 
   async clickCustomLogicCodeButton() {
     const viaSocketFrame = this.getViaSocketFrame();
-    await viaSocketFrame.getByRole('button', { name: 'See Code', exact: true }).click();
+    const seeCodeButton = viaSocketFrame.getByRole('button', { name: 'See Code', exact: true });
+
+    // viaSocket intermittently renders the Custom Logic step without the "See Code" button
+    // (it can also re-render and detach it right after opening). Reloading the embed iframe
+    // keeps the same draft step and brings the button back.
+    await expect(async () => {
+      if (!(await seeCodeButton.isVisible())) {
+        try {
+          await expect(seeCodeButton).toBeVisible({ timeout: 5000 });
+        } catch (error) {
+          const embedFrame = this.page.frames().find(f => f.url().includes('embedfrontend.viasocket.com'));
+          await embedFrame?.evaluate(() => location.reload());
+          throw error;
+        }
+      }
+      await seeCodeButton.click({ timeout: 5000 });
+    }).toPass({ timeout: 60000 });
   }
 
   async fillCustomLogicCode(code: string) {
@@ -704,16 +754,30 @@ export class PromptPage {
     return this.deleteButton.isVisible();
   }
 
+  // Pre-tool add/config/remove is saved with PUT /api/versions/{id} carrying a `connected_tool` of type pre_tool.
+  // Call before the action that saves, then await the returned promise.
+  waitForPreToolSaved(timeout = 15000): Promise<Response> {
+    return this.page.waitForResponse((res) => {
+      if (res.request().method() !== 'PUT' || res.status() !== 200 || !VERSION_UPDATE_URL_PATTERN.test(res.url())) return false;
+      const body = readRequestBody(res.request()) as { connected_tool?: { type?: string } };
+      return body.connected_tool?.type === 'pre_tool';
+    }, { timeout });
+  }
+
   async hasPreTool(): Promise<boolean> {
     const items = this.preEmbedFunctionsContainer
       .locator('[data-testid^="render-embed-item-"]');
     return (await items.count()) > 0;
   }
 
+  // Removes every connected pre-tool so a test starts clean. Waits for the pre-tool section to render
+  // first, otherwise an existing pre-tool may not be counted yet and would be left in place.
   async deletePreToolIfExists() {
-    if (await this.hasPreTool()) {
+    await this.expectPreToolContainerVisible();
+    for (let attempt = 0; attempt < 5 && (await this.hasPreTool()); attempt++) {
       await this.deletePreTool();
     }
+    expect(await this.hasPreTool(), 'A connected pre-tool could not be removed').toBe(false);
   }
 
   async closeQueryRefinerConfigModalIfVisible() {

@@ -9,13 +9,15 @@ test.describe('Prompt - Response Type (Chatbot)', () => {
   });
 
   test('TC-PROMPT-RESP-08: JSON schema response type enforces schema fields in playground response and verify in history', async ({ agents,page }) => {
+    // Opens the agent, chats, then checks history: needs more than the default 2 min.
+    test.slow();
+
     const agent = await agents.openAgent(AGENT_NAME);
 
     await agent.tabs.openModel();
     await agent.model.selectServiceProvider('Openai');
 
     await agent.tabs.openPrompt();
-    await agent.prompt.selectResponseType('json_schema');
 
     const schema = JSON.stringify({
       name: 'name',
@@ -32,13 +34,12 @@ test.describe('Prompt - Response Type (Chatbot)', () => {
       },
       strict: true,
     });
-    await agent.prompt.fillJsonSchema(schema);
-    // await agent.prompt.blurInput();
+    await agent.prompt.setJsonSchemaResponseType(schema);
 
 
     await agent.chatbot.sendMessage('hii');
     await agent.chatbot.waitForResponseComplete();
-    await page.waitForTimeout(40000); // wait for response to render
+    await agent.chatbot.waitForToolCallsComplete();
 
     // Go to history
     await agent.header.openHistory();

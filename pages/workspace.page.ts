@@ -129,6 +129,13 @@ export class WorkspacePage {
     async clickUserDetails(){
         await this.userDetailsButton.click();
     }
+
+    // Use instead of waitForLoadState('networkidle'): analytics/monitoring requests keep the
+    // network busy, so it never settles. Wait for the page's own content instead.
+    async waitForUserDetailsPage() {
+        await expect(this.page).toHaveURL(/\/org\/\d+\/userDetails/);
+        await expect(this.editUserDetailsButton).toBeVisible();
+    }
     async clickWorkspaceButton(){
         await this.workspaceButton.click();
     }

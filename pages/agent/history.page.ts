@@ -1,8 +1,14 @@
 import { Page, Locator, expect } from '@playwright/test';
+import { AgentTabs } from '../../components/agent/agent-tabs.component';
+import { PromptPage } from './prompt.page';
+import { PlaygroundPage } from '../chat-pages/playground.page';
 
 
 
 export class HistoryPage {
+
+    // Set once a seed query has been sent in this worker (a worker restart after a failure seeds again).
+    private static historyCreated = false;
 
     private readonly page: Page;
 
@@ -400,12 +406,46 @@ export class HistoryPage {
 
     }
 
+    // Sends one playground query (once per worker) so the agent has a fresh history thread with a reply.
+    // Resets the response type first: other specs can leave an invalid JSON schema that makes every query fail.
+    async createHistoryWithQuery(query: string) {
 
+        if (HistoryPage.historyCreated) return;
+
+        await new AgentTabs(this.page).openPrompt();
+
+        await new PromptPage(this.page).resetResponseTypeToDefault();
+
+        // The completion API only acknowledges the request; the real reply (or error) shows up in history.
+        await new PlaygroundPage(this.page).typeMessageAndWaitForApi(query, { timeout: 90000 });
+
+        HistoryPage.historyCreated = true;
+
+    }
+
+    async openLatestThreadWithSuccessfulReply() {
+
+        await this.openFirstSidebarThread();
+
+        await this.expectThreadResponseVisible();
+
+        await this.expectFinalResponseVisible();
+
+    }
+
+    async expectFinalResponseVisible(timeout = 60000) {
+
+        await expect(
+            this.page.getByTestId('final-response-card').first(),
+            'Latest history thread has no successful agent reply (the query may have failed with an error)',
+        ).toBeVisible({ timeout });
+
+    }
 
     async hoverGroupChatAgentsResponse() {
 
         const responseBubble = this.page.getByTestId('final-response-card').first();
-        
+
         await expect(responseBubble).toBeVisible();
 
         await responseBubble.scrollIntoViewIfNeeded();
@@ -422,14 +462,11 @@ export class HistoryPage {
     }
 
 
-
     async expectGroupChatHoverActionsVisible() {
 
         const editMessageButton = this.page.getByTestId('thread-item-edit-message-button').first();
 
         const editMessageTooltip = editMessageButton.locator('xpath=ancestor::div[@data-tip][1]');
-
-
 
         await expect(this.page.locator('#thread-item-add-test-case-button').first()).toBeVisible();
 
@@ -440,7 +477,6 @@ export class HistoryPage {
 
 
     }
-
 
 
     async scrollToBottom() {

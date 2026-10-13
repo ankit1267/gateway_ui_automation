@@ -1,5 +1,6 @@
 import type { Page, Response } from '@playwright/test';
-import { expect } from '../fixtures/base.fixture';
+import { expect, getAuthToken } from '../fixtures/base.fixture';
+import { getDbBaseUrl } from './api-cleanup';
 
 interface ApiResponseFilter {
   payloadField?: string;
@@ -290,4 +291,23 @@ export async function updateParameterWithApi(
   });
   
   return response;
+}
+
+/**
+ * Returns the chat models the backend currently offers for a service (GET /api/service/{service}).
+ * This is the same list the Model tab dropdown renders, so tests can assert against it instead of
+ * hardcoding model names that change whenever a provider adds or retires a model.
+ *
+ * @example
+ * const models = await getServiceChatModels(page, 'Mistral');
+ */
+export async function getServiceChatModels(page: Page, service: string): Promise<string[]> {
+  const response = await page.context().request.get(`${getDbBaseUrl()}/api/service/${service.toLowerCase()}`, {
+    headers: { authorization: await getAuthToken() },
+  });
+  expect(response.ok(), `GET /api/service/${service.toLowerCase()} failed with ${response.status()}`).toBeTruthy();
+  const body = await response.json();
+  const models = Object.keys(body?.chat ?? {});
+  expect(models.length, `No chat models returned for service "${service}"`).toBeGreaterThan(0);
+  return models;
 }

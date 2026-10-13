@@ -21,7 +21,6 @@ export class ModelGardenPage {
   readonly modelsPanel: Locator;
   readonly panelHeader: Locator;
   readonly panelTitle: Locator;
-  readonly panelCloseButton: Locator;
 
   // Search bar
   readonly searchInput: Locator;
@@ -51,7 +50,6 @@ export class ModelGardenPage {
     this.modelsPanel = this.page.locator('.absolute.inset-0.flex.flex-col.bg-base-100');
     this.panelHeader = this.page.locator('.flex.items-center.justify-between.px-5.py-4');
     this.panelTitle = this.page.locator('h2');
-    this.panelCloseButton = this.page.locator('.btn.btn-ghost.btn-sm.btn-square').first();
 
     // Search bar
     this.searchInput = this.page.getByPlaceholder('Search models...');
@@ -86,15 +84,6 @@ export class ModelGardenPage {
 
   async expectModelsPanelVisible() {
     await expect(this.modelsPanel).toBeVisible();
-  }
-
-  async expectModelsPanelHidden() {
-    await expect(this.modelsPanel).not.toBeVisible();
-  }
-
-  async closeModelsPanel() {
-    await this.panelCloseButton.click();
-    await this.modelsPanel.waitFor({ state: 'hidden' });
   }
 
   async searchModels(query: string) {

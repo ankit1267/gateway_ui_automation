@@ -39,8 +39,7 @@ test('update org name',async({page})=>{
   await workspacePage.selectWorkspace(process.env.WORKSPACE_NAME!);
   await workspacePage.clickWorkspaceButton();
   await workspacePage.clickUserDetails();
-  await expect(page).toHaveURL(/\/org\/\d+\/userDetails/);
-  await page.waitForLoadState('networkidle');
+  await workspacePage.waitForUserDetailsPage();
   await workspacePage.clickEditUserDetails();
   await workspacePage.fillNameUserDetails(newName);
   await workspacePage.clickUpdateButton();
@@ -51,8 +50,7 @@ test('update org name',async({page})=>{
   // Navigate back to User Details after reload (reload goes to dashboard, not User Details)
   await workspacePage.clickWorkspaceButton();
   await workspacePage.clickUserDetails();
-  await expect(page).toHaveURL(/\/org\/\d+\/userDetails/);
-  await page.waitForLoadState('networkidle');
+  await workspacePage.waitForUserDetailsPage();
   // Verify name persisted
   await expect(page.getByText(newName).first()).toBeVisible();
 })

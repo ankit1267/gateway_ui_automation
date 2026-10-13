@@ -9,20 +9,17 @@ const INVALID_DOMAIN = 'invalidurl';
 test.describe('Pre-Tool - Gtwy Web Search', () => {
   let capturedVersionId: string | null = null;
   let capturedAuthHeader: string | null = null;
-  let capturedAgentId: string | null = null;
 
   test.beforeEach(async ({ agents, page }) => {
     capturedVersionId = null;
     capturedAuthHeader = null;
-    capturedAgentId = null;
     page.on('request', (req) => {
-      const match = req.url().match(/\/api\/tools\/pre_tool\/([a-f0-9]+)/);
+      const match = req.url().match(/\/api\/versions\/([a-f0-9]+)/);
       if (match && req.method() === 'PUT') {
         try {
           const body = req.postDataJSON();
-          if (body?.version_id) {
-            capturedAgentId = match[1];
-            capturedVersionId = body.version_id;
+          if (body?.connected_tool?.type === 'pre_tool') {
+            capturedVersionId = match[1];
             capturedAuthHeader = req.headers()['authorization'] ?? null;
           }
         } catch {
@@ -33,7 +30,7 @@ test.describe('Pre-Tool - Gtwy Web Search', () => {
   });
 
   test.afterEach(async ({ page }) => {
-    await disablePreTool(page, capturedAgentId ?? '', capturedVersionId ?? '', 'gtwy_web_search', capturedAuthHeader);
+    await disablePreTool(page, capturedVersionId ?? '', 'gtwy_web_search', capturedAuthHeader);
     capturedVersionId = null;
   });
 
@@ -90,10 +87,7 @@ test.describe('Pre-Tool - Gtwy Web Search', () => {
     await agent.tabs.openPrompt();
     await agent.prompt.deletePreToolIfExists();
 
-    const preToolApiPromise = page.waitForResponse(
-      res => res.url().includes('/api/tools/pre_tool/') && res.request().method() === 'PUT' && res.status() === 200,
-      { timeout: 15000 }
-    );
+    const preToolApiPromise = agent.prompt.waitForPreToolSaved();
     await agent.prompt.addPreToolClick();
     await agent.prompt.preToolDropdown.searchAndSelect(GTWY_WEB_SEARCH);
     await agent.prompt.queryRefinerConfigModal.waitForVisible();

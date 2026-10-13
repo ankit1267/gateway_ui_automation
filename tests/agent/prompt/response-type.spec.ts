@@ -1,8 +1,11 @@
-import { test, expect } from '../../../fixtures/base.fixture';
-import { selectResponseTypeAndVerifyApi } from '../../../utils/response-type-api';
+import { test } from '../../../fixtures/base.fixture';
+import type { AgentsPage } from '../../../pages/sidepanel/agents.page';
+import type { AgentPage } from '../../../pages/agent/agent.page';
+import { selectResponseTypeAndVerifyApi, type ResponseTypeValue } from '../../../utils/response-type-api';
 
 
 const AGENT_NAME = process.env.AGENT_NAME!;
+const SAMPLE_JSON_SCHEMA = '{"name": "testing","schema": {"type": "object","properties": {name": {"type": "string","description": "name of user"}},"required": ["name"],"additionalProperties": false},"strict": true}';
 
 function logResponseTypeApiCapture(selectedType: string, captured: { requestCount: number; responseType: string; requestBody: Record<string, unknown> }) {
   const body = captured.requestBody as { configuration?: unknown };
@@ -11,6 +14,12 @@ function logResponseTypeApiCapture(selectedType: string, captured: { requestCoun
     `[response-type-api] selected=${selectedType} parsed=${captured.responseType} requests=${captured.requestCount}`,
     JSON.stringify(body.configuration ?? {}, null, 2),
   );
+}
+
+async function openAgentPrompt(agents: AgentsPage): Promise<AgentPage> {
+  const agent = await agents.openAgent(AGENT_NAME);
+  await agent.tabs.openPrompt();
+  return agent;
 }
 
 test.describe('Prompt - Response Type', () => {
@@ -23,99 +32,44 @@ test.describe('Prompt - Response Type', () => {
 
   test('TC-PROMPT-RESP-01: Change response type options', async ({ agents, page }) => {
 
-    const agent = await agents.openAgent(AGENT_NAME);
+    const agent = await openAgentPrompt(agents);
 
-    await agent.tabs.openPrompt();
+    // Start from "Not set" so every step below is a real change that triggers an update request.
+    await agent.prompt.resetResponseTypeToDefault();
 
-   
+    const steps: Array<{ type: ResponseTypeValue; select: () => Promise<void> }> = [
+      { type: 'text', select: () => agent.prompt.selectResponseType('text') },
+      { type: 'json_object', select: () => agent.prompt.selectResponseType('json_object') },
+      { type: 'json_schema', select: () => agent.prompt.setJsonSchemaResponseType(SAMPLE_JSON_SCHEMA) },
+      { type: 'default', select: () => agent.prompt.resetResponseTypeToDefault() },
+    ];
 
-    const textCapture = await selectResponseTypeAndVerifyApi(
-      page,
-      async () => {
-        await agent.prompt.selectResponseType('text');
-      },
-      'text',
-    );
-    logResponseTypeApiCapture('text', textCapture);
-
-    const defaultCapture = await selectResponseTypeAndVerifyApi(
-      page,
-      async () => {
-        await agent.prompt.selectResponseType('default');
-      },
-      'default',
-    );
-    logResponseTypeApiCapture('default', defaultCapture);
-
-
-    const jsonObjectCapture = await selectResponseTypeAndVerifyApi(
-      page,
-      async () => {
-        await agent.prompt.selectResponseType('json_object');
-      },
-      'json_object',
-    );
-    logResponseTypeApiCapture('json_object', jsonObjectCapture);
-
-    const jsonSchemaCapture = await selectResponseTypeAndVerifyApi(
-      page,
-      async () => {
-        await agent.prompt.selectResponseType('json_schema');
-        await agent.prompt.fillJsonSchema('{"type":"object","properties":{"name":{"type":"string"}}}');
-        await page.locator('body').click();
-      },
-      'json_schema',
-    );
-    logResponseTypeApiCapture('json_schema', jsonSchemaCapture);
-
-    const widgetCapture = await selectResponseTypeAndVerifyApi(
-      page,
-      async () => {
-        await agent.prompt.selectResponseType('widget');
-      },
-      'widget',
-    );
-    logResponseTypeApiCapture('widget', widgetCapture);
+    for (const step of steps) {
+      const captured = await selectResponseTypeAndVerifyApi(page, step.select, step.type);
+      logResponseTypeApiCapture(step.type, captured);
+    }
 
   });
 
-  test('TC-PROMPT-RESP-02: Set Default button resets response type to default', async ({ agents }) => {
+  test('TC-PROMPT-RESP-02: Remove resets response type to default', async ({ agents }) => {
 
-    const agent = await agents.openAgent(AGENT_NAME);
+    const agent = await openAgentPrompt(agents);
 
-    await agent.tabs.openPrompt();
     await agent.prompt.selectResponseType('text');
-    await agent.prompt.expectResponseTypeSetDefaultVisible();
-    await agent.prompt.clickResponseTypeSetDefault();
+    await agent.prompt.resetResponseTypeToDefault();
     await agent.prompt.expectResponseTypeIsDefault();
 
   });
 
+  test('TC-PROMPT-RESP-03: Select json_schema, add JSON schema, click Remove, verify reset to default', async ({ agents }) => {
 
+    const agent = await openAgentPrompt(agents);
 
-  test('TC-PROMPT-RESP-03: Select json_schema, add JSON schema, click Set Default, verify reset to default', async ({ agents }) => {
-
-    const agent = await agents.openAgent(AGENT_NAME);
-
-
-
-    await agent.tabs.openPrompt();
-
-    await agent.prompt.selectResponseType('json_schema');
-
-
-
-    await agent.prompt.fillJsonSchema('{"type":"object","properties":{"name":{"type":"string"}}}');
-
-
-
-    await agent.prompt.expectResponseTypeSetDefaultVisible();
-
-    await agent.prompt.clickResponseTypeSetDefault();
-
-
+    await agent.prompt.setJsonSchemaResponseType(SAMPLE_JSON_SCHEMA);
+    await agent.prompt.resetResponseTypeToDefault();
 
     await agent.prompt.expectResponseTypeIsDefault();
+    await agent.prompt.expectJsonSchemaEditorNotVisible();
 
   });
 
@@ -123,11 +77,7 @@ test.describe('Prompt - Response Type', () => {
 
   test('TC-PROMPT-RESP-04: JSON schema textarea accepts manually typed and pasted JSON', async ({ agents }) => {
 
-    const agent = await agents.openAgent(AGENT_NAME);
-
-
-
-    await agent.tabs.openPrompt();
+    const agent = await openAgentPrompt(agents);
 
     await agent.prompt.selectResponseType('json_schema');
 
@@ -151,11 +101,7 @@ test.describe('Prompt - Response Type', () => {
 
    test('TC-PROMPT-RESP-05: Keyboard shortcuts Ctrl+A, Ctrl+C, Ctrl+X, Ctrl+V work in JSON schema textarea', async ({ agents }) => {
 
-    const agent = await agents.openAgent(AGENT_NAME);
-
-
-
-    await agent.tabs.openPrompt();
+    const agent = await openAgentPrompt(agents);
 
     await agent.prompt.selectResponseType('json_schema');
 
@@ -213,60 +159,9 @@ test.describe('Prompt - Response Type', () => {
 
   });
 
+  test('TC-PROMPT-RESP-06: Invalid JSON schema shows error, valid empty object clears it', async ({ agents }) => {
 
-
-   // not scrollable currently
-  // test('TC-PROMPT-RESP-06: JSON schema textarea supports scrolling and manual resizing', async ({ agents }) => {
-
-  //   const agent = await agents.openAgent(AGENT_NAME);
-
-
-
-  //   await agent.tabs.openPrompt();
-
-  //   await agent.prompt.selectResponseType('json_schema');
-
-
-
-  //   // fill with enough lines to overflow the fixed h-32 height
-
-  //   const manyLines = Array.from({ length: 100 }, (_, i) => `"key${i}": "value${i}"`).join(',\n');
-
-  //   await agent.prompt.fillJsonSchema(`{\n${manyLines}\n}`);
-
-
-
-  //   // scrolling: content overflows and scrollTop increases after scroll
-
-  //   await agent.prompt.expectJsonSchemaTextareaScrollable();
-
-  //   await agent.prompt.scrollJsonSchemaToBottom();
-
-  //   await agent.prompt.expectJsonSchemaScrolled();
-
-
-
-  //   // resizing: drag resize handle down by 100px and verify height increased
-
-  //   const originalHeight = await agent.prompt.getJsonSchemaTextareaHeight();
-
-  //   await agent.prompt.resizeJsonSchemaTextarea(100);
-
-  //   const newHeight = await agent.prompt.getJsonSchemaTextareaHeight();
-
-  //   expect(newHeight).toBeGreaterThan(originalHeight);
-
-  // });
-
-
-
-  test('TC-PROMPT-RESP-07: Invalid JSON schema shows error, valid empty object clears it', async ({ agents }) => {
-
-    const agent = await agents.openAgent(AGENT_NAME);
-
-
-
-    await agent.tabs.openPrompt();
+    const agent = await openAgentPrompt(agents);
 
     await agent.prompt.selectResponseType('json_schema');
 
@@ -291,11 +186,9 @@ test.describe('Prompt - Response Type', () => {
 
   });
 
-  test('TC-PROMPT-RESP-08: Invalid JSON schema in inline editor shows red border and error message on blur', async ({ agents, page }) => {
+  test('TC-PROMPT-RESP-07: Invalid JSON schema in inline editor shows red border and error message on blur', async ({ agents, page }) => {
 
-    const agent = await agents.openAgent(AGENT_NAME);
-
-    await agent.tabs.openPrompt();
+    const agent = await openAgentPrompt(agents);
     await agent.prompt.selectResponseType('json_schema');
 
     // Type invalid JSON content into the inline editor
