@@ -1,4 +1,5 @@
 import { test, expect } from '../../../fixtures/base.fixture';
+import { getModelParameterNames } from '../../../utils/model-api';
 
 const AGENT_NAME = process.env.AGENT_NAME!;
 
@@ -21,7 +22,7 @@ test.describe('Model - UI Visibility & Selection Persistence', () => {
     await expect(page.getByTestId('model-dropdown-container')).toBeVisible();
 
     // Verify API key section
-    await expect(page.getByTestId('apikey-input-container')).toBeVisible();
+    await expect(page.getByTestId('apikey-input-compact-container')).toBeVisible();
 
     // Verify advanced parameters section
     await expect(page.getByTestId('model-tab-container')).toBeVisible();
@@ -32,17 +33,19 @@ test.describe('Model - UI Visibility & Selection Persistence', () => {
     const agent = await agents.openAgent(AGENT_NAME);
     await agent.tabs.openModel();
     await agent.model.selectServiceProvider('Anthropic');
-    // List of common parameters to check (depending on model, but these are standard)
-    const commonParams = [
-      'max_tokens',
-      'creativity_level',
-      'top_p',
-      
-    ];
 
-    for (const param of commonParams) {
-      await agent.model.expectParameterVisible(param);
-    }
+    // The parameters come from the API for the model selected in the dropdown, not from a hardcoded list.
+    // response_type is edited on the Prompt tab, and stop_sequences and tools are excluded from this check.
+    const service = 'anthropic';
+    const model = await agent.model.getSelectedModelName();
+    const excludedParams = ['response_type', 'stop_sequences', 'tools'];
+    const apiParams = (await getModelParameterNames(page, service, model)).filter(p => !excludedParams.includes(p));
+    const uiParams = await agent.model.getVisibleParameterNames();
+
+    const missingInUI = apiParams.filter(p => !uiParams.includes(p));
+    const extraInUI = uiParams.filter(p => !apiParams.includes(p));
+    expect(missingInUI, `API parameters for ${model} not shown on the Model tab`).toEqual([]);
+    expect(extraInUI, `Model tab parameters not defined in the API for ${model}`).toEqual([]);
   });
 
   // ── Missing Test Area #2: Model Selection & Persistence ──

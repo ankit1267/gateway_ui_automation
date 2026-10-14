@@ -415,6 +415,8 @@ export class HistoryPage {
         await new AgentTabs(this.page).openPrompt();
 
         await new PromptPage(this.page).resetResponseTypeToDefault();
+        // Give the version update from removing the JSON schema time to save before sending the query
+        await this.page.waitForTimeout(3000);
 
         // The completion API only acknowledges the request; the real reply (or error) shows up in history.
         await new PlaygroundPage(this.page).typeMessageAndWaitForApi(query, { timeout: 90000 });

@@ -635,11 +635,14 @@ export class PromptPage {
       await expect(menu).toBeVisible({ timeout: 3000 });
     }).toPass({ timeout: 60000 });
 
+    // Let the dropdown settle after locking before checking focus; a re-render can steal focus
+    await this.page.waitForTimeout(1000);
+
     // retry-safe focus — use focus() to avoid blur side-effects from click()
     await expect(async () => {
       await input.focus();
       await expect(input).toBeFocused();
-    }).toPass();
+    }).toPass({ timeout: 15000 });
   }
 
   private getViaSocketFrame(): FrameLocator {

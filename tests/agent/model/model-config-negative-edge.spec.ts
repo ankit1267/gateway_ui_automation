@@ -1,79 +1,30 @@
 import { test } from '../../../fixtures/base.fixture';
-import { getServiceChatModels } from '../../../utils/model-api';
+import { getServiceModels } from '../../../utils/model-api';
+import { loadServicesSync } from '../../../utils/service-list';
 
 const AGENT_NAME = process.env.CHATBOT_AGENT!;
 
+// Services come from the service API, so a new provider gets its own test automatically.
+const SERVICES = loadServicesSync();
+
 test.describe('Model Configuration - Service Provider & Model List', () => {
-    
 
     test.beforeEach(async ({ agents }) => {
         await agents.goto('chatbot');
     });
 
+    // One test per service, so each runs in its own worker slot and a failure only affects that service.
+    for (const service of SERVICES) {
+        test(`TC-MODEL-SVC-${service.key}: Verify Model List Loads for ${service.name}`, async ({ agents, page }) => {
+            const agent = await agents.openAgent(AGENT_NAME);
+            await agent.tabs.openModel();
+            await agent.model.selectServiceProvider(service.key);
+            // Turns auto-select off (and confirms it) when the service supports it, before opening the model dropdown
+            await agent.model.uncheckAutoSelectModelToggleIfSupported();
 
-    test('TC-MODEL-01: Verify Model List Loads for Mistral', async ({ agents, page }) => {
-        const agent = await agents.openAgent(AGENT_NAME);
-        await agent.tabs.openModel();
-        await agent.model.selectServiceProvider('Mistral');
-        await agent.model.uncheckAutoSelectModelToggle();
-
-        // Expected models come from the service API, so new/retired models don't break the test.
-        const models = await getServiceChatModels(page, 'Mistral');
-        await agent.model.expectModelDropdownMatches(models);
-    });
-
-    test('TC-MODEL-03: Verify Model List Loads for Openai', async ({ agents, page }) => {
-        const agent = await agents.openAgent(AGENT_NAME);
-        await agent.tabs.openModel();
-        await agent.model.selectServiceProvider('Openai');
-        await agent.model.uncheckAutoSelectModelToggle();
-
-        // Expected models come from the service API, so new/retired models don't break the test.
-        const models = await getServiceChatModels(page, 'Openai');
-        await agent.model.expectModelDropdownMatches(models);
-    });
-
-    test('TC-MODEL-04: Verify Model List Loads for Anthropic', async ({ agents, page }) => {
-        const agent = await agents.openAgent(AGENT_NAME);
-        await agent.tabs.openModel();
-        await agent.model.selectServiceProvider('Anthropic');
-        await agent.model.expectAutoSelectModelToggleUnchecked();
-
-        // Expected models come from the service API, so new/retired models don't break the test.
-        const models = await getServiceChatModels(page, 'Anthropic');
-        await agent.model.expectModelDropdownMatches(models);
-    });
-
-    test('TC-MODEL-05: Verify Model List Loads for Groq', async ({ agents, page }) => {
-        const agent = await agents.openAgent(AGENT_NAME);
-        await agent.tabs.openModel();
-        await agent.model.selectServiceProvider('Groq');
-        // await agent.model.uncheckAutoSelectModelToggle();
-
-        // Expected models come from the service API, so new/retired models don't break the test.
-        const models = await getServiceChatModels(page, 'Groq');
-        await agent.model.expectModelDropdownMatches(models);
-    });
-
-    test('TC-MODEL-06: Verify Model List Loads for Gemini', async ({ agents, page }) => {
-        const agent = await agents.openAgent(AGENT_NAME);
-        await agent.tabs.openModel();
-        await agent.model.selectServiceProvider('Gemini');
-        await agent.model.uncheckAutoSelectModelToggle();
-
-        // Expected models come from the service API, so new/retired models don't break the test.
-        const models = await getServiceChatModels(page, 'Gemini');
-        await agent.model.expectModelDropdownMatches(models);
-    });
-
-    test('TC-MODEL-07: Verify Model List Loads for Grok', async ({ agents, page }) => {
-        const agent = await agents.openAgent(AGENT_NAME);
-        await agent.tabs.openModel();
-        await agent.model.selectServiceProvider('Grok');
-        // await agent.model.uncheckAutoSelectModelToggle();
-
-        // Expected models come from the service API, so new/retired models don't break the test.
-        const models = await getServiceChatModels(page, 'Grok');
-        await agent.model.expectModelDropdownMatches(models);
-    });
+            // Expected models come from the service API, so new/retired models don't break the test.
+            const models = await getServiceModels(page, service.key);
+            await agent.model.expectAllModelsInDropdown(models);
+        });
+    }
 });

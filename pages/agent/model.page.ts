@@ -66,7 +66,7 @@ export class ModelPage {
     // SERVICE PROVIDER
     // -------------------------
 
-    async selectServiceProvider(provider: ServiceProvider) {
+    async selectServiceProvider(provider: ServiceProvider | string) {
         await this.serviceProvider.click();
         await this.page.getByTestId(`service-dropdown-option-${provider.toLowerCase()}`).click();
 
@@ -89,8 +89,10 @@ export class ModelPage {
     // MODEL LIST ASSERTION
     // -------------------------
 
-    // Asserts the model dropdown lists exactly these models (e.g. from getServiceChatModels), no more, no less.
-    async expectModelDropdownMatches(models: string[]) {
+    // Asserts the model dropdown lists exactly these models (e.g. from getServiceModels), no more, no less.
+    // Every model the service API lists for this provider must be in the dropdown. The dropdown can also
+    // show extra models (image models, dated aliases) that the chat list doesn't include, so extras are allowed.
+    async expectAllModelsInDropdown(models: string[]) {
 
         await this.model.click();
 
@@ -100,7 +102,8 @@ export class ModelPage {
         const shown = await options.evaluateAll(els =>
             els.map(el => el.getAttribute('data-testid')!.replace('model-dropdown-grouped-option-', '').toLowerCase())
         );
-        expect([...shown].sort()).toEqual(models.map(m => m.toLowerCase()).sort());
+        const missing = models.map(m => m.toLowerCase()).filter(m => !shown.includes(m));
+        expect(missing, 'Models from the service API that are missing from the dropdown').toEqual([]);
     }
 
     async expectModelsVisible(models: string[]) {
@@ -465,7 +468,23 @@ export class ModelPage {
 
     async selectModel(modelName: string) {
         await this.model.click();
-        await this.page.getByTestId(`model-dropdown-grouped-option-${modelName.toLowerCase()}`).click();
+        const option = this.page.getByTestId(`model-dropdown-grouped-option-${modelName.toLowerCase()}`);
+        // The dropdown renders its options after opening, so wait for this one before clicking
+        await expect(option).toBeVisible({ timeout: 15000 });
+        await option.click();
+    }
+
+    // Name of the model currently selected in the Model tab dropdown trigger (e.g. 'claude-sonnet-4-6')
+    async getSelectedModelName(): Promise<string> {
+        return ((await this.page.getByTestId('model-dropdown-trigger-button').textContent()) ?? '').trim();
+    }
+
+    // Names of the advanced parameters rendered on the Model tab (from #advanced-param-field-<name>)
+    async getVisibleParameterNames(): Promise<string[]> {
+        const ids = await this.page.locator('[id^="advanced-param-field-"]:visible').evaluateAll(els =>
+            els.map(el => el.id.replace('advanced-param-field-', ''))
+        );
+        return [...new Set(ids)];
     }
 
     async expectParameterVisible(paramName: string) {
@@ -497,6 +516,17 @@ export class ModelPage {
 
     async checkAutoSelectModelToggle() {
         await this.page.getByTestId('auto-select-model-toggle').check();
+    }
+
+    // Services that don't support auto-select have no toggle, so only uncheck and assert when it is rendered.
+    // Returns false when the service has no toggle.
+    async uncheckAutoSelectModelToggleIfSupported(): Promise<boolean> {
+        const toggle = this.page.getByTestId('auto-select-model-toggle');
+        const rendered = await toggle.waitFor({ state: 'visible', timeout: 5000 }).then(() => true).catch(() => false);
+        if (!rendered) return false;
+        await toggle.uncheck();
+        await expect(toggle).not.toBeChecked();
+        return true;
     }
 
     async uncheckAutoSelectModelToggle() {

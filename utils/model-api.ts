@@ -294,20 +294,37 @@ export async function updateParameterWithApi(
 }
 
 /**
- * Returns the chat models the backend currently offers for a service (GET /api/service/{service}).
- * This is the same list the Model tab dropdown renders, so tests can assert against it instead of
- * hardcoding model names that change whenever a provider adds or retires a model.
+ * Returns every model the backend offers for a service (GET /api/service/{service}) across all
+ * categories: chat, fine-tune, reasoning, image and embedding. Tests compare these against the Model tab
+ * dropdown, so they don't hardcode model names that change when a provider adds or retires one.
  *
  * @example
- * const models = await getServiceChatModels(page, 'Mistral');
+ * const models = await getServiceModels(page, 'openai');
  */
-export async function getServiceChatModels(page: Page, service: string): Promise<string[]> {
+export async function getServiceModels(page: Page, service: string): Promise<string[]> {
   const response = await page.context().request.get(`${getDbBaseUrl()}/api/service/${service.toLowerCase()}`, {
     headers: { authorization: await getAuthToken() },
   });
   expect(response.ok(), `GET /api/service/${service.toLowerCase()} failed with ${response.status()}`).toBeTruthy();
   const body = await response.json();
-  const models = Object.keys(body?.chat ?? {});
-  expect(models.length, `No chat models returned for service "${service}"`).toBeGreaterThan(0);
+  const categories = ['chat', 'fine-tune', 'reasoning', 'image', 'embedding'];
+  const models = categories.flatMap((category) => Object.keys(body?.[category] ?? {}));
+  expect(models.length, `No models returned for service "${service}"`).toBeGreaterThan(0);
   return models;
+}
+
+/**
+ * Returns the parameter keys the backend defines for one model (GET /api/service/{service}, then
+ * configuration.additional_parameters), e.g. ['max_tokens', 'stream', 'tool_choice'].
+ */
+export async function getModelParameterNames(page: Page, service: string, model: string): Promise<string[]> {
+  const response = await page.context().request.get(`${getDbBaseUrl()}/api/service/${service.toLowerCase()}`, {
+    headers: { authorization: await getAuthToken() },
+  });
+  expect(response.ok(), `GET /api/service/${service.toLowerCase()} failed with ${response.status()}`).toBeTruthy();
+  const body = await response.json();
+  const categories = ['chat', 'fine-tune', 'reasoning', 'image', 'embedding'];
+  const entry = categories.map((category) => body?.[category]?.[model]).find(Boolean);
+  expect(entry, `Model "${model}" not found for service "${service}"`).toBeTruthy();
+  return Object.keys(entry.configuration?.additional_parameters ?? {});
 }

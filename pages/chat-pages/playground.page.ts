@@ -434,8 +434,16 @@ export class PlaygroundPage {
 
     const response = await responsePromise;
     const requestBody = JSON.parse(response.request().postData() || '{}');
-    const responseBody = await response.json();
-    
+    // The completion endpoint can stream its reply as "data: {...}" lines, which aren't valid JSON,
+    // so keep the raw text when the body doesn't parse.
+    const rawBody = await response.text();
+    let responseBody: any = rawBody;
+    try {
+      responseBody = JSON.parse(rawBody);
+    } catch {
+      // streamed response; callers that need fields should check the raw text
+    }
+
     // Wait for UI to be ready before next message
     await this.page.waitForTimeout(10000);
 
