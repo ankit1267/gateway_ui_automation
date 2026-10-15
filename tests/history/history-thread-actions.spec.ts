@@ -21,19 +21,15 @@ test.describe('History - API Agent Thread Actions', () => {
   await agent.history.expectChatDetailsViewModalVisible(); 
   await agent.history.closeChatDetailsModal();
   
-  // Variables - Now Inline
-  await agent.history.openThreadItemVar();
-  // await agent.history.expectInlineVariablesVisible(); // Custom assertion for inline
-  await agent.history.openThreadItemVar(); // Click again to close
- 
+  // The action bar no longer has a Variables button (COPY, AI CONFIG, LATENCY, SYSTEM PROMPT, MORE),
+  // so MORE takes its place as the inline toggle.
+  await agent.history.clickMore();
+  await agent.history.expectInlineMoreDetailsVisible();
+  await agent.history.clickMore(); // Close
+
   // System Prompt - Now Inline
   await agent.history.clickSystemPrompt();
   await agent.history.clickSystemPrompt(); // Close
-  
-  // // More - Now Inline (currently not present)
-  // await agent.history.clickMore();
-  // await agent.history.expectInlineMoreDetailsVisible();
-  // await agent.history.clickMore(); // Close
 
 
   await agent.history.clicklatency();

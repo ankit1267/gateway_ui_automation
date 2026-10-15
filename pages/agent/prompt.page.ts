@@ -616,11 +616,13 @@ export class PromptPage {
 
     const menu = this.page.getByTestId('embed-suggestion-dropdown-menu');
 
-    // The pre-tool list can re-render right after add/delete, which closes the dropdown even after
-    // the search input appeared. Retry until the menu is open and locked; only click when it is
-    // closed, since clicking the trigger of an open dropdown would close it again.
+    // The pre-tool list can re-render right after add/delete, and the dropdown can close when the
+    // search input loses focus (seen on CI, where the menu closed ~1s after opening). The focus check
+    // lives inside the same retry loop so that a lost focus reopens the menu, not just re-focuses it.
+    // Only click the trigger when the menu is closed; clicking an open dropdown's trigger closes it.
+    const isInputFocused = () => input.evaluate((el) => el === document.activeElement).catch(() => false);
     await expect(async () => {
-      if (!(await menu.isVisible())) {
+      if (!(await menu.isVisible()) || !(await isInputFocused())) {
         if (await addButton.isVisible()) {
           await addButton.click();
         } else if (await changeButton.isVisible()) {
@@ -633,16 +635,37 @@ export class PromptPage {
       await input.focus();
       await lockDaisyDropdown(this.page, 'embed-suggestion-dropdown-menu');
       await expect(menu).toBeVisible({ timeout: 3000 });
+      // Let the dropdown settle after locking; a re-render can steal focus
+      await this.page.waitForTimeout(1000);
+      await expect(input).toBeFocused({ timeout: 3000 });
     }).toPass({ timeout: 60000 });
+  }
 
-    // Let the dropdown settle after locking before checking focus; a re-render can steal focus
-    await this.page.waitForTimeout(1000);
-
-    // retry-safe focus — use focus() to avoid blur side-effects from click()
+  // Adds a named pre-tool through the real UI. The whole sequence (open dropdown, search, select) is
+  // retried as one unit, and it only passes once the tool is visibly added: either its config modal
+  // opened, or its card is rendered in the pre-tool list. A dropdown that closed mid-way is reopened
+  // on the next attempt, so the add does not depend on one timing-sensitive click.
+  // `pick` chooses how the option is found: 'option' for built-in tools, 'function' for functions
+  // listed under Custom Pre Functions.
+  async addPreToolByName(name: string, pick: 'option' | 'function' = 'option') {
     await expect(async () => {
-      await input.focus();
-      await expect(input).toBeFocused();
-    }).toPass({ timeout: 15000 });
+      await this.addPreToolClick();
+      // Arm the save listener before selecting, so the backend's pre_tool save is what proves the add.
+      // A DOM check on the card was unreliable (the card's markup did not match the list selector).
+      // Tools with a config step (RAG, Gtwy Web Search, Query Refiner) open their config modal on select,
+      // and some save only after Save is clicked. So either the save or the modal opening proves the add.
+      const saved = this.waitForPreToolSaved(10000);
+      const configOpened = this.queryRefinerConfigModal.container.waitFor({ state: 'visible', timeout: 10000 }).then(() => true);
+      // A timed-out or unused wait is retried or ignored; don't let either promise go unhandled.
+      saved.catch(() => {});
+      configOpened.catch(() => {});
+      if (pick === 'function') {
+        await this.preToolDropdown.searchAndSelectPreToolFunction(name);
+      } else {
+        await this.preToolDropdown.searchAndSelect(name);
+      }
+      await Promise.any([saved, configOpened]);
+    }).toPass({ timeout: 90000 });
   }
 
   private getViaSocketFrame(): FrameLocator {
@@ -815,6 +838,30 @@ export class PromptPage {
       .first();
     await preToolItem.hover();
     await preToolItem.getByTitle('Config').click();
+  }
+
+  // Sets the Value Path of a pre-tool parameter (the variable it reads at runtime) and saves the config.
+  async setPreToolParamValuePath(paramName: string, valuePath: string) {
+    await this.openPreToolConfig();
+    const modal = this.page.getByTestId('pre-function-parameter-modal').first();
+    const pathInput = modal.getByTestId(`param-value-path-input-${paramName}`);
+    await expect(pathInput).toBeVisible();
+    // Type rather than fill, so the modal's change handler sees real key events and enables Save
+    await pathInput.clear();
+    await pathInput.pressSequentially(valuePath);
+    await pathInput.blur();
+    const saveButton = modal.getByTestId('function-parameter-save-button');
+    await expect(saveButton).toBeEnabled();
+    await saveButton.click();
+    await expect(modal).toBeHidden();
+  }
+
+  // Sets a variable's value by its key, found from the variable manager's key inputs.
+  async fillVariableValueByKey(key: string, value: string) {
+    const keyInput = this.page.locator(`[id^="variable-key-input-"][value="${key}"]`).first();
+    await expect(keyInput).toBeVisible();
+    const id = (await keyInput.getAttribute('id')) ?? '';
+    await this.fillVariableValue(Number(id.replace('variable-key-input-', '')), value);
   }
 
   async searchAndSelectKnowledgeBase(name: string) {

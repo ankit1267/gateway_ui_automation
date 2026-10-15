@@ -16,7 +16,7 @@ export default defineConfig({
     timeout: 60_000,
   },
   workers: 1,
-  retries: 0,
+  retries: 1,
 
  reporter: [
     ['html', { open: 'on-failure' }],

@@ -7,28 +7,27 @@ test.beforeEach(async ({ agents }) => {
 
 });
 
-test('Connected pre-tool variable passing', async ({ agents ,page}) => {
+test('Connected pre-tool variable passing', async ({ agents }) => {
     const agent = await agents.openAgent(TESTING_AGENT);
     const chatbot = agent.chatbot;
-    await page.waitForTimeout(4000);
-    // await chatbot.isCopyButtonVisible();
-    
-    // Go to manage variable
+
+    // Point the pre-tool's "age" parameter at a variable named "age". Until this is set, the
+    // parameter has no value path and the tool returns AGE:undefined.
+    await agent.tabs.openPrompt();
+    await agent.prompt.setPreToolParamValuePath('age', 'age');
+
+    // Give that variable the value the chat should echo back
     await agent.prompt.openVariableManager();
-    
-    // Set the value of variable age as 40
-    await agent.prompt.fillVariableValue(1, '40');
-    
-    // Close variable slider
+    await agent.prompt.expectVariableKeyWithValueVisible('age');
+    await agent.prompt.fillVariableValueByKey('age', '40');
     await agent.prompt.closeVariableManager();
-    await page.waitForTimeout(5000);
-    
-    // await chatbot.openNewThread();
-    await page.waitForTimeout(3000);
+
     await chatbot.sendMessage('Hi');
-    
     await chatbot.waitForResponseComplete(90000);
     await chatbot.expectResponse(/AGE:40/i);
-    await page.waitForTimeout(20000);
+
+    // Clear the value path again so the agent is left as it was found
+    await agent.tabs.openPrompt();
+    await agent.prompt.setPreToolParamValuePath('age', '');
 });
 

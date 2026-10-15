@@ -37,8 +37,7 @@ test.describe('Pre-Tool - RAG Knowledgebase', () => {
     const agent = await agents.openAgent(AGENT_NAME);
     await agent.tabs.openPrompt();
     await agent.prompt.deletePreToolIfExists();
-    await agent.prompt.addPreToolClick();
-    await agent.prompt.preToolDropdown.searchAndSelect(RAG_KNOWLEDGEBASE);
+    await agent.prompt.addPreToolByName(RAG_KNOWLEDGEBASE);
     await agent.prompt.isQueryRefinerConfigModalVisible();
     await agent.prompt.closeRagConfigModalIfVisible();
     await agent.prompt.expectPreToolContainerVisible();
@@ -49,8 +48,7 @@ test.describe('Pre-Tool - RAG Knowledgebase', () => {
     const agent = await agents.openAgent(AGENT_NAME);
     await agent.tabs.openPrompt();
     await agent.prompt.deletePreToolIfExists();
-    await agent.prompt.addPreToolClick();
-    await agent.prompt.preToolDropdown.searchAndSelect(RAG_KNOWLEDGEBASE);
+    await agent.prompt.addPreToolByName(RAG_KNOWLEDGEBASE);
     await agent.prompt.queryRefinerConfigModal.waitForVisible();
     await agent.prompt.queryRefinerConfigModal.isSaveButtonDisabled();
     await agent.prompt.closeRagConfigModalIfVisible();
@@ -60,8 +58,7 @@ test.describe('Pre-Tool - RAG Knowledgebase', () => {
     const agent = await agents.openAgent(AGENT_NAME);
     await agent.tabs.openPrompt();
     await agent.prompt.deletePreToolIfExists();
-    await agent.prompt.addPreToolClick();
-    await agent.prompt.preToolDropdown.searchAndSelect(RAG_KNOWLEDGEBASE);
+    await agent.prompt.addPreToolByName(RAG_KNOWLEDGEBASE);
     await agent.prompt.queryRefinerConfigModal.waitForVisible();
     await agent.prompt.queryRefinerConfigModal.isSaveButtonDisabled();
     await agent.prompt.searchAndSelectKnowledgeBase(KB_NAME);
@@ -74,8 +71,7 @@ test.describe('Pre-Tool - RAG Knowledgebase', () => {
     const agent = await agents.openAgent(AGENT_NAME);
     await agent.tabs.openPrompt();
     await agent.prompt.deletePreToolIfExists();
-    await agent.prompt.addPreToolClick();
-    await agent.prompt.preToolDropdown.searchAndSelect(RAG_KNOWLEDGEBASE);
+    await agent.prompt.addPreToolByName(RAG_KNOWLEDGEBASE);
     await agent.prompt.queryRefinerConfigModal.waitForVisible();
     await agent.prompt.searchAndSelectKnowledgeBase(KB_NAME);
     await agent.prompt.expectKnowledgeBaseSelected(KB_NAME);
@@ -97,8 +93,7 @@ test.describe('Pre-Tool - RAG Knowledgebase', () => {
     const agent = await agents.openAgent(AGENT_NAME);
     await agent.tabs.openPrompt();
     await agent.prompt.deletePreToolIfExists();
-    await agent.prompt.addPreToolClick();
-    await agent.prompt.preToolDropdown.searchAndSelect(RAG_KNOWLEDGEBASE);
+    await agent.prompt.addPreToolByName(RAG_KNOWLEDGEBASE);
     await agent.prompt.queryRefinerConfigModal.waitForVisible();
     await agent.prompt.searchAndSelectKnowledgeBase(KB_NAME);
     await agent.prompt.expectKnowledgeBaseSelected(KB_NAME);
@@ -115,8 +110,7 @@ test.describe('Pre-Tool - RAG Knowledgebase', () => {
     const agent = await agents.openAgent(AGENT_NAME);
     await agent.tabs.openPrompt();
     await agent.prompt.deletePreToolIfExists();
-    await agent.prompt.addPreToolClick();
-    await agent.prompt.preToolDropdown.searchAndSelect(RAG_KNOWLEDGEBASE);
+    await agent.prompt.addPreToolByName(RAG_KNOWLEDGEBASE);
     await agent.prompt.closeRagConfigModalIfVisible();
     await agent.prompt.expectPreToolContainerVisible();
     await agent.prompt.expectPreToolAddedByName(RAG_KNOWLEDGEBASE);

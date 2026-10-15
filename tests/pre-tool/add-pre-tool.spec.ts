@@ -1,4 +1,4 @@
-import { test, expect } from '../../fixtures/base.fixture';
+import { test } from '../../fixtures/base.fixture';
 
 const AGENT_NAME = process.env.TESTING_AGENT!;
 
@@ -13,13 +13,8 @@ test('Add existing pre-tool and delete it', async ({ agents, page }) => {
     // Always start clean: remove any connected pre-tool.
     await agentPage.prompt.deletePreToolIfExists();
 
-    // Retry the full add-pre-tool flow until the tool is actually added.
-    // Covers flaky dropdown closures, missed clicks, and slow renders.
-    await expect(async () => {
-      await agentPage.prompt.addPreToolClick();
-      await agentPage.prompt.preToolDropdown.selectTool('secure_math_function');
-      await agentPage.prompt.expectPreToolContainerVisible();
-    }).toPass({ timeout: 30_000 });
+    // Adds through the verified flow: retried as one unit, passes only once the tool's card or config modal appears.
+    await agentPage.prompt.addPreToolByName('secure_math_function');
     
     await page.waitForTimeout(2000);
     await agentPage.prompt.deletePreTool();

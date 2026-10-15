@@ -94,31 +94,40 @@ export class AuthKeyPage {
     await row.locator('[data-tip="delete"] a').click();
   }
 
+  // Toasts render with role=status for success and role=alert for errors, and they disappear after about a second.
+  private toast(text: string): Locator {
+    return this.page.getByRole('status').or(this.page.getByRole('alert')).filter({ hasText: text });
+  }
+
   async expectValidationErrorToast() {
     await expect(
-      this.page.getByRole('alert').filter({ hasText: 'The name must be at least 3' })
+      this.toast('The name must be at least 3')
     ).toBeVisible({ timeout: 5000 });
   }
 
   async expectCreateSuccessToast() {
     await expect(
-      this.page.getByRole('alert').filter({ hasText: 'Auth key created successfully' })
+      this.toast('Auth key created successfully')
     ).toBeVisible({ timeout: 10000 });
   }
 
   async expectCopySuccessToast() {
     await expect(
-      this.page.getByRole('alert').filter({ hasText: 'Content copied to clipboard' })
+      this.toast('Content copied to clipboard')
     ).toBeVisible({ timeout: 5000 });
   }
 
   async expectDeleteSuccessToast() {
     await expect(
-      this.page.getByRole('alert').filter({ hasText: 'Auth Key Deleted Successfully' })
+      this.toast('Auth Key Deleted Successfully')
     ).toBeVisible({ timeout: 10000 });
   }
 
+  // Toasts auto-dismiss after about a second, so only close one that is still on screen.
   async closeToast() {
-    await this.page.locator('.Toastify__close-button').first().click();
+    const closeButton = this.page.locator('.Toastify__close-button').first();
+    if (await closeButton.isVisible().catch(() => false)) {
+      await closeButton.click();
+    }
   }
 }

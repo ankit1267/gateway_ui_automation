@@ -38,8 +38,7 @@ test.describe('Pre-Tool - Gtwy Web Search', () => {
     const agent = await agents.openAgent(AGENT_NAME);
     await agent.tabs.openPrompt();
     await agent.prompt.deletePreToolIfExists();
-    await agent.prompt.addPreToolClick();
-    await agent.prompt.preToolDropdown.searchAndSelect(GTWY_WEB_SEARCH);
+    await agent.prompt.addPreToolByName(GTWY_WEB_SEARCH);
     await agent.prompt.isQueryRefinerConfigModalVisible();
     await agent.prompt.closeWebSearchConfigModalIfVisible();
     await agent.prompt.expectPreToolContainerVisible();
@@ -50,8 +49,7 @@ test.describe('Pre-Tool - Gtwy Web Search', () => {
     const agent = await agents.openAgent(AGENT_NAME);
     await agent.tabs.openPrompt();
     await agent.prompt.deletePreToolIfExists();
-    await agent.prompt.addPreToolClick();
-    await agent.prompt.preToolDropdown.searchAndSelect(GTWY_WEB_SEARCH);
+    await agent.prompt.addPreToolByName(GTWY_WEB_SEARCH);
     await agent.prompt.queryRefinerConfigModal.waitForVisible();
     await agent.prompt.queryRefinerConfigModal.isSaveButtonDisabled();
     await agent.prompt.closeWebSearchConfigModalIfVisible();
@@ -61,8 +59,7 @@ test.describe('Pre-Tool - Gtwy Web Search', () => {
     const agent = await agents.openAgent(AGENT_NAME);
     await agent.tabs.openPrompt();
     await agent.prompt.deletePreToolIfExists();
-    await agent.prompt.addPreToolClick();
-    await agent.prompt.preToolDropdown.searchAndSelect(GTWY_WEB_SEARCH);
+    await agent.prompt.addPreToolByName(GTWY_WEB_SEARCH);
     await agent.prompt.queryRefinerConfigModal.waitForVisible();
     await agent.prompt.fillWebSearchUrl(INVALID_DOMAIN);
     await agent.prompt.queryRefinerConfigModal.isSaveButtonDisabled();
@@ -73,8 +70,7 @@ test.describe('Pre-Tool - Gtwy Web Search', () => {
     const agent = await agents.openAgent(AGENT_NAME);
     await agent.tabs.openPrompt();
     await agent.prompt.deletePreToolIfExists();
-    await agent.prompt.addPreToolClick();
-    await agent.prompt.preToolDropdown.searchAndSelect(GTWY_WEB_SEARCH);
+    await agent.prompt.addPreToolByName(GTWY_WEB_SEARCH);
     await agent.prompt.queryRefinerConfigModal.waitForVisible();
     await agent.prompt.queryRefinerConfigModal.isSaveButtonDisabled();
     await agent.prompt.fillWebSearchUrl(VALID_DOMAIN);
@@ -88,8 +84,7 @@ test.describe('Pre-Tool - Gtwy Web Search', () => {
     await agent.prompt.deletePreToolIfExists();
 
     const preToolApiPromise = agent.prompt.waitForPreToolSaved();
-    await agent.prompt.addPreToolClick();
-    await agent.prompt.preToolDropdown.searchAndSelect(GTWY_WEB_SEARCH);
+    await agent.prompt.addPreToolByName(GTWY_WEB_SEARCH);
     await agent.prompt.queryRefinerConfigModal.waitForVisible();
     await agent.prompt.queryRefinerConfigModal.isSaveButtonDisabled();
     await agent.prompt.fillWebSearchUrl(VALID_DOMAIN);
@@ -109,8 +104,7 @@ test.describe('Pre-Tool - Gtwy Web Search', () => {
     const agent = await agents.openAgent(AGENT_NAME);
     await agent.tabs.openPrompt();
     await agent.prompt.deletePreToolIfExists();
-    await agent.prompt.addPreToolClick();
-    await agent.prompt.preToolDropdown.searchAndSelect(GTWY_WEB_SEARCH);
+    await agent.prompt.addPreToolByName(GTWY_WEB_SEARCH);
     await agent.prompt.queryRefinerConfigModal.waitForVisible();
     await agent.prompt.queryRefinerConfigModal.isSaveButtonDisabled();
     await agent.prompt.fillWebSearchUrl(VALID_DOMAIN);
@@ -127,8 +121,7 @@ test.describe('Pre-Tool - Gtwy Web Search', () => {
     const agent = await agents.openAgent(AGENT_NAME);
     await agent.tabs.openPrompt();
     await agent.prompt.deletePreToolIfExists();
-    await agent.prompt.addPreToolClick();
-    await agent.prompt.preToolDropdown.searchAndSelect(GTWY_WEB_SEARCH);
+    await agent.prompt.addPreToolByName(GTWY_WEB_SEARCH);
     await agent.prompt.queryRefinerConfigModal.waitForVisible();
     await agent.prompt.queryRefinerConfigModal.isSaveButtonDisabled();
     await agent.prompt.fillWebSearchUrl(VALID_DOMAIN);

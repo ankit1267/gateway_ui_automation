@@ -36,8 +36,7 @@ test.describe('Pre-Tool - Query Refiner', () => {
     const agent = await agents.openAgent(AGENT_NAME);
     await agent.tabs.openPrompt();
     await agent.prompt.deletePreToolIfExists();
-    await agent.prompt.addPreToolClick();
-    await agent.prompt.preToolDropdown.searchAndSelect(QUERY_REFINER);
+    await agent.prompt.addPreToolByName(QUERY_REFINER);
     await agent.prompt.isQueryRefinerConfigModalVisible();
     await agent.prompt.closeQueryRefinerConfigModalIfVisible();
     await agent.prompt.expectPreToolContainerVisible();
@@ -48,8 +47,7 @@ test.describe('Pre-Tool - Query Refiner', () => {
     const agent = await agents.openAgent(AGENT_NAME);
     await agent.tabs.openPrompt();
     await agent.prompt.deletePreToolIfExists();
-    await agent.prompt.addPreToolClick();
-    await agent.prompt.preToolDropdown.searchAndSelect(QUERY_REFINER);
+    await agent.prompt.addPreToolByName(QUERY_REFINER);
     await agent.prompt.closeQueryRefinerConfigModalIfVisible();
     await agent.prompt.expectPreToolContainerVisible();
     await agent.prompt.openPreToolConfig();
@@ -61,8 +59,7 @@ test.describe('Pre-Tool - Query Refiner', () => {
     const agent = await agents.openAgent(AGENT_NAME);
     await agent.tabs.openPrompt();
     await agent.prompt.deletePreToolIfExists();
-    await agent.prompt.addPreToolClick();
-    await agent.prompt.preToolDropdown.searchAndSelect(QUERY_REFINER);
+    await agent.prompt.addPreToolByName(QUERY_REFINER);
     await agent.prompt.queryRefinerConfigModal.waitForVisible();
     await agent.prompt.queryRefinerConfigModal.isSaveButtonDisabled();
     await agent.getPage.waitForTimeout(1000);
@@ -75,8 +72,7 @@ test.describe('Pre-Tool - Query Refiner', () => {
     await agent.prompt.deletePreToolIfExists();
 
     const preToolApiPromise = agent.prompt.waitForPreToolSaved();
-    await agent.prompt.addPreToolClick();
-    await agent.prompt.preToolDropdown.searchAndSelect(QUERY_REFINER);
+    await agent.prompt.addPreToolByName(QUERY_REFINER);
     await preToolApiPromise;
 
     await agent.prompt.closeQueryRefinerConfigModalIfVisible();
@@ -91,8 +87,7 @@ test.describe('Pre-Tool - Query Refiner', () => {
     const agent = await agents.openAgent(AGENT_NAME);
     await agent.tabs.openPrompt();
     await agent.prompt.deletePreToolIfExists();
-    await agent.prompt.addPreToolClick();
-    await agent.prompt.preToolDropdown.searchAndSelect(QUERY_REFINER);
+    await agent.prompt.addPreToolByName(QUERY_REFINER);
     await agent.prompt.queryRefinerConfigModal.waitForVisible();
     await agent.prompt.queryRefinerConfigModal.isSaveButtonDisabled();
     await agent.prompt.fillQueryRefinerPrompt('Rewrite the user query to be more precise and search-engine friendly.');
@@ -104,8 +99,7 @@ test.describe('Pre-Tool - Query Refiner', () => {
     const agent = await agents.openAgent(AGENT_NAME);
     await agent.tabs.openPrompt();
     await agent.prompt.deletePreToolIfExists();
-    await agent.prompt.addPreToolClick();
-    await agent.prompt.preToolDropdown.searchAndSelect(QUERY_REFINER);
+    await agent.prompt.addPreToolByName(QUERY_REFINER);
     await agent.prompt.closeQueryRefinerConfigModalIfVisible();
     await agent.prompt.expectPreToolContainerVisible();
     await agent.prompt.expectPreToolAddedByName(QUERY_REFINER);

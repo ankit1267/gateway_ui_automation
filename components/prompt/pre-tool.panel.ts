@@ -39,10 +39,8 @@ export class PreToolDropdown {
 
     async searchAndSelect(toolName: string) {
         await this.search(toolName);
-        // Give the dropdown time to filter results after the search before picking an option
-        await this.page.waitForTimeout(1000);
-        // Scope click to dropdown to avoid matching text elsewhere on page,
-        // and wait for the option to be visible before clicking (headless-safe)
+        // Scope to the dropdown to avoid matching text elsewhere on the page. The option is awaited
+        // by state (visible) rather than a fixed sleep, so the click waits for the filtered list.
         const option = this.page
             .getByTestId('embed-suggestion-dropdown-menu')
             .getByText(toolName, { exact: true });

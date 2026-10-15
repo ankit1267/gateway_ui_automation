@@ -22,8 +22,7 @@ test('Add compute_secure_function pre-tool variable path and verify variable row
   const saveButton = configModal.getByTestId('function-parameter-save-button');
   const closeButton = configModal.getByTestId('function-parameter-close-button');
 
-  await agentPage.prompt.addPreToolClick();
-  await agentPage.prompt.preToolDropdown.searchAndSelectPreToolFunction(PRE_TOOL_NAME);
+  await agentPage.prompt.addPreToolByName(PRE_TOOL_NAME, 'function');
   await agentPage.prompt.expectPreToolContainerVisible();
 
   await agentPage.prompt.openPreToolConfig();

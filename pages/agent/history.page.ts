@@ -1094,7 +1094,8 @@ export class HistoryPage {
 
     async expectInlineMoreDetailsVisible() {
 
-        await expect(this.page.getByText('Optional Details')).toBeVisible();
+        // MORE opens an inline panel with the message ID and a token-and-cost table
+        await expect(this.page.getByText('TOKEN AND COST')).toBeVisible();
 
     }
 
